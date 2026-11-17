@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T22:05:57+00:00",
+  "generated_at": "2026-11-17T22:39:48+00:00",
   "history_observed": [
     {
       "last_observed_at": "2026-11-17T21:54:33Z",
@@ -23,14 +23,14 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1794952470.4082046,
-      "next_due": 1794953370.4082046
+      "last_success": 1794955155.865904,
+      "next_due": 1794956055.865904
     },
     {
       "id": "support-gta",
       "last_error": "ReadTimeout",
       "last_success": null,
-      "next_due": 1794953273.284482
+      "next_due": 1794956958.4290211
     },
     {
       "id": "system:PS4",
