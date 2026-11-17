@@ -14,6 +14,12 @@
       "source": "https://www.rockstargames.com/VI/an-extended-look",
       "status": "scheduled"
     },
+    "gta6-gallery": {
+      "due_at": "2026-11-18T09:14:43.479383+00:00",
+      "image_kind": "editorial_image",
+      "source": "https://www.rockstargames.com/newswire/article/39ak81277255o9/explore-the-grand-theft-auto-vi-launch-gallery",
+      "status": "sending"
+    },
     "gta6-overview": {
       "buffer_id": "6afce49593fa11d37df0ba6a",
       "due_at": "2026-11-18T00:04:43.479383+00:00",
