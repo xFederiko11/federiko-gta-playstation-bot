@@ -18,7 +18,7 @@ from presentation import group_platform_events, render_card, format_post, demo_e
 from buffer_publisher import BufferClient, BufferAPIError, BufferPending, BufferDeliveryFailed
 from editorial_policy import approved_source, event_allowed, history_record_allowed
 from news_center import thread_for_event, news_center_preview
-from official_media import official_image_for_event, OfficialMediaUnavailable
+from official_media import official_image_for_event, official_media_for_event, OfficialMediaUnavailable
 
 LOG = logging.getLogger("gta.online")
 ROOT = Path(__file__).resolve().parent
@@ -450,9 +450,10 @@ def main():
                 event = json.loads(row["event_json"])
                 if config.get("official_images_only", False):
                     try:
-                        candidate = official_image_for_event(event)
+                        selection = official_media_for_event(event)
                         from urllib.parse import urlsplit
-                        print("FOTO UFFICIALE VERIFICATA — " + urlsplit(candidate).hostname + " | Fonte: " + str(event.get("source_url", "")))
+                        description = "LOGO UFFICIALE (ultima opzione)" if selection.kind == "official_logo" else "IMMAGINE UFFICIALE"
+                        print(description + " — " + urlsplit(selection.url).hostname + " | Credito: " + selection.credit_url)
                     except OfficialMediaUnavailable as error:
                         print("FOTO UFFICIALE NON DISPONIBILE — invio automatico bloccato (" + str(error) + ")")
                 else:
