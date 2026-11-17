@@ -15,10 +15,11 @@
       "status": "scheduled"
     },
     "gta6-trailer": {
+      "buffer_id": "6afce49a9f3765f6ab18b921",
       "due_at": "2026-11-18T03:44:43.479383+00:00",
       "image_kind": "editorial_image",
       "source": "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
-      "status": "sending"
+      "status": "scheduled"
     }
   },
   "version": 1
