@@ -1,9 +1,17 @@
 {
-  "generated_at": "2026-11-17T20:44:20+00:00",
+  "generated_at": "2026-11-17T20:51:46+00:00",
   "history_observed": [
+    {
+      "last_observed_at": "2026-11-17T20:51:44Z",
+      "record_id": "1b90d8ac7cb67f5e4847ab1d9626c7eac7498c81555b28a33d313dd5a35f26f0"
+    },
     {
       "last_observed_at": "2026-11-17T13:49:27Z",
       "record_id": "76c6f0ba8960e79deba9459e834085e7cc6792cc8e78a7f827f62eb001d5f829"
+    },
+    {
+      "last_observed_at": "2026-11-17T20:51:45Z",
+      "record_id": "8b30f68d4d040c7f4ad1103113d35fad018bd9a5acefaeda501c0879f1fe50cd"
     },
     {
       "last_observed_at": "2026-11-17T13:49:27Z",
@@ -11,6 +19,37 @@
     }
   ],
   "meta": {},
-  "monitors": [],
+  "monitors": [
+    {
+      "id": "newswire",
+      "last_error": null,
+      "last_success": 1794948670.0119214,
+      "next_due": 1794949570.0119214
+    },
+    {
+      "id": "support-gta",
+      "last_error": "ReadTimeout",
+      "last_success": null,
+      "next_due": 1794950473.7627165
+    },
+    {
+      "id": "system:PS4",
+      "last_error": null,
+      "last_success": 1794948704.7596488,
+      "next_due": 1794952304.7596488
+    },
+    {
+      "id": "system:PS5",
+      "last_error": null,
+      "last_success": 1794948704.1037743,
+      "next_due": 1794952304.1037743
+    },
+    {
+      "id": "youtube",
+      "last_error": null,
+      "last_success": 1794948704.0074594,
+      "next_due": 1794952304.0074594
+    }
+  ],
   "schema_version": 1
 }
