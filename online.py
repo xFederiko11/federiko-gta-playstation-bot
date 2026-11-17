@@ -17,6 +17,7 @@ from free_editor import article_events, catalog_event
 from presentation import group_platform_events, render_card, format_post, demo_events
 from buffer_publisher import BufferClient, BufferAPIError, BufferPending, BufferDeliveryFailed
 from editorial_policy import approved_source, event_allowed, history_record_allowed
+from news_center import thread_for_event, news_center_preview
 
 LOG = logging.getLogger("gta.online")
 ROOT = Path(__file__).resolve().parent
@@ -214,7 +215,7 @@ def reconcile(db, client):
                        (status, delivery.external_url, time.time() + 3600, row["key"]))
 
 
-def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None):
+def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None, news_center_threads=False):
     enforce_job_policy(db, policy or {})
     reconcile(db, client)
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
@@ -236,18 +237,26 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             # Il controllo del canale non è una richiesta di pubblicazione.
             # Una configurazione errata lascia la bozza pronta per la correzione.
             client.verify_destination()
-        card = Path(directory) / (row["key"] + ".png")
-        render(event, card)
-        # Se manca l'hosting gratuito la bozza resta tale; il design non viene eliminato.
-        media_url = upload(card)
+        thread = thread_for_event(event) if news_center_threads else None
+        media_url = None
+        if thread is None:
+            card = Path(directory) / (row["key"] + ".png")
+            render(event, card)
+            # I post singoli conservano la scheda grafica e il relativo hosting.
+            media_url = upload(card)
+        # Ricalcola il testo per applicare il SEO editoriale anche alle bozze
+        # create prima dell'aggiornamento (mai ai post gia' spediti).
+        single_text = format_post(event) if thread is None else row["text"]
         with db:
-            db.execute("UPDATE publish_jobs SET status='sending',attempted_at=? WHERE key=?", (time.time(), row["key"]))
+            db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
+                       (single_text, time.time(), row["key"]))
         if checkpoint:
             # Il journal remoto precede l'invio: un runner interrotto non lo ripete alla cieca.
             checkpoint()
         stop = False
         try:
-            identifier = client.publish(row["text"], media_url=media_url)
+            identifier = (client.publish_thread(thread) if thread is not None
+                          else client.publish(single_text, media_url=media_url))
         except BufferPending as error:
             with db:
                 db.execute("UPDATE publish_jobs SET status='accepted',buffer_id=?,next_attempt=? WHERE key=?",
@@ -402,7 +411,13 @@ def main():
                 event = json.loads(row["event_json"])
                 card = ROOT / ".runtime" / "previews" / (row["key"] + ".png")
                 render_card(event, card)
-                print("BOZZA — " + row["text"])
+                if config.get("news_center_threads", False):
+                    parts = news_center_preview(event)
+                    print(f"ANTEPRIMA — {len(parts)} post; nessun invio")
+                    for part in parts:
+                        print("BOZZA — " + part)
+                else:
+                    print("BOZZA — " + row["text"])
             print(f"Controllo terminato: {len(draft_rows)} bozze visibili, {errors} fonti con errori; nessun invio")
         elif mode == "run":
             if os.getenv("AUTO_PUBLISH", "false").lower() == "true":
@@ -414,7 +429,8 @@ def main():
                     try:
                         deliver(db, client, host.upload, ROOT / ".runtime" / "cards",
                                 checkpoint=lambda: checkpoint_state(db, db_path, encrypted, password),
-                                policy=config.get("publication_policy", {}))
+                                policy=config.get("publication_policy", {}),
+                                news_center_threads=config.get("news_center_threads", False))
                     except FreeQuotaExceeded:
                         LOG.warning("Quota gratuita locale esaurita: bozze conservate, nessun acquisto")
             else:

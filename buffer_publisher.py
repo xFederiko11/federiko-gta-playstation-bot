@@ -303,6 +303,39 @@ class BufferClient:
             raise BufferPending(delivery.post_id, delivery.status)
         return delivery.post_id
 
+    def publish_thread(self, posts):
+        """Invia un thread X come UN SOLO record Buffer.
+
+        Ciascun post ha il proprio limite caratteri. Non esegue retry
+        automatici se l'esito di createPost non e' noto.
+        """
+        from presentation import _post_weight
+        if not isinstance(posts, (list, tuple)) or not 2 <= len(posts) <= 5:
+            raise ValueError("Il thread deve contenere da 2 a 5 post")
+        if any(not isinstance(t, str) or not t.strip() or _post_weight(t) > 280 for t in posts):
+            raise ValueError("Ogni post del thread deve essere testo valido entro 280 caratteri pesati")
+        if self.destination is None:
+            self.verify_destination()
+        items = [{"text": t, "assets": []} for t in posts]
+        data = self._graphql(CREATE_MUTATION, {"input": {
+            "text": posts[0], "channelId": self.channel_id, "schedulingType": "automatic",
+            "mode": "shareNow", "assets": [], "metadata": {"twitter": {"thread": items}},
+        }}, mutation=True)
+        result = data.get("createPost")
+        if not isinstance(result, dict):
+            raise BufferAPIError("Esito creazione thread mancante", outcome_unknown=True)
+        if not result.get("post"):
+            if result.get("message"):
+                raise BufferAPIError("Buffer ha rifiutato il thread: controllare canale, limiti e formato",
+                                     status=400, outcome_unknown=False)
+            raise BufferAPIError("Esito creazione thread incompleto", outcome_unknown=True)
+        delivery = self._delivery(result["post"])
+        if delivery.status == "error":
+            raise BufferDeliveryFailed(delivery.post_id)
+        if delivery.status != "sent":
+            raise BufferPending(delivery.post_id, delivery.status)
+        return delivery.post_id
+
     def delivery_status(self, post_id):
         """Una sola lettura: non ricrea il post e non esegue polling nascosto."""
         data = self._graphql(STATUS_QUERY, {"id": str(post_id)})

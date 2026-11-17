@@ -21,6 +21,8 @@ from collections.abc import Mapping
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from seo_policy import search_label, search_context, relevant_tags
+
 
 WIDTH, HEIGHT = 1600, 900
 TRUST_LABELS = {
@@ -284,23 +286,37 @@ def _post_weight(text):
 
 
 def format_post(event):
-    """Testo breve italiano da accompagnare alla scheda, entro 280 pesati."""
-    label = f"{_text(event.get('game', 'GTA'))} · {_text(event.get('category', 'AGGIORNAMENTO')).upper()}"
+    """Post ricercabile in italiano, max 280 pesati, senza tag fuori contesto.
+
+    Fonte, origine e contenuto hanno priorita' assoluta sugli hashtag. Il testo
+    viene ricostruito anche per bozze gia' in coda prima dell'invio.
+    """
+    label = f"{_text(search_label(event) or event.get('game', 'GTA'))} · {_text(event.get('category', 'AGGIORNAMENTO')).upper()}"
     if event.get("spoiler"):
         label += " · SPOILER"
     if event.get("demo"):
         label = "DEMO · DATI FITTIZI\n" + label
     platform = " + ".join(_platforms(event)) or "Piattaforma non disponibile"
+    context = search_context(event)
     origin = TRUST_LABELS.get(event.get("trust"), "ORIGINE DA VERIFICARE")
-    title = _text(event.get("title", "Nuovo aggiornamento"))
-    footer = event.get("source_url") or "Fonte pubblica non disponibile"
-    base = [label, platform, title]
-    tail = [origin, str(footer)]
-    if _post_weight("\n".join(base + tail)) > 280:
-        # Taglia solo il titolo editoriale, non un numero o un hash.
-        while title and _post_weight("\n".join([label, platform, title + "…"] + tail)) > 280:
+    original_title = _text(event.get("title", "Nuovo aggiornamento"))
+    footer = str(event.get("source_url") or "Fonte pubblica non disponibile")
+
+    prefix = [label, platform] + ([context] if context and context.casefold() not in platform.casefold() else [])
+    # Riserva spazio ai tag contestuali, ma non rimuovere mai fonte o etichetta di verifica.
+    for number in range(2, -1, -1):
+        tags = relevant_tags(event, "\n".join(prefix + [original_title, origin, footer]))[:number]
+        tail = [origin, footer] + ([" ".join(tags)] if tags else [])
+        title = original_title
+        while title and _post_weight("\n".join(prefix + [title + "…"] + tail)) > 280:
             title = title[:-1]
-        base = [label, platform, title + "…"]
+        if title and (len(title) >= min(18, len(original_title)) or number == 0):
+            title = title if title == original_title else title + "…"
+            break
+    else:
+        raise ValueError("Metadati del post troppo lunghi")
+
+    base = prefix + [title]
     for fact in event.get("facts", []):
         line = f"• {_text(fact.get('label', 'Dato'))}: {_value(fact)}"
         if _post_weight("\n".join(base + [line] + tail)) <= 280:
