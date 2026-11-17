@@ -1,0 +1,36 @@
+name: GTA VI News Center - Bootstrap editoriale
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gta6-editorial-bootstrap-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    name: Queue verified GTA VI archive threads
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+      BUFFER_EXPECTED_USERNAME: xFederiko11
+      GTA6_BOOTSTRAP_QUEUE: YES_QUEUE
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-free.txt
+      - name: Schedule official GTA VI threads in Buffer
+        run: python bootstrap_news_center.py
