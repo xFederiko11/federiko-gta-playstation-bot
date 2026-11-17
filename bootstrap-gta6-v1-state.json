@@ -1,10 +1,11 @@
 {
   "items": {
     "gta6-characters": {
+      "buffer_id": "6afce49793fa11d37df0baa7",
       "due_at": "2026-11-18T01:54:43.479383+00:00",
       "image_kind": "editorial_image",
       "source": "https://www.rockstargames.com/VI",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-overview": {
       "buffer_id": "6afce49593fa11d37df0ba6a",
