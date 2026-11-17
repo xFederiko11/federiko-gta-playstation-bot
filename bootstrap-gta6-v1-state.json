@@ -43,10 +43,11 @@
       "status": "scheduled"
     },
     "gta6-score": {
+      "buffer_id": "6afce4a9ab47737bddb23e65",
       "due_at": "2026-11-18T12:54:43.479383+00:00",
       "image_kind": "editorial_image",
       "source": "https://www.rockstargames.com/newswire/article/39ak8a12395591/grand-theft-auto-vi-original-score-by-justice",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-trailer": {
       "buffer_id": "6afce49a9f3765f6ab18b921",
