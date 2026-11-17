@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T20:54:51+00:00",
+  "generated_at": "2026-11-17T21:20:21+00:00",
   "history_observed": [
     {
       "last_observed_at": "2026-11-17T20:51:44Z",
@@ -23,8 +23,8 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1794948670.0119214,
-      "next_due": 1794949570.0119214
+      "last_success": 1794950414.1352866,
+      "next_due": 1794951314.1352866
     },
     {
       "id": "support-gta",
