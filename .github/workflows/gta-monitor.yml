@@ -32,7 +32,7 @@ jobs:
     env:
       PYTHONUNBUFFERED: '1'
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
-       DATABASE: /tmp/gta-monitor.sqlite3
+      DATABASE: /tmp/gta-monitor.sqlite3
       ENCRYPTED_STATE: ${{ github.workspace }}/.state/bot.enc
       GITHUB_BRANCH: ${{ github.event.repository.default_branch }}
       AUTO_PUBLISH: ${{ vars.AUTO_PUBLISH || 'false' }}
