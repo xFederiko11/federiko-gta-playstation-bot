@@ -338,6 +338,51 @@ class BufferClient:
             raise BufferPending(delivery.post_id, delivery.status)
         return delivery.post_id
 
+    def create_draft_thread(self, posts, *, media_url):
+        """Create an X thread as a Buffer DRAFT ONLY; never schedule or publish.
+
+        Used exclusively by the separate manual smoke-test workflow. It is not
+        called by the automated news delivery path. Never retry a write with an
+        unknown outcome: Buffer may have accepted the original request.
+        """
+        from presentation import _post_weight
+        if not isinstance(posts, (list, tuple)) or not 2 <= len(posts) <= 5:
+            raise ValueError("Il test richiede un thread da 2 a 5 post")
+        if any(not isinstance(text, str) or not text.strip() or _post_weight(text) > 280 for text in posts):
+            raise ValueError("Ogni post deve restare entro 280 caratteri pesati")
+        if not media_url:
+            raise BufferMediaError("Il test richiede un'immagine ufficiale")
+        url = self._media_url(media_url)
+        if self.destination is None:
+            self.verify_destination()
+
+        thread_items = [{"text": text, "assets": []} for text in posts]
+        thread_items[0]["assets"] = [{"image": {"url": url}}]
+        draft_input = {
+            "channelId": self.channel_id,
+            "text": posts[0],
+            "schedulingType": "automatic",
+            "mode": "addToQueue",
+            "saveToDraft": True,
+            "assets": [],
+            "metadata": {"twitter": {"thread": thread_items}},
+        }
+        data = self._graphql(CREATE_MUTATION, {"input": draft_input}, mutation=True)
+        result = data.get("createPost")
+        if not isinstance(result, dict):
+            raise BufferAPIError("Risposta Buffer al test non valida", outcome_unknown=True)
+        if not result.get("post"):
+            if result.get("message"):
+                raise BufferAPIError("Buffer ha rifiutato la bozza tecnica", status=400)
+            raise BufferAPIError("Esito test Buffer incompleto", outcome_unknown=True)
+        delivery = self._delivery(result["post"])
+        if delivery.status != "draft":
+            # Do not claim that the request was safe if Buffer reports any other
+            # status. Manual inspection is mandatory; do not retry blindly.
+            raise BufferAPIError("Stato inatteso: verifica subito la dashboard Buffer",
+                                 outcome_unknown=True, post_id=delivery.post_id)
+        return delivery.post_id
+
     def delivery_status(self, post_id):
         """Una sola lettura: non ricrea il post e non esegue polling nascosto."""
         data = self._graphql(STATUS_QUERY, {"id": str(post_id)})
