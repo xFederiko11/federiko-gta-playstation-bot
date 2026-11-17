@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=1600, initial-scale=1">
+<style>
+* {box-sizing:border-box} html,body {margin:0;width:1600px;height:900px;overflow:hidden}
+body {font-family:Arial,Helvetica,sans-serif;color:#f5f5fc;background:#0b1021}
+.card {width:1600px;height:900px;position:relative;overflow:hidden;padding:62px 70px 45px;
+background:radial-gradient(ellipse at 88% 12%,#47356e55 0,transparent 45%),radial-gradient(ellipse at 8% 96%,#00566350 0,transparent 46%),linear-gradient(135deg,#10152b,#0c1020 54%,#151126)}
+.grid {position:absolute;inset:0;opacity:.06;background-image:linear-gradient(#e7e9ff 1px,transparent 1px),linear-gradient(90deg,#e7e9ff 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(90deg,transparent,#000)}
+.orb {position:absolute;right:-170px;top:220px;width:660px;height:660px;border:1px solid #d17be41c;border-radius:50%}
+.orb:after {content:"";position:absolute;inset:62px;border:1px solid #d17be420;border-radius:50%}
+.top {position:relative;display:flex;align-items:center;justify-content:space-between}
+.brand {font-size:25px;font-weight:700;letter-spacing:4px;color:#c8cee5;display:flex;gap:18px;align-items:center}
+.brand:before {content:"";display:block;width:10px;height:27px;background:linear-gradient(#7ce7ec,#f47ac6);border-radius:5px}
+.origin {font-size:18px;letter-spacing:1.5px;font-weight:700;color:#76e7ed;padding:12px 18px;border:1px solid #8adce22b;border-radius:9px;background:#77d9e007}
+.demo {position:absolute;top:116px;right:70px;background:#ed79bd;color:#1b1025;padding:10px 18px;border-radius:8px;font-size:20px;font-weight:800;letter-spacing:1px;z-index:2}
+.content {position:relative;display:grid;grid-template-columns:570px 1fr;gap:70px;margin-top:89px;height:520px}
+.eyebrow {display:flex;align-items:center;gap:17px;margin-bottom:27px}
+.game {font-size:22px;font-weight:800;letter-spacing:1px;background:#efecff;color:#17162b;border-radius:7px;padding:9px 13px;white-space:nowrap}
+.category {font-size:19px;letter-spacing:2px;font-weight:700;color:#b8aecf}
+h1 {font-size:65px;line-height:1.06;letter-spacing:-2.5px;font-weight:750;margin:0 0 30px;overflow-wrap:break-word;max-height:285px;overflow:hidden}
+h1.long {font-size:53px;letter-spacing:-1.6px}
+.accent {height:5px;width:92px;border-radius:4px;background:linear-gradient(90deg,#7be7e9,#eb7fc2);margin:0 0 29px}
+.platforms {display:flex;flex-wrap:wrap;gap:11px;max-width:570px}
+.platform {font-size:21px;line-height:1.2;color:#ced6eb;border:1px solid #707c9e50;background:#131a2e;padding:10px 15px;border-radius:9px}
+.data {display:grid;grid-template-columns:1fr 1fr;gap:18px;align-content:start;margin-top:4px}
+.tile {min-height:156px;border:1px solid #abb1d226;background:linear-gradient(135deg,#ffffff08,#ffffff03);border-radius:19px;padding:25px 26px;position:relative;overflow:hidden}
+.tile:first-child {border-color:#69e4e04d;background:linear-gradient(135deg,#76e9e90b,#ffffff03)}
+.label {color:#9da7c6;text-transform:uppercase;font-size:17px;letter-spacing:1.5px;font-weight:700;line-height:1.3;margin-bottom:17px}
+.value {color:#ecf4ff;font-size:44px;line-height:1.18;letter-spacing:-1.1px;font-weight:650;overflow-wrap:anywhere}
+.value.medium {font-size:32px;letter-spacing:-.5px} .value.small {font-size:23px;line-height:1.33;letter-spacing:.05px;font-family:Arial,Helvetica,sans-serif}
+.single .tile {grid-column:1/-1;min-height:237px;display:flex;flex-direction:column;justify-content:center}
+.single .value {font-size:59px} .single .value.small {font-size:31px} .single .value.medium {font-size:42px}
+.many .tile {min-height:140px;padding:20px 23px} .many .label {font-size:16px;margin-bottom:13px}
+.many .value.large {font-size:39px} .missing .value,.platform.missing {color:#8994b4}
+.footer {position:absolute;bottom:47px;left:70px;right:70px;border-top:1px solid #9dabc22c;padding-top:27px;display:flex;justify-content:space-between;gap:26px;color:#7f8cae}
+.source {font-size:21px;line-height:1.3;color:#c1cbe0;max-width:770px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.host {font-size:17px;color:#7c8aaa;margin-top:7px;letter-spacing:.3px}
+.stamp {text-align:right;font-size:18px;line-height:1.55;color:#a2aec9;max-width:480px}
+.more {grid-column:1/-1;font-size:17px;color:#9ba8c6;margin-left:3px}
+</style></head><body><main class="card">
+<div class="grid"></div><div class="orb"></div>
+<div class="top"><div class="brand">PLAYSTATION / UPDATE LOG</div><div class="origin">FONTE UFFICIALE</div></div><div class="demo">DEMO · DATI FITTIZI</div>
+<div class="content"><section>
+<div class="eyebrow"><span class="game">PlayStation</span><span class="category">SISTEMA</span></div>
+<h1 class="">Aggiornamento di sistema disponibile</h1><div class="accent"></div>
+<div class="platforms"><span class="platform">PS5</span></div>
+</section><section class="data few"><div class="tile"><div class="label">Versione dimostrativa</div><div class="value large">DEMO — non reale</div></div><div class="tile"><div class="label">Novità</div><div class="value medium">Esempio di note Sony</div></div><div class="tile missing"><div class="label">Data di rilascio</div><div class="value large">Non disponibile</div></div></section></div>
+<div class="footer"><div><div class="source">PlayStation Support · DEMO</div><div class="host">www.playstation.com</div></div>
+<div class="stamp">DEMO — DATA NON REALE<br>Regione non disponibile</div></div>
+</main></body></html>

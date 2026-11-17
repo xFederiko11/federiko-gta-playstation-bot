@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "coverage": {
+    "starts_with_official_preload": "2026-11-10",
+    "complete": false,
+    "official_only": true,
+    "first_downloadable_build_verified": false,
+    "notes": "Dati ufficiali PlayStation; numero della prima build GTA VI non pubblicato."
+  },
+  "records": [
+    {
+      "game": "GTA VI",
+      "platform": "PS5",
+      "region": "global",
+      "version": null,
+      "event_type": "preload_available",
+      "occurred_at": "2026-11-10T00:00:00",
+      "date_precision": "local_time",
+      "observed_at": "2026-11-17T13:49:27Z",
+      "metric_kind": "availability",
+      "qualifier": "not_applicable",
+      "source_url": "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq",
+      "source_tier": "primary",
+      "verification": "verified",
+      "metadata": {
+        "confirmation_url": "https://www.rockstargames.com/newswire/article/89834o94713o21/pre-load-grand-theft-auto-vi-now",
+        "source_last_updated": "2026-11-03",
+        "timing": "Mezzanotte locale di ogni regione"
+      },
+      "notes": "Prima apertura del preload confermata dalle fonti ufficiali consultate; il numero della prima build scaricabile non è pubblicato.",
+      "sku": null,
+      "package_id": null,
+      "size_bytes": null,
+      "value": null,
+      "unit_original": null,
+      "record_id": "76c6f0ba8960e79deba9459e834085e7cc6792cc8e78a7f827f62eb001d5f829"
+    },
+    {
+      "game": "GTA VI",
+      "platform": "PS5",
+      "region": "global",
+      "version": null,
+      "event_type": "storage_requirement_statement",
+      "occurred_at": null,
+      "date_precision": "unknown",
+      "observed_at": "2026-11-17T13:49:27Z",
+      "metric_kind": "storage_required",
+      "value": 212,
+      "unit_original": "GB",
+      "size_bytes": null,
+      "qualifier": "up_to",
+      "source_url": "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements",
+      "source_tier": "primary",
+      "verification": "verified",
+      "metadata": {
+        "source_last_updated": "2026-11-03"
+      },
+      "notes": "Requisito di spazio libero indicato dal publisher, dipendente dal dispositivo. Non è una dimensione esatta di download, installazione o patch; non viene convertito in byte esatti.",
+      "sku": null,
+      "package_id": null,
+      "record_id": "92eb6ac03c7a2107ad6eafd5f787a1ec79c12eccaa29c883bf440a4f78960b85"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "ps5-first-build",
+      "platform": "PS5",
+      "status": "incomplete",
+      "missing": [
+        "first_downloadable_build",
+        "historical_versions",
+        "download_bytes",
+        "install_bytes",
+        "patch_delta_bytes"
+      ],
+      "from": "2026-11-10",
+      "to": "2026-11-17T13:44:29Z",
+      "source_url": "https://store.playstation.com/en-us/product/EP1004-PPSA01547_00-GTAVISTANDARD001/",
+      "notes": "Le pagine ufficiali consultate non forniscono una cronologia completa dei pacchetti. Il manifest candidato ha restituito HTTP503 il17nov; le versioni riferite dalla community non sono importate come verificate."
+    }
+  ]
+}

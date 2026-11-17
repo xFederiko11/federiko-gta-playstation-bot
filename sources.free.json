@@ -1,0 +1,13 @@
+{
+  "scope": "gta",
+  "allow_community_fallback": false,
+  "publication_policy": {"official_only": true, "playstation_and_common_only": true},
+  "history_seed": "history-ps-seed.json",
+  "collect_xbox_catalog": false,
+  "system_software": {"enabled": true, "platforms": ["PS5", "PS4"], "interval": 3600, "announce_current": true},
+  "sources": [
+    {"id": "newswire", "type": "web_links", "name": "Rockstar Newswire", "trust": "official", "url": "https://www.rockstargames.com/newswire", "selector": "main a[href*='/newswire/article/']", "article_selector": "main", "article_exclude_selector": "section:has(h2:-soup-contains('Related Stories'))", "render_js": true, "interval": 900},
+    {"id": "support-gta", "type": "web_links", "name": "Rockstar Support", "trust": "official", "url": "https://support.rockstargames.com/gta-online", "selector": "a[href*='/articles/']", "article_selector": "article:has([data-testid='page-title'])", "watch_existing_pattern": "title-update|patch-notes", "render_js": false, "interval": 1800},
+    {"id": "youtube", "type": "feed", "name": "Rockstar YouTube", "trust": "official", "official_channel_id": "UC6VcWc1rAoWdBCM0JxrRQ3A", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6VcWc1rAoWdBCM0JxrRQ3A", "interval": 3600}
+  ]
+}
