@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-17T19:08:15Z",
+  "generated_at": "2026-11-17T20:44:20Z",
   "records": [
     {
       "date_precision": "local_time",
@@ -57,54 +57,6 @@
       "version": null,
       "first_observed_at": "2026-11-17T13:49:27Z",
       "last_observed_at": "2026-11-17T13:49:27Z"
-    },
-    {
-      "date_precision": "unknown",
-      "event_type": "system_software_available",
-      "game": "PlayStation",
-      "metric_kind": "availability",
-      "notes": "Versione corrente dichiarata da Sony; data di rilascio non specificata.",
-      "observed_at": "2026-11-17T19:04:27Z",
-      "occurred_at": null,
-      "package_id": null,
-      "platform": "PS4",
-      "qualifier": "not_applicable",
-      "record_id": "8b30f68d4d040c7f4ad1103113d35fad018bd9a5acefaeda501c0879f1fe50cd",
-      "region": "not_specified",
-      "size_bytes": null,
-      "sku": null,
-      "source_tier": "primary",
-      "source_url": "https://www.playstation.com/it-it/support/hardware/ps4/system-software-info/",
-      "unit_original": null,
-      "value": null,
-      "verification": "verified",
-      "version": "14.02",
-      "first_observed_at": "2026-11-17T19:04:27Z",
-      "last_observed_at": "2026-11-17T19:04:27Z"
-    },
-    {
-      "date_precision": "unknown",
-      "event_type": "system_software_available",
-      "game": "PlayStation",
-      "metric_kind": "availability",
-      "notes": "Versione corrente dichiarata da Sony; data di rilascio non specificata.",
-      "observed_at": "2026-11-17T19:04:27Z",
-      "occurred_at": null,
-      "package_id": null,
-      "platform": "PS5",
-      "qualifier": "not_applicable",
-      "record_id": "1b90d8ac7cb67f5e4847ab1d9626c7eac7498c81555b28a33d313dd5a35f26f0",
-      "region": "not_specified",
-      "size_bytes": null,
-      "sku": null,
-      "source_tier": "primary",
-      "source_url": "https://www.playstation.com/it-it/support/hardware/ps5/system-software-info/",
-      "unit_original": null,
-      "value": null,
-      "verification": "verified",
-      "version": "26.07-14.23.00",
-      "first_observed_at": "2026-11-17T19:04:27Z",
-      "last_observed_at": "2026-11-17T19:04:27Z"
     }
   ],
   "gaps": [

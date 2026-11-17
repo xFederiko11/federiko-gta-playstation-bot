@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-11-17T20:44:20+00:00",
+  "history_observed": [
+    {
+      "last_observed_at": "2026-11-17T13:49:27Z",
+      "record_id": "76c6f0ba8960e79deba9459e834085e7cc6792cc8e78a7f827f62eb001d5f829"
+    },
+    {
+      "last_observed_at": "2026-11-17T13:49:27Z",
+      "record_id": "92eb6ac03c7a2107ad6eafd5f787a1ec79c12eccaa29c883bf440a4f78960b85"
+    }
+  ],
+  "meta": {},
+  "monitors": [],
+  "schema_version": 1
+}
