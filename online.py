@@ -18,6 +18,7 @@ from presentation import group_platform_events, render_card, format_post, demo_e
 from buffer_publisher import BufferClient, BufferAPIError, BufferPending, BufferDeliveryFailed
 from editorial_policy import approved_source, event_allowed, history_record_allowed
 from news_center import thread_for_event, news_center_preview
+from official_media import official_image_for_event, OfficialMediaUnavailable
 
 LOG = logging.getLogger("gta.online")
 ROOT = Path(__file__).resolve().parent
@@ -190,6 +191,28 @@ def prepare_jobs(db, config):
     return len(grouped)
 
 
+def suppress_unpublished(db, reason="publishing_disabled", *, initialize=False):
+    """Exclude *only* unsent drafts from future deliveries, without deleting history.
+
+    The original job keys stay in the ledger so prepare_jobs() cannot regenerate
+    them, and delivered/accepted/uncertain attempts are never altered. The first
+    launch marker and suppression commit in ONE atomic transaction.
+    """
+    with db:
+        result = db.execute(
+            "UPDATE publish_jobs SET status='suppressed',last_error=? WHERE status='draft'",
+            (reason,),
+        )
+        if initialize:
+            set_meta(db, "publication_guard_initialized_v1", str(time.time()))
+    return result.rowcount
+
+
+def needs_first_publication_baseline(db):
+    """First run after installing this safety guard cannot publish any backlog."""
+    return get_meta(db, "publication_guard_initialized_v1") is None
+
+
 def enforce_job_policy(db, policy):
     if not policy:
         return
@@ -215,7 +238,8 @@ def reconcile(db, client):
                        (status, delivery.external_url, time.time() + 3600, row["key"]))
 
 
-def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None, news_center_threads=False):
+def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None,
+            news_center_threads=False, require_official_media=False, media_resolver=official_image_for_event):
     enforce_job_policy(db, policy or {})
     reconcile(db, client)
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
@@ -239,10 +263,20 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             client.verify_destination()
         thread = thread_for_event(event) if news_center_threads else None
         media_url = None
-        if thread is None:
+        if require_official_media:
+            try:
+                media_url = media_resolver(event)
+            except OfficialMediaUnavailable as error:
+                # No official relevant image -> no generated card and NO text-only publication.
+                # Human can review the event; retaining this key prevents duplicate retries.
+                with db:
+                    db.execute("UPDATE publish_jobs SET status='review',last_error=? WHERE key=?",
+                               (str(error), row["key"]))
+                LOG.warning("Notizia in revisione: manca un'immagine ufficiale verificata (%s)", str(error))
+                continue
+        elif thread is None:
             card = Path(directory) / (row["key"] + ".png")
             render(event, card)
-            # I post singoli conservano la scheda grafica e il relativo hosting.
             media_url = upload(card)
         # Ricalcola il testo per applicare il SEO editoriale anche alle bozze
         # create prima dell'aggiornamento (mai ai post gia' spediti).
@@ -255,7 +289,8 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             checkpoint()
         stop = False
         try:
-            identifier = (client.publish_thread(thread) if thread is not None
+            identifier = (client.publish_thread(thread, media_url=media_url) if thread is not None and require_official_media
+                          else client.publish_thread(thread) if thread is not None
                           else client.publish(single_text, media_url=media_url))
         except BufferPending as error:
             with db:
@@ -381,6 +416,10 @@ def main():
     config = sources.load_config(args.config)
     source_policy(config)
     mode = os.getenv("RUN_MODE", "check")
+    publishing_enabled = os.getenv("AUTO_PUBLISH", "false").strip().lower() == "true"
+    # The first deployment of the guard establishes a no-backfill baseline.
+    # Setup only lists Buffer channels and never changes publication state.
+    first_baseline = mode in {"check", "run"} and needs_first_publication_baseline(db)
     errors = 0
     try:
         seed = json.loads((ROOT / config.get("history_seed", "history-seed.json")).read_text())
@@ -409,8 +448,16 @@ def main():
         if mode == "check":
             for row in draft_rows:
                 event = json.loads(row["event_json"])
-                card = ROOT / ".runtime" / "previews" / (row["key"] + ".png")
-                render_card(event, card)
+                if config.get("official_images_only", False):
+                    try:
+                        candidate = official_image_for_event(event)
+                        from urllib.parse import urlsplit
+                        print("FOTO UFFICIALE VERIFICATA — " + urlsplit(candidate).hostname + " | Fonte: " + str(event.get("source_url", "")))
+                    except OfficialMediaUnavailable as error:
+                        print("FOTO UFFICIALE NON DISPONIBILE — invio automatico bloccato (" + str(error) + ")")
+                else:
+                    card = ROOT / ".runtime" / "previews" / (row["key"] + ".png")
+                    render_card(event, card)
                 if config.get("news_center_threads", False):
                     parts = news_center_preview(event)
                     print(f"ANTEPRIMA — {len(parts)} post; nessun invio")
@@ -419,8 +466,18 @@ def main():
                 else:
                     print("BOZZA — " + row["text"])
             print(f"Controllo terminato: {len(draft_rows)} bozze visibili, {errors} fonti con errori; nessun invio")
-        elif mode == "run":
-            if os.getenv("AUTO_PUBLISH", "false").lower() == "true":
+
+        # IMPORTANT: previews made while automatic posting is disabled are not a
+        # backlog. The first run after this upgrade also quarantines all prior
+        # drafts, even if someone enabled AUTO_PUBLISH prematurely.
+        if mode in {"check", "run"}:
+            if first_baseline or not publishing_enabled:
+                reason = "pre_launch_baseline" if first_baseline else "publishing_disabled"
+                suppressed = suppress_unpublished(db, reason, initialize=first_baseline)
+                print(f"Filtro anti-arretrati: {suppressed} bozze archiviate "+
+                      "senza invio; storico e chiavi anti-duplicato conservati")
+        if mode == "run":
+            if publishing_enabled:
                 # Nessun client Buffer su cicli vuoti: niente query sprecate.
                 waiting = db.execute("SELECT count(*) FROM publish_jobs WHERE status IN ('draft','accepted')").fetchone()[0]
                 if waiting:
@@ -430,12 +487,13 @@ def main():
                         deliver(db, client, host.upload, ROOT / ".runtime" / "cards",
                                 checkpoint=lambda: checkpoint_state(db, db_path, encrypted, password),
                                 policy=config.get("publication_policy", {}),
-                                news_center_threads=config.get("news_center_threads", False))
+                                news_center_threads=config.get("news_center_threads", False),
+                                require_official_media=config.get("official_images_only", False))
                     except FreeQuotaExceeded:
                         LOG.warning("Quota gratuita locale esaurita: bozze conservate, nessun acquisto")
             else:
-                LOG.info("AUTO_PUBLISH=false: raccolta e bozze automatiche, nessun invio")
-        else:
+                LOG.info("AUTO_PUBLISH=false: raccolta e anteprime senza coda pubblicabile; nessun invio")
+        elif mode != "check":
             raise ValueError("RUN_MODE deve essere setup, check o run")
     finally:
         exported = export_public_history(db, ROOT / "history-public.json", config.get("publication_policy", {}))

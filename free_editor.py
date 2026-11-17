@@ -79,6 +79,7 @@ def article_event(item, allow_community=False):
             "facts": facts, "trust": item.get("trust", "official"),
             "source_name": item.get("source_name", "Fonte"), "source_url": item.get("source_url", ""),
             "official_channel_id": item.get("official_channel_id"),
+            "official_image_url": item.get("official_image_url"),
             "observed_at": item.get("observed_at") or now(),
             "spoiler": bool(item.get("spoiler")) or bool(re.search(r"story trailer|story mission|plot|trama", lower))}
 

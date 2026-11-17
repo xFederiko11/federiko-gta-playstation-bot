@@ -6,6 +6,7 @@ from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
 import requests
+from official_media import image_from_official_html
 
 URLS = {platform: f"https://www.playstation.com/it-it/support/hardware/{platform.lower()}/system-software-info/"
         for platform in ("PS5", "PS4")}
@@ -23,6 +24,7 @@ def parse_system_page(raw, platform, *, source_url=None, observed_at=None):
     address = source_url or URLS[platform]
     if not _sony_url(address):
         raise ValueError("Il software di sistema richiede una fonte ufficiale PlayStation")
+    image_url = image_from_official_html(raw, address)
     soup = BeautifulSoup(raw, "html.parser")
     for hidden in soup.select("script,style,nav,header,footer"):
         hidden.decompose()
@@ -52,7 +54,8 @@ def parse_system_page(raw, platform, *, source_url=None, observed_at=None):
                 {"label": "Novità indicate da Sony", "value": notes[0] if notes else None},
                 {"label": "Data di rilascio", "value": None}],
             "source_url": address, "source_name": "PlayStation Support", "trust": "official",
-            "observed_at": stamp, "release_at": None, "official_notes": notes}
+            "observed_at": stamp, "release_at": None, "official_notes": notes,
+            **({"official_image_url": image_url} if image_url else {})}
 
 
 def fetch_system_update(platform, timeout=25):

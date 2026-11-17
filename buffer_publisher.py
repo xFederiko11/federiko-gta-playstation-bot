@@ -303,7 +303,7 @@ class BufferClient:
             raise BufferPending(delivery.post_id, delivery.status)
         return delivery.post_id
 
-    def publish_thread(self, posts):
+    def publish_thread(self, posts, *, media_url=None):
         """Invia un thread X come UN SOLO record Buffer.
 
         Ciascun post ha il proprio limite caratteri. Non esegue retry
@@ -317,6 +317,8 @@ class BufferClient:
         if self.destination is None:
             self.verify_destination()
         items = [{"text": t, "assets": []} for t in posts]
+        if media_url is not None:
+            items[0]["assets"] = [{"image": {"url": self._media_url(media_url)}}]
         data = self._graphql(CREATE_MUTATION, {"input": {
             "text": posts[0], "channelId": self.channel_id, "schedulingType": "automatic",
             "mode": "shareNow", "assets": [], "metadata": {"twitter": {"thread": items}},

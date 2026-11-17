@@ -12,6 +12,7 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
+from official_media import image_from_official_html, youtube_thumbnail
 
 LOG = logging.getLogger("gta6.sources")
 AGENT = "GTAFanMonitor/2.0"
@@ -173,7 +174,9 @@ def collect_feed(source):
             body = media.text
         text = BeautifulSoup(title + "\n" + body, "html.parser").get_text(" ", strip=True)
         identifier = value("guid") or value("id") or link
-        events.append(event(source, digest(identifier + "\n" + text), text, link, identity=identifier))
+        image_url = youtube_thumbnail(link, source.get("official_channel_id"))
+        extra = {"official_image_url": image_url} if image_url else {}
+        events.append(event(source, digest(identifier + "\n" + text), text, link, identity=identifier, **extra))
     return events
 
 
@@ -203,13 +206,15 @@ def collect_links(source, previous):
             body = text_from_html(raw, source.get("article_selector", "main"), source.get("article_exclude_selector"))
             heading = BeautifulSoup(raw, "html.parser").select_one("h1,[data-testid='page-title']")
             headline = heading.get_text(" ", strip=True) if heading else title
+            image_url = image_from_official_html(raw, url)
+            image_meta = {"official_image_url": image_url} if image_url else {}
             if is_new:
-                events.append(event(source, digest(url), headline + "\n" + body, url, headline=headline))
+                events.append(event(source, digest(url), headline + "\n" + body, url, headline=headline, **image_meta))
             elif watch and url in article_hashes and article_hashes[url] != digest(body):
                 sequence = article_sequences.get(url, 0) + 1
                 article_sequences[url] = sequence
                 events.append(event(source, digest(url) + ":revision:" + str(sequence) + ":" + digest(body),
-                                    headline + "\n" + body, url, headline=headline, change_context="patch note aggiornata"))
+                                    headline + "\n" + body, url, headline=headline, change_context="patch note aggiornata", **image_meta))
             if watch:
                 article_hashes[url] = digest(body)
     # Mantiene i link usciti dalla prima pagina per non ripubblicarli se ricompaiono.

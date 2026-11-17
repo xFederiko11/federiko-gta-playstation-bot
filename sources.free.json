@@ -51,5 +51,6 @@
       "interval": 3600
     }
   ],
-  "news_center_threads": true
+  "news_center_threads": true,
+  "official_images_only": true
 }
