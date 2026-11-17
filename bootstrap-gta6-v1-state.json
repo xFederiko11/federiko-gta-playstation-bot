@@ -22,10 +22,11 @@
       "status": "scheduled"
     },
     "gta6-ps5pro": {
+      "buffer_id": "6afce4a093fa11d37df0bc76",
       "due_at": "2026-11-18T07:24:43.479383+00:00",
       "image_kind": "editorial_image",
       "source": "https://www.rockstargames.com/newswire/article/89834o94713o21/pre-load-grand-theft-auto-vi-now",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-trailer": {
       "buffer_id": "6afce49a9f3765f6ab18b921",
