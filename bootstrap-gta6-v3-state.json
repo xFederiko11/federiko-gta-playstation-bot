@@ -49,11 +49,12 @@
       "status": "scheduled"
     },
     "gta6-overview": {
+      "buffer_id": "6afcf77ebb12698d158853b3",
       "due_at": "2026-11-18T03:22:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Official_Cover_Art_landscape.12.uu2irr.2_a.jpg",
       "source": "https://www.rockstargames.com/VI",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-pair": {
       "buffer_id": "6afcf76b9f3765f6ab1f265b",
