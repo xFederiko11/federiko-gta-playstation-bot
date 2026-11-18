@@ -371,6 +371,7 @@ def preview():
     now = datetime.now(timezone.utc)
     spotlight = powerpyx_spotlight(state, now)
     selected = [spotlight] if spotlight else select(items, state, now, max_posts=5)
+    print("TROPHY_SERIES configured=55, photo-posts wait for live GitHub Pages")
     print('FEEDS total_relevant=', len(items), 'errors=', errors, 'selected=', len(selected))
     for item in selected:
         print('PREVIEW', item['source'], item['published'], item['url'])
@@ -390,11 +391,20 @@ def reserve():
         print("DIRECTOR_HOLD", why)
         selected = []
     else:
-        selected = [spotlight] if spotlight else select(items, state, now)
+        # Search-indexable Italian trophy pages must exist BEFORE linking them.
+        # This is optional: unavailable Pages never blocks breaking news.
+        trophy_item = None
+        if not spotlight:
+            from trophy_posts_v142 import candidate, landing_live
+            draft_trophy = candidate(state, now)
+            if draft_trophy and landing_live():
+                trophy_item = draft_trophy
+        selected = [spotlight] if spotlight else [trophy_item] if trophy_item else select(items, state, now)
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
-            'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text']
+            'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text'],
+            'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number')
         }
         if item['sig']:
             state['signatures'][item['sig']] = item['key']
@@ -434,7 +444,8 @@ def deliver():
         entry['attempted_utc'] = datetime.now(timezone.utc).isoformat()
         save_state(state)
         try:
-            result = client.publish(entry['text'])
+            result = (client.publish(entry['text'], media_url=entry['media_url'])
+                      if entry.get('media_url') else client.publish(entry['text']))
         except BufferPending as exc:
             entry['status'] = 'accepted_pending'
             entry['buffer_id'] = exc.post_id
