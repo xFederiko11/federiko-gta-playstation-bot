@@ -19,10 +19,12 @@ import hashlib
 import json
 import re
 import time
+import logging
 
 from bs4 import BeautifulSoup
 import requests
 
+LOG = logging.getLogger('gta.editorial_v13')
 OFFICIAL_NEWSWIRE = 'https://www.rockstargames.com/newswire?tag=702'
 RELEVANT = re.compile(r'\b(?:gta\s*online|gta\+|heist|bonus|reward|discount|cash|weekly|missions?|vehicle|sale)\b', re.I)
 RISK = re.compile(r'\b(?:rumou?r\w*|leak\w*|datamin\w*|unconfirmed|alleged|speculat\w*|may\s+be|might|spoiler)\b', re.I)
@@ -61,6 +63,44 @@ FREE_ITEMS = {
     'Pop Art Revere Collar': 'Maglia Pop Art Revere Collar',
     'Pegassi Oppressor': 'Pegassi Oppressor',
 }
+
+
+_SAFE_ERROR = re.compile(r'[a-z][a-z0-9_]{2,70}\Z')
+_LEGACY_ERROR_TYPES = frozenset({'ValueError','HTTPError','ReadTimeout','ConnectTimeout',
+    'Timeout','ConnectionError','ProxyError','SSLError','KeyError'})
+
+
+def _error_code(error: Exception) -> str:
+    """Safe reason codes only: no URL query strings, tokens or response text."""
+    if isinstance(error, requests.exceptions.HTTPError):
+        status = getattr(getattr(error, 'response', None), 'status_code', None)
+        return 'http_'+str(status) if type(status) is int and 100 <= status <= 599 else 'http_error'
+    if isinstance(error, requests.exceptions.ReadTimeout):
+        return 'read_timeout'
+    if isinstance(error, requests.exceptions.ConnectTimeout):
+        return 'connect_timeout'
+    if isinstance(error, requests.exceptions.Timeout):
+        return 'timeout'
+    if isinstance(error, requests.exceptions.SSLError):
+        return 'ssl_error'
+    if isinstance(error, requests.exceptions.ConnectionError):
+        return 'connection_error'
+    if isinstance(error, ValueError):
+        reason = error.args[0] if error.args else ''
+        return reason if isinstance(reason, str) and _SAFE_ERROR.fullmatch(reason) else 'invalid_response'
+    return 'source_error'
+
+
+def source_health(db) -> list[dict]:
+    """One safe source record, even when no article was parsed successfully."""
+    init(db)
+    rows = db.execute("SELECT id,last_success,next_due,last_error FROM editorial_v13_sources ORDER BY id").fetchall()
+    return [{'id': r['id'], 'status': 'error' if r['last_error'] else
+             'ok' if r['last_success'] is not None else 'never_succeeded',
+             'last_error': r['last_error'], 'last_success_utc':
+             datetime.fromtimestamp(r['last_success'],timezone.utc).isoformat() if r['last_success'] is not None else None,
+             'next_retry_utc': datetime.fromtimestamp(r['next_due'],timezone.utc).isoformat()}
+            for r in rows]
 
 
 def _https_rockstar(url: str, *, article=False) -> str | None:
@@ -442,7 +482,7 @@ def research(db,*, listing_html=None, article_fetcher=None, now=None, min_interv
     today=datetime.fromtimestamp(now,timezone.utc).date()
     old=db.execute("SELECT * FROM editorial_v13_sources WHERE id='rockstar-online-us'").fetchone()
     totals={'checked':0,'baseline':0,'new':0,'eligible':0,'errors':0,'skipped':0}
-    if old and old['next_due']>now:
+    if old and old['next_due']>now and old['last_error'] not in _LEGACY_ERROR_TYPES:
         totals['skipped']=1; return totals
     try:
         links=_article_links(listing_html if listing_html is not None else _fetch(OFFICIAL_NEWSWIRE))
@@ -465,8 +505,9 @@ def research(db,*, listing_html=None, article_fetcher=None, now=None, min_interv
                            'ready' if data['is_current'] and build_post(data) else 'review')
                 except (ValueError,requests.RequestException) as error:
                     state='review_fetch_error'
-                    data={'url':lead['url'],'facts':[],'review_reason':type(error).__name__}
+                    data={'url':lead['url'],'facts':[],'review_reason':_error_code(error)}
                     totals['errors']+=1
+                    LOG.warning('V13 article source failure: reason=%s', _error_code(error))
             post_text=build_post(data)
             with db:
                 db.execute('''INSERT INTO editorial_v13_articles
@@ -491,11 +532,12 @@ def research(db,*, listing_html=None, article_fetcher=None, now=None, min_interv
         totals['baseline' if initial else 'checked']=1
     except (ValueError,requests.RequestException,KeyError) as error:
         totals['errors']+=1
+        LOG.warning('V13 Rockstar Newswire listing failed: reason=%s', _error_code(error))
         with db:
             db.execute('''INSERT OR REPLACE INTO editorial_v13_sources
               (id,seen_urls_json,next_due,last_success,last_error) VALUES(?,?,?,?,?)''',
               ('rockstar-online-us',old['seen_urls_json'] if old else '[]',now+1800,
-               old['last_success'] if old else None,type(error).__name__))
+               old['last_success'] if old else None,_error_code(error)))
     return totals
 
 
@@ -514,7 +556,8 @@ def report(db,path: str|Path, limit=25) -> dict:
              'notes':['First run baselines current articles: no retroactive publication',
                       'Press and community never automatically published',
                       'Link preview determined by X; no external media copied'],
-             'records':records}
+             'records':records,'source_health':source_health(db),
+             'diagnostics_version':'13.1'}
     dest=Path(path);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     return payload

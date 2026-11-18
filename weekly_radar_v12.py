@@ -11,11 +11,13 @@ import hashlib
 import json
 import re
 import time
+import logging
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit, parse_qsl, urlencode
 from bs4 import BeautifulSoup
 import requests
 
+LOG = logging.getLogger('gta.weekly_radar')
 MAX_BODY = 1_500_000
 MAX_LINKS = 100
 MAX_REPORT = 60
@@ -57,6 +59,43 @@ RISK = re.compile(r'\b(?:leak(?:ed|s)?|rumou?rs?|speculat(?:ion|ive)|'
 GTA6 = re.compile(r'\b(?:gta\s*(?:vi|6)|grand theft auto\s*(?:vi|6))\b', re.I)
 TECH = re.compile(r'\b(?:patch|title update|file\s+update|build|version|firmware|'
                   r'aggiornamento|hotfix|md5|hash|manifest|depot|update)\b', re.I)
+
+
+_SAFE_ERROR = re.compile(r'[a-z][a-z0-9_]{2,70}\Z')
+_LEGACY_ERROR_TYPES = frozenset({'ValueError','HTTPError','ReadTimeout','ConnectTimeout',
+    'Timeout','ConnectionError','ProxyError','SSLError','KeyError'})
+
+
+def _error_code(error: Exception) -> str:
+    """Categorize public-source failures without logging response text or tokens."""
+    if isinstance(error, requests.exceptions.HTTPError):
+        status = getattr(getattr(error, 'response', None), 'status_code', None)
+        return 'http_'+str(status) if type(status) is int and 100 <= status <= 599 else 'http_error'
+    if isinstance(error, requests.exceptions.ReadTimeout):
+        return 'read_timeout'
+    if isinstance(error, requests.exceptions.ConnectTimeout):
+        return 'connect_timeout'
+    if isinstance(error, requests.exceptions.Timeout):
+        return 'timeout'
+    if isinstance(error, requests.exceptions.SSLError):
+        return 'ssl_error'
+    if isinstance(error, requests.exceptions.ConnectionError):
+        return 'connection_error'
+    if isinstance(error, ValueError):
+        reason = error.args[0] if error.args else ''
+        return reason if isinstance(reason, str) and _SAFE_ERROR.fullmatch(reason) else 'invalid_response'
+    return 'source_error'
+
+
+def source_health(db) -> list[dict]:
+    init(db)
+    rows = db.execute("SELECT id,last_success,next_due,last_error FROM weekly_radar_v12_sources ORDER BY id").fetchall()
+    return [{'id':r['id'], 'status':'error' if r['last_error'] else
+             'ok' if r['last_success'] is not None else 'never_succeeded',
+             'last_error':r['last_error'], 'last_success_utc':
+             datetime.fromtimestamp(r['last_success'],timezone.utc).isoformat() if r['last_success'] is not None else None,
+             'next_retry_utc':datetime.fromtimestamp(r['next_due'],timezone.utc).isoformat()}
+            for r in rows]
 
 
 def _valid(url: str, host: str) -> bool:
@@ -162,7 +201,8 @@ def poll(db,*,fetcher=None,now=None,max_seconds=28) -> dict:
     totals={'checked':0,'baseline':0,'candidates':0,'errors':0,'deferred':0}
     for target in TARGETS:
         row=db.execute('SELECT * FROM weekly_radar_v12_sources WHERE id=?',(target['id'],)).fetchone()
-        if row and row['next_due']>now: continue
+        successful_before = row is not None and row['last_success'] is not None
+        if row and row['next_due']>now and row['last_error'] not in _LEGACY_ERROR_TYPES: continue
         if time.monotonic()-started>max_seconds:
             totals['deferred']+=1
             continue
@@ -173,9 +213,9 @@ def poll(db,*,fetcher=None,now=None,max_seconds=28) -> dict:
             previous=set(json.loads(row['link_ids_json'])) if row else set()
             old_signature = row['signature'] if row else None
             fresh_links=[e for e in parsed['links'] if hashlib.sha256(e['url'].encode()).hexdigest() not in previous]
-            changed = old_signature is not None and old_signature != parsed['signature']
+            changed = successful_before and old_signature != parsed['signature']
             with db:
-                if row and target['kind']=='links':
+                if successful_before and target['kind']=='links':
                     for e in fresh_links:
                         # Never auto-publish site summaries, even when on Rockstar's domain.
                         status='hold' if RISK.search(e['title']) else 'review'
@@ -201,15 +241,16 @@ def poll(db,*,fetcher=None,now=None,max_seconds=28) -> dict:
                     (id,signature,link_ids_json,next_due,last_success,last_error)
                     VALUES(?,?,?,?,?,?)''',(target['id'],parsed['signature'],json.dumps(sorted(current)),
                                             now+target['interval'],now,None))
-            totals['baseline' if not row else 'checked']+=1
+            totals['baseline' if not successful_before else 'checked']+=1
         except (ValueError,requests.RequestException,KeyError) as exc:
             totals['errors']+=1
+            LOG.warning('WEEKLY RADAR source=%s failed reason=%s', target['id'], _error_code(exc))
             with db:
                 db.execute('''INSERT OR REPLACE INTO weekly_radar_v12_sources
                     (id,signature,link_ids_json,next_due,last_success,last_error)
                     VALUES(?,?,?,?,?,?)''',(target['id'],row['signature'] if row else '',
                         row['link_ids_json'] if row else '[]',now+max(900,target['interval']),
-                        row['last_success'] if row else None,type(exc).__name__))
+                        row['last_success'] if row else None,_error_code(exc)))
     return totals
 
 
@@ -227,7 +268,8 @@ def report(db, output_path, limit=MAX_REPORT):
              'labels':{'official':'Rockstar official source; content still requires fact-check',
                        'press':'Research lead; not an official announcement'},
              'rights':'Third-party pictures must not be downloaded/published without permission',
-             'candidates':rows}
+             'candidates':rows,'source_health':source_health(db),
+             'diagnostics_version':'13.1'}
     output=Path(output_path); output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f'WEEKLY RADAR v12.1: {len(rows)} review/hold leads, 0 automated posts')
