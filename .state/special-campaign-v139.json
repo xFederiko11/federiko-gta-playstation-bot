@@ -11,11 +11,14 @@
       "status": "sent"
     },
     "rockstar-vice-city-4": {
+      "attempted_utc": "2026-11-18T17:26:42.648161+00:00",
+      "buffer_id": "6afddfd3a11f24337a0cf34a",
+      "completed_utc": "2026-11-18T17:26:47.250319+00:00",
       "digest": "d4f465ccfdfe71e1ba6f2965a13707a3e384bc346be1c717e1ded373db456e55",
       "kind": "gallery",
       "reserved_utc": "2026-11-18T17:26:40.990173+00:00",
       "run_id": "44358656408",
-      "status": "reserved"
+      "status": "sent"
     }
   },
   "schema": "special-campaign-v139"
