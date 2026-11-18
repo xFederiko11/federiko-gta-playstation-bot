@@ -17,11 +17,12 @@
       "status": "scheduled"
     },
     "gta6-pair": {
+      "buffer_id": "6afcf76b9f3765f6ab1f265b",
       "due_at": "2026-11-18T01:58:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_Robbery_landscape.09c8a~do21h4p.jpg",
       "source": "https://www.rockstargames.com/VI",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-trailer1": {
       "buffer_id": "6afcf76193fa11d37df72274",
