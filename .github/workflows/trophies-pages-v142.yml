@@ -29,7 +29,8 @@ jobs:
       - name: Build and verify Italian trophy pages
         run: |
           python build_trophy_site_v142.py
-          python -m unittest -q test_trophies_v142
+          python growth_metrics_v142.py
+          python -m unittest -q test_trophies_v142 test_editorial_director_v142 test_growth_metrics_v142
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         if: github.event_name != 'pull_request'
         with:
