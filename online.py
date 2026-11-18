@@ -332,8 +332,18 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             # Una configurazione errata lascia la bozza pronta per la correzione.
             client.verify_destination()
         thread = thread_for_event(event) if news_center_threads else None
+        # Optional official YouTube link card. X controls external player preview;
+        # this is never represented as a natively uploaded or licensed video.
+        video_text = None
+        if os.getenv('VIDEO_LINK_CARDS_V12','false').strip().lower() == 'true':
+            from video_cards_v12 import video_link_post
+            video_text = video_link_post(event)
+            if video_text:
+                thread = None
         media_url = None
-        if require_official_media:
+        if video_text:
+            pass  # X link preview instead of repeating a video thumbnail.
+        elif require_official_media:
             try:
                 media_url = media_resolver(event)
             except OfficialMediaUnavailable as error:
@@ -344,13 +354,25 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                                (str(error), row["key"]))
                 LOG.warning("Notizia in revisione: manca un'immagine ufficiale verificata (%s)", str(error))
                 continue
-        elif thread is None:
+        elif thread is None and not video_text:
             card = Path(directory) / (row["key"] + ".png")
             render(event, card)
             media_url = upload(card)
+        # V12: optional persistent image uniqueness, including archived bootstrap
+        # images. Never republish a used thumbnail; hold the event for review.
+        # Default OFF so deploying v12 cannot interfere with today's live v11.
+        if require_official_media and not video_text and os.getenv('V12_UNIQUE_IMAGES', 'false').lower() == 'true':
+            from image_registry_v12 import reserve_image
+            journal = ROOT / 'bootstrap-gta6-v3-state.json'
+            if not reserve_image(db, media_url, row['key'], archive_path=journal):
+                with db:
+                    db.execute("UPDATE publish_jobs SET status='review',last_error='image_already_used_v12' WHERE key=?",
+                               (row['key'],))
+                LOG.warning('V12: official image already used or not verifiable; hold for review')
+                continue
         # Ricalcola il testo per applicare il SEO editoriale anche alle bozze
         # create prima dell'aggiornamento (mai ai post gia' spediti).
-        single_text = format_post(event) if thread is None else row["text"]
+        single_text = video_text or (format_post(event) if thread is None else row["text"])
         with db:
             db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
                        (single_text, time.time(), row["key"]))
@@ -567,6 +589,35 @@ def main():
                 LOG.info("AUTO_PUBLISH=false: raccolta e anteprime senza coda pubblicabile; nessun invio")
         elif mode != "check":
             raise ValueError("RUN_MODE deve essere setup, check o run")
+        # Research RSS is strictly lower priority than official breaking news.
+        # Do NOT delay the normal v11 publisher to wait for secondary sources.
+        # V12 intelligence is separately switchable, fully READ-ONLY toward
+        # Buffer/X, and its press items NEVER enter v11 publish_jobs.
+        if os.getenv('INTELLIGENCE_V12_ENABLED', 'false').strip().lower() == 'true':
+            try:
+                from intelligence_v12 import poll as poll_intelligence, report as report_intelligence
+                result = poll_intelligence(db, ROOT / 'intelligence-sources-v12.json')
+                LOG.info('V12 RSS: checked=%s baseline=%s new=%s errors=%s',
+                         result['checked'], result['baseline'], result['new'], result['errors'])
+                report_intelligence(db, max_display=30, output_path=ROOT / '.runtime' / 'intelligence-v12-report.json')
+                errors += result['errors']
+            except Exception as error:
+                errors += 1
+                LOG.warning('V12 RSS unavailable (%s); original official pipeline remains active', type(error).__name__)
+        # V12.1: weekly GTAV Online and VI launch radar. Research-only, independently
+        # switchable from the official publishing engine and from RSS research.
+        if os.getenv('WEEKLY_RADAR_V12_ENABLED', 'false').strip().lower() == 'true':
+            try:
+                from weekly_radar_v12 import poll as weekly_poll, report as weekly_report
+                weekly_status = weekly_poll(db)
+                LOG.info('V12.1 WEEKLY RADAR: checked=%s baseline=%s new=%s errors=%s deferred=%s',
+                         weekly_status['checked'], weekly_status['baseline'],
+                         weekly_status['candidates'], weekly_status['errors'], weekly_status['deferred'])
+                weekly_report(db, ROOT / '.runtime' / 'weekly-radar-v12.json')
+                errors += weekly_status['errors']
+            except Exception as error:
+                errors += 1
+                LOG.warning('Weekly research unavailable (%s); official pipeline unaffected', type(error).__name__)
     finally:
         exported = export_public_history(db, ROOT / "history-public.json", config.get("publication_policy", {}))
         export_csv(exported, ROOT / "history-public.csv")

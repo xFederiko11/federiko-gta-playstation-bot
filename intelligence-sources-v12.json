@@ -1,0 +1,87 @@
+{
+  "schema_version": 12,
+  "description": "Curated public RSS feeds. This list feeds a read-only research ledger; it does not automatically publish third-party claims or media. Includes GTA Online weekly topic detection; official weekly landing pages monitored separately by the weekly radar.",
+  "feeds": [
+    {
+      "id": "ps-blog",
+      "name": "PlayStation Blog",
+      "url": "https://blog.playstation.com/feed",
+      "tier": "official",
+      "language": "en",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "ign",
+      "name": "IGN",
+      "url": "https://www.ign.com/rss/v2/articles/feed",
+      "tier": "press",
+      "language": "en",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "vgc",
+      "name": "Video Games Chronicle",
+      "url": "https://www.videogameschronicle.com/feed/",
+      "tier": "press",
+      "language": "en",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "eurogamer",
+      "name": "Eurogamer",
+      "url": "https://www.eurogamer.net/feed",
+      "tier": "press",
+      "language": "en",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "pushsquare",
+      "name": "Push Square",
+      "url": "https://www.pushsquare.com/feeds/latest",
+      "tier": "press",
+      "language": "en",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "multiplayer",
+      "name": "Multiplayer.it",
+      "url": "https://multiplayer.it/feed/rss/homepage/",
+      "tier": "press",
+      "language": "it",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "everyeye",
+      "name": "Everyeye",
+      "url": "https://www.everyeye.it/feed/feed_news_rss.asp",
+      "tier": "press",
+      "language": "it",
+      "interval": 600,
+      "enabled": true
+    },
+    {
+      "id": "digital-foundry",
+      "name": "Digital Foundry (official YouTube)",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9PBzalIcEQCsiIkq36PyUA",
+      "tier": "press",
+      "language": "en",
+      "interval": 900,
+      "enabled": true
+    },
+    {
+      "id": "powerpyx",
+      "name": "PowerPyx trophy and guide RSS",
+      "url": "https://www.powerpyx.com/feed",
+      "tier": "press",
+      "language": "en",
+      "interval": 1800,
+      "enabled": false
+    }
+  ]
+}

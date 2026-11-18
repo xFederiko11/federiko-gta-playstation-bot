@@ -107,7 +107,7 @@ def get_html(source, url=None, selector=None):
                     options["proxy"].update(username=unquote(parts.username), password=unquote(parts.password or ""))
             browser = playwright.chromium.launch(**options)
             try:
-                page = browser.new_page(user_agent=AGENT)
+                page = browser.new_page(user_agent=AGENT, locale='en-US', extra_http_headers={'Accept-Language': 'en-US,en;q=0.9'})
                 page.goto(address, wait_until="domcontentloaded", timeout=30000)
                 selected = selector or source["selector"]
                 page.wait_for_selector(selected, state="attached", timeout=20000)
@@ -117,7 +117,7 @@ def get_html(source, url=None, selector=None):
                 return page.content()
             finally:
                 browser.close()
-    response = requests.get(address, headers={"User-Agent": AGENT}, timeout=30)
+    response = requests.get(address, headers={"User-Agent": AGENT, 'Accept-Language':'en-US,en;q=0.9'}, timeout=30)
     response.raise_for_status()
     return response.text
 
@@ -153,7 +153,7 @@ def collect_x(source, previous, client):
 
 
 def collect_feed(source):
-    response = requests.get(source["url"], headers={"User-Agent": AGENT}, timeout=30)
+    response = requests.get(source["url"], headers={"User-Agent": AGENT, 'Accept-Language':'en-US,en;q=0.9'}, timeout=30)
     response.raise_for_status()
     root = ET.fromstring(response.content)
     entries = root.findall(".//item") + root.findall("{http://www.w3.org/2005/Atom}entry")
@@ -273,7 +273,7 @@ def collect(source, previous, client):
         if not isinstance(current, dict):
             raise ValueError("files deve essere un oggetto JSON")
     else:
-        response = requests.get(source["url"], headers={"User-Agent": AGENT}, timeout=30)
+        response = requests.get(source["url"], headers={"User-Agent": AGENT, 'Accept-Language':'en-US,en;q=0.9'}, timeout=30)
         response.raise_for_status()
         data = response.json()
         # Confronta solo i campi scelti, mai timestamp o token di sessione estranei.

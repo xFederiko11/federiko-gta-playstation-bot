@@ -54,6 +54,16 @@ def meaningful_fingerprint(db):
         for row in rows:
             if table == "monitors":
                 normalized.append({"id": row["id"], "state_json": _value(row.get("state_json"), "state_json")})
+            elif table == "intel_v12_sources":
+                # RSS heartbeat clocks are not facts and should not cause a Git
+                # commit on every 5-minute scheduled run. Errors remain visible.
+                normalized.append({"id": row["id"], "state_json": _value(row.get("state_json"), "state_json"),
+                                   "last_error": row.get("last_error")})
+            elif table == 'weekly_radar_v12_sources':
+                # Persist source signature and seen links, not routine polling clocks.
+                normalized.append({'id': row['id'], 'signature': row['signature'],
+                                   'link_ids_json': _value(row['link_ids_json'], 'link_ids_json'),
+                                   'last_error': row['last_error']})
             elif table == "meta":
                 if row.get("key") != "xbox_checked":
                     normalized.append({column: _value(value, column) for column, value in row.items()})
