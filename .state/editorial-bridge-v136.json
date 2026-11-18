@@ -1,0 +1,40 @@
+{
+  "entries": {
+    "18e6c44fe3ecdd2c2ff5": {
+      "reserved_utc": "2026-11-18T13:44:02.028471+00:00",
+      "run_id": "44316681636",
+      "slug": "gta-online-weekly-stunt-challenge-20261118",
+      "source": "https://gta.guide/article/contact-missions-bonus-week",
+      "status": "reserved"
+    },
+    "98538ffd3e373fd74391": {
+      "reserved_utc": "2026-11-18T13:44:02.028374+00:00",
+      "run_id": "44316681636",
+      "slug": "vgc-review-20261118",
+      "source": "https://www.videogameschronicle.com/review/grand-theft-auto-6/",
+      "status": "reserved"
+    },
+    "beb33233d8e2e44fa770": {
+      "reserved_utc": "2026-11-18T13:44:02.028451+00:00",
+      "run_id": "44316681636",
+      "slug": "vgc-metascore-20261118",
+      "source": "https://www.videogameschronicle.com/news/grand-theft-auto-6-is-currently-the-highest-scoring-video-game-of-all-time-according-to-metacritic/",
+      "status": "reserved"
+    },
+    "ced060346d0e8149b4f6": {
+      "reserved_utc": "2026-11-18T13:44:02.028411+00:00",
+      "run_id": "44316681636",
+      "slug": "ps5pro-pushsquare-review-20261118",
+      "source": "https://www.pushsquare.com/reviews/ps5/grand-theft-auto-6",
+      "status": "reserved"
+    },
+    "d26e2fe3881fb1ad9625": {
+      "reserved_utc": "2026-11-18T13:44:02.028430+00:00",
+      "run_id": "44316681636",
+      "slug": "vgc-criminal-profile-20261118",
+      "source": "https://www.videogameschronicle.com/review/grand-theft-auto-6/",
+      "status": "reserved"
+    }
+  },
+  "version": "v13.6"
+}
