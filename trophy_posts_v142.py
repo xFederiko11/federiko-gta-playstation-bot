@@ -61,7 +61,7 @@ def formatted(t):
         while x_weight(post)>280 and len(requirement)>28:
             requirement=requirement[:-1]
             post=prefix+title+"\n\n🎯 "+requirement.rstrip(" .,;:")+"…"+suffix
-    if x_weight(post)>280 or len(requirement)<25:
+    if x_weight(post)>280:
         raise ValueError("Trophy text cannot fit X character budget")
     return post
 
