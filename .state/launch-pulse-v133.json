@@ -1,0 +1,32 @@
+{
+  "posts": {
+    "gtaonline-current-bonuses-20261118": {
+      "buffer_post_id": "6afd880fbe723dbbcfdb0c8f",
+      "copy_sha256": "2f8d3bd9099799b80b3bed03fec56341ea8f5e64c2d50801a5356eb2aaa77882",
+      "id": "gtaonline-current-bonuses-20261118",
+      "scheduled_for": "2026-11-18T11:12:14.744567+00:00",
+      "source_tier": "OFFICIAL_ROCKSTAR",
+      "status": "accepted",
+      "topic": "gtaonline-boosts"
+    },
+    "gtaplus-itali-rsx-20261118": {
+      "buffer_post_id": "6afd8810986651ea3387c5f4",
+      "copy_sha256": "2a2d0b4b321ccb025d72b49e479291764faf3fcf5f48d9952656571cb66c0c4a",
+      "id": "gtaplus-itali-rsx-20261118",
+      "scheduled_for": "2026-11-18T11:37:14.744567+00:00",
+      "source_tier": "OFFICIAL_ROCKSTAR",
+      "status": "accepted",
+      "topic": "itali-rsx"
+    },
+    "ps5pro-gtavi-technical-20261118": {
+      "buffer_post_id": "6afd8810be723dbbcfdb0cfb",
+      "copy_sha256": "5cfa31cd113a82a1282c96cf5946a8dcedee8f78d4af442716cce5a7ed8eb0d8",
+      "id": "ps5pro-gtavi-technical-20261118",
+      "scheduled_for": "2026-11-18T12:02:14.744567+00:00",
+      "source_tier": "OFFICIAL_ROCKSTAR",
+      "status": "accepted",
+      "topic": "ps5-pro-tech"
+    }
+  },
+  "version": "13.3"
+}
