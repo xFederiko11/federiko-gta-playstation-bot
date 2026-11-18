@@ -118,6 +118,7 @@ class QuickTipsV146Tests(unittest.TestCase):
              patch.object(bot,"powerpyx_spotlight",return_value=None), \
              patch.object(bot,"director_allowed",return_value=(True,"ready")), \
              patch("gta6_special_campaign_v139.probe_image",return_value=False), \
+             patch("trophy_posts_v142.candidate",return_value=None), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-126"}):
             bot.reserve()
             self.assertFalse(bot.STATE.exists())
