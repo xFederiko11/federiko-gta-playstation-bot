@@ -9,11 +9,12 @@
       "status": "scheduled"
     },
     "gta6-keys": {
+      "buffer_id": "6afcf771ab47737bddb8b167",
       "due_at": "2026-11-18T02:22:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_Postcard_landscape.05oezf2h--~ed.jpg",
       "source": "https://www.rockstargames.com/VI/only-in-leonida",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-lucia": {
       "buffer_id": "6afcf768ab47737bddb8af44",
