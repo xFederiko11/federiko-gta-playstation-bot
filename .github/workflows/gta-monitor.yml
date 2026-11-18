@@ -48,6 +48,8 @@ jobs:
       V12_UNIQUE_IMAGES: ${{ vars.V12_UNIQUE_IMAGES || 'false' }}
       WEEKLY_RADAR_V12_ENABLED: ${{ vars.WEEKLY_RADAR_V12_ENABLED || 'false' }}
       VIDEO_LINK_CARDS_V12: ${{ vars.VIDEO_LINK_CARDS_V12 || 'false' }}
+      EDITORIAL_V13_ENABLED: ${{ vars.EDITORIAL_V13_ENABLED || 'false' }}
+      EDITORIAL_V13_AUTOPUBLISH: ${{ vars.EDITORIAL_V13_AUTOPUBLISH || 'false' }}
     steps:
       - name: Seleziona la frequenza per la finestra del lancio 2026
         id: launch_window
@@ -101,13 +103,14 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python online.py --once
       - name: Conserva il report ricerca v12 (nessuna pubblicazione)
-        if: ${{ always() && steps.launch_window.outputs.active == 'true' && (vars.INTELLIGENCE_V12_ENABLED == 'true' || vars.WEEKLY_RADAR_V12_ENABLED == 'true') }}
+        if: ${{ always() && steps.launch_window.outputs.active == 'true' && (vars.INTELLIGENCE_V12_ENABLED == 'true' || vars.WEEKLY_RADAR_V12_ENABLED == 'true' || vars.EDITORIAL_V13_ENABLED == 'true') }}
         uses: actions/upload-artifact@v4
         with:
           name: ricerca-v12-${{ github.run_id }}
           path: |
             .runtime/intelligence-v12-report.json
             .runtime/weekly-radar-v12.json
+            .runtime/editorial-v13-report.json
           retention-days: 7
           if-no-files-found: ignore
       - name: Conserva lo stato e lo storico anche se una fonte fallisce
