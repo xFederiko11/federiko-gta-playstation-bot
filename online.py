@@ -311,6 +311,7 @@ def reconcile(db, client):
 def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None,
             news_center_threads=False, require_official_media=False, media_resolver=official_image_for_event):
     enforce_job_policy(db, policy or {})
+    reconcile(db, client)
     from editorial_director_v142 import allowed as director_allowed
     if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
         from datetime import timezone
@@ -318,7 +319,6 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         if not ok:
             LOG.info('DIRECTOR_HOLD: %s', reason)
             return
-    reconcile(db, client)
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
     with db:
         db.execute("UPDATE publish_jobs SET status='uncertain' WHERE status='sending'")
