@@ -123,6 +123,31 @@ class QuickTipsV146Tests(unittest.TestCase):
             bot.reserve()
             self.assertFalse(bot.STATE.exists())
 
+    def test_reauthorization_gates_resume_without_repeating_old_rejected_tip(self):
+        from unittest.mock import patch
+        import os
+        from hashlib import sha256
+        blocked={"source":"PowerPyx Tips", "status":"rejected",
+                 "tip_id":"waink-vehicles-ps5",
+                 "reserved_utc":"2026-11-18T13:00:00+00:00"}
+        old_id=sha256(("tips-v146:"+"waink-vehicles-ps5").encode()).hexdigest()[:24]
+        state={"entries":{old_id:blocked}}
+        date=datetime(2026,11,19,10,0,tzinfo=timezone.utc)
+        with patch.dict(os.environ,{"TIPS_REAUTH_CONFIRMED_V149":"false"}):
+            self.assertIsNone(candidate(state,date))
+        with patch.dict(os.environ,{"TIPS_REAUTH_CONFIRMED_V149":"true"}):
+            nxt=candidate(state,date)
+            self.assertIsNotNone(nxt)
+            self.assertNotEqual(nxt["tip_id"],"waink-vehicles-ps5")
+            self.assertEqual(nxt["tip_id"],"study animals")
+        state["entries"][nxt["key"]]={"source":"PowerPyx Tips",
+                                      "status":"rejected",
+                                      "tip_id":nxt["tip_id"],
+                                      "reserved_utc":date.isoformat()}
+        with patch.dict(os.environ,{"TIPS_REAUTH_CONFIRMED_V149":"true"}):
+            self.assertIsNone(candidate(state,date+timedelta(hours=4)))
+        self.assertEqual(state["entries"][old_id],blocked)
+
     def test_global_journal_not_modified_by_candidate(self):
         state={"entries":{}}
         candidate(state,NOW)
