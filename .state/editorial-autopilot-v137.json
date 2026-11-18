@@ -59,6 +59,15 @@
       "text": "🧭 GTA VI | Guida di Push Square: Guide: GTA 6: Who Is the Real Actress Lucia Is Based On?\n#GTAVI #GTA6\nFonte: https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on",
       "title": "Guide: GTA 6: Who Is the Real Actress Lucia Is Based On?",
       "url": "https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on"
+    },
+    "cf7793967a1cc2f2b0e9b348": {
+      "reserved_utc": "2026-11-18T17:08:49.803464+00:00",
+      "run_id": "44355288606",
+      "source": "GameSpot",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nTutte le stazioni radio e le canzoni di GTA 6\n\n🔗 Fonte: GameSpot\nhttps://gamespot.com/articles/all-gta-6-radio-stations-and-songs\n\n#GTAVI #GTA6",
+      "title": "All GTA 6 Radio Stations And Songs",
+      "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     }
   },
   "run_history": [
@@ -96,10 +105,18 @@
       "feeds_relevant": 83,
       "reserved": 1,
       "run": "44349534938"
+    },
+    {
+      "at": "2026-11-18T17:08:49.803464+00:00",
+      "errors": [],
+      "feeds_relevant": 83,
+      "reserved": 1,
+      "run": "44355288606"
     }
   ],
   "schema": "v13.7",
   "signatures": {
+    "all radio stations and songs": "cf7793967a1cc2f2b0e9b348",
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
