@@ -125,7 +125,7 @@ jobs:
           github.event_name == 'schedule' ||
           github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
-        run: python editorial_autopilot_v137.py --mode preflight
+        run: python buffer_status_summary_v151.py
       - name: Reserve one fresh item before any Buffer mutation
         id: reserve
         env:
