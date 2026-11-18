@@ -618,6 +618,33 @@ def main():
             except Exception as error:
                 errors += 1
                 LOG.warning('Weekly research unavailable (%s); official pipeline unaffected', type(error).__name__)
+        # V13: official Rockstar GTA Online editorial digest (source-grounded).
+        # No media reuploads or press autoposts; no historical backfill.
+        if os.getenv('EDITORIAL_V13_ENABLED', 'false').strip().lower() == 'true':
+            try:
+                from editorial_v13 import research as v13_research, report as v13_report, deliver_ready as v13_deliver
+                v13_status = v13_research(db)
+                LOG.info('V13 OFFICIAL EDITORIAL: checked=%s baseline=%s new=%s eligible=%s errors=%s',
+                         v13_status['checked'],v13_status['baseline'],v13_status['new'],
+                         v13_status['eligible'],v13_status['errors'])
+                v13_report(db, ROOT / '.runtime' / 'editorial-v13-report.json')
+                errors += v13_status['errors']
+                v13_auto = os.getenv('EDITORIAL_V13_AUTOPUBLISH','false').strip().lower() == 'true'
+                if mode == 'run' and publishing_enabled and v13_auto:
+                    pending = db.execute("SELECT COUNT(*) FROM editorial_v13_articles WHERE status IN ('ready','accepted')").fetchone()[0]
+                    if pending:
+                        v13_client = BufferClient(request_guard=FreeRequestBudget(db))
+                        try:
+                            dispatched = v13_deliver(db,client=v13_client,
+                                 checkpoint=lambda: checkpoint_state(db, db_path, encrypted, password))
+                            LOG.info('V13 delivery: sent=%s accepted=%s review=%s deferred=%s',
+                                     dispatched['sent'],dispatched['accepted'],
+                                     dispatched['review'],dispatched['deferred'])
+                        except FreeQuotaExceeded:
+                            LOG.warning('V13: local Buffer request guard reached; no editorial post')
+            except Exception as error:
+                errors += 1
+                LOG.warning('V13 editorial radar unavailable (%s); v11 and v12 unaffected',type(error).__name__)
     finally:
         exported = export_public_history(db, ROOT / "history-public.json", config.get("publication_policy", {}))
         export_csv(exported, ROOT / "history-public.csv")

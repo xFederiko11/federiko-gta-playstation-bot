@@ -64,6 +64,12 @@ def meaningful_fingerprint(db):
                 normalized.append({'id': row['id'], 'signature': row['signature'],
                                    'link_ids_json': _value(row['link_ids_json'], 'link_ids_json'),
                                    'last_error': row['last_error']})
+            elif table == 'editorial_v13_sources':
+                # Only novel first-party story IDs/errors cause encrypted state
+                # writes. Read-only due clocks must not spam Git every 5 minutes.
+                normalized.append({'id': row['id'],
+                                   'seen_urls_json': _value(row['seen_urls_json'], 'seen_urls_json'),
+                                   'last_error': row['last_error']})
             elif table == "meta":
                 if row.get("key") != "xbox_checked":
                     normalized.append({column: _value(value, column) for column, value in row.items()})
