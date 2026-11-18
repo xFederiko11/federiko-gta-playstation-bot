@@ -1,5 +1,15 @@
 {
   "posts": {
+    "italy-launch-schedule-20261118": {
+      "reserved_at": 1795025410.643951,
+      "run_id": "44366656947",
+      "sha256": "cb0e0b748412415ab3f3f8f84e6b3d77206936daeec0444a79807bfbb1ad4348",
+      "status": "reserved",
+      "text": "🎮 GTA VI | Conto alla rovescia per l’Italia!\n⏰ Sblocco digitale previsto da Rockstar alle 00:00 del 19 novembre.\n💾 Precaricamento per i preordini digitali. Attenzione agli spoiler.\nhttps://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s\n#GTAVI #GTA6",
+      "tier": "OFFICIAL_ROCKSTAR_SCHEDULE",
+      "topic": "launch-times",
+      "url": "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    },
     "nz-local-release-times-20261118": {
       "buffer_post_id": "6afd8f593cc95fb47ce93153",
       "reserved_at": 1795002199.523362,
