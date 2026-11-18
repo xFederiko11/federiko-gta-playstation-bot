@@ -33,11 +33,12 @@
       "status": "scheduled"
     },
     "gta6-gallery": {
+      "buffer_id": "6afcf7a393fa11d37df734a0",
       "due_at": "2026-11-18T05:10:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_14.10e7v.06pcm_t.jpg",
       "source": "https://www.rockstargames.com/newswire/article/39ak81277255o9/explore-the-grand-theft-auto-vi-launch-gallery",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-grass": {
       "buffer_id": "6afcf77693fa11d37df72a3a",
