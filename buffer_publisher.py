@@ -303,6 +303,40 @@ class BufferClient:
             raise BufferPending(delivery.post_id, delivery.status)
         return delivery.post_id
 
+    def publish_gallery(self, text, image_urls):
+        """Publish one X post carrying 2-4 distinct public HTTPS images.
+
+        Caller MUST verify public image provenance and reuse restrictions.
+        Buffer media URLs must remain accessible until X has fetched them.
+        """
+        from editorial_seo_v135 import x_weight
+        if not isinstance(text, str) or not text.strip() or x_weight(text) > 280:
+            raise ValueError("Didascalia della galleria non valida")
+        if not isinstance(image_urls, (list, tuple)) or not 2 <= len(image_urls) <= 4:
+            raise BufferMediaError("La galleria deve contenere da 2 a 4 immagini")
+        if len(set(image_urls)) != len(image_urls):
+            raise BufferMediaError("Non ripetere la stessa immagine nella galleria")
+        assets = [{"image": {"url": self._media_url(url)}} for url in image_urls]
+        if self.destination is None:
+            self.verify_destination()
+        data = self._graphql(CREATE_MUTATION, {"input": {
+            "text": text, "channelId": self.channel_id, "schedulingType": "automatic",
+            "mode": "shareNow", "assets": assets,
+        }}, mutation=True)
+        result = data.get("createPost")
+        if not isinstance(result, dict):
+            raise BufferAPIError("Esito galleria Buffer mancante", outcome_unknown=True)
+        if not result.get("post"):
+            if result.get("message"):
+                raise BufferAPIError("Buffer ha rifiutato la galleria", status=400, outcome_unknown=False)
+            raise BufferAPIError("Esito galleria incompleto", outcome_unknown=True)
+        delivery = self._delivery(result["post"])
+        if delivery.status == "error":
+            raise BufferDeliveryFailed(delivery.post_id)
+        if delivery.status != "sent":
+            raise BufferPending(delivery.post_id, delivery.status)
+        return delivery.post_id
+
     def publish_thread(self, posts, *, media_url=None):
         """Invia un thread X come UN SOLO record Buffer.
 
