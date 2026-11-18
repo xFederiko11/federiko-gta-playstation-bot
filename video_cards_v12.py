@@ -33,18 +33,32 @@ def video_link(event):
 
 
 def video_link_post(event):
-    url=video_link(event)
-    if not url: return None
-    header='🎬 GTA VI | VIDEO UFFICIALE ROCKSTAR' if event['game']=='GTA VI' else '🎬 GTA ONLINE | VIDEO UFFICIALE ROCKSTAR'
-    title=re.sub(r'\s+',' ',str(event.get('title') or 'Nuovo video Rockstar')).strip()
-    from editorial_language_it import contains_english_prose, italian_title, TranslationUnavailable
-    if contains_english_prose(title):
-        try:
-            title=italian_title(title, 'en')
-        except TranslationUnavailable:
-            return None
-    if len(title)>100:
-        title=title[:97].rsplit(' ',1)[0]+'…'
-    tags='#GTAVI #GTA6' if event['game']=='GTA VI' else '#GTAOnline'
-    text=f'{header}\n\n{title}\n\n🔗 Video ufficiale:\n{url}\n\n{tags}'
-    return text if len(text)<=280 else None
+    """Italian-only official-link share, not a native X retweet or video upload.
+
+    Intentional conservative templates: Rockstar's source title can be English,
+    but the public post always contains fully Italian wording. We do not rely
+    on an external translation service for urgent official videos.
+    """
+    url = video_link(event)
+    if not url:
+        return None
+    title = re.sub(r'\s+', ' ', str(event.get('title') or '')).lower()
+    if event['game'] == 'GTA VI':
+        header = '🎬 GTA VI | Video ufficiale Rockstar'
+        if re.search(r'\btrailer\b', title):
+            message = 'Rockstar Games ha pubblicato un trailer ufficiale di GTA VI.'
+        elif re.search(r'\bpre[\s-]?load\b', title):
+            message = 'Rockstar Games presenta il precaricamento di GTA VI.'
+        elif re.search(r'\bgameplay\b', title):
+            message = 'Nuovo video ufficiale dedicato al gameplay di GTA VI.'
+        else:
+            message = 'Rockstar Games ha pubblicato un video dedicato a GTA VI.'
+        tags = '#GTAVI #GTA6'
+    else:
+        header = '🎬 GTA Online | Video ufficiale Rockstar'
+        message = 'Rockstar Games ha pubblicato un video dedicato a GTA Online.'
+        tags = '#GTAOnline'
+
+    text = f'{header}\n\n{message}\n\n▶️ Guarda il video originale:\n{url}\n\n{tags}'
+    from editorial_seo_v135 import x_weight
+    return text if x_weight(text) <= 280 else None
