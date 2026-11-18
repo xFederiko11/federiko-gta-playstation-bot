@@ -16,6 +16,7 @@ from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit, parse_qsl, urlencode
 from bs4 import BeautifulSoup
 import requests
+from rockstar_render import fetch_rendered
 
 LOG = logging.getLogger('gta.weekly_radar')
 MAX_BODY = 1_500_000
@@ -207,8 +208,19 @@ def poll(db,*,fetcher=None,now=None,max_seconds=28) -> dict:
             totals['deferred']+=1
             continue
         try:
-            data = fetcher(target) if fetcher else fetch(target)
-            parsed=parse_html(data,target)
+            if fetcher is not None:
+                parsed=parse_html(fetcher(target),target)
+            else:
+                try:
+                    parsed=parse_html(fetch(target),target)
+                except (ValueError, requests.exceptions.ReadTimeout) as page_error:
+                    if target['tier'] != 'official' or (not isinstance(page_error, requests.exceptions.ReadTimeout) and str(page_error) not in (
+                        'missing_main_container','page_too_large','no_meaningful_page_text',
+                        'no_relevant_links')):
+                        raise
+                    LOG.info('WEEKLY RADAR source=%s raw page unusable; trying public rendered DOM',target['id'])
+                    rendered=fetch_rendered(target['url'], mode='listing' if target['kind']=='links' else 'snapshot')
+                    parsed=parse_html(rendered,target)
             current={hashlib.sha256(link['url'].encode()).hexdigest() for link in parsed['links']}
             previous=set(json.loads(row['link_ids_json'])) if row else set()
             old_signature = row['signature'] if row else None

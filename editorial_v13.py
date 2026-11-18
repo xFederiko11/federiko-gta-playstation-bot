@@ -23,6 +23,7 @@ import logging
 
 from bs4 import BeautifulSoup
 import requests
+from rockstar_render import fetch_rendered
 
 LOG = logging.getLogger('gta.editorial_v13')
 OFFICIAL_NEWSWIRE = 'https://www.rockstargames.com/newswire?tag=702'
@@ -111,7 +112,8 @@ def _https_rockstar(url: str, *, article=False) -> str | None:
             return None
         if article and not re.fullmatch(r'/newswire/article/[a-zA-Z0-9]+/[^/?#]+', parts.path.rstrip('/')):
             return None
-        return urlunsplit(('https','www.rockstargames.com',parts.path.rstrip('/') or '/', '', ''))
+        return urlunsplit(('https','www.rockstargames.com',parts.path.rstrip('/') or '/',
+            'tag=702' if not article and parts.path.rstrip('/') == '/newswire' and parts.query == 'tag=702' else '', ''))
     except (ValueError, TypeError):
         return None
 
@@ -485,7 +487,17 @@ def research(db,*, listing_html=None, article_fetcher=None, now=None, min_interv
     if old and old['next_due']>now and old['last_error'] not in _LEGACY_ERROR_TYPES:
         totals['skipped']=1; return totals
     try:
-        links=_article_links(listing_html if listing_html is not None else _fetch(OFFICIAL_NEWSWIRE))
+        if listing_html is not None:
+            links=_article_links(listing_html)
+        else:
+            page=_fetch(OFFICIAL_NEWSWIRE)
+            try:
+                links=_article_links(page)
+            except ValueError as parse_error:
+                if str(parse_error) not in ('newswire_listing_missing_main', 'no_valid_rockstar_article_links'):
+                    raise
+                LOG.info('V13 Newswire raw HTML has no usable listing; checking public rendered DOM')
+                links=_article_links(fetch_rendered(OFFICIAL_NEWSWIRE, mode='listing'))
         seen=set(json.loads(old['seen_urls_json'])) if old else set()
         initial=old is None or (not seen and old['last_success'] is None)
         novel=[x for x in links if x['url'] not in seen]
@@ -497,8 +509,22 @@ def research(db,*, listing_html=None, article_fetcher=None, now=None, min_interv
                 state='review_duplicate_with_v11'; data={'url':lead['url'],'facts':[], 'review_reason':state}
             else:
                 try:
-                    page=article_fetcher(lead['url']) if article_fetcher else _fetch(lead['url'])
-                    data=parse_article(page,lead['url'],today=today)
+                    try:
+                        page=article_fetcher(lead['url']) if article_fetcher else _fetch(lead['url'])
+                    except (ValueError, requests.exceptions.ReadTimeout) as fetch_error:
+                        if article_fetcher is not None or (not isinstance(fetch_error, requests.exceptions.ReadTimeout)
+                            and str(fetch_error) != 'article_exceeds_size_limit'):
+                            raise
+                        LOG.info('V13 article raw fetch unavailable; checking public rendered DOM')
+                        page=fetch_rendered(lead['url'],mode='article')
+                    try:
+                        data=parse_article(page,lead['url'],today=today)
+                    except ValueError as article_error:
+                        if article_fetcher is not None or str(article_error) not in (
+                            'article_missing_main', 'article_missing_title', 'article_missing_body'):
+                            raise
+                        LOG.info('V13 article raw HTML missing body; checking public rendered DOM')
+                        data=parse_article(fetch_rendered(lead['url'],mode='article'),lead['url'],today=today)
                     if not initial and data.get('facts'):
                         data=_remove_reported_facts(db,data)
                     state=('baseline_review' if initial else
