@@ -86,7 +86,11 @@ def build():
     for t in trophies:
         slug=t["id"]+".html";url=BASE+"/"+slug
         image=photo(t)
-        show_secret=os.getenv("SPOILER_INDEX","0")=="1"
+        # Keep story secrets out of search results during the first launch window,
+        # then index all 55 trophy pages without a permanent manual toggle.
+        spoiler_override=os.getenv("SPOILER_INDEX")
+        show_secret=(spoiler_override=="1" if spoiler_override in ("0","1")
+                     else datetime.now(timezone.utc)>=datetime(2026,11,21,tzinfo=timezone.utc))
         robots="index,follow" if (not t["hidden"] or show_secret) else "noindex,follow"
         name=esc(t["name_it"]);desc=esc(t["requirement_it"])
         class_tier=({"Oro":"gold","Argento":"silver","Bronzo":"bronze","Platino":"platinum"}[t["tier"]])
