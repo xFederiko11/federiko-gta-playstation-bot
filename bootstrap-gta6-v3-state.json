@@ -97,11 +97,12 @@
       "status": "scheduled"
     },
     "gta6-preload-faq": {
+      "buffer_id": "6afcf7a19f3765f6ab1f3109",
       "due_at": "2026-11-18T04:58:00+00:00",
       "image_kind": "official_logo",
       "image_url": "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/258aa538o412ok/5690872e70df76d5d63638c12e7eb5b746f83c3a.jpg",
       "source": "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-radio": {
       "buffer_id": "6afcf78c93fa11d37df730e0",
