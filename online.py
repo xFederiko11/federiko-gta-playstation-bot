@@ -402,6 +402,10 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         with db:
             db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
                        (single_text, time.time(), row["key"]))
+        if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            from editorial_director_v142 import note_monitor_attempt
+            from datetime import timezone
+            note_monitor_attempt(event, datetime.now(timezone.utc))
         if checkpoint:
             # Il journal remoto precede l'invio: un runner interrotto non lo ripete alla cieca.
             checkpoint()
