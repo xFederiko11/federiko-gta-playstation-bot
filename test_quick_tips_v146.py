@@ -68,10 +68,11 @@ class QuickTipsV146Tests(unittest.TestCase):
 
     def test_tip_daily_limit(self):
         state={"entries":{}}
-        first=candidate(state,NOW)
+        today=datetime(2026,11,19,8,0,tzinfo=timezone.utc)
+        first=candidate(state,today)
         state['entries'][first['key']]={"source":"PowerPyx Tips","status":"sent",
-                                       "reserved_utc":NOW.isoformat()}
-        later=NOW+timedelta(hours=4)
+                                       "reserved_utc":today.isoformat()}
+        later=today+timedelta(hours=4)
         second=candidate(state,later)
         state['entries'][second['key']]={"source":"PowerPyx Tips","status":"sent",
                                        "reserved_utc":later.isoformat()}
