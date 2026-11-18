@@ -17,6 +17,7 @@ import unicodedata
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 import requests
+from editorial_language_it import italian_title, TranslationUnavailable
 
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
@@ -98,35 +99,41 @@ def topic(title: str) -> str | None:
     ) else 'GTAVI'
 
 def post_text(item: dict) -> str:
+    """Italian-only headline; title, source, URL and hashtags as separate blocks."""
     category = topic(item['title'])
     if not category:
         raise ValueError('Topic or safety filter rejected')
-    title = item['title']
+    headline = italian_title(item['title'], item.get('language', 'en'))
     src = item['source']
-    if re.search('review|recension', title, re.I):
-        lead = f'📝 GTA VI | Recensione di {src}: '
-    elif re.search('guide|guida|trophy|trofeo|achiev|soluzion', title, re.I):
-        lead = f'🧭 {"GTA Online" if category=="GTAOnline" else "GTA VI"} | Guida di {src}: '
+    if re.search('review|recension', item['title'], re.I):
+        lead = '📝 GTA VI | Recensione'
+    elif re.search('guide|guida|trophy|trofeo|achiev|soluzion', item['title'], re.I):
+        lead = '🧭 GTA VI | Guida' if category == 'GTAVI' else '🧭 GTA Online | Guida'
     elif category == 'GTAOnline':
-        lead = f'💰 GTA Online | {src} segnala: '
+        lead = '💰 GTA Online | Aggiornamento'
     else:
-        lead = f'📰 GTA VI | {src} pubblica: '
-    suffix = '\n#GTAOnline' if category == 'GTAOnline' else '\n#GTAVI #GTA6'
-    url = item['url']
-    source_line = '\nFonte: ' + url
-    budget = 280 - weight_x(lead + suffix + source_line)
+        lead = '📰 GTA VI | Novità'
+
+    hashtags = '#GTAOnline' if category == 'GTAOnline' else '#GTAVI #GTA6'
+    # The original URL is never shortened or lost; X weighs it as a link.
+    suffix = f'\n\n🔗 Fonte: {src}\n{item["url"]}\n\n{hashtags}'
+    prefix = lead + '\n\n'
+    budget = 280 - weight_x(prefix + suffix)
     if budget < 35:
-        raise ValueError('Article URL leaves too little content')
-    headline = clean(title)
-    while headline and weight_x(headline) > budget:
-        headline = headline[:-1]
-    if headline != clean(title):
-        headline = headline.rstrip(' -–:,') + '…'
-        while headline and weight_x(lead + headline + suffix + source_line) > 280:
-            headline = headline[:-2] + '…'
-    result = lead + headline + suffix + source_line
-    assert weight_x(result) <= 280
-    return result
+        raise ValueError('URL leaves too little space for Italian headline')
+    truncated = headline
+    while truncated and weight_x(truncated) > budget:
+        truncated = truncated[:-1]
+    if truncated != headline:
+        truncated = truncated.rstrip(' -–:,') + '…'
+        while truncated and weight_x(prefix + truncated + suffix) > 280:
+            truncated = truncated[:-2] + '…'
+    if len(truncated) < 12:
+        raise ValueError('Headline too short after formatting')
+    post = prefix + truncated + suffix
+    if weight_x(post) > 280 or headline == item['title'] and item.get('language', 'en') == 'en':
+        raise TranslationUnavailable('Italian text not available: no English fallback')
+    return post
 
 def parse_feed(data: bytes, src: dict):
     if len(data) > MAX_DOWNLOAD:
@@ -160,7 +167,7 @@ def parse_feed(data: bytes, src: dict):
         if urlsplit(canon).hostname not in src['domains']:
             continue
         yield {'source': src['name'], 'title': clean(title), 'url': canon,
-               'published': published(stamp).isoformat()}
+               'published': published(stamp).isoformat(), 'language': src.get('language', '')}
 
 def load_sources(path: Path = CONFIG) -> list[dict]:
     settings = json.loads(path.read_text('utf-8'))
