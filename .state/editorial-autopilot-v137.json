@@ -29,11 +29,14 @@
       "url": "https://xfederiko11.github.io/federiko-gta-playstation-bot/trofeo-14.html"
     },
     "12595b52c7043d9563bedca3": {
+      "attempted_utc": "2026-11-18T22:28:11.340469+00:00",
+      "buffer_id": "6afe267bc69bd1cb88882ee2",
+      "completed_utc": "2026-11-18T22:28:12.620248+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-18T22:28:08.462149+00:00",
       "run_id": "44411817600",
       "source": "PowerPyx",
-      "status": "reserved",
+      "status": "rejected",
       "text": "🏆 GTA VI | Guida PowerPyx\n\nGTA 6: posizioni di tutti i set di carte collezionabili\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-all-collectible-card-sets-locations\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
