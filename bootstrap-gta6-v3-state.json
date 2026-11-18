@@ -33,11 +33,12 @@
       "status": "scheduled"
     },
     "gta6-festival": {
+      "buffer_id": "6afcf7a6f0c5ce9361b05938",
       "due_at": "2026-11-18T05:22:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/o39o87a435a25a/f14b9244ed05b99e611d0376ad7e0ec3b4f84aab.jpg",
       "source": "https://www.rockstargames.com/newswire/article/o39o87a435a25a/grand-theft-auto-vi-the-festival",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-gallery": {
       "buffer_id": "6afcf7a393fa11d37df734a0",
