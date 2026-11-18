@@ -148,6 +148,10 @@ def candidate(state,now):
     if sum(dt.date()==now.date() for dt in stamps)>=MAX_POSTS_DAY:return None
     if stamps and now-max(stamps)<timedelta(minutes=MIN_SPACING_MIN):return None
     tip_entries=[e for e in entries.values() if e.get("source")=="PowerPyx Tips"]
+    # A real Buffer/X failure means the channel or the media/thread payload
+    # may be incompatible. Stop all further tips until the cause is reviewed.
+    if any(e.get("status") in ("rejected","error","uncertain") for e in tip_entries):
+        return None
     tip_times=[_reserved_time(e.get("reserved_utc")) for e in tip_entries if e.get("reserved_utc")]
     tip_times=[dt for dt in tip_times if dt is not None]
     if sum(dt.date()==now.date() for dt in tip_times)>=MAX_PER_DAY:return None
