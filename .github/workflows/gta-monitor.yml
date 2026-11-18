@@ -3,6 +3,10 @@ name: GTA Monitor gratuito
 on:
   schedule:
     - cron: '7,22,37,52 * * * *'
+    - cron: '4/5 * 18-20 11 *'
+      timezone: Europe/Berlin
+    - cron: '9/10 * 21-22 11 *'
+      timezone: Europe/Berlin
   workflow_dispatch:
     inputs:
       action:
@@ -32,26 +36,57 @@ jobs:
     env:
       PYTHONUNBUFFERED: '1'
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
-      DATABASE: /tmp/gta-monitor.sqlite3
+      DATABASE: ${{ runner.temp }}/gta-monitor.sqlite3
       ENCRYPTED_STATE: ${{ github.workspace }}/.state/bot.enc
       GITHUB_BRANCH: ${{ github.event.repository.default_branch }}
       AUTO_PUBLISH: ${{ vars.AUTO_PUBLISH || 'false' }}
       RUN_MODE: ${{ github.event_name == 'schedule' && 'run' || inputs.action || 'check' }}
+      BUFFER_PLAN: essentials
+      BUFFER_PAID_THROUGH: '2026-12-15' 
     steps:
+      - name: Seleziona la frequenza per la finestra del lancio 2026
+        id: launch_window
+        env:
+          GITHUB_CRON: ${{ github.event.schedule }}
+        run: |
+          today="$(TZ=Europe/Berlin date +%Y-%m-%d)"
+          active=false
+          case "$GITHUB_CRON" in
+            '4/5 * 18-20 11 *')
+              case "$today" in
+                2026-11-18|2026-11-19|2026-11-20) active=true ;;
+              esac ;;
+            '9/10 * 21-22 11 *')
+              case "$today" in
+                2026-11-21|2026-11-22) active=true ;;
+              esac ;;
+            '7,22,37,52 * * * *')
+              case "$today" in
+                2026-11-18|2026-11-19|2026-11-20|2026-11-21|2026-11-22) active=false ;;
+                *) active=true ;;
+              esac ;;
+            *) active=true ;;
+          esac
+          echo "active=$active" >> "$GITHUB_OUTPUT"
+          echo "Launch polling $today: active=$active (cron=$GITHUB_CRON)"
       - name: Leggi il progetto e lo stato cifrato
+        if: ${{ steps.launch_window.outputs.active == 'true' }}
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
       - name: Prepara Python gratuito
+        if: ${{ steps.launch_window.outputs.active == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Installa il programma e il browser
+        if: ${{ steps.launch_window.outputs.active == 'true' }}
         run: |
           python -m pip install --disable-pip-version-check -r requirements-free.txt
           python -m playwright install --with-deps chromium
       - name: Raccogli, prepara le schede e pubblica se attivato
+        if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
@@ -59,7 +94,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python online.py --once
       - name: Conserva lo stato e lo storico anche se una fonte fallisce
-        if: ${{ always() }}
+        if: ${{ always() && steps.launch_window.outputs.active == 'true' }}
         run: |
           if [ ! -d .git ]; then exit 0; fi
           if [ ! -f "$ENCRYPTED_STATE" ]; then exit 0; fi
