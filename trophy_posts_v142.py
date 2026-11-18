@@ -37,7 +37,7 @@ def landing_live(*,session=None):
     except (requests.RequestException,StopIteration,OSError):
         return False
 
-def formatted(t):
+def formatted(t, link_override=None):
     medal={"Platino":"💎","Oro":"🥇","Argento":"🥈","Bronzo":"🥉"}[t["tier"]]
     title=f'{medal} GTA VI | {t["tier"].upper()}: {t["name_it"]}'
     requirement=t["requirement_it"]
@@ -45,7 +45,7 @@ def formatted(t):
         prefix="⚠️ SPOILER | Trofeo della storia\n\n"
     else:
         prefix=""
-    link=BASE+"/"+t["id"]+".html"
+    link=link_override or BASE+"/"+t["id"]+".html"
     suffix="\n\n📖 Guida in italiano:\n"+link+"\n\n#GTAVI #Platino"
     tip=t.get("tip_it") or ""
     if tip and t["number"] in {14,17,28,35,32,15}:
@@ -80,14 +80,17 @@ def candidate(state:dict,now:datetime):
         t=by_number[number]
         if t["hidden"] and now<datetime(2026,11,21,tzinfo=timezone.utc):
             continue
-        url=BASE+"/"+t["id"]+".html"
-        # Canonical URL SHA is owned by the same editorial journal as normal news.
+        legacy=BASE+"/"+t["id"]+".html"
+        from portal_links_v148 import trophy_if_live, trophy_url
         from editorial_autopilot_v137 import identity,similarity_key
-        key=identity(url)
-        if key in entries:continue
+        # Stable, legacy identity is retained even after the public URL changes.
+        # This prevents a duplicate X post for the same trophy after migration.
+        key=identity(legacy)
+        if key in entries or identity(trophy_url(t)) in entries:continue
+        url=trophy_if_live(t) or legacy
         img_index={"city":0,"characters":1,"landscapes":2}.get(t["photo_group"],2)
         return {"key":key,"sig":similarity_key(t["name_it"]),"url":url,
-                "title":t["name_it"],"text":formatted(t),
+                "title":t["name_it"],"text":formatted(t,url),
                 "source":"Trofei GTA VI","media_url":PHOTOS[img_index],
                 "trophy_number":t["number"],"hidden":t["hidden"]}
     return None

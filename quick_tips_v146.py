@@ -88,7 +88,10 @@ def validate():
         assert t["source_url"] in answer
     return True
 
-def reply(t):
+def reply(t, portal_link=None):
+    if portal_link:
+        return ("📖 Guida completa in italiano:\n"+portal_link+
+                "\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina.")
     return "📖 Fonte: PowerPyx\n\n🔗 Procedura completa e dettagli:\n"+t["source_url"]+"\n\n📸 Foto illustrativa: Rockstar Games."
 
 def _reserved_time(value):
@@ -128,10 +131,12 @@ def candidate(state,now):
         from hashlib import sha256
         key=sha256(("tips-v146:"+t["id"]).encode()).hexdigest()[:24]
         if key in entries:continue
+        from portal_links_v148 import guide_if_live
+        portal_link=guide_if_live(t["id"])
         return {"key":key,"sig":similarity_key(t["title"]),
                 "source":"PowerPyx Tips","title":t["title"],
-                "url":t["source_url"],"text":t["main"],
-                "thread":[t["main"],reply(t)],"media_url":t["media_url"],
-                "tip_id":t["id"]}
+                "url":portal_link or t["source_url"],"text":t["main"],
+                "thread":[t["main"],reply(t,portal_link=portal_link)],
+                "media_url":t["media_url"],"tip_id":t["id"]}
     return None
 validate()
