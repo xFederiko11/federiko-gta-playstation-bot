@@ -9,11 +9,12 @@
       "status": "scheduled"
     },
     "gta6-trailer2": {
+      "buffer_id": "6afcf763bb12698d1588437f",
       "due_at": "2026-11-18T01:22:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/3928aaa9471o3a/87db5089306344e0854cffb1b3bf15e6d71b465b.jpg",
       "source": "https://www.rockstargames.com/newswire/article/3928aaa9471o3a/grand-theft-auto-vi-watch-trailer-2-now",
-      "status": "sending"
+      "status": "scheduled"
     }
   },
   "version": 1
