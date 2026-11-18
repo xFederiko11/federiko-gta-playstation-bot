@@ -12,6 +12,15 @@
       "title": "GTA 6 Base PS5 Performance Suffers 'Minor' and 'Sustained' Frame Rate Drops, But It's 'Unwavering' on PS5 Pro",
       "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
     },
+    "4a6b3746800881b206df1617": {
+      "reserved_utc": "2026-11-18T16:38:32.152709+00:00",
+      "run_id": "44349534938",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "💰 GTA Online | Aggiornamento\n\nGTA 6: quali sono i bonus esclusivi per chi è abbonato a GTA+?\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-bonus-esclusivi-chi-abbonato-gta-912358.html\n\n#GTAOnline",
+      "title": "GTA 6: quali sono i bonus esclusivi per chi è abbonato a GTA+?",
+      "url": "https://everyeye.it/notizie/gta-6-bonus-esclusivi-chi-abbonato-gta-912358.html"
+    },
     "5681a5403e143f8366d8877e": {
       "attempted_utc": "2026-11-18T14:58:08.894267+00:00",
       "buffer_id": "6afdbd010a57e5a157152532",
@@ -77,6 +86,13 @@
       "feeds_relevant": 84,
       "reserved": 1,
       "run": "44342476268"
+    },
+    {
+      "at": "2026-11-18T16:38:32.152709+00:00",
+      "errors": [],
+      "feeds_relevant": 83,
+      "reserved": 1,
+      "run": "44349534938"
     }
   ],
   "schema": "v13.7",
@@ -84,6 +100,7 @@
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
-    "island dreams walkthrough": "ac7a72218ee0c5874a13c45d"
+    "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
+    "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617"
   }
 }
