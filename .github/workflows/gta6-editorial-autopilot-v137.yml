@@ -14,6 +14,8 @@ on:
       - 'test_editorial_autopilot_v137.py'
       - 'quick_tips_v146.py'
       - 'test_quick_tips_v146.py'
+      - 'buffer_failed_diagnostics_v147.py'
+      - 'test_buffer_failed_diagnostics_v147.py'
       - 'README.md'
       - 'SECURITY.md'
       - 'test_official_links_free_v140.py'
@@ -105,18 +107,27 @@ jobs:
       - name: Validate code
         run: |
           python -m py_compile editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
-          python -m unittest -q test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146
+          python -m unittest -q test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_buffer_failed_diagnostics_v147
+      - name: Inspect last rejected Buffer thread (read-only)
+        if: github.event_name == 'push'
+        run: python buffer_failed_diagnostics_v147.py
       - name: Preview feeds without publication
         if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
         run: python editorial_autopilot_v137.py --mode preview
       - name: Verify Buffer X destination before reservation
-        if: github.event_name != 'workflow_dispatch' || inputs.action == 'run'
+        if: >-
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_run' ||
+          (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         run: python editorial_autopilot_v137.py --mode preflight
       - name: Reserve one fresh item before any Buffer mutation
         id: reserve
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
-        if: github.event_name != 'workflow_dispatch' || inputs.action == 'run'
+        if: >-
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_run' ||
+          (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         run: |
           git pull --rebase origin "${{ github.event.repository.default_branch }}"
           python editorial_autopilot_v137.py --mode reserve
