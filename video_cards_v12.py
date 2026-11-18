@@ -37,8 +37,14 @@ def video_link_post(event):
     if not url: return None
     header='🎬 GTA VI | VIDEO UFFICIALE ROCKSTAR' if event['game']=='GTA VI' else '🎬 GTA ONLINE | VIDEO UFFICIALE ROCKSTAR'
     title=re.sub(r'\s+',' ',str(event.get('title') or 'Nuovo video Rockstar')).strip()
+    from editorial_language_it import contains_english_prose, italian_title, TranslationUnavailable
+    if contains_english_prose(title):
+        try:
+            title=italian_title(title, 'en')
+        except TranslationUnavailable:
+            return None
     if len(title)>100:
         title=title[:97].rsplit(' ',1)[0]+'…'
     tags='#GTAVI #GTA6' if event['game']=='GTA VI' else '#GTAOnline'
-    text=f'{header}\n{title}\n\nGuarda il video originale: {url}\n{tags}'
+    text=f'{header}\n\n{title}\n\n🔗 Video ufficiale:\n{url}\n\n{tags}'
     return text if len(text)<=280 else None

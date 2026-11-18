@@ -17,6 +17,7 @@ import sources
 import history
 from free_editor import article_events, catalog_event
 from presentation import group_platform_events, render_card, format_post, demo_events
+from editorial_language_it import contains_english_prose, italian_title, TranslationUnavailable
 from buffer_publisher import BufferClient, BufferAPIError, BufferPending, BufferDeliveryFailed
 from editorial_policy import approved_source, event_allowed, history_record_allowed
 from news_center import thread_for_event, news_center_preview
@@ -331,6 +332,16 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             # Il controllo del canale non è una richiesta di pubblicazione.
             # Una configurazione errata lascia la bozza pronta per la correzione.
             client.verify_destination()
+        # V13.8: localise public English titles BEFORE constructing threads or
+        # video cards. If translation is down or unsafe, hold instead of posting.
+        if contains_english_prose(str(event.get('title') or '')):
+            try:
+                event = {**event, 'title': italian_title(str(event['title']), 'en')}
+            except TranslationUnavailable:
+                with db:
+                    db.execute("UPDATE publish_jobs SET status='review',last_error='italian_translation_unavailable' WHERE key=?", (row["key"],))
+                LOG.warning('Notizia non pubblicata: traduzione italiana non disponibile')
+                continue
         thread = thread_for_event(event) if news_center_threads else None
         # Optional official YouTube link card. X controls external player preview;
         # this is never represented as a natively uploaded or licensed video.
@@ -373,6 +384,14 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         # Ricalcola il testo per applicare il SEO editoriale anche alle bozze
         # create prima dell'aggiornamento (mai ai post gia' spediti).
         single_text = video_text or (format_post(event) if thread is None else row["text"])
+        # Fail closed at delivery: no English paragraph can escape via a
+        # pre-existing draft, thread facts or YouTube card.
+        outgoing = list(thread) if thread is not None else [single_text]
+        if any(contains_english_prose(message) for message in outgoing):
+            with db:
+                db.execute("UPDATE publish_jobs SET status='review',last_error='english_text_not_publishable' WHERE key=?", (row["key"],))
+            LOG.warning('Invio trattenuto: testo non completamente italiano')
+            continue
         with db:
             db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
                        (single_text, time.time(), row["key"]))
