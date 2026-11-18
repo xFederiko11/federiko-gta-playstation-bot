@@ -8,6 +8,13 @@
       "source": "https://www.rockstargames.com/VI/only-in-leonida",
       "status": "scheduled"
     },
+    "gta6-editions": {
+      "due_at": "2026-11-18T03:34:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/ULTIMATE_EDITION_02.0q-6.nrtf~jj0.jpg",
+      "source": "https://www.rockstargames.com/VI/editions",
+      "status": "sending"
+    },
     "gta6-grass": {
       "buffer_id": "6afcf77693fa11d37df72a3a",
       "due_at": "2026-11-18T02:46:00+00:00",
