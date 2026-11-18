@@ -1,5 +1,12 @@
 {
   "items": {
+    "gta6-album": {
+      "due_at": "2026-11-18T04:10:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/The_Album_Cover_Art_landscape.000ifb9a.j-gp.jpg",
+      "source": "https://www.rockstargames.com/newswire/article/7599a881942544/announcing-grand-theft-auto-vi-the-album-coming-november-19",
+      "status": "sending"
+    },
     "gta6-ambrosia": {
       "buffer_id": "6afcf779ab47737bddb8b28a",
       "due_at": "2026-11-18T02:58:00+00:00",
