@@ -193,11 +193,12 @@
       "status": "scheduled"
     },
     "ps5-firmware-1423": {
+      "buffer_id": "6afcf7aefc933ac285b37ca1",
       "due_at": "2026-11-18T05:58:00+00:00",
       "image_kind": "official_logo",
       "image_url": "https://blog.playstation.com/tachyon/2026/09/8d4a1fdac2d9ea1bcce9566dc292d2971ffbad46.png?fit=512%2C512",
       "source": "https://www.playstation.com/en-us/support/hardware/ps5/system-software-info/",
-      "status": "sending"
+      "status": "scheduled"
     }
   },
   "version": 1
