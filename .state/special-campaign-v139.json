@@ -10,6 +10,13 @@
       "run_id": "44345860643",
       "status": "sent"
     },
+    "rockstar-leonida-keys-4": {
+      "digest": "73be7df041b2b9f6a33206d074d86d3c8c7ad030200e4ce0afb51499487d20a8",
+      "kind": "gallery",
+      "reserved_utc": "2026-11-18T19:24:35.076663+00:00",
+      "run_id": "44380181366",
+      "status": "reserved"
+    },
     "rockstar-lucia-4": {
       "attempted_utc": "2026-11-18T18:15:06.562176+00:00",
       "buffer_id": "6afdeb2a16b41ab07a6dd7b7",
