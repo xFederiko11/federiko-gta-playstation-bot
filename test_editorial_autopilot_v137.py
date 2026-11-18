@@ -142,6 +142,7 @@ class EditorialV137Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp, patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
              patch.object(bot, 'read_feeds', return_value=([article(date=now)], [])), \
              patch.object(bot, 'load_sources', return_value=[]), \
+             patch('quick_tips_v146.candidate', return_value=None), \
              patch.dict(os.environ, {'GITHUB_RUN_ID': '123456'}):
             bot.reserve()
             bot.reserve()
