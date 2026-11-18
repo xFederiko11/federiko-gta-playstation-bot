@@ -105,11 +105,12 @@
       "status": "scheduled"
     },
     "gta6-vintage": {
+      "buffer_id": "6afcf783bb12698d158854ae",
       "due_at": "2026-11-18T03:46:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/VINTAGE_VICE_CITY_PACK_01.05zaof7o1uz.3.jpg",
       "source": "https://www.rockstargames.com/newswire/article/5171972o3ak5oa/pre-order-grand-theft-auto-vi-on-june-25",
-      "status": "sending"
+      "status": "scheduled"
     }
   },
   "version": 1
