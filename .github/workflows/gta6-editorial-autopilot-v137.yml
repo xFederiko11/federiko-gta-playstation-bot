@@ -4,6 +4,15 @@ on:
   workflow_run:
     workflows: ["GTA Monitor gratuito"]
     types: [completed]
+  # Independent schedule: protects against delayed/missed upstream workflow_run events.
+  schedule:
+    - cron: '*/10 * 18-20 11 *'
+    - cron: '7,27,47 * 21-30 11 *'
+    - cron: '7,37 * 1-15 12 *'
+  # Kick an immediate launch check when this workflow file is deployed to main.
+  push:
+    branches: [main]
+    paths: ['.github/workflows/gta6-editorial-autopilot-v137.yml']
   workflow_dispatch:
     inputs:
       action:
@@ -25,6 +34,9 @@ jobs:
     if: >-
       github.event.repository.private == false &&
       ((github.event_name == 'workflow_dispatch') ||
+       ((github.event_name == 'schedule' || github.event_name == 'push') &&
+        vars.AUTO_PUBLISH == 'true' &&
+        vars.EDITORIAL_AUTOPILOT_V137_ENABLED != 'false') ||
        (github.event_name == 'workflow_run' &&
         github.event.workflow_run.conclusion == 'success' &&
         github.event.workflow_run.event == 'schedule' &&
@@ -59,11 +71,11 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
         run: python editorial_autopilot_v137.py --mode preview
       - name: Verify Buffer X destination before reservation
-        if: github.event_name == 'workflow_run' || inputs.action == 'run'
+        if: github.event_name != 'workflow_dispatch' || inputs.action == 'run'
         run: python editorial_autopilot_v137.py --mode preflight
       - name: Reserve one fresh item before any Buffer mutation
         id: reserve
-        if: github.event_name == 'workflow_run' || inputs.action == 'run'
+        if: github.event_name != 'workflow_dispatch' || inputs.action == 'run'
         run: |
           git pull --rebase origin "${{ github.event.repository.default_branch }}"
           python editorial_autopilot_v137.py --mode reserve
