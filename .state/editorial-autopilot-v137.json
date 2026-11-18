@@ -1,10 +1,13 @@
 {
   "entries": {
     "ac7a72218ee0c5874a13c45d": {
+      "attempted_utc": "2026-11-18T14:43:25.549644+00:00",
+      "buffer_id": "6afdb98d7a1c17d8bbd36da1",
+      "completed_utc": "2026-11-18T14:43:26.968408+00:00",
       "reserved_utc": "2026-11-18T14:43:23.915053+00:00",
       "run_id": "44327320659",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | VGC pubblica: GTA 6 Island Dreams Walkthrough\n#GTAVI #GTA6\nFonte: https://videogameschronicle.com/guide/gta-6-island-dreams-walkthrough",
       "title": "GTA 6 Island Dreams Walkthrough",
       "url": "https://videogameschronicle.com/guide/gta-6-island-dreams-walkthrough"
