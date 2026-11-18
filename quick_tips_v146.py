@@ -68,11 +68,11 @@ TIPS=[
         "source_url":"https://www.powerpyx.com/gta-6-all-meditation-spot-locations/",
         "media_url":IMAGES["meditation"],
         "main":(
-            "⚠️ GTA VI | Attività perdibile nel Capitolo 1!\n\n"
-            "1️⃣ Quando Lucia dice che andrà a meditare, seguila sul balcone.\n"
-            "2️⃣ Inquadrala tenendo premuto L2.\n"
-            "3️⃣ Accetta l’attività di meditazione.\n\n"
-            "💾 Fai prima un salvataggio manuale. PowerPyx sta verificando l’impatto sul trofeo.\n\n"
+            "⚠️ GTA VI | Meditazione nel Capitolo 1\n\n"
+            "1️⃣ Quando Lucia va a meditare, seguila sul balcone.\n"
+            "2️⃣ Inquadrala con L2.\n"
+            "3️⃣ Seleziona «Accetta».\n\n"
+            "💾 Evento perdibile! Non è ancora confermato se serva al trofeo: salva prima.\n\n"
             "#GTAVI #Platino"),
     },
     {
