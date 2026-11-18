@@ -12,6 +12,8 @@ on:
       - 'video_cards_v12.py'
       - 'test_editorial_language_it.py'
       - 'test_editorial_autopilot_v137.py'
+      - 'test_official_links_free_v140.py'
+      - '.github/workflows/gta-monitor.yml'
       - '.github/workflows/gta6-editorial-autopilot-v137.yml'
   workflow_run:
     workflows: ["GTA Monitor gratuito"]
@@ -59,7 +61,7 @@ jobs:
       - name: Check Italian-only policy without publishing
         run: |
           python -m py_compile editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py
-          python -m unittest -q test_editorial_language_it test_editorial_autopilot_v137
+          python -m unittest -q test_editorial_language_it test_editorial_autopilot_v137 test_official_links_free_v140
 
   editorial:
     if: >-
