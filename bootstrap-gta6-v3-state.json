@@ -104,6 +104,13 @@
       "source": "https://www.rockstargames.com/newswire/article/o3982oa93a23k4/the-music-of-grand-theft-auto-vi-in-game-radio-stations",
       "status": "scheduled"
     },
+    "gta6-trailer": {
+      "due_at": "2026-11-18T04:34:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/GTAVI_Launch_Trailer_poster.0_q-sdrgufc.s.jpg",
+      "source": "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
+      "status": "sending"
+    },
     "gta6-trailer1": {
       "buffer_id": "6afcf76193fa11d37df72274",
       "due_at": "2026-11-18T01:10:00+00:00",
