@@ -1,0 +1,78 @@
+name: GTA VI - Editorial Bridge v13.6 (one-time launch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'preview = no publish; run = publish only new reserved curated launch posts'
+        type: choice
+        options: [preview, run]
+        required: true
+        default: preview
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gta-vi-editorial-bridge-v136
+  cancel-in-progress: false
+
+jobs:
+  editorial:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONUNBUFFERED: '1'
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+      BUFFER_EXPECTED_USERNAME: xFederiko11
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install minimal dependency
+        run: python -m pip install requests
+      - name: Validate Python
+        run: python -m py_compile editorial_bridge_v136.py buffer_publisher.py
+      - name: Preview five verified editorial candidates (no Buffer mutation)
+        if: inputs.action == 'preview'
+        run: python editorial_bridge_v136.py --mode preview
+      - name: Verify Buffer X destination before any reservation
+        if: inputs.action == 'run'
+        run: python editorial_bridge_v136.py --mode preflight
+      - name: Reserve five posts before any Buffer mutation
+        if: inputs.action == 'run'
+        run: |
+          git pull --rebase origin main
+          python editorial_bridge_v136.py --mode reserve
+          if [ -f .state/editorial-bridge-v136.json ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f .state/editorial-bridge-v136.json
+            if ! git diff --cached --quiet; then
+              git commit -m 'Reserve v13.6 editorial topics before Buffer calls'
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          fi
+      - name: Send unique reserved posts to Buffer (no auto retry)
+        if: inputs.action == 'run'
+        run: python editorial_bridge_v136.py --mode deliver
+      - name: Persist delivery report
+        if: always() && inputs.action == 'run'
+        run: |
+          if [ -f .state/editorial-bridge-v136.json ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f .state/editorial-bridge-v136.json
+            if ! git diff --cached --quiet; then
+              git commit -m 'Record v13.6 editorial Buffer outcome'
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          fi
