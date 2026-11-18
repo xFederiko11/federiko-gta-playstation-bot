@@ -52,7 +52,9 @@ jobs:
       - name: Install minimal dependencies
         run: python -m pip install -r requirements-free.txt
       - name: Validate code
-        run: python -m py_compile editorial_autopilot_v137.py buffer_publisher.py
+        run: |
+          python -m py_compile editorial_autopilot_v137.py buffer_publisher.py test_editorial_autopilot_v137.py
+          python -m unittest -q test_editorial_autopilot_v137
       - name: Preview feeds without publication
         if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
         run: python editorial_autopilot_v137.py --mode preview
