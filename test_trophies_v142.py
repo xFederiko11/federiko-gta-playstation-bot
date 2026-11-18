@@ -56,7 +56,10 @@ class TrophySiteTests(unittest.TestCase):
             hidden=(Path(temp)/'trofeo-07.html').read_text(encoding='utf-8')
             self.assertIn('noindex,follow',hidden)
             sitemap=(Path(temp)/'sitemap.xml').read_text(encoding='utf-8')
-            self.assertEqual(sitemap.count('<url>'),28)
+            self.assertEqual(sitemap.count('<url>'),29)
+            gold=(Path(temp)/'guida-medaglie-oro.html').read_text(encoding='utf-8')
+            self.assertIn('42 medaglie Oro',gold)
+            self.assertIn('non prevede medaglie Oro per le missioni',gold)
 
     def test_only_two_trophy_posts_each_utc_day_and_no_old_duplication(self):
         from datetime import datetime, timezone, timedelta
