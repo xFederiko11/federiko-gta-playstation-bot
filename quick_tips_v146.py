@@ -20,6 +20,7 @@ IMAGES={
     "activities":"https://www.rockstargames.com/VI/_next/static/media/Vice_City_03.0nqz~lrqdmlze.jpg?akim=1&imdensity=1&imwidth=3840",
     "meditation":"https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_02.16n.5umvlu_48.jpg?akim=1&imdensity=1&imwidth=3840",
     "ranges":"https://www.rockstargames.com/VI/_next/static/media/Vice_City_04.06evqutgh7624.jpg?akim=1&imdensity=1&imwidth=3840",
+    "taxi":"https://www.rockstargames.com/VI/_next/static/media/Vice_City_01.135x56yoeu.6t.jpg?akim=1&imdensity=1&imwidth=3840",
 }
 TIPS=[
     {
@@ -73,6 +74,19 @@ TIPS=[
             "3️⃣ Accetta l’attività di meditazione.\n\n"
             "💾 Fai prima un salvataggio manuale. PowerPyx sta verificando l’impatto sul trofeo.\n\n"
             "#GTAVI #Platino"),
+    },
+    {
+        "id":"fast travel taxi",
+        "title":"GTA VI PS5: sblocca il viaggio rapido con il taxi",
+        "source_url":"https://www.powerpyx.com/gta-6-how-to-fast-travel/",
+        "media_url":IMAGES["taxi"],
+        "main":(
+            "🚕 GTA VI | VIAGGIO RAPIDO SU PS5!\n\n"
+            "1️⃣ Dopo la prima missione: telefono → Contatti → Paradise Taxi.\n"
+            "2️⃣ Segna la meta sulla mappa e sali sul taxi.\n"
+            "3️⃣ Tieni premuto L2 e premi △: viaggio immediato per 100 $.\n\n"
+            "⚡ Evita lunghi spostamenti tra le missioni!\n\n"
+            "#GTAVI #GTA6"),
     },
     {
         "id":"shooting ranges",
