@@ -125,20 +125,30 @@ def validate():
 def reply(t):
     return "📖 Fonte: PowerPyx\n\n🔗 Procedura completa e dettagli:\n"+t["source_url"]+"\n\n📸 Foto illustrativa: Rockstar Games."
 
+def _reserved_time(value):
+    """Reservation dates are RFC3339 ISO timestamps, not RSS publication dates."""
+    if not value:
+        return None
+    try:
+        result=datetime.fromisoformat(str(value).replace("Z","+00:00"))
+        return result.astimezone(timezone.utc) if result.tzinfo is not None else None
+    except (ValueError,TypeError):
+        return None
+
 def candidate(state,now):
     """One already-verified quick tip; no false promise of live scraping."""
     if now.tzinfo is None:raise ValueError("UTC aware datetime required")
     now=now.astimezone(timezone.utc)
     if not (datetime(2026,11,18,tzinfo=timezone.utc)<=now<datetime(2026,12,16,tzinfo=timezone.utc)):
         return None
-    from editorial_autopilot_v137 import identity,similarity_key,MAX_POSTS_DAY,MIN_SPACING_MIN,published
+    from editorial_autopilot_v137 import similarity_key,MAX_POSTS_DAY,MIN_SPACING_MIN
     entries=state["entries"]
-    stamps=[published(e.get("reserved_utc")) for e in entries.values() if e.get("reserved_utc")]
+    stamps=[_reserved_time(e.get("reserved_utc")) for e in entries.values() if e.get("reserved_utc")]
     stamps=[dt for dt in stamps if dt is not None]
     if sum(dt.date()==now.date() for dt in stamps)>=MAX_POSTS_DAY:return None
     if stamps and now-max(stamps)<timedelta(minutes=MIN_SPACING_MIN):return None
     tip_entries=[e for e in entries.values() if e.get("source")=="PowerPyx Tips"]
-    tip_times=[published(e.get("reserved_utc")) for e in tip_entries if e.get("reserved_utc")]
+    tip_times=[_reserved_time(e.get("reserved_utc")) for e in tip_entries if e.get("reserved_utc")]
     tip_times=[dt for dt in tip_times if dt is not None]
     if sum(dt.date()==now.date() for dt in tip_times)>=MAX_PER_DAY:return None
     if tip_times and now-max(tip_times)<GAP:return None
