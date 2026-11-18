@@ -1,11 +1,14 @@
 {
   "entries": {
     "gta-plus-gtavi-20261118": {
+      "attempted_utc": "2026-11-18T16:19:32.085255+00:00",
+      "buffer_id": "6afdd0140a7aa6dca2cccecb",
+      "completed_utc": "2026-11-18T16:19:33.480111+00:00",
       "digest": "b3e04d499a177f2495903d98b59fb54df7d6bc9968bcaa626c471d6f2f7abcdc",
       "kind": "article",
       "reserved_utc": "2026-11-18T16:19:30.169426+00:00",
       "run_id": "44345860643",
-      "status": "reserved"
+      "status": "sent"
     }
   },
   "schema": "special-campaign-v139"
