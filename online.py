@@ -7,6 +7,8 @@ import json
 import logging
 import os
 from pathlib import Path
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 import sqlite3
 import subprocess
 import time
@@ -28,15 +30,31 @@ class FreeQuotaExceeded(RuntimeError):
     pass
 
 
+def essentials_window_active():
+    """Explicit temporary plan, with an automatic conservative safety sunset.
+
+    Never presume the Buffer subscription renewed. After the indicated day the
+    bot reverts to Free local guards even if the repository variable is stale.
+    """
+    if os.getenv('BUFFER_PLAN', 'free').casefold() != 'essentials':
+        return False
+    try:
+        return date.today() <= date.fromisoformat(os.getenv('BUFFER_PAID_THROUGH', '2026-12-15'))
+    except ValueError:
+        return False
+
+
 class FreeRequestBudget:
-    """Riserve locali sotto le quote Free: comprende letture, errori e invii."""
+    """Conservative request quotas for the active Buffer plan."""
     def __init__(self, db):
         self.db = db
         db.execute("CREATE TABLE IF NOT EXISTS buffer_requests (at REAL NOT NULL)")
 
     def __call__(self):
         stamp = time.time()
-        for seconds, maximum in ((900, 100), (86400, 40), (30 * 86400, 900)):
+        quotas = ((900, 100), (86400, 170), (30 * 86400, 2600)) if essentials_window_active() \
+                 else ((900, 100), (86400, 40), (30 * 86400, 900))
+        for seconds, maximum in quotas:
             count = self.db.execute("SELECT count(*) FROM buffer_requests WHERE at>?", (stamp - seconds,)).fetchone()[0]
             if count >= maximum:
                 raise FreeQuotaExceeded("Quota locale gratuita raggiunta: gli invii restano in attesa")
@@ -79,6 +97,55 @@ def get_meta(db, key):
     return row[0] if row else None
 
 
+def prioritize_ps5_and_launch_sources(config, today=None):
+    """PS5/PS5 Pro news only; faster primary-source polling during launch."""
+    today = today or datetime.now(ZoneInfo('Europe/Berlin')).date()
+    firmware = config.get('system_software', {})
+    if firmware.get('enabled'):
+        # PS5 system software also covers PS5 Pro. Exclude separate PS4 reports.
+        firmware['platforms'] = ['PS5']
+    if date(2026, 11, 18) <= today <= date(2026, 11, 22):
+        if firmware.get('enabled'):
+            firmware['interval'] = 300
+        for source in config.get('sources', []):
+            if source.get('id') == 'newswire':
+                source['interval'] = 300
+            elif source.get('id') == 'youtube':
+                source['interval'] = 300
+            elif source.get('id') == 'support-gta':
+                source['interval'] = 900
+    config['ps5_focus'] = True
+    return config
+
+
+def source_is_ps5_relevant(event):
+    """Ignore PS4-only items; retain PS5/Pro and truly cross-platform GTA news."""
+    platforms = event.get('platforms') or []
+    if isinstance(platforms, str):
+        platforms = [platforms]
+    if not platforms:
+        return True
+    labels = [str(x).strip().casefold().replace(' ', '') for x in platforms]
+    return any(x.startswith('ps5') or x.startswith('playstation5') or
+               x in {'common', 'all', 'comune', 'tutte'} for x in labels)
+
+
+def refresh_launch_poll_deadlines(db, config, today=None):
+    """Honor faster new intervals without overriding provider failure backoff."""
+    today = today or datetime.now(ZoneInfo('Europe/Berlin')).date()
+    if not (date(2026, 11, 18) <= today <= date(2026, 11, 22)):
+        return
+    candidates = [(s['id'], int(s.get('interval', 900))) for s in config.get('sources', [])
+                  if s.get('enabled', True)]
+    if config.get('system_software', {}).get('enabled'):
+        candidates.append(('system:PS5', int(config['system_software'].get('interval', 300))))
+    with db:
+        for identifier, delay in candidates:
+            db.execute("""UPDATE monitors SET next_due=last_success+?
+                         WHERE id=? AND last_error IS NULL AND last_success IS NOT NULL
+                         AND next_due>last_success+?""", (delay, identifier, delay))
+
+
 def source_policy(config):
     # Nessuna via indiretta verso API a pagamento, nemmeno con vecchie chiavi presenti.
     if any(s.get("enabled", True) and s["type"] == "x" for s in config["sources"]):
@@ -97,7 +164,7 @@ def collect_system_updates(db, config, fetcher=None):
     if not settings.get("enabled"):
         return 0
     errors = 0
-    for platform in settings.get("platforms", ["PS5", "PS4"]):
+    for platform in settings.get("platforms", ["PS5"]):
         identifier = "system:" + platform
         row = db.execute("SELECT * FROM monitors WHERE id=?", (identifier,)).fetchone()
         stamp = time.time()
@@ -178,6 +245,8 @@ def prepare_jobs(db, config):
         events.extend(event for event in article_events(item, config.get("allow_community_fallback", False))
                       if event_allowed(event, config.get("publication_policy", {})))
     grouped = group_platform_events(events)
+    if config.get('ps5_focus'):
+        grouped = [event for event in grouped if source_is_ps5_relevant(event)]
     with db:
         for event in grouped:
             # Fonte e orario di lettura non rendono diversa la stessa notizia.
@@ -249,8 +318,9 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                       (time.time() - 86400,)).fetchone()[0]
     for row in db.execute("SELECT * FROM publish_jobs WHERE status='draft' AND next_attempt<=? ORDER BY created_at,key",
                           (time.time(),)).fetchall():
-        if sent >= 20:
-            LOG.warning("Limite locale di 20 invii/giorno: altre bozze conservate")
+        daily_limit = 40 if essentials_window_active() else 20
+        if sent >= daily_limit:
+            LOG.warning("Limite prudenziale di %s invii/giorno: altre bozze conservate", daily_limit)
             break
         event = json.loads(row["event_json"])
         if event.get("demo"):
@@ -355,7 +425,7 @@ def export_public_history(db, destination, policy):
         payload["gaps"] = [gap for gap in payload.get("gaps", [])
                            if gap.get("platform", "").startswith("PS") and gap.get("source_url", "").startswith("https://store.playstation.com/")]
         payload.pop("research_candidates", None)
-        payload["coverage"] = {"scope": "GTA comuni e PlayStation; software di sistema PS5/PS4", "official_only": True,
+        payload["coverage"] = {"scope": "GTA e PlayStation; software di sistema PS5 e PS5 Pro", "official_only": True,
                                "starts_with_official_preload": "2026-11-10", "complete": False,
                                "first_downloadable_build_verified": False,
                                "notes": "Sono inclusi soltanto dati di fonti ufficiali. Le build iniziali non verificabili restano mancanti."}
@@ -413,7 +483,7 @@ def main():
     health_path = ROOT / "monitor-health.json"
     load_health(db, health_path)
     original_fingerprint = meaningful_fingerprint(db)
-    config = sources.load_config(args.config)
+    config = prioritize_ps5_and_launch_sources(sources.load_config(args.config))
     source_policy(config)
     mode = os.getenv("RUN_MODE", "check")
     publishing_enabled = os.getenv("AUTO_PUBLISH", "false").strip().lower() == "true"
@@ -435,6 +505,7 @@ def main():
                     print(json.dumps({key: channel.get(key) for key in ("id", "name", "service", "externalLink")}, ensure_ascii=False))
             return
         # Le fonti dirette sono controllate prima di qualsiasi fallback.
+        refresh_launch_poll_deadlines(db, config)
         errors += sources.poll(db, config, client=None)
         if config.get("collect_xbox_catalog", False):
             try:
