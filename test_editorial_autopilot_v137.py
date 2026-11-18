@@ -77,7 +77,7 @@ class EditorialV137Tests(unittest.TestCase):
 
     def test_keywords_attribution_character_budget(self):
         text = bot.post_text(article())
-        self.assertIn('Fonte: https://', text)
+        self.assertIn('Fonte: VGC\nhttps://', text)
         self.assertIn('#GTAVI', text)
         self.assertIn('VGC', text)
         self.assertLessEqual(bot.weight_x(text), 280)
