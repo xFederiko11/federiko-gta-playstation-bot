@@ -12,6 +12,19 @@
       "title": "GTA 6 Down To Earth Mission Walkthrough",
       "url": "https://videogameschronicle.com/guide/gta-6-down-to-earth-mission-walkthrough"
     },
+    "11fab389461a1bb02dddafd8": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_01.0zgz7tveur6y8.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-18T21:18:33.966696+00:00",
+      "run_id": "44400035524",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥇 GTA VI | ORO: Una lunga strada\n\n🎯 Raggiungi il 100% nella checklist di completamento di GTA VI.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/federiko-gta-playstation-bot/trofeo-14.html\n\n#GTAVI #Platino",
+      "thread": null,
+      "tip_id": null,
+      "title": "Una lunga strada",
+      "trophy_number": 14,
+      "url": "https://xfederiko11.github.io/federiko-gta-playstation-bot/trofeo-14.html"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -257,6 +270,13 @@
       "feeds_relevant": 97,
       "reserved": 1,
       "run": "44397934446"
+    },
+    {
+      "at": "2026-11-18T21:18:33.966696+00:00",
+      "errors": [],
+      "feeds_relevant": 94,
+      "reserved": 1,
+      "run": "44400035524"
     }
   ],
   "schema": "v13.7",
@@ -273,6 +293,7 @@
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
+    "una lunga strada": "11fab389461a1bb02dddafd8",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
 }
