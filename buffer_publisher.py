@@ -348,6 +348,12 @@ class BufferClient:
             raise ValueError("Il thread deve contenere da 2 a 5 post")
         if any(not isinstance(t, str) or not t.strip() or _post_weight(t) > 280 for t in posts):
             raise ValueError("Ogni post del thread deve essere testo valido entro 280 caratteri pesati")
+        if media_url is not None:
+            # A photo attached to the first X post consumes extra text budget.
+            # Keep 45 characters spare for the attachment and Unicode counting.
+            from editorial_seo_v135 import x_weight
+            if x_weight(posts[0]) > 235:
+                raise ValueError("Il post con foto supera il budget prudente di 235 caratteri")
         if self.destination is None:
             self.verify_destination()
         items = [{"text": t, "assets": []} for t in posts]
