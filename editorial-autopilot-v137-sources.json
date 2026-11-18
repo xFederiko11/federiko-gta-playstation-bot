@@ -27,8 +27,9 @@
     },
     {
       "name": "IGN",
-      "feed": "https://www.ign.com/rss/v2/articles/feed",
+      "feed": "https://feeds.feedburner.com/ign/games-all",
       "feed_domains": [
+        "feeds.feedburner.com",
         "www.ign.com",
         "ign.com"
       ],

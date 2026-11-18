@@ -21,9 +21,9 @@ import requests
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
 MAX_DOWNLOAD = 1_800_000
-MAX_AGE_MIN = 180
-MAX_POSTS_DAY = 8
-MIN_SPACING_MIN = 25
+MAX_AGE_MIN = 720  # catch up on timely launch-day coverage, not only latest 3 hours
+MAX_POSTS_DAY = 16
+MIN_SPACING_MIN = 12
 RUN_LIMIT = 1
 BRIDGE_URLS = {
     'https://www.videogameschronicle.com/review/grand-theft-auto-6/',
@@ -194,9 +194,12 @@ def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[s
                         raise ValueError('Excessive feed size')
             finally:
                 response.close()
-            items.extend(parse_feed(bytes(data), src))
+            found = list(parse_feed(bytes(data), src))
+            items.extend(found)
+            print(f"FEED_OK {src['name']}: qualifying={len(found)} bytes={len(data)}")
         except (requests.RequestException, ET.ParseError, ValueError, KeyError, TypeError) as exc:
             errors.append(f"{src['name']}: {type(exc).__name__}")
+            print(f"FEED_ERROR {src['name']}: {type(exc).__name__}")
     return items, errors
 
 def load_state(path: Path | None = None) -> dict:
