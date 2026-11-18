@@ -1,5 +1,14 @@
 {
   "entries": {
+    "41b163b5da10f556bcd230fd": {
+      "reserved_utc": "2026-11-18T16:02:20.828692+00:00",
+      "run_id": "44342476268",
+      "source": "Push Square",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nLe prestazioni di base di GTA 6 su PS5 subiscono cali di frame rate \"minori\" e \"prolungati\", ma sono \"costanti\" su PS5 Pro\n\n🔗 Fonte: Push Square\nhttps://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro\n\n#GTAVI #GTA6",
+      "title": "GTA 6 Base PS5 Performance Suffers 'Minor' and 'Sustained' Frame Rate Drops, But It's 'Unwavering' on PS5 Pro",
+      "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
+    },
     "5681a5403e143f8366d8877e": {
       "attempted_utc": "2026-11-18T14:58:08.894267+00:00",
       "buffer_id": "6afdbd010a57e5a157152532",
@@ -58,10 +67,18 @@
       "feeds_relevant": 83,
       "reserved": 1,
       "run": "44337235106"
+    },
+    {
+      "at": "2026-11-18T16:02:20.828692+00:00",
+      "errors": [],
+      "feeds_relevant": 84,
+      "reserved": 1,
+      "run": "44342476268"
     }
   ],
   "schema": "v13.7",
   "signatures": {
+    "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d"
