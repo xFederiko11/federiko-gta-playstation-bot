@@ -17,6 +17,9 @@ on:
       - 'portal_links_v148.py'
       - 'test_portal_links_v148.py'
       - 'test_quick_tips_v146.py'
+      - 'editorial-calendar-v149.json'
+      - 'legacy_pages_redirect_v149.py'
+      - 'test_legacy_pages_redirect_v149.py'
       - 'buffer_failed_diagnostics_v147.py'
       - 'test_buffer_failed_diagnostics_v147.py'
       - 'README.md'
@@ -128,6 +131,7 @@ jobs:
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
           GTA6_PORTAL_LINKS_ENABLED: 'true'
+          TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'false' }}
         if: >-
           github.event_name == 'schedule' ||
           github.event_name == 'workflow_run' ||
