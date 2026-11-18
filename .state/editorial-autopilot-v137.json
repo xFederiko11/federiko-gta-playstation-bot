@@ -61,10 +61,13 @@
       "url": "https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on"
     },
     "cf7793967a1cc2f2b0e9b348": {
+      "attempted_utc": "2026-11-18T17:08:52.712020+00:00",
+      "buffer_id": "6afddba4e87060d86b756ab8",
+      "completed_utc": "2026-11-18T17:08:54.158704+00:00",
       "reserved_utc": "2026-11-18T17:08:49.803464+00:00",
       "run_id": "44355288606",
       "source": "GameSpot",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nTutte le stazioni radio e le canzoni di GTA 6\n\n🔗 Fonte: GameSpot\nhttps://gamespot.com/articles/all-gta-6-radio-stations-and-songs\n\n#GTAVI #GTA6",
       "title": "All GTA 6 Radio Stations And Songs",
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
