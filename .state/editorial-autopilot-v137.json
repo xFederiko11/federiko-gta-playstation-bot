@@ -1,10 +1,13 @@
 {
   "entries": {
     "0ed4e0d113e0fbc30bd97875": {
+      "attempted_utc": "2026-11-18T18:10:12.872063+00:00",
+      "buffer_id": "6afdea05c71477154fa873fd",
+      "completed_utc": "2026-11-18T18:10:14.206670+00:00",
       "reserved_utc": "2026-11-18T18:10:10.062913+00:00",
       "run_id": "44366679749",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nGTA 6 Guida alla missione \"Con i piedi per terra\"\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-down-to-earth-mission-walkthrough\n\n#GTAVI #GTA6",
       "title": "GTA 6 Down To Earth Mission Walkthrough",
       "url": "https://videogameschronicle.com/guide/gta-6-down-to-earth-mission-walkthrough"
