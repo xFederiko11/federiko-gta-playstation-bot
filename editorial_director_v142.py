@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
+import hashlib
 
 STATE_DIR=Path(".state")
 MIN_GAP=timedelta(minutes=22)
@@ -43,6 +44,7 @@ def read_reservations(root:Path|None=None):
         "special-campaign-v139.json":"entries",
         "launch-watch-v134.json":"posts",
         "trophies-v142.json":"entries",
+        "monitor-publication-v142.json":"entries",
     }
     result=[]
     for filename,field in names.items():
@@ -77,6 +79,38 @@ def allowed(now:datetime, *,root:Path|None=None, gap:timedelta=MIN_GAP)->tuple[b
 
 def candidate_sort_key(item):
     return (-priority(item["title"],item.get("source","")),item["published"])
+
+def note_monitor_attempt(event:dict, now:datetime, root:Path|None=None):
+    """Append a privacy-minimal monitor publication reservation BEFORE Buffer.
+
+    The monitor Action commits this file on completion. Combined with a global
+    Actions concurrency group, subsequent jobs can observe its timestamp.
+    """
+    if os.getenv("EDITORIAL_DIRECTOR_V142_ENABLED","false").lower()!="true":
+        return
+    root=root or STATE_DIR
+    root.mkdir(exist_ok=True,parents=True)
+    path=root/"monitor-publication-v142.json"
+    if path.exists():
+        state=json.loads(path.read_text(encoding="utf-8"))
+        if state.get("schema")!="monitor-publication-v142":
+            raise ValueError("Unknown monitor posting ledger")
+    else:
+        state={"schema":"monitor-publication-v142","entries":{}}
+    source=str(event.get("event_key") or event.get("source_url") or "new_event")
+    identifier=os.getenv("GITHUB_RUN_ID","local") + "-" + hashlib.sha256(source.encode()).hexdigest()[:16]
+    if identifier in state["entries"]:
+        raise ValueError("Duplicate monitor publish attempt")
+    state["entries"][identifier]={
+        "reserved_utc":now.astimezone(timezone.utc).isoformat(),
+        "status":"attempted","kind":"official-monitor"}
+    # Truncate bounded historical entries; old records are still in encrypted bot state.
+    if len(state["entries"])>400:
+        state["entries"]=dict(list(state["entries"].items())[-400:])
+    temp=path.with_suffix(".tmp")
+    temp.write_text(json.dumps(state,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    temp.replace(path)
+
 
 def explain():
     items=read_reservations()
