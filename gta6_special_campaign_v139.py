@@ -60,7 +60,7 @@ POSTS = [
         "text": "📸 GTA VI | Lucia Caminos\n\nQuattro screenshot ufficiali Rockstar Games.\n\n#GTAVI #GTA6",
         "source": OFFICIAL_MEDIA,
         "images": [
-            "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_01.0a7yqvewctkfp.jpg?akim=1&imdensity=1&imwidth=3840",
+            "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_05.0i5b7k6a7_w6p.jpg?akim=1&imdensity=1&imwidth=3840",
             "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_02.16n.5umvlu_48.jpg?akim=1&imdensity=1&imwidth=3840",
             "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_03.14xgd2y_ymmeg.jpg?akim=1&imdensity=1&imwidth=3840",
             "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_04.04kb_~4ubn3wn.jpg?akim=1&imdensity=1&imwidth=3840",
@@ -83,6 +83,8 @@ POSTS = [
 
 
 def check_config() -> None:
+    from image_registry_v12 import identity, archive_images
+    archived = archive_images(Path("bootstrap-gta6-v3-state.json"))
     ids, seen_images = set(), set()
     for post in POSTS:
         if post["id"] in ids:
@@ -100,7 +102,8 @@ def check_config() -> None:
                 u = urlsplit(url)
                 if (u.scheme != "https" or u.hostname != "www.rockstargames.com"
                         or not u.path.startswith("/VI/_next/static/media/")
-                        or not u.path.endswith(".jpg") or url in seen_images):
+                        or not u.path.endswith(".jpg") or url in seen_images
+                        or identity(url) in archived):
                     raise ValueError("Invalid, unrelated, or reused Rockstar image")
                 seen_images.add(url)
 
