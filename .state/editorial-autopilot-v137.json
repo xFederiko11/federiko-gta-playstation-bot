@@ -64,6 +64,19 @@
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
     },
+    "590290210b2200c5d7053bec": {
+      "media_url": null,
+      "reserved_utc": "2026-11-18T22:00:20.774523+00:00",
+      "run_id": "44407202228",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🏆 GTA VI | Guida PowerPyx\n\nSoluzione completa di GTA 6 – Tutte le missioni\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-full-walkthrough-all-missions\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Full Walkthrough – All Missions",
+      "trophy_number": null,
+      "url": "https://powerpyx.com/gta-6-full-walkthrough-all-missions"
+    },
     "5b71297dad5452b87340282b": {
       "attempted_utc": "2026-11-18T21:06:22.600675+00:00",
       "buffer_id": "6afe134e3f6dbb9998c3af56",
@@ -280,6 +293,13 @@
       "feeds_relevant": 94,
       "reserved": 1,
       "run": "44400035524"
+    },
+    {
+      "at": "2026-11-18T22:00:20.774523+00:00",
+      "errors": [],
+      "feeds_relevant": 95,
+      "reserved": 1,
+      "run": "44407202228"
     }
   ],
   "schema": "v13.7",
@@ -289,6 +309,7 @@
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
+    "full walkthrough all missions": "590290210b2200c5d7053bec",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
