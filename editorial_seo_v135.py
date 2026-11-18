@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from urllib.parse import urlsplit
+from editorial_language_it import italian_title, TranslationUnavailable
 
 URL = re.compile(r'https?://[^\s<>]+', re.I)
 TAG = re.compile(r'(?<!\w)#[A-Za-z0-9_]+')
@@ -96,24 +97,30 @@ def compose_official_alert(headline: str, url: str) -> str | None:
             ('rockstargames.com', 'www.rockstargames.com')
             or not parts.path.startswith('/newswire/article/') or parts.username or parts.password):
         return None
-    title = re.sub(r'\s+', ' ', headline).strip()
+    try:
+        title = italian_title(headline, 'en')
+    except TranslationUnavailable:
+        return None
     if not title or len(title) < 10:
         return None
-    category = category_from_title(title)
-    # Watcher covers official GTA VI news only: generic or GTA Online must not
-    # become a GTA VI breaking alert just because of a tag in the Newswire URL.
+    # The category is determined from the original headline, not the translation.
+    category = category_from_title(headline)
     if category != 'vi':
         return None
-    prefix = '🚨 GTA VI (GTA 6) | Rockstar Games\n📰 '
-    suffix = '\nFonte ufficiale: ' + url
-    # Keep headroom for the hashtag(s) and Unicode weighting.
+    prefix = '🚨 GTA VI | Rockstar Games\n\n📰 '
+    suffix = '\n\n🔗 Fonte ufficiale:\n' + url
+    # Keep separate paragraphs for readability. Do not sacrifice the source URL.
     for max_title in range(min(190, len(title)), 19, -1):
         clipped = title if len(title) <= max_title else title[:max_title - 1].rstrip() + '…'
         post = prefix + clipped + suffix
-        if x_weight(post) > 260:
+        if x_weight(post) > 257:
             continue
         try:
-            return finish(post, category=category, official_title=title)
+            result = finish(post, category=category, official_title=headline)
         except ValueError:
             continue
+        # Separate SEO tags from the original source.
+        result = result.replace('\n#GTAVI', '\n\n#GTAVI')
+        if x_weight(result) <= 280:
+            return result
     return None
