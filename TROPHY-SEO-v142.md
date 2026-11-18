@@ -47,8 +47,11 @@ attribuisce esplicitamente © Rockstar. Solo foto pertinenti e autorizzate
 vanno usate in futuro per card esclusive.
 
 Le 28 schede hidden sono mostrate sulla homepage soltanto in sezione
-espandibile e hanno `noindex` finché non si imposta esplicitamente
-`SPOILER_INDEX=1` in una build editoriale successiva.
+espandibile e hanno `noindex` fino alle **00:00 UTC del 21 novembre 2026**.
+La build programmata per il 21 novembre abilita automaticamente
+l'indicizzazione di tutti i 55 trofei, mantenendo le voci spoiler
+espandibili sulla homepage. Per i test è possibile forzare
+`SPOILER_INDEX=0` o `SPOILER_INDEX=1`.
 
 ## Serie automatica su X
 - L'Autopilot esistente sceglie un trofeo **solo dopo** che il sito Pages

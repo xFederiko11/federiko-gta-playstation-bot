@@ -40,7 +40,7 @@ class TrophySiteTests(unittest.TestCase):
 
     def test_pages_builder_creates_55_distinct_html_pages(self):
         with tempfile.TemporaryDirectory() as temp:
-            env=dict(os.environ,TROPHY_OUTPUT_DIR=temp)
+            env=dict(os.environ,TROPHY_OUTPUT_DIR=temp,SPOILER_INDEX='0')
             result=subprocess.run([sys.executable,'build_trophy_site_v142.py'],
                                   env=env,text=True,capture_output=True)
             self.assertEqual(result.returncode,0,result.stderr)
