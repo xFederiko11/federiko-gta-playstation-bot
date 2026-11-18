@@ -1,0 +1,77 @@
+{
+  "schema": "v13.7",
+  "sources": [
+    {
+      "name": "VGC",
+      "feed": "https://www.videogameschronicle.com/feed/",
+      "feed_domains": [
+        "www.videogameschronicle.com",
+        "videogameschronicle.com"
+      ],
+      "domains": [
+        "videogameschronicle.com"
+      ],
+      "language": "en"
+    },
+    {
+      "name": "Push Square",
+      "feed": "https://www.pushsquare.com/feeds/latest",
+      "feed_domains": [
+        "www.pushsquare.com",
+        "pushsquare.com"
+      ],
+      "domains": [
+        "pushsquare.com"
+      ],
+      "language": "en"
+    },
+    {
+      "name": "IGN",
+      "feed": "https://www.ign.com/rss/v2/articles/feed",
+      "feed_domains": [
+        "www.ign.com",
+        "ign.com"
+      ],
+      "domains": [
+        "ign.com"
+      ],
+      "language": "en"
+    },
+    {
+      "name": "GameSpot",
+      "feed": "https://www.gamespot.com/feeds/mashup/",
+      "feed_domains": [
+        "www.gamespot.com",
+        "gamespot.com"
+      ],
+      "domains": [
+        "gamespot.com"
+      ],
+      "language": "en"
+    },
+    {
+      "name": "Everyeye",
+      "feed": "https://www.everyeye.it/feed/feed_news_rss.asp",
+      "feed_domains": [
+        "www.everyeye.it",
+        "everyeye.it"
+      ],
+      "domains": [
+        "everyeye.it"
+      ],
+      "language": "it"
+    },
+    {
+      "name": "Multiplayer.it",
+      "feed": "https://multiplayer.it/feed/rss/homepage/",
+      "feed_domains": [
+        "multiplayer.it",
+        "www.multiplayer.it"
+      ],
+      "domains": [
+        "multiplayer.it"
+      ],
+      "language": "it"
+    }
+  ]
+}
