@@ -48,6 +48,22 @@
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
     },
+    "5b71297dad5452b87340282b": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_02.0c5.7qx17u9kl.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-18T21:06:20.818486+00:00",
+      "run_id": "44397934446",
+      "source": "PowerPyx Tips",
+      "status": "reserved",
+      "text": "🚗 GTA VI | Trucco PS5 per il 100%\n\n1️⃣ Tieni premuto ↑ sulla croce direzionale: apri WAiNK.\n2️⃣ Inquadra un veicolo nelle vicinanze.\n3️⃣ Tieni premuto R1 per scansionarlo.\n\n🎯 Te ne servono 200 su 277. Funziona anche con barche e aerei!\n\n#GTAVI #GTA6",
+      "thread": [
+        "🚗 GTA VI | Trucco PS5 per il 100%\n\n1️⃣ Tieni premuto ↑ sulla croce direzionale: apri WAiNK.\n2️⃣ Inquadra un veicolo nelle vicinanze.\n3️⃣ Tieni premuto R1 per scansionarlo.\n\n🎯 Te ne servono 200 su 277. Funziona anche con barche e aerei!\n\n#GTAVI #GTA6",
+        "📖 Fonte: PowerPyx\n\n🔗 Procedura completa e dettagli:\nhttps://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/\n\n📸 Foto illustrativa: Rockstar Games."
+      ],
+      "tip_id": "waink-vehicles-ps5",
+      "title": "GTA VI PS5: scansiona i veicoli in pochi secondi",
+      "trophy_number": null,
+      "url": "https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/"
+    },
     "7b7859d3035b39a1ec3a70c7": {
       "attempted_utc": "2026-11-18T20:20:03.590713+00:00",
       "buffer_id": "6afe087372a787cbb5dd3887",
@@ -231,6 +247,13 @@
       "feeds_relevant": 97,
       "reserved": 1,
       "run": "44394242531"
+    },
+    {
+      "at": "2026-11-18T21:06:20.818486+00:00",
+      "errors": [],
+      "feeds_relevant": 97,
+      "reserved": 1,
+      "run": "44397934446"
     }
   ],
   "schema": "v13.7",
@@ -246,6 +269,7 @@
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
+    "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
 }
