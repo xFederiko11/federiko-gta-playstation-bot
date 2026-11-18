@@ -36,6 +36,15 @@
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
     },
+    "a7585b90667b279c490a4185": {
+      "reserved_utc": "2026-11-18T17:35:11.009102+00:00",
+      "run_id": "44360268454",
+      "source": "Multiplayer.it",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nIl presidente di Rockstar Games celebra il lancio di GTA 6 promettendo \"molti altri anni di esperienze\"\n\n🔗 Fonte: Multiplayer.it\nhttps://multiplayer.it/notizie/presidente-rockstar-games-celebra-lancio-gta-6-promettendo-molti-altri-anni-esperienze.html\n\n#GTAVI #GTA6",
+      "title": "Il presidente di Rockstar Games celebra il lancio di GTA 6 promettendo \"molti altri anni di esperienze\"",
+      "url": "https://multiplayer.it/notizie/presidente-rockstar-games-celebra-lancio-gta-6-promettendo-molti-altri-anni-esperienze.html"
+    },
     "ac7a72218ee0c5874a13c45d": {
       "attempted_utc": "2026-11-18T14:43:25.549644+00:00",
       "buffer_id": "6afdb98d7a1c17d8bbd36da1",
@@ -115,6 +124,13 @@
       "feeds_relevant": 83,
       "reserved": 1,
       "run": "44355288606"
+    },
+    {
+      "at": "2026-11-18T17:35:11.009102+00:00",
+      "errors": [],
+      "feeds_relevant": 85,
+      "reserved": 1,
+      "run": "44360268454"
     }
   ],
   "schema": "v13.7",
@@ -124,6 +140,7 @@
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
+    "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617"
   }
 }
