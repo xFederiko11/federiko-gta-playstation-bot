@@ -16,6 +16,13 @@
       "source": "https://www.rockstargames.com/VI/editions",
       "status": "scheduled"
     },
+    "gta6-extended": {
+      "due_at": "2026-11-18T03:58:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/GTAVI_An_Extended_Look_poster.0ijbsha5fo1te.jpg",
+      "source": "https://www.rockstargames.com/VI/an-extended-look",
+      "status": "sending"
+    },
     "gta6-grass": {
       "buffer_id": "6afcf77693fa11d37df72a3a",
       "due_at": "2026-11-18T02:46:00+00:00",
