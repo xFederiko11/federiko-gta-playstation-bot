@@ -11,12 +11,13 @@ import types
 
 sys.path.insert(0, str(Path(__file__).parent))
 import editorial_autopilot_v137 as bot
+from editorial_language_it import TranslationUnavailable
 
 NOW = datetime(2026, 11, 18, 14, 0, tzinfo=timezone.utc)
 
-def article(title='GTA 6 new world details in review', url='https://www.videogameschronicle.com/news/novel-details/?utm_source=x', date=None):
+def article(title='GTA 6: nuovi dettagli sul mondo di gioco', url='https://www.videogameschronicle.com/news/novel-details/?utm_source=x', date=None):
     return {'source': 'VGC', 'title': title, 'url': bot.canonical(url),
-            'published': (date or NOW - timedelta(minutes=15)).isoformat()}
+            'published': (date or NOW - timedelta(minutes=15)).isoformat(), 'language': 'it'}
 
 class EditorialV137Tests(unittest.TestCase):
     def setUp(self):
@@ -80,8 +81,30 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertIn('#GTAVI', text)
         self.assertIn('VGC', text)
         self.assertLessEqual(bot.weight_x(text), 280)
-        long_title = 'GTA VI ' + 'more exciting detailed story about the game ' * 10
+        long_title = 'GTA VI ' + 'nuovi dettagli sul gioco e sulla città di Leonida ' * 10
         self.assertLessEqual(bot.weight_x(bot.post_text(article(title=long_title))), 280)
+
+    def test_italian_paragraphs_source_and_hashtags(self):
+        result = bot.post_text(article())
+        self.assertIn('Novità\n\n', result)
+        self.assertIn('\n\n🔗 Fonte: VGC\n', result)
+        self.assertIn('\n\n#GTAVI #GTA6', result)
+        self.assertNotIn('new world details', result)
+
+    def test_fail_closed_on_english_title_translation_failure(self):
+        event = article(title='GTA VI: New gameplay features revealed')
+        event['language'] = 'en'
+        with patch.object(bot, 'italian_title', side_effect=TranslationUnavailable('Offline')):
+            with self.assertRaises(TranslationUnavailable):
+                bot.post_text(event)
+
+    def test_english_title_translation_is_used_in_output(self):
+        event = article(title='GTA VI: New gameplay details')
+        event['language'] = 'en'
+        with patch.object(bot, 'italian_title', return_value='GTA VI: nuovi dettagli sul gameplay'):
+            output = bot.post_text(event)
+        self.assertIn('nuovi dettagli sul gameplay', output)
+        self.assertNotIn('New gameplay details', output)
 
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime.now(timezone.utc)
