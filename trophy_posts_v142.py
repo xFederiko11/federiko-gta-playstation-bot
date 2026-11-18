@@ -24,18 +24,26 @@ def _parse(s):
     except (ValueError,TypeError,AttributeError):return None
 
 def landing_live(*,session=None):
-    """Check for real Pages delivery, not merely a green Actions build."""
+    """Prefer new Pages; old source is accepted only until redirect cutover."""
     http=session or requests
-    try:
-        with http.get(BASE+"/",timeout=(4,12),stream=True,allow_redirects=True,
-                      headers={"User-Agent":"Federiko-GTA-VI-Trophies/1.0"}) as r:
-            if r.status_code!=200 or urlsplit(r.url).hostname!="xfederiko11.github.io":
-                return False
-            chunk=next(r.iter_content(32768),b"")
-            body=chunk.decode("utf-8",errors="replace")
-            return "55 trofei" in body and "GTA VI" in body
-    except (requests.RequestException,StopIteration,OSError):
-        return False
+    probes=[
+        ("https://xfederiko11.github.io/gta-6/trofei/","rel=\"canonical\"",
+         "55 trofei"),
+        (BASE+"/","55 trofei","GTA VI")
+    ]
+    for target,marker1,marker2 in probes:
+        try:
+            with http.get(target,timeout=(4,12),stream=True,allow_redirects=False,
+                          headers={"User-Agent":"Federiko-GTA-VI-Trophies/1.0"}) as r:
+                if r.status_code!=200 or urlsplit(r.url).hostname!="xfederiko11.github.io":
+                    continue
+                chunk=next(r.iter_content(32768),b"")
+                body=chunk.decode("utf-8",errors="replace")
+                if marker1 in body and marker2.lower() in body.lower():
+                    return True
+        except (requests.RequestException,StopIteration,OSError):
+            continue
+    return False
 
 def formatted(t, link_override=None):
     medal={"Platino":"💎","Oro":"🥇","Argento":"🥈","Bronzo":"🥉"}[t["tier"]]

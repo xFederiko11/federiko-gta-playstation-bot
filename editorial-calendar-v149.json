@@ -1,0 +1,67 @@
+{
+  "schema": "gta6-editorial-calendar-v149",
+  "timezone": "Europe/Berlin",
+  "created_for": "2026-11-19 through 2026-11-21",
+  "publication_target": "X @xFederiko11 via existing Buffer integration",
+  "public_base": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/",
+  "mode": "planned_not_buffer_queued",
+  "format": {
+    "parent": "Post breve in italiano con emoji, passaggi PS5, una immagine illustrativa ufficiale utilizzabile, massimo 235 caratteri pesati",
+    "first_reply": "📖 Link diretto alla guida italiana con fonte PowerPyx e crediti",
+    "thread": "Un'unica mutazione Buffer per due post, previa verifica live della guida"
+  },
+  "limits": {
+    "max_quick_tips_per_utc_day": 2,
+    "min_minutes_between_tips": 110,
+    "min_minutes_between_any_workflows": 22
+  },
+  "preconditions": [
+    "Riautorizzare canale X in Buffer",
+    "Verificare due messaggi thread + media nel test manuale",
+    "Confermare diritti e disponibilità immagini",
+    "Non ripetere il post WAiNK rifiutato; conservare registro",
+    "Non inviare nello stesso momento di breaking news; gli orari sono slot indicativi"
+  ],
+  "slots": [
+    {
+      "date": "2026-11-19",
+      "time": "10:00",
+      "tip_id": "study animals",
+      "guide": "studiare-animali",
+      "theme": "Collezionabili: studio animali",
+      "status": "hold_until_buffer_reauthorized"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "14:00",
+      "tip_id": "70 challenges",
+      "guide": "70-sfide-100-percento",
+      "theme": "Checklist 100%: 70 sfide su 80",
+      "status": "hold_until_buffer_reauthorized"
+    },
+    {
+      "date": "2026-11-20",
+      "time": "10:00",
+      "tip_id": "fast travel taxi",
+      "guide": "viaggio-rapido-taxi",
+      "theme": "Viaggio rapido via taxi",
+      "status": "hold_until_buffer_reauthorized"
+    },
+    {
+      "date": "2026-11-20",
+      "time": "14:00",
+      "tip_id": "shooting ranges",
+      "guide": "poligoni-concentrazione",
+      "theme": "Poligoni: medaglie Oro e Concentrazione",
+      "status": "hold_until_buffer_reauthorized"
+    },
+    {
+      "date": "2026-11-21",
+      "time": "10:00",
+      "tip_id": "chapter one meditation",
+      "guide": "meditazione-capitolo-1",
+      "theme": "Meditazione Capitolo 1; revisione spoiler/trofeo prima di pubblicare",
+      "status": "manual_fact_check_required"
+    }
+  ]
+}
