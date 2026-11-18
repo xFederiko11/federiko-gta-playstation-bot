@@ -1,5 +1,12 @@
 {
   "items": {
+    "gta6-jason": {
+      "due_at": "2026-11-18T01:34:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/Jason_Duval_01.07m377xeb6jhq.jpg",
+      "source": "https://www.rockstargames.com/VI/only-in-leonida",
+      "status": "sending"
+    },
     "gta6-trailer1": {
       "buffer_id": "6afcf76193fa11d37df72274",
       "due_at": "2026-11-18T01:10:00+00:00",
