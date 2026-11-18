@@ -121,11 +121,12 @@
       "status": "scheduled"
     },
     "gta6-pro": {
+      "buffer_id": "6afcf7a9bb12698d15885b27",
       "due_at": "2026-11-18T05:34:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_27.0d2e~w_r93hmh.jpg",
       "source": "https://www.rockstargames.com/newswire/article/89834o94713o21/pre-load-grand-theft-auto-vi-now",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-radio": {
       "buffer_id": "6afcf78c93fa11d37df730e0",
