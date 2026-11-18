@@ -54,7 +54,9 @@ copiato integralmente. I pulsanti PS5 sono riportati solo quando documentati.
 
 `python -m unittest -q test_quick_tips_v146`
 
-I test verificano 280 caratteri pesati su ogni messaggio, fonte nella
+I test verificano un limite prudente di **235 caratteri pesati** sul primo
+post con foto, riservando spazio all'allegato immagine e alle differenze di
+conteggio X/Buffer; la risposta resta entro 280 caratteri. Verificano fonte nella
 risposta, asset solo sul primo elemento, una singola chiamata di scrittura,
 assenza di ripubblicazione e vincoli giornalieri.
 
@@ -62,3 +64,20 @@ assenza di ripubblicazione e vincoli giornalieri.
 Una run GitHub verde non prova che entrambe le parti del thread siano
 visibili su X. Controllare `BUFFER_SENT`, il thread e i media nella scheda
 Sent di Buffer e poi sul profilo pubblico.
+
+## Esito primo test live (18 novembre 2026)
+
+Il primo micro-tip WAiNK è stato riservato e inviato a Buffer, ma Buffer
+ha restituito stato `error` (ledger: `rejected`, non `sent`).
+La causa non è stata esposta nei log; **non va descritto come pubblicato**.
+Nel testo precedente il messaggio principale pesava 258 caratteri
+stimati, oltre il budget cautelativo per un post con immagine (280-23).
+La v14.7 accorcia tutti e sei i post e valida il budget prima della
+mutazione Buffer. La causa dell'errore **non è definitivamente verificata**;
+controllare il dettaglio nel pannello Buffer, senza ripetere manualmente
+l'invio dello stesso contenuto se lo stato X è incerto.
+
+Il registro anti-duplicazione conserva il primo tentativo rifiutato:
+non viene ritentato automaticamente. Il nuovo formato degli altri consigli
+sarà considerato funzionante soltanto dopo un `BUFFER_SENT` reale e
+la verifica delle due parti del thread su X.

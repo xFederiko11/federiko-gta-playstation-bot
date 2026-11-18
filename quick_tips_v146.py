@@ -28,78 +28,42 @@ TIPS=[
         "title":"GTA VI PS5: scansiona i veicoli in pochi secondi",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/",
         "media_url":IMAGES["vehicles"],
-        "main":(
-            "🚗 GTA VI | Trucco PS5 per il 100%\n\n"
-            "1️⃣ Tieni premuto ↑ sulla croce direzionale: apri WAiNK.\n"
-            "2️⃣ Inquadra un veicolo nelle vicinanze.\n"
-            "3️⃣ Tieni premuto R1 per scansionarlo.\n\n"
-            "🎯 Te ne servono 200 su 277. Funziona anche con barche e aerei!\n\n"
-            "#GTAVI #GTA6"),
+        "main":"🚗 GTA VI | SCANSIONA AUTO SU PS5\n\n1️⃣ Tieni premuto ↑: apri WAiNK.\n2️⃣ Inquadra un veicolo.\n3️⃣ Tieni premuto R1 per registrarlo.\n\n🎯 Per il 100% ne servono 200. Contano anche barche e aerei!\n\n#GTAVI #GTA6",
     },
     {
         "id":"study animals",
         "title":"GTA VI PS5: studia gli animali senza cacciare",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/",
         "media_url":IMAGES["animals"],
-        "main":(
-            "🦩 GTA VI | 100% senza cacciare!\n\n"
-            "1️⃣ Equipaggia il binocolo dalla ruota delle armi.\n"
-            "2️⃣ Usa ↑ per avvicinare la visuale.\n"
-            "3️⃣ Tieni premuto R1 mentre osservi l’animale.\n\n"
-            "🎯 Per il 100% basta studiare 100 specie su 255: niente scuoiatura!\n\n"
-            "#GTAVI #GTA6"),
+        "main":"🦩 GTA VI | ANIMALI: 100% RAPIDO\n\n1️⃣ Apri la ruota armi e scegli il binocolo.\n2️⃣ Avvicina con ↑.\n3️⃣ Tieni premuto R1 sull'animale.\n\n🎯 Studia 100 specie su 255. Non serve cacciarle!\n\n#GTAVI #Platino",
     },
     {
         "id":"70 challenges",
         "title":"GTA VI PS5: come evitare 10 sfide difficili per il 100%",
         "source_url":"https://www.powerpyx.com/gta-6-all-challenges-guide/",
         "media_url":IMAGES["activities"],
-        "main":(
-            "🎯 GTA VI | Risparmia tempo verso il platino\n\n"
-            "1️⃣ Apri Progressi → Sfide.\n"
-            "2️⃣ Controlla quelle già completate.\n"
-            "3️⃣ Concentrati sulle più semplici: per il 100% ne bastano 70 su 80.\n\n"
-            "✅ Puoi saltarne 10 senza compromettere il completamento!\n\n"
-            "#GTAVI #Platino"),
+        "main":"🎯 GTA VI | RISPARMIA TEMPO SUL 100%\n\n1️⃣ Vai su Progressi → Sfide.\n2️⃣ Controlla quelle già completate.\n3️⃣ Scegli le più semplici.\n\n✅ Bastano 70 sfide su 80: puoi saltarne 10!\n\n#GTAVI #Platino",
     },
     {
         "id":"chapter one meditation",
         "title":"GTA VI PS5: meditazione perdibile Capitolo 1",
         "source_url":"https://www.powerpyx.com/gta-6-all-meditation-spot-locations/",
         "media_url":IMAGES["meditation"],
-        "main":(
-            "⚠️ GTA VI | Meditazione nel Capitolo 1\n\n"
-            "1️⃣ Quando Lucia va a meditare, seguila sul balcone.\n"
-            "2️⃣ Inquadrala con L2.\n"
-            "3️⃣ Seleziona «Accetta».\n\n"
-            "💾 Evento perdibile! Non è ancora confermato se serva al trofeo: salva prima.\n\n"
-            "#GTAVI #Platino"),
+        "main":"⚠️ GTA VI | MEDITAZIONE PERDIBILE\n\n1️⃣ Capitolo 1: segui Lucia sul balcone.\n2️⃣ Inquadrala con L2.\n3️⃣ Seleziona «Accetta».\n\n💾 Salva prima: il suo impatto sul trofeo è ancora incerto!\n\n#GTAVI #Platino",
     },
     {
         "id":"fast travel taxi",
         "title":"GTA VI PS5: sblocca il viaggio rapido con il taxi",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-fast-travel/",
         "media_url":IMAGES["taxi"],
-        "main":(
-            "🚕 GTA VI | VIAGGIO RAPIDO SU PS5!\n\n"
-            "1️⃣ Dopo la prima missione: telefono → Contatti → Paradise Taxi.\n"
-            "2️⃣ Segna la meta sulla mappa e sali sul taxi.\n"
-            "3️⃣ Tieni premuto L2 e premi △: viaggio immediato per 100 $.\n\n"
-            "⚡ Evita lunghi spostamenti tra le missioni!\n\n"
-            "#GTAVI #GTA6"),
+        "main":"🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Dopo la prima missione, chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Costa 100 $ e ti porta subito a destinazione!\n\n#GTAVI #GTA6",
     },
     {
         "id":"shooting ranges",
         "title":"GTA VI PS5: come potenziare Concentrazione nei poligoni",
         "source_url":"https://www.powerpyx.com/gta-6-all-shooting-range-gold-medal-challenges/",
         "media_url":IMAGES["ranges"],
-        "main":(
-            "🎯 GTA VI | Potenzia Concentrazione!\n\n"
-            "1️⃣ Vai al poligono di tiro.\n"
-            "2️⃣ Avvia una sfida, poi completala o esci.\n"
-            "3️⃣ Ripeti per aumentare la statistica Concentrazione.\n\n"
-            "🥇 Per il platino servono anche 42 medaglie Oro ai poligoni.\n\n"
-            "#GTAVI #Platino"),
+        "main":"🎯 GTA VI | FARMING CONCENTRAZIONE\n\n1️⃣ Vai a un poligono di tiro.\n2️⃣ Avvia una sfida e completala o esci.\n3️⃣ Ripeti per aumentare Concentrazione.\n\n🥇 Per il platino servono 42 medaglie Oro.\n\n#GTAVI #Platino",
     },
 ]
 MAX_PER_DAY=2
@@ -113,7 +77,9 @@ def validate():
         assert t["media_url"].startswith("https://www.rockstargames.com/VI/_next/static/media/")
         assert t["media_url"] not in urls
         urls.add(t["media_url"])
-        assert x_weight(t["main"])<=280,(t["id"],x_weight(t["main"]))
+        # X counts the attached image against the first post's character budget.
+        # Keep extra room for unicode/Buffer counting differences.
+        assert x_weight(t["main"])<=235,(t["id"],x_weight(t["main"]))
         assert t["main"].count("\n\n")>=2
         assert "#GTAVI" in t["main"]
         answer=reply(t)

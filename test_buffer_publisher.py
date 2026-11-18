@@ -199,6 +199,12 @@ class BufferPublisherTests(unittest.TestCase):
             self.client.publish("Hello", media_path="card.png", media_url="https://example.org/card.png")
         self.session.post.assert_not_called()
 
+    def test_image_thread_requires_reserved_character_budget_before_network(self):
+        a="🚗 GTA VI | "+("A"*245)
+        with self.assertRaises(ValueError):
+            self.client.publish_thread([a,"📖 Fonte: PowerPyx"],media_url="https://cdn.example.org/photo.jpg")
+        self.session.post.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()
