@@ -346,7 +346,8 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         # Optional official YouTube link card. X controls external player preview;
         # this is never represented as a natively uploaded or licensed video.
         video_text = None
-        if os.getenv('VIDEO_LINK_CARDS_V12','false').strip().lower() == 'true':
+        if (os.getenv('VIDEO_LINK_CARDS_V12', 'false').strip().lower() == 'true' or
+                os.getenv('OFFICIAL_LINKS_FREE_ENABLED', 'false').strip().lower() == 'true'):
             from video_cards_v12 import video_link_post
             video_text = video_link_post(event)
             if video_text:
