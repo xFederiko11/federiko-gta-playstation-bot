@@ -97,11 +97,12 @@
       "status": "scheduled"
     },
     "gta6-radio": {
+      "buffer_id": "6afcf78c93fa11d37df730e0",
       "due_at": "2026-11-18T04:22:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Real_Dimez_landscape.0637akp_a5a_q.jpg",
       "source": "https://www.rockstargames.com/newswire/article/o3982oa93a23k4/the-music-of-grand-theft-auto-vi-in-game-radio-stations",
-      "status": "sending"
+      "status": "scheduled"
     },
     "gta6-trailer1": {
       "buffer_id": "6afcf76193fa11d37df72274",
