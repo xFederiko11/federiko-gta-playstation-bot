@@ -112,8 +112,8 @@ class EditorialV137Tests(unittest.TestCase):
         for record in bot.POWERPYX_SPOTLIGHTS:
             self.assertTrue(record['url'].startswith('https://www.powerpyx.com/'))
             self.assertLessEqual(bot.weight_x(record['text']), 280)
+            self.assertIn('PowerPyx', record['text'])
             self.assertGreaterEqual(record['text'].count(chr(10) + chr(10)), 2)
-            self.assertIn('\\n\\n', record['text'])
             self.assertIn('#GTAVI', record['text'])
         first = bot.powerpyx_spotlight(self.state, now)
         self.assertEqual(first['source'], 'PowerPyx')
