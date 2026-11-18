@@ -1,5 +1,14 @@
 {
   "entries": {
+    "5681a5403e143f8366d8877e": {
+      "reserved_utc": "2026-11-18T14:58:07.148142+00:00",
+      "run_id": "44330036391",
+      "source": "GameSpot",
+      "status": "reserved",
+      "text": "📰 GTA VI | GameSpot pubblica: GTA 6 Finally Changed The Default Rockstar-Game Controls\n#GTAVI #GTA6\nFonte: https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls",
+      "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
+      "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
+    },
     "ac7a72218ee0c5874a13c45d": {
       "attempted_utc": "2026-11-18T14:43:25.549644+00:00",
       "buffer_id": "6afdb98d7a1c17d8bbd36da1",
@@ -20,10 +29,18 @@
       "feeds_relevant": 82,
       "reserved": 1,
       "run": "44327320659"
+    },
+    {
+      "at": "2026-11-18T14:58:07.148142+00:00",
+      "errors": [],
+      "feeds_relevant": 82,
+      "reserved": 1,
+      "run": "44330036391"
     }
   ],
   "schema": "v13.7",
   "signatures": {
+    "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d"
   }
 }
