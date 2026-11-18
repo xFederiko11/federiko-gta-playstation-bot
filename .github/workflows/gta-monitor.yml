@@ -128,7 +128,7 @@ jobs:
           if [ ! -f "$ENCRYPTED_STATE" ]; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for item in .state/bot.enc history-public.json history-public.csv monitor-health.json; do
+          for item in .state/bot.enc .state/monitor-publication-v142.json history-public.json history-public.csv monitor-health.json; do
             if [ -f "$item" ]; then git add -- "$item"; fi
           done
           if ! git diff --cached --quiet; then
