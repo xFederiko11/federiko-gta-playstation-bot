@@ -1,39 +1,54 @@
 {
   "entries": {
     "18e6c44fe3ecdd2c2ff5": {
+      "attempted_utc": "2026-11-18T13:47:49.808635+00:00",
+      "buffer_id": "6afdac85ea3aea9074f5d8e8",
+      "completed_utc": "2026-11-18T13:47:51.178217+00:00",
       "reserved_utc": "2026-11-18T13:44:02.028471+00:00",
       "run_id": "44316681636",
       "slug": "gta-online-weekly-stunt-challenge-20261118",
       "source": "https://gta.guide/article/contact-missions-bonus-week",
-      "status": "reserved"
+      "status": "sent"
     },
     "98538ffd3e373fd74391": {
+      "attempted_utc": "2026-11-18T13:44:03.964436+00:00",
+      "buffer_id": "6afdaba4ea3aea9074f5796b",
+      "completed_utc": "2026-11-18T13:44:05.324776+00:00",
       "reserved_utc": "2026-11-18T13:44:02.028374+00:00",
       "run_id": "44316681636",
       "slug": "vgc-review-20261118",
       "source": "https://www.videogameschronicle.com/review/grand-theft-auto-6/",
-      "status": "reserved"
+      "status": "sent"
     },
     "beb33233d8e2e44fa770": {
+      "attempted_utc": "2026-11-18T13:46:53.513796+00:00",
+      "buffer_id": "6afdac4d55bf70e62d541c58",
+      "completed_utc": "2026-11-18T13:46:54.807983+00:00",
       "reserved_utc": "2026-11-18T13:44:02.028451+00:00",
       "run_id": "44316681636",
       "slug": "vgc-metascore-20261118",
       "source": "https://www.videogameschronicle.com/news/grand-theft-auto-6-is-currently-the-highest-scoring-video-game-of-all-time-according-to-metacritic/",
-      "status": "reserved"
+      "status": "sent"
     },
     "ced060346d0e8149b4f6": {
+      "attempted_utc": "2026-11-18T13:45:00.325450+00:00",
+      "buffer_id": "6afdabdc55bf70e62d53e0ce",
+      "completed_utc": "2026-11-18T13:45:02.086511+00:00",
       "reserved_utc": "2026-11-18T13:44:02.028411+00:00",
       "run_id": "44316681636",
       "slug": "ps5pro-pushsquare-review-20261118",
       "source": "https://www.pushsquare.com/reviews/ps5/grand-theft-auto-6",
-      "status": "reserved"
+      "status": "sent"
     },
     "d26e2fe3881fb1ad9625": {
+      "attempted_utc": "2026-11-18T13:45:57.087199+00:00",
+      "buffer_id": "6afdac1555bf70e62d540012",
+      "completed_utc": "2026-11-18T13:45:58.513138+00:00",
       "reserved_utc": "2026-11-18T13:44:02.028430+00:00",
       "run_id": "44316681636",
       "slug": "vgc-criminal-profile-20261118",
       "source": "https://www.videogameschronicle.com/review/grand-theft-auto-6/",
-      "status": "reserved"
+      "status": "sent"
     }
   },
   "version": "v13.6"
