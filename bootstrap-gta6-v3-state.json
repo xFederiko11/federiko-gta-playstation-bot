@@ -41,11 +41,12 @@
       "status": "scheduled"
     },
     "gta6-vice": {
+      "buffer_id": "6afcf76ff0c5ce9361b0499d",
       "due_at": "2026-11-18T02:10:00+00:00",
       "image_kind": "editorial_image",
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_Postcard_landscape.0v2njmlk2n-qm.jpg",
       "source": "https://www.rockstargames.com/VI/only-in-leonida",
-      "status": "sending"
+      "status": "scheduled"
     }
   },
   "version": 1
