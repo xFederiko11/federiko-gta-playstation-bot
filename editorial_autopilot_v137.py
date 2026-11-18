@@ -372,6 +372,10 @@ def preview():
     spotlight = powerpyx_spotlight(state, now)
     selected = [spotlight] if spotlight else select(items, state, now, max_posts=5)
     print("TROPHY_SERIES configured=55, photo-posts wait for live GitHub Pages")
+    from quick_tips_v146 import candidate as quick_tip_candidate
+    tip_preview=quick_tip_candidate(state,now)
+    print("QUICK_TIPS preview=",tip_preview["tip_id"] if tip_preview else "none",
+          "format=two-post-thread; attribution in reply")
     print('FEEDS total_relevant=', len(items), 'errors=', errors, 'selected=', len(selected))
     for item in selected:
         print('PREVIEW', item['source'], item['published'], item['url'])
@@ -391,20 +395,31 @@ def reserve():
         print("DIRECTOR_HOLD", why)
         selected = []
     else:
+        # Curated short tips publish as a genuine Buffer X thread: image and
+        # actionable steps first, attribution/source link as its first reply.
+        # Never extract instructions from arbitrary feed summaries.
+        from quick_tips_v146 import candidate as quick_tip_candidate
+        from gta6_special_campaign_v139 import probe_image
+        quick_tip = quick_tip_candidate(state, now)
+        if quick_tip and not probe_image(quick_tip["media_url"]):
+            print("QUICK_TIP_HOLD_IMAGE_UNAVAILABLE", quick_tip["tip_id"])
+            quick_tip = None
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
         trophy_item = None
-        if not spotlight:
+        if not (spotlight or quick_tip):
             from trophy_posts_v142 import candidate, landing_live
             draft_trophy = candidate(state, now)
             if draft_trophy and landing_live():
                 trophy_item = draft_trophy
-        selected = [spotlight] if spotlight else [trophy_item] if trophy_item else select(items, state, now)
+        selected = ([quick_tip] if quick_tip else [spotlight] if spotlight
+                    else [trophy_item] if trophy_item else select(items, state, now))
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
             'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text'],
-            'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number')
+            'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number'),
+            'thread': item.get('thread'), 'tip_id': item.get('tip_id')
         }
         if item['sig']:
             state['signatures'][item['sig']] = item['key']
@@ -444,8 +459,13 @@ def deliver():
         entry['attempted_utc'] = datetime.now(timezone.utc).isoformat()
         save_state(state)
         try:
-            result = (client.publish(entry['text'], media_url=entry['media_url'])
-                      if entry.get('media_url') else client.publish(entry['text']))
+            if entry.get('thread'):
+                # An atomic Buffer thread, not two unrelated scheduled posts.
+                # One createPost mutation with both items; no retries on timeout.
+                result = client.publish_thread(entry['thread'], media_url=entry['media_url'])
+            else:
+                result = (client.publish(entry['text'], media_url=entry['media_url'])
+                          if entry.get('media_url') else client.publish(entry['text']))
         except BufferPending as exc:
             entry['status'] = 'accepted_pending'
             entry['buffer_id'] = exc.post_id
