@@ -48,6 +48,15 @@
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
     },
+    "7b7859d3035b39a1ec3a70c7": {
+      "reserved_utc": "2026-11-18T20:20:00.504324+00:00",
+      "run_id": "44389868704",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nCome cambiare l'ora del giorno in GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/how-to-change-the-time-of-day-in-gta-6\n\n#GTAVI #GTA6",
+      "title": "How to change the time of day in GTA 6",
+      "url": "https://videogameschronicle.com/guide/how-to-change-the-time-of-day-in-gta-6"
+    },
     "88f9cbde4c19d0e059000e49": {
       "attempted_utc": "2026-11-18T19:22:15.367643+00:00",
       "buffer_id": "6afdfae72553d428edbef6d1",
@@ -191,6 +200,13 @@
       "feeds_relevant": 90,
       "reserved": 1,
       "run": "44379736312"
+    },
+    {
+      "at": "2026-11-18T20:20:00.504324+00:00",
+      "errors": [],
+      "feeds_relevant": 90,
+      "reserved": 1,
+      "run": "44389868704"
     }
   ],
   "schema": "v13.7",
@@ -200,6 +216,7 @@
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
+    "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
