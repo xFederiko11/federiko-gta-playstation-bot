@@ -106,6 +106,37 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertIn('nuovi dettagli sul gameplay', output)
         self.assertNotIn('New gameplay details', output)
 
+    def test_powerpyx_spotlights_verified_links_and_italian_format(self):
+        now = datetime(2026, 11, 18, 20, 0, tzinfo=timezone.utc)
+        self.assertEqual(len(bot.POWERPYX_SPOTLIGHTS), 4)
+        for record in bot.POWERPYX_SPOTLIGHTS:
+            self.assertTrue(record['url'].startswith('https://www.powerpyx.com/'))
+            self.assertLessEqual(bot.weight_x(record['text']), 280)
+            self.assertIn('PowerPyx', record['text'])
+            self.assertIn('\\n\\n', record['text'])
+            self.assertIn('#GTAVI', record['text'])
+        first = bot.powerpyx_spotlight(self.state, now)
+        self.assertEqual(first['source'], 'PowerPyx')
+        self.assertEqual(first['key'], bot.identity(first['url']))
+        self.assertIn('🏆', first['text'])
+        self.assertIsNone(bot.powerpyx_spotlight(self.state,
+                         datetime(2026, 11, 24, tzinfo=timezone.utc)))
+
+    def test_powerpyx_spotlights_use_shared_ledger_and_spacing(self):
+        now = datetime(2026, 11, 19, 12, 0, tzinfo=timezone.utc)
+        first = bot.powerpyx_spotlight(self.state, now)
+        self.state['entries'][first['key']] = {
+            'source': 'PowerPyx', 'reserved_utc': now.isoformat(), 'status': 'sent'}
+        self.assertIsNone(bot.powerpyx_spotlight(self.state, now + timedelta(minutes=90)))
+        second = bot.powerpyx_spotlight(self.state, now + timedelta(minutes=121))
+        self.assertIsNotNone(second)
+        self.assertNotEqual(second['key'], first['key'])
+        self.state['entries'][second['key']] = {
+            'source': 'PowerPyx', 'reserved_utc': (now + timedelta(minutes=121)).isoformat(),
+            'status': 'uncertain'}
+        self.assertIsNone(bot.powerpyx_spotlight(self.state,
+                          now + timedelta(minutes=123)))
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime.now(timezone.utc)
         with tempfile.TemporaryDirectory() as temp, patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
