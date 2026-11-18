@@ -18,6 +18,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 import requests
 from editorial_language_it import italian_title, TranslationUnavailable
+from editorial_director_v142 import priority, allowed as director_allowed
 
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
@@ -92,7 +93,7 @@ def topic(title: str) -> str | None:
     s = clean(title)
     if not (TOPIC_RE.search(s) or re.search(r'\bgta\+(?!\w)', s, re.I)):
         return None
-    if REJECT_RE.search(s) or CLICK_RE.search(s):
+    if REJECT_RE.search(s) or CLICK_RE.search(s) or priority(s) < 0:
         return None
     return 'GTAOnline' if re.search(
         r'(?:\b(?:gta\s*online|grand theft auto online)\b|\bgta\+(?!\w))', s, re.I
@@ -340,7 +341,8 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
         return []
     out, keys, new_sigs = [], set(), []
     old_sigs = list(sigs)
-    for item in sorted(items, key=lambda x: x['published'], reverse=True):
+    # Surface important PS5, platinum and primary-source news before parodies.
+    for item in sorted(items, key=lambda x: (priority(x['title'], x.get('source','')), x['published']), reverse=True):
         stamp = published(item['published'])
         if stamp is None or stamp > now + timedelta(minutes=3) or now - stamp > timedelta(minutes=MAX_AGE_MIN):
             continue
@@ -383,7 +385,12 @@ def reserve():
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
     spotlight = powerpyx_spotlight(state, now)
-    selected = [spotlight] if spotlight else select(items, state, now)
+    ok, why = director_allowed(now)
+    if not ok:
+        print("DIRECTOR_HOLD", why)
+        selected = []
+    else:
+        selected = [spotlight] if spotlight else select(items, state, now)
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
