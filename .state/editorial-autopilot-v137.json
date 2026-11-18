@@ -1,5 +1,14 @@
 {
   "entries": {
+    "0ed4e0d113e0fbc30bd97875": {
+      "reserved_utc": "2026-11-18T18:10:10.062913+00:00",
+      "run_id": "44366679749",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6 Guida alla missione \"Con i piedi per terra\"\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-down-to-earth-mission-walkthrough\n\n#GTAVI #GTA6",
+      "title": "GTA 6 Down To Earth Mission Walkthrough",
+      "url": "https://videogameschronicle.com/guide/gta-6-down-to-earth-mission-walkthrough"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -134,12 +143,20 @@
       "feeds_relevant": 85,
       "reserved": 1,
       "run": "44360268454"
+    },
+    {
+      "at": "2026-11-18T18:10:10.062913+00:00",
+      "errors": [],
+      "feeds_relevant": 87,
+      "reserved": 1,
+      "run": "44366679749"
     }
   ],
   "schema": "v13.7",
   "signatures": {
     "all radio stations and songs": "cf7793967a1cc2f2b0e9b348",
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
+    "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
