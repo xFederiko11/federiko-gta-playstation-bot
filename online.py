@@ -332,9 +332,17 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             # Il controllo del canale non è una richiesta di pubblicazione.
             # Una configurazione errata lascia la bozza pronta per la correzione.
             client.verify_destination()
-        # V13.8: localise public English titles BEFORE constructing threads or
-        # video cards. If translation is down or unsafe, hold instead of posting.
-        if contains_english_prose(str(event.get('title') or '')):
+        # Free official YouTube link shares use a fixed, fully Italian template.
+        # Avoid paid X read APIs and avoid requesting translations for these
+        # source-verified videos. A URL share is NOT a native repost.
+        free_video_enabled = (os.getenv('VIDEO_LINK_CARDS_V12', 'false').strip().lower() == 'true' or
+                              os.getenv('OFFICIAL_LINKS_FREE_ENABLED', 'false').strip().lower() == 'true')
+        video_text = None
+        if free_video_enabled:
+            from video_cards_v12 import video_link_post
+            video_text = video_link_post(event)
+        # All other posts still need the mandatory Italian translation gate.
+        if not video_text and contains_english_prose(str(event.get('title') or '')):
             try:
                 event = {**event, 'title': italian_title(str(event['title']), 'en')}
             except TranslationUnavailable:
@@ -342,15 +350,7 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                     db.execute("UPDATE publish_jobs SET status='review',last_error='italian_translation_unavailable' WHERE key=?", (row["key"],))
                 LOG.warning('Notizia non pubblicata: traduzione italiana non disponibile')
                 continue
-        thread = thread_for_event(event) if news_center_threads else None
-        # Optional official YouTube link card. X controls external player preview;
-        # this is never represented as a natively uploaded or licensed video.
-        video_text = None
-        if os.getenv('VIDEO_LINK_CARDS_V12','false').strip().lower() == 'true':
-            from video_cards_v12 import video_link_post
-            video_text = video_link_post(event)
-            if video_text:
-                thread = None
+        thread = None if video_text else (thread_for_event(event) if news_center_threads else None)
         media_url = None
         if video_text:
             pass  # X link preview instead of repeating a video thumbnail.
