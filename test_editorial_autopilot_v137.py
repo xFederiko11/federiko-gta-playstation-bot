@@ -143,6 +143,8 @@ class EditorialV137Tests(unittest.TestCase):
              patch.object(bot, 'read_feeds', return_value=([article(date=now)], [])), \
              patch.object(bot, 'load_sources', return_value=[]), \
              patch('quick_tips_v146.candidate', return_value=None), \
+             patch.object(bot, 'powerpyx_spotlight', return_value=None), \
+             patch('trophy_posts_v142.candidate', return_value=None), \
              patch.dict(os.environ, {'GITHUB_RUN_ID': '123456'}):
             bot.reserve()
             bot.reserve()
