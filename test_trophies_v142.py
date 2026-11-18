@@ -64,7 +64,7 @@ class TrophySiteTests(unittest.TestCase):
     def test_only_two_trophy_posts_each_utc_day_and_no_old_duplication(self):
         from datetime import datetime, timezone, timedelta
         import trophy_posts_v142
-        now=datetime(2026,11,21,21,0,tzinfo=timezone.utc)
+        now=datetime(2026,11,21,10,0,tzinfo=timezone.utc)
         state={'entries':{}}
         first=trophy_posts_v142.candidate(state,now)
         self.assertIsNotNone(first)
