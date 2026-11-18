@@ -7,6 +7,7 @@ unverified steps are more harmful than a missed post.
 from __future__ import annotations
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
+import os
 import json
 import re
 from urllib.parse import urlsplit
@@ -117,9 +118,15 @@ def candidate(state,now):
     if sum(dt.date()==now.date() for dt in stamps)>=MAX_POSTS_DAY:return None
     if stamps and now-max(stamps)<timedelta(minutes=MIN_SPACING_MIN):return None
     tip_entries=[e for e in entries.values() if e.get("source")=="PowerPyx Tips"]
-    # A real Buffer/X failure means the channel or the media/thread payload
-    # may be incompatible. Stop all further tips until the cause is reviewed.
-    if any(e.get("status") in ("rejected","error","uncertain") for e in tip_entries):
+    # The first WAiNK thread was rejected by Buffer because the X channel
+    # connection requires reauthorization. Retain its journal entry forever.
+    # One-time opt-in permits OTHER tip ids after reconnect+draft verification;
+    # if any second thread fails, stop automatically again.
+    failures=[e for e in tip_entries if e.get("status") in ("rejected","error","uncertain")]
+    authorized=(os.getenv("TIPS_REAUTH_CONFIRMED_V149","false").lower()=="true")
+    known_one=(len(failures)==1 and failures[0].get("tip_id")=="waink-vehicles-ps5"
+               and failures[0].get("status")=="rejected")
+    if failures and not (authorized and known_one):
         return None
     tip_times=[_reserved_time(e.get("reserved_utc")) for e in tip_entries if e.get("reserved_utc")]
     tip_times=[dt for dt in tip_times if dt is not None]
