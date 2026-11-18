@@ -13,7 +13,32 @@ possono ridurre il numero di post per evitare spam; l'avvio dipende dai ritardi 
 
 I testi riportano la testata e il titolo attribuito, URL originale e hashtag.
 Le notizie non sono trattate come conferme Rockstar.
-Il sistema non copia immagini, non traduce articoli e non riporta rumor o leak.
+Il sistema non copia immagini e non riporta rumor o leak.
+
+## Stile editoriale obbligatorio (v13.8)
+
+**Tutti i nuovi post su X devono essere interamente in italiano**, inclusi quelli
+ricavati da testate inglesi e dagli avvisi ufficiali Rockstar. Le fonti
+rimangono inglesi quando il loro nome e un nome proprio, ma i titoli sono
+tradotti prima di creare il post. Non viene tradotto o copiato l'articolo
+integrale.
+
+Formato obbligatorio: titolo e categoria, riga bianca, informazione principale
+in italiano, riga bianca, attribuzione e URL fonte, riga bianca, massimo
+due hashtag pertinenti. Max 280 caratteri pesati secondo X.
+
+Se la traduzione fallisce, elimina numeri, altera nomi propri o presenta
+ancora inglese, il post viene **trattenuto**, mai pubblicato in inglese.
+Un controllo aggiuntivo del monitor principale trattiene testi in inglese
+anche all'ultimo passaggio prima di Buffer. Lo stesso vale per i link ai
+video ufficiali. La rassegna RSS usa MyMemory solo sui titoli gia pubblici;
+la disponibilita, i limiti d'uso e la qualita di tale servizio possono
+ridurre la frequenza editoriale. Non inviare a servizi esterni credenziali
+o informazioni private.
+
+La regola riguarda i **nuovi** invii: non modifica post gia pubblicati o
+gia programmati nella coda Buffer. Continua a distinguere fatti confermati
+e fonti di stampa senza presentare indiscrezioni come comunicati ufficiali.
 
 ## Sicurezza
 
