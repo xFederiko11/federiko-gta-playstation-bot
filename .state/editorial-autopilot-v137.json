@@ -1,10 +1,13 @@
 {
   "entries": {
     "5681a5403e143f8366d8877e": {
+      "attempted_utc": "2026-11-18T14:58:08.894267+00:00",
+      "buffer_id": "6afdbd010a57e5a157152532",
+      "completed_utc": "2026-11-18T14:58:10.217489+00:00",
       "reserved_utc": "2026-11-18T14:58:07.148142+00:00",
       "run_id": "44330036391",
       "source": "GameSpot",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | GameSpot pubblica: GTA 6 Finally Changed The Default Rockstar-Game Controls\n#GTAVI #GTA6\nFonte: https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls",
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
