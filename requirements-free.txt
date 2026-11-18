@@ -1,4 +1,4 @@
 requests>=2.32.4,<3
-beautifulsoup4>=4.13,<5
+beautifulsoup4>=4.15.0,<5
 playwright>=1.55,<2
 cryptography>=45,<60
