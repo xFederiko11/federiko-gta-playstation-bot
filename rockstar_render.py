@@ -7,6 +7,7 @@ of elements actually shown on the page. It never logs in, posts or downloads med
 from __future__ import annotations
 
 from functools import lru_cache
+import os
 from html import escape
 from urllib.parse import urlsplit
 
@@ -46,7 +47,13 @@ def fetch_rendered(url: str, mode: str = 'snapshot') -> str:
         raise ValueError('render_browser_unavailable') from None
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True, args=['--disable-dev-shm-usage'])
+            channel = os.getenv('ROCKSTAR_BROWSER_CHANNEL', '').strip()
+            launch_opts = dict(headless=True, args=['--disable-dev-shm-usage'])
+            if channel == 'chrome':
+                # Ubuntu GitHub-hosted runners have branded Chrome preinstalled.
+                # Avoid redownloading Playwright's full Chromium on every run.
+                launch_opts['channel'] = 'chrome'
+            browser = p.chromium.launch(**launch_opts)
             try:
                 ctx = browser.new_context(locale='en-US', timezone_id='America/New_York',
                                           service_workers='block')

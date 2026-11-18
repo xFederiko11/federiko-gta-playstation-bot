@@ -1,4 +1,4 @@
-"""GTA VI launch watch v13.4 (official-only, launch window 18-20 Nov 2026).
+"""GTA VI official news watch v13.5 (compatible with v13.4 ledger through 14 Dec 2026).
 
 Single-run official Rockstar alerts + time-specific, source-backed launch notices.
 No media rehosting, press claims, leaks or post retries. Buffer createPost is
@@ -13,11 +13,12 @@ import json
 import os
 from pathlib import Path
 import re
+from editorial_seo_v135 import compose_official_alert, finish, x_weight, category_from_title
 from urllib.parse import urljoin, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 
 START = datetime(2026, 11, 18, 11, tzinfo=timezone.utc)
-STOP = datetime(2026, 11, 21, 0, tzinfo=timezone.utc)
+STOP = datetime(2026, 12, 15, 0, tzinfo=timezone.utc)
 LOCAL = ZoneInfo('Europe/Berlin')
 NEWSWIRE = 'https://www.rockstargames.com/newswire?tag=vi'
 RELEASE_SOURCE = ('https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/'
@@ -37,10 +38,10 @@ MILESTONES = (
      'text': '🚨 GTA VI | È scattato lo sblocco regionale previsto per la Nuova Zelanda: 19/11 ore 00:00 NZDT = 18/11 ore 12:00 in Italia. 🇳🇿\n🇮🇹 In Italia l’orario previsto resta la mezzanotte del 19/11. Attenzione agli spoiler!\n' + RELEASE_SOURCE},
     {'id': 'italy-launch-schedule-20261118', 'start': '2026-11-18T18:00:00+00:00',
      'end': '2026-11-18T21:00:00+00:00',
-     'text': '🎮 GTA VI | Ultime ore prima del lancio italiano.\n⏰ Rockstar indica lo sblocco digitale alle 00:00 del 19 novembre, ora locale.\n💾 Precaricamento disponibile per i preordini digitali. Verifica lo spazio su PS5 e disattiva le notifiche spoiler.\n' + RELEASE_SOURCE},
+     'text': '🎮 GTA VI | Conto alla rovescia per l’Italia!\n⏰ Sblocco digitale previsto da Rockstar alle 00:00 del 19 novembre.\n💾 Precaricamento per i preordini digitali. Attenzione agli spoiler.\n' + RELEASE_SOURCE},
     {'id': 'italy-midnight-20261118', 'start': '2026-11-18T23:00:00+00:00',
      'end': '2026-11-18T23:45:00+00:00',
-     'text': '🚨 GTA VI | È arrivata la mezzanotte del 19 novembre in Italia! 🇮🇹\nÈ scattato l’orario di sblocco digitale previsto da Rockstar per PS5 e Xbox Series X|S.\n⚠️ Questo non conferma automaticamente lo stato dei server o l’accesso di tutti gli utenti.\n' + RELEASE_SOURCE},
+     'text': '🚨 GTA VI | È mezzanotte: 19 novembre in Italia! 🇮🇹\n⏰ È l’orario di sblocco digitale previsto da Rockstar per PS5 e Xbox Series X|S.\n⚠️ Disponibilità dei server e accesso individuale ancora da verificare.\n' + RELEASE_SOURCE},
 )
 
 
@@ -53,7 +54,7 @@ def in_window(now):
 
 
 def weight(text):
-    return len(re.sub(r'https?://\S+', 'x' * 23, text))
+    return x_weight(text)
 
 
 def ledger_load(path=LEDGER):
@@ -167,7 +168,7 @@ def select(now, ledger, *, listing=None, date_getter=None, root=None):
     nz = MILESTONES[0]
     if (nz['id'] not in ledger['posts'] and
             datetime.fromisoformat(nz['start']) <= now < datetime.fromisoformat(nz['end'])):
-        item = {'id': nz['id'], 'topic': 'launch-times', 'text': nz['text'],
+        item = {'id': nz['id'], 'topic': 'launch-times', 'text': finish(nz['text'], category='vi'),
                 'url': RELEASE_SOURCE, 'tier': 'OFFICIAL_ROCKSTAR_SCHEDULE'}
         return [item], ['official_regional_release_schedule']
     articles = []
@@ -186,14 +187,13 @@ def select(now, ledger, *, listing=None, date_getter=None, root=None):
                 notes.append('hold_article_date_unavailable')
                 continue
             # Do not turn old material into "breaking news".
-            if not pub or pub < CURRENT_NEWS_CUTOFF or pub > now.date():
+            if not pub or pub < CURRENT_NEWS_CUTOFF or pub > now.date() or (now.date() - pub).days > 1:
                 continue
-            # Exact official headline in original language; no invented translation/details.
-            display_title = title[:125]
-            copy = (f'🚨 ROCKSTAR UFFICIALE | Nuovo aggiornamento su GTA\n'
-                    f'📰 {display_title}\n'
-                    f'Fonte originale e dettagli: {canonical}')
-            if weight(copy) > 280:
+            # Exact official headline, with optional editorial headline truncation.
+            # v13.5 adds searchable GTA VI / GTA 6 terms, source and relevant tags.
+            copy = compose_official_alert(title, canonical)
+            if not copy:
+                notes.append('hold_unclassified_or_oversize_headline')
                 continue
             articles.append({'id': 'official-' + hashlib.sha256(canonical.encode()).hexdigest()[:18],
                              'topic': 'rockstar-official', 'text': copy, 'url': canonical,
@@ -208,7 +208,7 @@ def select(now, ledger, *, listing=None, date_getter=None, root=None):
             continue
         if datetime.fromisoformat(event['start']) <= now < datetime.fromisoformat(event['end']):
             if weight(event['text']) <= 280:
-                return [{'id': event['id'], 'topic': 'launch-times', 'text': event['text'],
+                return [{'id': event['id'], 'topic': 'launch-times', 'text': finish(event['text'], category='vi'),
                          'url': RELEASE_SOURCE, 'tier': 'OFFICIAL_ROCKSTAR_SCHEDULE'}], notes
     return [], notes
 

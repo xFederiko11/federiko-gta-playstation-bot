@@ -24,6 +24,7 @@ import logging
 from bs4 import BeautifulSoup
 import requests
 from rockstar_render import fetch_rendered
+from editorial_seo_v135 import finish as finish_seo, x_weight
 
 LOG = logging.getLogger('gta.editorial_v13')
 OFFICIAL_NEWSWIRE = 'https://www.rockstargames.com/newswire?tag=702'
@@ -388,8 +389,7 @@ def parse_article(html:str, url:str, *, today:date|None=None) -> dict:
 
 
 def _x_weight(text: str) -> int:
-    from presentation import _post_weight
-    return _post_weight(text)
+    return x_weight(text)
 
 
 def build_post(article:dict) -> str|None:
@@ -416,15 +416,29 @@ def build_post(article:dict) -> str|None:
         if sentence not in lines: lines.append(sentence)
         if len(lines)>=2: break
     if not lines: return None
-    # Preserve the original link: X generates its own preview if supported.
-    prefix='🎮 GTA ONLINE | BONUS ROCKSTAR\n'
-    suffix=f"\n🔗 Fonte ufficiale: {article['url']}\n#GTAOnline"
+    # Keywords in plain language, no invented performance, prices or benefits.
+    kinds={f['kind'] for f in ordered[:len(lines)]}
+    only_plus=all(f['audience']=='GTA+' for f in ordered[:len(lines)])
+    if only_plus:
+        prefix='🚗 GTA+ | Ricompense GTA Online\n'
+    elif kinds == {'discount'}:
+        prefix='🏷️ GTA Online | Sconti Rockstar\n'
+    elif kinds == {'free'}:
+        prefix='🎁 GTA Online | Veicoli e premi Rockstar\n'
+    else:
+        prefix='💰 GTA Online | Bonus GTA$ e RP\n'
+    # Keep original source URL; optional hashtags never take precedence over it.
+    suffix=f"\nFonte Rockstar: {article['url']}"
     text=prefix+'\n'.join(lines)+suffix
-    if _x_weight(text)>280:
+    if _x_weight(text)>265:
         text=prefix+lines[0]+suffix
     if _x_weight(text)>280:
         return None
-    return text
+    try:
+        return finish_seo(text,category='online',gta_plus=only_plus)
+    except ValueError:
+        return None
+
 
 
 def init(db):
@@ -636,13 +650,19 @@ def deliver_ready(db,*,client,checkpoint,now=None,max_per_day=2,earliest_since_s
         # unattempted item as 'sending' or consume its unique deduplication key.
         if getattr(client,'destination',None) is None:
             client.verify_destination()
+        # Re-render only still-UNSENT ready content with current SEO policy.
+        # Previously accepted/sent posts remain untouched and are never retried.
+        message=build_post(data)
+        if not message or _x_weight(message)>280:
+            with db:
+                db.execute("UPDATE editorial_v13_articles SET status='review',last_error='invalid_x_post_text' WHERE url=?",(r['url'],))
+            result['review']+=1
+            continue
         with db:
-            db.execute("UPDATE editorial_v13_articles SET status='sending',attempted_at=? WHERE url=?",(now,r['url']))
+            db.execute("UPDATE editorial_v13_articles SET status='sending',attempted_at=?,post_text=? WHERE url=?",
+                       (now,message,r['url']))
         checkpoint() # Must be durable before calling Buffer; failure aborts publication.
         try:
-            message=r['post_text']
-            if not message or _x_weight(message)>280:
-                raise ValueError('invalid_x_post_text')
             post_id=client.publish(message)
             with db:
                 db.execute("UPDATE editorial_v13_articles SET status='sent',buffer_id=? WHERE url=?",(str(post_id),r['url']))
