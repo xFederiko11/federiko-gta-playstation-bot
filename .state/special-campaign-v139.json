@@ -10,6 +10,13 @@
       "run_id": "44345860643",
       "status": "sent"
     },
+    "rockstar-lucia-4": {
+      "digest": "d6480050c0c605a6f7b70c748e479569ebfdbabdc06457136e32213ce4faa0cc",
+      "kind": "gallery",
+      "reserved_utc": "2026-11-18T18:15:04.947254+00:00",
+      "run_id": "44367585558",
+      "status": "reserved"
+    },
     "rockstar-vice-city-4": {
       "attempted_utc": "2026-11-18T17:26:42.648161+00:00",
       "buffer_id": "6afddfd3a11f24337a0cf34a",
