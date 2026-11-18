@@ -105,7 +105,9 @@ def post_text(item: dict) -> str:
         raise ValueError('Topic or safety filter rejected')
     headline = italian_title(item['title'], item.get('language', 'en'))
     src = item['source']
-    if re.search('review|recension', item['title'], re.I):
+    if src == 'PowerPyx':
+        lead = '🏆 GTA VI | Guida PowerPyx'
+    elif re.search('review|recension', item['title'], re.I):
         lead = '📝 GTA VI | Recensione'
     elif re.search('guide|guida|trophy|trofeo|achiev|soluzion', item['title'], re.I):
         lead = '🧭 GTA VI | Guida' if category == 'GTAVI' else '🧭 GTA Online | Guida'
@@ -134,6 +136,103 @@ def post_text(item: dict) -> str:
     if weight_x(post) > 280 or headline == item['title'] and item.get('language', 'en') == 'en':
         raise TranslationUnavailable('Italian text not available: no English fallback')
     return post
+
+# Hand-curated, source-attributed launch guides. Facts come from PowerPyx
+# pages dated 2026-11-18. The date range is an editorial publication window,
+# NOT an invented precise time when PowerPyx published the guides.
+POWERPYX_SPOTLIGHTS = [
+    {
+        'title': 'GTA VI: roadmap del platino PowerPyx',
+        'url': 'https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/',
+        'text': (
+            '🏆 GTA VI | PLATINO: guida PowerPyx\n\n'
+            '⏳ Circa 200 ore e 55 trofei offline, secondo PowerPyx.\n'
+            '⚠️ Una meditazione del Capitolo 1 potrebbe essere mancabile!\n\n'
+            '🔗 Guida completa:\n'
+            'https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/\n\n'
+            '#GTAVI #Platino'
+        ),
+    },
+    {
+        'title': 'GTA VI: 70 sfide su 80 per il completamento',
+        'url': 'https://www.powerpyx.com/gta-6-all-challenges-guide/',
+        'text': (
+            '🎯 GTA VI | Sfide e 100%\n\n'
+            '💡 Secondo PowerPyx bastano 70 sfide su 80 per la checklist del 100%. '
+            'Puoi saltarne 10!\n\n'
+            '📋 Guida alle sfide:\n'
+            'https://www.powerpyx.com/gta-6-all-challenges-guide/\n\n'
+            '#GTAVI #GTA6'
+        ),
+    },
+    {
+        'title': 'GTA VI: missioni, incarichi opzionali e salvataggi',
+        'url': 'https://www.powerpyx.com/gta-6-full-walkthrough-all-missions/',
+        'text': (
+            '🗺️ GTA VI | Missioni e salvataggi\n\n'
+            '⚠️ PowerPyx segnala missioni opzionali a tempo e assenza di replay '
+            'delle missioni.\n'
+            '💾 Meglio conservare salvataggi manuali!\n\n'
+            '🔗 Guida alle missioni:\n'
+            'https://www.powerpyx.com/gta-6-full-walkthrough-all-missions/\n\n'
+            '#GTAVI #GTA6'
+        ),
+    },
+    {
+        'title': 'GTA VI: database di veicoli e collezionabili',
+        'url': 'https://www.powerpyx.com/gta-6-collectible-guide-progress-database/',
+        'text': (
+            '🚗 GTA VI | Collezionabili e veicoli\n\n'
+            '🔎 PowerPyx raccoglie veicoli, animali, armi e collezionabili '
+            'nel database di gioco.\n'
+            '💡 Per il 100% non serve trovare proprio tutto!\n\n'
+            '🔗 Database e guida:\n'
+            'https://www.powerpyx.com/gta-6-collectible-guide-progress-database/\n\n'
+            '#GTAVI #GTA6'
+        ),
+    },
+]
+
+
+def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
+    """One original Italian guide spotlight, spaced across launch days.
+
+    Uses the SAME ledger and URL identity as RSS news so a guide never posts
+    twice even when the PowerPyx RSS also contains that guide.
+    """
+    now = now.astimezone(timezone.utc)
+    if not (datetime(2026, 11, 18, tzinfo=timezone.utc)
+            <= now < datetime(2026, 11, 24, tzinfo=timezone.utc)):
+        return None
+    entries = state['entries']
+    stamped = [published(e.get('reserved_utc')) for e in entries.values()
+               if e.get('reserved_utc')]
+    stamped = [dt for dt in stamped if dt is not None]
+    if sum(1 for dt in stamped if dt.date() == now.date()) >= MAX_POSTS_DAY:
+        return None
+    if stamped and now - max(stamped) < timedelta(minutes=MIN_SPACING_MIN):
+        return None
+    older = [published(e.get('reserved_utc')) for e in entries.values()
+             if e.get('source') == 'PowerPyx' and e.get('reserved_utc')]
+    older = [dt for dt in older if dt is not None]
+    if older and now - max(older) < timedelta(minutes=120):
+        return None
+    for item in POWERPYX_SPOTLIGHTS:
+        url = canonical(item['url'])
+        if urlsplit(url).hostname != 'powerpyx.com':
+            raise ValueError('PowerPyx spotlight uses non-PowerPyx URL')
+        key = identity(url)
+        sig = similarity_key(item['title'])
+        if key in entries:
+            continue
+        if weight_x(item['text']) > 280:
+            raise ValueError('PowerPyx post exceeds X character budget')
+        if item['text'].count('\n\n') < 2 or 'PowerPyx' not in item['text']:
+            raise ValueError('PowerPyx attribution or editorial layout missing')
+        return {'key': key, 'sig': sig, 'url': url, 'title': item['title'],
+                'text': item['text'], 'source': 'PowerPyx'}
+    return None
+
 
 def parse_feed(data: bytes, src: dict):
     if len(data) > MAX_DOWNLOAD:
@@ -266,7 +365,10 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
 
 def preview():
     items, errors = read_feeds(load_sources())
-    selected = select(items, load_state(), datetime.now(timezone.utc), max_posts=5)
+    state = load_state()
+    now = datetime.now(timezone.utc)
+    spotlight = powerpyx_spotlight(state, now)
+    selected = [spotlight] if spotlight else select(items, state, now, max_posts=5)
     print('FEEDS total_relevant=', len(items), 'errors=', errors, 'selected=', len(selected))
     for item in selected:
         print('PREVIEW', item['source'], item['published'], item['url'])
@@ -280,7 +382,8 @@ def reserve():
     state = load_state()
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
-    selected = select(items, state, now)
+    spotlight = powerpyx_spotlight(state, now)
+    selected = [spotlight] if spotlight else select(items, state, now)
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),

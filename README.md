@@ -1,4 +1,42 @@
-# GTA + PlayStation Monitor — online, gratuito, fonti ufficiali
+# GTA VI News Center — monitor e pubblicazione su X
+
+**Produzione attiva · 18 novembre 2026.** Questo repository pubblico
+supporta il canale X collegato a Buffer. Le automazioni operative sono
+elencate in [OPERATIONS.md](OPERATIONS.md) e la gestione delle credenziali
+in [SECURITY.md](SECURITY.md).
+
+**Editoriale:** comunicati ufficiali, testate specializzate, link ai video
+Rockstar e speciali PowerPyx su trofei, platino e progressione. Tutti i nuovi
+post devono essere in italiano, con emoji pertinenti, spaziatura leggibile,
+attribuzione e link. Nessuna ripubblicazione integrale di guide, foto o
+video di creator. I contenuti PowerPyx sono segnalati come provenienti
+dalla testata, non come conferme Rockstar.
+
+**Budget:** nessun nuovo abbonamento né API X a pagamento. L'account Buffer
+può avere un piano già pagato: consultare la propria dashboard prima della
+scadenza, senza presume rinnovi. Commenti e retweet nativi non sono
+automatizzati; sono disponibili [bozze manuali per X](OUTREACH-X-PLAYBOOK.md).
+
+## Stato attuale e manutenzione
+
+| Parte | Dove |
+| --- | --- |
+| Workflow di produzione | .github/workflows |
+| Sorgenti PowerPyx e filtro dedupe | editorial_autopilot_v137.py |
+| Ledger e storico cifrato (non cancellare) | .state |
+| Procedure e monitoraggio | OPERATIONS.md |
+| Sicurezza / credenziali | SECURITY.md |
+| Bozze per risposte video su X | OUTREACH-X-PLAYBOOK.md |
+
+**La sezione sottostante è documentazione storica di onboarding.**
+Alcune istruzioni (come creare ex novo un account Free o attivare il
+primo collegamento) non descrivono lo stato odierno del bot.
+Per la gestione della produzione seguire i file aggiornati sopra.
+
+---
+
+## Guida storica iniziale
+
 
 Questa versione usa **GitHub Actions in un repository pubblico** per eseguire
 il bot e **Buffer Free** per pubblicare su X. Segue le notizie comuni di GTA,
