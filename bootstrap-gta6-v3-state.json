@@ -191,6 +191,13 @@
       "image_url": "https://www.rockstargames.com/VI/_next/static/media/VINTAGE_VICE_CITY_PACK_01.05zaof7o1uz.3.jpg",
       "source": "https://www.rockstargames.com/newswire/article/5171972o3ak5oa/pre-order-grand-theft-auto-vi-on-june-25",
       "status": "scheduled"
+    },
+    "ps5-firmware-1423": {
+      "due_at": "2026-11-18T05:58:00+00:00",
+      "image_kind": "official_logo",
+      "image_url": "https://blog.playstation.com/tachyon/2026/09/8d4a1fdac2d9ea1bcce9566dc292d2971ffbad46.png?fit=512%2C512",
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5/system-software-info/",
+      "status": "sending"
     }
   },
   "version": 1
