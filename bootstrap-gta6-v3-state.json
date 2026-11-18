@@ -112,6 +112,13 @@
       "source": "https://www.rockstargames.com/VI/only-in-leonida",
       "status": "scheduled"
     },
+    "gta6-preload": {
+      "due_at": "2026-11-18T05:46:00+00:00",
+      "image_kind": "editorial_image",
+      "image_url": "https://www.rockstargames.com/VI/_next/static/media/GTAVI_Pre_Load.0h87nx-881hca.jpg",
+      "source": "https://www.rockstargames.com/newswire/article/89834o94713o21/pre-load-grand-theft-auto-vi-now",
+      "status": "sending"
+    },
     "gta6-preload-faq": {
       "buffer_id": "6afcf7a19f3765f6ab1f3109",
       "due_at": "2026-11-18T04:58:00+00:00",
