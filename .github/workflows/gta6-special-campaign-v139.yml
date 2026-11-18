@@ -22,7 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: gta-vi-special-campaign-v139
+  group: ${{ github.event_name == 'pull_request' && format('gta-v142-qa-{0}', github.ref) || 'gta-v142-publication-global' }}
   cancel-in-progress: false
 
 jobs:
@@ -77,6 +77,8 @@ jobs:
         run: python gta6_special_campaign_v139.py --mode preview
       - name: Reserve one campaign item before posting
         id: reserve
+        env:
+          EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
         if: github.event_name != 'workflow_dispatch' || inputs.action == 'run'
         run: |
           git pull --rebase origin main

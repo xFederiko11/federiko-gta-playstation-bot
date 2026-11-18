@@ -312,6 +312,13 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             news_center_threads=False, require_official_media=False, media_resolver=official_image_for_event):
     enforce_job_policy(db, policy or {})
     reconcile(db, client)
+    from editorial_director_v142 import allowed as director_allowed
+    if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+        from datetime import timezone
+        ok, reason = director_allowed(datetime.now(timezone.utc))
+        if not ok:
+            LOG.info('DIRECTOR_HOLD: %s', reason)
+            return
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
     with db:
         db.execute("UPDATE publish_jobs SET status='uncertain' WHERE status='sending'")
@@ -395,6 +402,10 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         with db:
             db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
                        (single_text, time.time(), row["key"]))
+        if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            from editorial_director_v142 import note_monitor_attempt
+            from datetime import timezone
+            note_monitor_attempt(event, datetime.now(timezone.utc))
         if checkpoint:
             # Il journal remoto precede l'invio: un runner interrotto non lo ripete alla cieca.
             checkpoint()
@@ -435,8 +446,9 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             sent += 1
         if checkpoint:
             checkpoint()
-        if stop:
-            break
+        if stop or os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            break  # One publication per scheduled monitor run while the global director is on.
+
 
 
 def export_csv(payload, destination):

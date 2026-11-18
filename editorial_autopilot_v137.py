@@ -18,6 +18,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 import requests
 from editorial_language_it import italian_title, TranslationUnavailable
+from editorial_director_v142 import priority, allowed as director_allowed
 
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
@@ -92,7 +93,7 @@ def topic(title: str) -> str | None:
     s = clean(title)
     if not (TOPIC_RE.search(s) or re.search(r'\bgta\+(?!\w)', s, re.I)):
         return None
-    if REJECT_RE.search(s) or CLICK_RE.search(s):
+    if REJECT_RE.search(s) or CLICK_RE.search(s) or priority(s) < 0:
         return None
     return 'GTAOnline' if re.search(
         r'(?:\b(?:gta\s*online|grand theft auto online)\b|\bgta\+(?!\w))', s, re.I
@@ -340,7 +341,8 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
         return []
     out, keys, new_sigs = [], set(), []
     old_sigs = list(sigs)
-    for item in sorted(items, key=lambda x: x['published'], reverse=True):
+    # Surface important PS5, platinum and primary-source news before parodies.
+    for item in sorted(items, key=lambda x: (priority(x['title'], x.get('source','')), x['published']), reverse=True):
         stamp = published(item['published'])
         if stamp is None or stamp > now + timedelta(minutes=3) or now - stamp > timedelta(minutes=MAX_AGE_MIN):
             continue
@@ -369,6 +371,7 @@ def preview():
     now = datetime.now(timezone.utc)
     spotlight = powerpyx_spotlight(state, now)
     selected = [spotlight] if spotlight else select(items, state, now, max_posts=5)
+    print("TROPHY_SERIES configured=55, photo-posts wait for live GitHub Pages")
     print('FEEDS total_relevant=', len(items), 'errors=', errors, 'selected=', len(selected))
     for item in selected:
         print('PREVIEW', item['source'], item['published'], item['url'])
@@ -383,11 +386,25 @@ def reserve():
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
     spotlight = powerpyx_spotlight(state, now)
-    selected = [spotlight] if spotlight else select(items, state, now)
+    ok, why = director_allowed(now)
+    if not ok:
+        print("DIRECTOR_HOLD", why)
+        selected = []
+    else:
+        # Search-indexable Italian trophy pages must exist BEFORE linking them.
+        # This is optional: unavailable Pages never blocks breaking news.
+        trophy_item = None
+        if not spotlight:
+            from trophy_posts_v142 import candidate, landing_live
+            draft_trophy = candidate(state, now)
+            if draft_trophy and landing_live():
+                trophy_item = draft_trophy
+        selected = [spotlight] if spotlight else [trophy_item] if trophy_item else select(items, state, now)
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
-            'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text']
+            'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text'],
+            'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number')
         }
         if item['sig']:
             state['signatures'][item['sig']] = item['key']
@@ -427,7 +444,8 @@ def deliver():
         entry['attempted_utc'] = datetime.now(timezone.utc).isoformat()
         save_state(state)
         try:
-            result = client.publish(entry['text'])
+            result = (client.publish(entry['text'], media_url=entry['media_url'])
+                      if entry.get('media_url') else client.publish(entry['text']))
         except BufferPending as exc:
             entry['status'] = 'accepted_pending'
             entry['buffer_id'] = exc.post_id

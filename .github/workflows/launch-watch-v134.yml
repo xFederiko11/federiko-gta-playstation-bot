@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: gta-vi-watch-v134
+  group: ${{ github.event_name == 'pull_request' && format('gta-v142-qa-{0}', github.ref) || 'gta-v142-publication-global' }}
   cancel-in-progress: false
 
 jobs:
@@ -60,6 +60,8 @@ jobs:
         run: python launch_watch_v134.py --mode preview
       - name: Reserve one verified candidate in repository
         id: reserve
+        env:
+          EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
         if: (github.event_name == 'workflow_dispatch' && inputs.action == 'run') || (github.event_name == 'schedule' && vars.LAUNCH_WATCH_V134_AUTOPUBLISH == 'true')
         run: |
           git pull --rebase origin main

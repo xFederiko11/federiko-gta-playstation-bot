@@ -280,6 +280,11 @@ def main(argv=None):
         if not daily_limit(ledger, now):
             print('DAILY_LIMIT: no post')
             return 0
+        from editorial_director_v142 import allowed as director_allowed
+        ok, reason = director_allowed(now)
+        if not ok:
+            print("DIRECTOR_HOLD", reason)
+            return 0
         print('RESERVED' if reserve(now, candidates[0], ledger) else 'ALREADY_RESERVED')
     return 0
 

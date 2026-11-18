@@ -23,7 +23,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: gta-monitor-${{ github.repository }}
+  group: ${{ github.event_name == 'pull_request' && format('gta-v142-qa-{0}', github.ref) || 'gta-v142-publication-global' }}
   cancel-in-progress: false
 
 jobs:
@@ -104,6 +104,7 @@ jobs:
       - name: Raccogli, prepara le schede e pubblica se attivato
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:
+          EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           STATE_PASSWORD: ${{ secrets.STATE_PASSWORD }}
@@ -127,7 +128,7 @@ jobs:
           if [ ! -f "$ENCRYPTED_STATE" ]; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for item in .state/bot.enc history-public.json history-public.csv monitor-health.json; do
+          for item in .state/bot.enc .state/monitor-publication-v142.json history-public.json history-public.csv monitor-health.json; do
             if [ -f "$item" ]; then git add -- "$item"; fi
           done
           if ! git diff --cached --quiet; then

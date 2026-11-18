@@ -2,6 +2,19 @@
   "schema": "v13.7",
   "sources": [
     {
+      "name": "PowerPyx",
+      "feed": "https://www.powerpyx.com/feed/",
+      "feed_domains": [
+        "www.powerpyx.com",
+        "powerpyx.com"
+      ],
+      "domains": [
+        "powerpyx.com"
+      ],
+      "language": "en",
+      "enabled": true
+    },
+    {
       "name": "VGC",
       "feed": "https://www.videogameschronicle.com/feed/",
       "feed_domains": [

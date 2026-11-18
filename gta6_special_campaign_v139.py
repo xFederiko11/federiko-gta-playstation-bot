@@ -185,7 +185,13 @@ def reserve():
     if not run:
         raise RuntimeError("Expected GitHub Actions context")
     data = load()
-    selected, reason = select(data, datetime.now(timezone.utc))
+    from editorial_director_v142 import allowed as director_allowed
+    now = datetime.now(timezone.utc)
+    ok, reason = director_allowed(now)
+    if not ok:
+        print("DIRECTOR_HOLD", reason)
+        return
+    selected, reason = select(data, now)
     if not selected:
         print("NO_POST", reason)
         return
