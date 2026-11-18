@@ -72,6 +72,15 @@
       "title": "GTA 6 Island Dreams Walkthrough",
       "url": "https://videogameschronicle.com/guide/gta-6-island-dreams-walkthrough"
     },
+    "bce83f32e0f01951b37b76c5": {
+      "reserved_utc": "2026-11-18T18:24:12.523267+00:00",
+      "run_id": "44369279059",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nVolvy's Adventure Reslimed: il trailer di Devolver Digital è un'esilarante parodia di GTA 6\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/volvy-s-adventure-reslimed-trailer-devolver-digital-esilarante-parodia-gta-6-912376.html\n\n#GTAVI #GTA6",
+      "title": "Volvy's Adventure Reslimed: il trailer di Devolver Digital è un'esilarante parodia di GTA 6",
+      "url": "https://everyeye.it/notizie/volvy-s-adventure-reslimed-trailer-devolver-digital-esilarante-parodia-gta-6-912376.html"
+    },
     "c12aa6dbf53c6d412916b87e": {
       "attempted_utc": "2026-11-18T15:35:03.709054+00:00",
       "buffer_id": "6afdc5a70a57e5a1571972dc",
@@ -153,6 +162,13 @@
       "feeds_relevant": 87,
       "reserved": 1,
       "run": "44366679749"
+    },
+    {
+      "at": "2026-11-18T18:24:12.523267+00:00",
+      "errors": [],
+      "feeds_relevant": 88,
+      "reserved": 1,
+      "run": "44369279059"
     }
   ],
   "schema": "v13.7",
@@ -164,6 +180,7 @@
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
-    "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617"
+    "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
+    "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
 }
