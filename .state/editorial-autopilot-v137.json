@@ -1,10 +1,13 @@
 {
   "entries": {
     "41b163b5da10f556bcd230fd": {
+      "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
+      "buffer_id": "6afdcc100a57e5a1571c5558",
+      "completed_utc": "2026-11-18T16:02:25.525165+00:00",
       "reserved_utc": "2026-11-18T16:02:20.828692+00:00",
       "run_id": "44342476268",
       "source": "Push Square",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nLe prestazioni di base di GTA 6 su PS5 subiscono cali di frame rate \"minori\" e \"prolungati\", ma sono \"costanti\" su PS5 Pro\n\n🔗 Fonte: Push Square\nhttps://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro\n\n#GTAVI #GTA6",
       "title": "GTA 6 Base PS5 Performance Suffers 'Minor' and 'Sustained' Frame Rate Drops, But It's 'Unwavering' on PS5 Pro",
       "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
