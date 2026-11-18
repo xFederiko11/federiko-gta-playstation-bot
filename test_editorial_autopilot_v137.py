@@ -54,9 +54,9 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertEqual(len(list(bot.parse_feed(atom.encode(), src))), 1)
 
     def test_freshness_and_day_limit(self):
-        self.assertEqual(bot.select([article(date=NOW-timedelta(hours=4))], self.state, NOW), [])
+        self.assertEqual(bot.select([article(date=NOW-timedelta(hours=13))], self.state, NOW), [])
         self.assertEqual(bot.select([article(date=NOW+timedelta(minutes=5))], self.state, NOW), [])
-        for i in range(8):
+        for i in range(bot.MAX_POSTS_DAY):
             self.state['entries'][str(i)] = {'reserved_utc': NOW.isoformat()}
         self.assertEqual(bot.select([article()], self.state, NOW), [])
 
