@@ -20,7 +20,7 @@ class QuickTipsV146Tests(unittest.TestCase):
         self.assertEqual(len({t['id'] for t in TIPS}),6)
         self.assertEqual(len({t['media_url'] for t in TIPS}),6)
         for tip in TIPS:
-            self.assertLessEqual(x_weight(tip['main']),280)
+            self.assertLessEqual(x_weight(tip['main']),235)
             self.assertLessEqual(x_weight(reply(tip)),280)
             self.assertNotIn('https://',tip['main'])
             self.assertIn(tip['source_url'],reply(tip))
