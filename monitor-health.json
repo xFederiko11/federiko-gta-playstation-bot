@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-18T04:41:46+00:00",
+  "generated_at": "2026-11-18T05:45:53+00:00",
   "history_observed": [
     {
-      "last_observed_at": "2026-11-18T04:41:46Z",
+      "last_observed_at": "2026-11-18T05:45:53Z",
       "record_id": "1b90d8ac7cb67f5e4847ab1d9626c7eac7498c81555b28a33d313dd5a35f26f0"
     },
     {
@@ -23,14 +23,14 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1794976872.817739,
-      "next_due": 1794977172.817739
+      "last_success": 1794980717.0116706,
+      "next_due": 1794981017.0116706
     },
     {
       "id": "support-gta",
       "last_error": "ReadTimeout",
       "last_success": null,
-      "next_due": 1794977775.1568224
+      "next_due": 1794981622.2254887
     },
     {
       "id": "system:PS4",
@@ -41,14 +41,14 @@
     {
       "id": "system:PS5",
       "last_error": null,
-      "last_success": 1794976905.4019933,
-      "next_due": 1794977205.4019933
+      "last_success": 1794980752.391974,
+      "next_due": 1794981052.391974
     },
     {
       "id": "youtube",
       "last_error": null,
-      "last_success": 1794976905.3370492,
-      "next_due": 1794977205.3370492
+      "last_success": 1794980752.3493075,
+      "next_due": 1794981052.3493075
     }
   ],
   "schema_version": 1
