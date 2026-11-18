@@ -39,6 +39,16 @@ def numerals(value: str) -> list[str]:
     return sorted(re.sub(r"[,\.]", "", n) for n in re.findall(r"(?<!\w)\d[\d,.]*", value))
 
 
+def contains_english_prose(value: str) -> bool:
+    """Conservative send-time guard for obviously untranslated English wording.
+
+    Links, hashtags and proper channel names are not prose.
+    """
+    text = re.sub(r"https?://\\S+", " ", plain(value))
+    text = re.sub(r"#[A-Za-z0-9_]+", " ", text)
+    return bool(ENGLISH_MARKERS.search(text))
+
+
 def italian_title(headline: str, language: str, *, session=None) -> str:
     original = plain(headline)
     if language == "it":
