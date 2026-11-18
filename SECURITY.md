@@ -1,0 +1,15 @@
+# Security policy
+
+Report vulnerabilities privately to the repository maintainer. Never publish passwords, tokens, decrypted state, or account data in an issue.
+
+## Credentials and state
+
+GitHub Actions Secrets must hold BUFFER_API_KEY, BUFFER_CHANNEL_ID and STATE_PASSWORD. No X API key or new subscriptions are required. Do not put secrets in repository files or workflow logs. The public repository contains encrypted state and public publication ledgers; do not delete or decrypt them. Encrypted state still depends on secrecy of the encryption key.
+
+## Supply-chain and GitHub Actions
+
+GitHub Actions are pinned to full commit hashes checked against upstream release tags. Pull-request test jobs have read-only repository permissions and receive no Buffer secrets. Publishing jobs receive write permissions only when required to record reservations and delivery results. Review Dependabot PRs and run tests before merging. Do not automatically merge unreviewed dependency or workflow changes.
+
+## Publishing safety
+
+Every public news post must be in Italian, with clear source attribution and no fabricated claims. PowerPyx guides are linked and summarized in original words; no copied articles or images. Reserve in persistent ledgers before calling Buffer, and never automatically retry an uncertain write. Viral-video responses and native X reposts are not auto-published. Do not introduce paid API dependencies or spammy engagement automation.
