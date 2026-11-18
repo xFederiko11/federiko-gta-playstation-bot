@@ -52,8 +52,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -63,7 +63,7 @@ jobs:
       - name: Check Italian-only policy without publishing
         run: |
           python -m py_compile editorial_director_v142.py trophy_posts_v142.py build_trophy_site_v142.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py
-          python -m unittest -q test_editorial_language_it test_editorial_autopilot_v137 test_official_links_free_v140
+          python -m unittest discover -q
 
   editorial:
     permissions:
@@ -88,12 +88,12 @@ jobs:
       BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
       BUFFER_EXPECTED_USERNAME: xFederiko11
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
           persist-credentials: true
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
           cache: 'pip'
