@@ -32,7 +32,7 @@ BRIDGE_URLS = {
     'https://gta.guide/article/contact-missions-bonus-week',
 }
 TOPIC_RE = re.compile(r'\b(?:gta[\s\-]*(?:vi|6|online)|grand\s+theft\s+auto\s*(?:vi|6|online)|gta\+|vice\s+city|jason\s+(?:duval|and\s+lucia)|lucia\s+caminos)\b', re.I)
-REJECT_RE = re.compile(r'\b(?:rumou?r|leak(?:ed|s)?|datamine(?:d)?|unconfirmed|alleged|supposedly|insider|speculat(?:ion|e|es)|prediction|predicts|theory|theories|could|might|maybe|may\s+be|possibly|what\s+if|spoilers?|spoilerosi|indiscrezion[ei]|fuga\s+di\s+notizie|trapelat[oi]|ipotetic[oi]|svelat[oi]\s+da\s+un\s+insider|non\s+confermato|screenshot\s+rubat[oi]|mod\s+menu|hack(?:ed|s|ing)?|pirat[ae]|torrent|giveaway|gift\s+card|sponsored|#ad|offerta\s+amazon|black\s+friday)\b', re.I)
+REJECT_RE = re.compile(r'\b(?:rumou?r(?:s|ed)?|leak(?:ed|s)?|datamine(?:d)?|unconfirmed|alleged|supposedly|insider|speculat(?:ion|e|es)|prediction|predicts|theory|theories|could|might|maybe|may\s+be|possibly|what\s+if|spoilers?|spoilerosi|indiscrezion[ei]|fuga\s+di\s+notizie|trapelat[oi]|ipotetic[oi]|svelat[oi]\s+da\s+un\s+insider|non\s+confermato|screenshot\s+rubat[oi]|mod\s+menu|hack(?:ed|s|ing)?|pirat[ae]|torrent|giveaway|gift\s+card|sponsored|#ad|offerta\s+amazon|black\s+friday)\b', re.I)
 CLICK_RE = re.compile(r'(?:you\s+won.t\s+believe|sconvolgente|incredibile\s+segreto|nessuno\s+te\s+lo\s+dice|shock|gioc[a-z]*\s+gratis|buy\s+now|preorder\s+now)', re.I)
 STRIP_TAGS = re.compile(r'<[^>]*>')
 
