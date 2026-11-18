@@ -389,8 +389,15 @@ def reserve():
     state = load_state()
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
-    spotlight = powerpyx_spotlight(state, now)
-    ok, why = director_allowed(now)
+    # Local reservation cooldown applies to ALL editorial types, including
+    # quick tips, trophy posts and old PowerPyx spotlights. Never let a
+    # second reserve in the same Actions run queue a different story.
+    prior = [published(e.get('reserved_utc')) for e in state['entries'].values()
+             if e.get('reserved_utc')]
+    prior = [dt for dt in prior if dt is not None]
+    local_hold = bool(prior and now - max(prior) < timedelta(minutes=MIN_SPACING_MIN))
+    spotlight = None if local_hold else powerpyx_spotlight(state, now)
+    ok, why = ((False, 'editorial_local_spacing') if local_hold else director_allowed(now))
     if not ok:
         print("DIRECTOR_HOLD", why)
         selected = []
