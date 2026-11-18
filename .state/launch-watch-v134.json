@@ -1,10 +1,11 @@
 {
   "posts": {
     "nz-local-release-times-20261118": {
+      "buffer_post_id": "6afd8f593cc95fb47ce93153",
       "reserved_at": 1795002199.523362,
       "run_id": "44296775547",
       "sha256": "9656ed52b0914e875d2b72821265d10357e2d32952343bbb0b9623bc709519c4",
-      "status": "reserved",
+      "status": "accepted",
       "text": "🚨 GTA VI | È scattato lo sblocco regionale previsto per la Nuova Zelanda: 19/11 ore 00:00 NZDT = 18/11 ore 12:00 in Italia. 🇳🇿\n🇮🇹 In Italia l’orario previsto resta la mezzanotte del 19/11. Attenzione agli spoiler!\nhttps://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s",
       "tier": "OFFICIAL_ROCKSTAR_SCHEDULE",
       "topic": "launch-times",
