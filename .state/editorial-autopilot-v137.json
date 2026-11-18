@@ -23,6 +23,15 @@
       "text": "📰 GTA VI | VGC pubblica: GTA 6 Island Dreams Walkthrough\n#GTAVI #GTA6\nFonte: https://videogameschronicle.com/guide/gta-6-island-dreams-walkthrough",
       "title": "GTA 6 Island Dreams Walkthrough",
       "url": "https://videogameschronicle.com/guide/gta-6-island-dreams-walkthrough"
+    },
+    "c12aa6dbf53c6d412916b87e": {
+      "reserved_utc": "2026-11-18T15:35:02.012549+00:00",
+      "run_id": "44337235106",
+      "source": "Push Square",
+      "status": "reserved",
+      "text": "🧭 GTA VI | Guida di Push Square: Guide: GTA 6: Who Is the Real Actress Lucia Is Based On?\n#GTAVI #GTA6\nFonte: https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on",
+      "title": "Guide: GTA 6: Who Is the Real Actress Lucia Is Based On?",
+      "url": "https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on"
     }
   },
   "run_history": [
@@ -39,11 +48,19 @@
       "feeds_relevant": 82,
       "reserved": 1,
       "run": "44330036391"
+    },
+    {
+      "at": "2026-11-18T15:35:02.012549+00:00",
+      "errors": [],
+      "feeds_relevant": 83,
+      "reserved": 1,
+      "run": "44337235106"
     }
   ],
   "schema": "v13.7",
   "signatures": {
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
+    "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d"
   }
 }
