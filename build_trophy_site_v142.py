@@ -110,9 +110,28 @@ def build():
         if not t["hidden"] or show_secret:pages.append(url)
         card=f'<article class="card"><span class="chip {class_tier}">{esc(t["tier"])}</span><h2><a href="{slug}">{name}</a></h2><p>{desc}</p></article>'
         (hidden_cards if t["hidden"] else index_cards).append(card)
+    # Dedicated search page for the difference between gold-tier trophies
+    # and gold medals in activities: GTA VI has NO story mission gold medals.
+    gold_title="GTA VI: trofei Oro e medaglie Oro — requisiti PS5"
+    gold_body='<h1>🥇 GTA VI — tutti i requisiti Oro</h1>'
+    gold_body+='<p><a href="'+BASE+'/">← Catalogo completo 55 trofei</a></p>'
+    gold_body+='<h2>🏆 I 2 trofei Oro PS5</h2><p><a href="trofeo-07.html">Devi sapere quando scendere</a>: completa l’ultima missione della storia.</p>'
+    gold_body+='<p><a href="trofeo-14.html">Una lunga strada</a>: raggiungi il 100% della checklist di completamento.</p>'
+    gold_body+='<h2>🎯 Medaglie Oro nelle attività</h2>'
+    gold_body+='<p>⚠️ Secondo PowerPyx, GTA VI non prevede medaglie Oro per le missioni della storia.</p>'
+    gold_body+='<p>Per il trofeo Argento <a href="trofeo-17.html">Cecchino</a> servono tutte le 42 medaglie Oro nei 12 poligoni di tiro.</p>'
+    gold_body+='<p>La checklist del 100% include inoltre 10 medaglie Oro su 13 sfide di gara, oltre ai requisiti delle altre attività.</p>'
+    gold_body+='<p class="source">Fonte: <a href="https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/">PowerPyx Trophy Roadmap</a> e <a href="https://www.powerpyx.com/gta-6-100-completion-checklist-guide/">100% Completion Checklist</a>.</p>'
+    gold_url=BASE+"/guida-medaglie-oro.html"
+    (OUT/"guida-medaglie-oro.html").write_text(layout(gold_title,
+        "I 2 trofei Oro GTA VI e le medaglie Oro delle attività: 42 poligoni di tiro, 10 sfide gara e nessuna medaglia nella storia.",
+        gold_body,gold_url,PHOTOS[0],jsonld={"@context":"https://schema.org","@type":"Article",
+        "headline":gold_title,"inLanguage":"it-IT","url":gold_url}),encoding="utf-8")
+    pages.append(gold_url)
     intro=f'<h1>🏆 GTA VI — tutti i 55 trofei PS5 in italiano</h1><p class="lead">Requisiti, medaglie Oro delle attività e consigli per il platino. 1 Platino · 2 Oro · 6 Argento · 46 Bronzo. Nessun trofeo online nella lista base.</p>'
     intro+='<p>⚠️ Una meditazione del Capitolo 1 potrebbe essere mancabile. Prima di procedere conserva un salvataggio manuale.</p>'
     intro+='<p><a href="https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/">📖 Roadmap PowerPyx</a> · <a href="https://www.planetgta6.com/it/trofei-gta-6/">Elenco trofei in italiano</a></p>'
+    intro+='<p>🥇 <a href="guida-medaglie-oro.html">Trofei Oro e medaglie Oro: tutti i requisiti</a></p>'
     intro+='<h2>Trofei visibili (senza spoiler)</h2><div class="cards">'+''.join(index_cards)+'</div>'
     intro+='<details><summary>⚠️ Mostra i 28 trofei nascosti (spoiler)</summary><div class="cards">'+''.join(hidden_cards)+'</div></details>'
     (OUT/"index.html").write_text(layout("GTA VI Trofei PS5: tutti i 55 requisiti in italiano | Guida al platino",
