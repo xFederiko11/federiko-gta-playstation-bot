@@ -48,6 +48,8 @@ jobs:
       V12_UNIQUE_IMAGES: ${{ vars.V12_UNIQUE_IMAGES || 'false' }}
       WEEKLY_RADAR_V12_ENABLED: ${{ vars.WEEKLY_RADAR_V12_ENABLED || 'false' }}
       VIDEO_LINK_CARDS_V12: ${{ vars.VIDEO_LINK_CARDS_V12 || 'false' }}
+      # No X API, no new subscription: official Rockstar YouTube share links.
+      OFFICIAL_LINKS_FREE_ENABLED: 'true'
       EDITORIAL_V13_ENABLED: ${{ vars.EDITORIAL_V13_ENABLED || 'false' }}
       EDITORIAL_V13_AUTOPUBLISH: ${{ vars.EDITORIAL_V13_AUTOPUBLISH || 'false' }}
     steps:
@@ -94,6 +96,9 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check -r requirements-free.txt
           python -m playwright install --with-deps chromium
+      - name: Verifica gratuita i link ufficiali prima di pubblicare
+        if: ${{ steps.launch_window.outputs.active == 'true' }}
+        run: python -m unittest -q test_official_links_free_v140
       - name: Raccogli, prepara le schede e pubblica se attivato
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:
