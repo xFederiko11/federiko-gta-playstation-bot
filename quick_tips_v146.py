@@ -24,7 +24,7 @@ IMAGES={
 }
 TIPS=[
     {
-        "id":"w a i n k vehicles",
+        "id":"waink-vehicles-ps5",
         "title":"GTA VI PS5: scansiona i veicoli in pochi secondi",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/",
         "media_url":IMAGES["vehicles"],
