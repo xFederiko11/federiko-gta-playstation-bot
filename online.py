@@ -311,6 +311,13 @@ def reconcile(db, client):
 def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None,
             news_center_threads=False, require_official_media=False, media_resolver=official_image_for_event):
     enforce_job_policy(db, policy or {})
+    from editorial_director_v142 import allowed as director_allowed
+    if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+        from datetime import timezone
+        ok, reason = director_allowed(datetime.now(timezone.utc))
+        if not ok:
+            LOG.info('DIRECTOR_HOLD: %s', reason)
+            return
     reconcile(db, client)
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
     with db:
@@ -435,8 +442,9 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             sent += 1
         if checkpoint:
             checkpoint()
-        if stop:
-            break
+        if stop or os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            break  # One publication per scheduled monitor run while the global director is on.
+
 
 
 def export_csv(payload, destination):
