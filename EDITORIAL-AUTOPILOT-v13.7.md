@@ -4,11 +4,12 @@
 
 ## Cosa fa
 
-Il workflow segue gli avvii pianificati e riusciti di `GTA Monitor gratuito`.
+Il workflow segue gli avvii pianificati e riusciti di `GTA Monitor gratuito` e dispone anche di un calendario diretto di backup; un push del workflow su main esegue il controllo iniziale.
 I candidati provengono dai feed RSS di VGC, Push Square, IGN, GameSpot,
 Everyeye e Multiplayer.it (vedi `editorial-autopilot-v137-sources.json`).
-Pubblica fino a **1 post per run, 8 al giorno**, con **25 minuti minimi** fra
-prenotazioni, e solo articoli con data non precedente a 3 ore.
+Pubblica fino a **1 post per run, 16 al giorno**, con **12 minuti minimi** fra
+prenotazioni, e solo articoli con data non precedente a 12 ore. I limiti
+possono ridurre il numero di post per evitare spam; l'avvio dipende dai ritardi GitHub.
 
 I testi riportano la testata e il titolo attribuito, URL originale e hashtag.
 Le notizie non sono trattate come conferme Rockstar.
@@ -24,7 +25,7 @@ Il sistema non copia immagini, non traduce articoli e non riporta rumor o leak.
 4. La prenotazione viene committata in `.state/editorial-autopilot-v137.json`
    prima della chiamata di pubblicazione. I risultati incerti NON vengono
    ritentati in automatico. Non cancellare il registro.
-5. Controllare i log: `FEEDS`, `RESERVE count`,
+5. Controllare i log: `FEED_OK`, `FEED_ERROR`, `FEEDS`, `RESERVE count`,
    `BUFFER_SENT`, `BUFFER_PENDING` o `BUFFER_ERROR`.
    Un run verde senza `BUFFER_SENT` non equivale ad aver pubblicato.
 6. In `Actions > GTA VI - Editorial Autopilot v13.7` la scelta
