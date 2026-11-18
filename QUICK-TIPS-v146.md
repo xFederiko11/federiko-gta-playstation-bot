@@ -22,13 +22,14 @@ si spiega in due o tre passaggi. La rubrica `quick_tips_v146.py` trasforma
   la foto è collegata al primo, la fonte al secondo.
 - Non viene inviata una risposta separata che potrebbe rimanere orfana.
 
-## Cinque consigli già verificati
+## Sei consigli già verificati
 1. WAiNK: scansione rapida veicoli (↑, R1), 200/277 per il 100%.
 2. Binocolo: studio animali (↑, R1), 100/255 senza caccia.
 3. Sfide: 70/80 per la checklist del 100%, con 10 da poter evitare.
 4. Meditazione nel Capitolo 1: attività mancabile, impatto sul trofeo non
    ancora confermato da PowerPyx. Nessun dettaglio di storia rivelato.
 5. Poligoni: incremento della statistica Concentrazione e 42 medaglie Oro.
+6. Taxi: viaggio rapido disponibile dopo la prima missione, con chiamata Paradise Taxi e spesa di 100 $.
 
 Fonte: articoli PowerPyx pubblicati il **18 novembre 2026**, link nel
 secondo messaggio di ogni thread. Nessun paragrafo dell'articolo viene
