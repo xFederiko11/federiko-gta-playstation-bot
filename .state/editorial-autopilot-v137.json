@@ -28,6 +28,19 @@
       "trophy_number": 14,
       "url": "https://xfederiko11.github.io/federiko-gta-playstation-bot/trofeo-14.html"
     },
+    "12595b52c7043d9563bedca3": {
+      "media_url": null,
+      "reserved_utc": "2026-11-18T22:28:08.462149+00:00",
+      "run_id": "44411817600",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🏆 GTA VI | Guida PowerPyx\n\nGTA 6: posizioni di tutti i set di carte collezionabili\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-all-collectible-card-sets-locations\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 All Collectible Card Sets Locations",
+      "trophy_number": null,
+      "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -303,10 +316,18 @@
       "feeds_relevant": 95,
       "reserved": 1,
       "run": "44407202228"
+    },
+    {
+      "at": "2026-11-18T22:28:08.462149+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44411817600"
     }
   ],
   "schema": "v13.7",
   "signatures": {
+    "all collectible card sets locations": "12595b52c7043d9563bedca3",
     "all radio stations and songs": "cf7793967a1cc2f2b0e9b348",
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
