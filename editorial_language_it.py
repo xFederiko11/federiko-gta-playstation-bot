@@ -44,7 +44,7 @@ def contains_english_prose(value: str) -> bool:
 
     Links, hashtags and proper channel names are not prose.
     """
-    text = re.sub(r"https?://\\S+", " ", plain(value))
+    text = re.sub(r"https?://\S+", " ", plain(value))
     text = re.sub(r"#[A-Za-z0-9_]+", " ", text)
     return bool(ENGLISH_MARKERS.search(text))
 
