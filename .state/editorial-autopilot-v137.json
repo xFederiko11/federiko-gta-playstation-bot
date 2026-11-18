@@ -48,6 +48,15 @@
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
     },
+    "88f9cbde4c19d0e059000e49": {
+      "reserved_utc": "2026-11-18T19:22:13.716545+00:00",
+      "run_id": "44379736312",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🏆 GTA VI | PLATINO: guida PowerPyx\n\n⏳ Circa 200 ore e 55 trofei offline, secondo PowerPyx.\n⚠️ Una meditazione del Capitolo 1 potrebbe essere mancabile!\n\n🔗 Guida completa:\nhttps://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/\n\n#GTAVI #Platino",
+      "title": "GTA VI: roadmap del platino PowerPyx",
+      "url": "https://powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap"
+    },
     "a7585b90667b279c490a4185": {
       "attempted_utc": "2026-11-18T17:35:15.163432+00:00",
       "buffer_id": "6afde1d3a11f24337a0dd99f",
@@ -172,6 +181,13 @@
       "feeds_relevant": 88,
       "reserved": 1,
       "run": "44369279059"
+    },
+    {
+      "at": "2026-11-18T19:22:13.716545+00:00",
+      "errors": [],
+      "feeds_relevant": 90,
+      "reserved": 1,
+      "run": "44379736312"
     }
   ],
   "schema": "v13.7",
@@ -184,6 +200,7 @@
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
+    "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
 }
