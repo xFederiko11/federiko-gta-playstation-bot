@@ -47,6 +47,10 @@ def audit(root=Path(".")) -> dict:
         errors.append("Global publication limit was changed without safety review")
     if "MIN_GAP=timedelta(minutes=90)" not in director:
         errors.append("Global minimum posting gap was changed without safety review")
+    if "STEADY_MAX_AUTOMATED_DELIVERIES_24H=6" not in director or "STEADY_MIN_GAP=timedelta(minutes=120)" not in director:
+        errors.append("Post-launch conservative pace was changed without safety review")
+    if "BOOST_UNTIL=datetime(2026,11,30" not in director:
+        errors.append("Temporary boost expiration was removed without safety review")
     result={
         "publisher_workflows_audited":found,
         "organic_workflow":ORGANIC,
