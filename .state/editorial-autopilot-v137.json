@@ -60,6 +60,19 @@
       "trophy_number": null,
       "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
     },
+    "30fde1d513737ed1a71e03e6": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T03:59:13.236851+00:00",
+      "run_id": "44455127418",
+      "source": "IGN",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nIl lancio di GTA 6 provoca un enorme picco di traffico per il provider Internet Xfinity\n\n🔗 Fonte: IGN\nhttps://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Launch Causes Massive Spike in Traffic for Internet Provider Xfinity",
+      "trophy_number": null,
+      "url": "https://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -422,6 +435,13 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44452069525"
+    },
+    {
+      "at": "2026-11-19T03:59:13.236851+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44455127418"
     }
   ],
   "schema": "v13.7",
@@ -437,6 +457,7 @@
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
+    "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
