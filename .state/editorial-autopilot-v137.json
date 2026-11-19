@@ -149,11 +149,14 @@
       "url": "https://everyeye.it/notizie/gta-6-bonus-esclusivi-chi-abbonato-gta-912358.html"
     },
     "4e69b4fe4c668f2e733e362e": {
+      "attempted_utc": "2026-11-19T12:36:43.429544+00:00",
+      "buffer_id": "6afeed5b7bcb5fb89aa5af2b",
+      "completed_utc": "2026-11-19T12:36:44.776946+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T12:36:40.433310+00:00",
       "run_id": "44525442034",
       "source": "GTA Series Videos",
-      "status": "reserved",
+      "status": "sent",
       "text": "🎥 GTA VI | Video community (non ufficiale)\n\nGTA 6 Missione n. 8 - Ehi, Arnold! (Capitolo 1) [Soluzione completa – PS5 4K]\n\n🔗 Fonte: GTA Series Videos\nhttps://youtube.com/watch?v=eFMv_LH_k8M\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
