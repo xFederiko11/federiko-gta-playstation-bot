@@ -196,11 +196,14 @@
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/"
     },
     "6647ce251bd1ba3f46879c6b": {
+      "attempted_utc": "2026-11-19T06:22:06.133590+00:00",
+      "buffer_id": "6afe958eb16549e9b82cec48",
+      "completed_utc": "2026-11-19T06:22:07.341575+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T06:22:02.393146+00:00",
       "run_id": "44471603184",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Casa dolce casa\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-home-sweet-home-mission-walkthrough\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
