@@ -44,6 +44,19 @@
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
     },
+    "2a8135ab0e8466e543c24205": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T03:32:00.820970+00:00",
+      "run_id": "44452069525",
+      "source": "Push Square",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nArticolo: Centro di lancio di GTA 6 - Condividi le tue prime impressioni sul capolavoro di Rockstar per PS5\n\n🔗 Fonte: Push Square\nhttps://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "Feature: GTA 6 Launch Hub - Share Your First Impressions of Rockstar's PS5 Masterpiece",
+      "trophy_number": null,
+      "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -399,6 +412,13 @@
       "feeds_relevant": 86,
       "reserved": 1,
       "run": "44445815016"
+    },
+    {
+      "at": "2026-11-19T03:32:00.820970+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44452069525"
     }
   ],
   "schema": "v13.7",
@@ -408,6 +428,7 @@
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
+    "feature launch hub share your first impressions rockstar masterpiece": "2a8135ab0e8466e543c24205",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "full walkthrough all missions": "590290210b2200c5d7053bec",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
