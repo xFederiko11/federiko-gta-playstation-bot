@@ -47,3 +47,23 @@ Regole ufficiali:
 Vietati follow/unfollow seriale, follower comprati, like automatici, menzioni non richieste, post duplicati e hashtag di tendenza non pertinenti. Pubblicare più spesso non equivale ad aumentare i follower.
 
 Processo: **GitHub raccoglie e prepara → il bot pubblica aggiornamenti consentiti → l'utente gestisce le conversazioni reali.**
+
+## Profilo X: stato osservato il 19 novembre 2026
+
+Gli screenshot forniti dal proprietario mostrano **il collegamento al sito già nel profilo** e **il post di presentazione già fissato**. Non chiedere di rifare queste due operazioni, salvo futura correzione esplicita. Sono dati storici manuali, non letture live di X. La issue di crescita riprende queste informazioni da `data/x-profile-status-v1.json`.
+
+Il popup **«Sblocca di più su X»** suggerisce una fase di valutazione dell'autenticità di un account nuovo. Non dimostra da solo sospensione, shadowban, richiesta di scansione facciale o stato di verifica completato. Se nell'app ufficiale viene presentata una verifica, è l'utente a scegliere se e come completarla. Non seguire link di verifica ricevuti via DM né installare servizi di crescita.
+
+Nella schermata il post fissato mostra un riquadro grigio: **non c'è prova che sia una miniatura rotta**. Verificare da un altro browser se sia una card URL da caricare, un media effettivamente non disponibile o una restrizione temporanea. Non cancellare né ripubblicare senza una verifica reale.
+
+## Prima settimana di crescita, solo attività autentiche
+
+- Preferire post autonomi che risolvono una singola domanda precisa su GTA VI e PS5 a raffiche di episodi numerati di walkthrough.
+- Alternare tips verificati, rimandi a una guida propria e domande genuine alla community. Usare poche etichette pertinenti.
+- Aprire conversazioni in cui si possiede una risposta utile, **dopo aver letto il post originale**, senza messaggi copia-incolla o risposte automatizzate.
+- Controllare manualmente eventuali richieste di verifica e la visibilità da altri browser, senza interpretare i follower iniziali come prova di penalizzazione.
+- Non convertire l'issue GitHub in un bot per risposte, like, repost e follow: questi strumenti possono violare le regole su spam e autenticità.
+
+Riferimenti ufficiali: https://help.x.com/it/rules-and-policies/authenticity e https://help.x.com/en/rules-and-policies/x-automation
+
+**Nessun incremento garantito**: attesa legittima per un account avviato da poche ore. Separare le impression vere dalla consegna tramite Buffer.

@@ -8,7 +8,7 @@ import unittest
 import editorial_autopilot_v137 as bot
 from organic_growth_v1 import (
     BIO, DRAFTS, ISSUE_TITLE, PINNED, PUBLIC, SCHEMA, make_plan,
-    markdown, validate_drafts
+    markdown, validate_drafts, load_profile_status
 )
 
 NOW = datetime(2026, 11, 19, 14, 0, tzinfo=timezone.utc)
@@ -50,6 +50,41 @@ class OrganicXTests(unittest.TestCase):
         self.assertIn("Cecchino",output)
         with self.assertRaises(ValueError):
             markdown({"schema":"invalid"})
+
+    def test_user_screenshots_are_snapshot_not_live_account_metrics(self):
+        with TemporaryDirectory() as folder:
+            p=Path(folder)
+            plan=make_plan(now=NOW,ledger_root=p,manual_path=p/"missing.csv")
+        snap=plan["profile_snapshot"]
+        self.assertTrue(snap["website_link_visible"])
+        self.assertTrue(snap["pinned_welcome_post_visible"])
+        self.assertTrue(snap["authenticity_prompt_visible"])
+        self.assertIsNone(snap["authenticity_verified"])
+        self.assertIsNone(snap["followers_live"])
+        output=markdown(plan)
+        self.assertIn("- [x] Sito web visibile",output)
+        self.assertIn("- [x] Post di presentazione fissato",output)
+        self.assertIn("Post da fissare - archivio",output)
+        self.assertIn("non significa automaticamente shadowban",output)
+        self.assertIn("anteprima grigia",output)
+        self.assertIn("non un controllo live",output)
+        self.assertIn("Fan indipendente",plan["bio_suggestion"])
+        self.assertNotIn("Nuovi follower: 0",output)
+
+    def test_snapshot_cannot_certify_verification_or_live_followers(self):
+        import json
+        status=load_profile_status()
+        for patch_state in (
+            {**status,"authenticity_verified":True},
+            {**status,"followers_live":0},
+            {**status,"website_link_visible":"true"},
+            {**status,"schema":"other"},
+        ):
+            with TemporaryDirectory() as folder:
+                path=Path(folder)/"profile.json"
+                path.write_text(json.dumps(patch_state),encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    load_profile_status(path)
 
     def test_rotation_produces_new_copy_without_bot_publishing(self):
         with TemporaryDirectory() as folder:

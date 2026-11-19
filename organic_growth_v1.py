@@ -7,6 +7,7 @@ users on X. Buffer quick-tips recovery gate is completely separate.
 from __future__ import annotations
 
 import argparse
+import json
 from datetime import date, datetime, timezone
 from html import escape
 from pathlib import Path
@@ -21,6 +22,27 @@ START_DATE = date(2026, 11, 19)
 ISSUE_TITLE = "GTA VI - Crescita organica X"
 SCHEMA = "gta6-organic-x-plan-v1"
 MAX_X_WEIGHT = 280
+PROFILE_STATE = Path("data/x-profile-status-v1.json")
+PROFILE_SCHEMA = "gta6-x-profile-status-v1"
+
+
+def load_profile_status(path=PROFILE_STATE):
+    """Manual screenshot snapshot, never a live X API read or proof of verification."""
+    data=json.loads(Path(path).read_text(encoding="utf-8"))
+    if data.get("schema")!=PROFILE_SCHEMA or data.get("evidence")!="user_provided_screenshots_not_live_x_api":
+        raise ValueError("Unknown or unproven X profile state")
+    for key in ("website_link_visible","pinned_welcome_post_visible","authenticity_prompt_visible"):
+        if type(data.get(key)) is not bool:
+            raise ValueError("Invalid screenshot observation: "+key)
+    if data.get("authenticity_verified") is not None:
+        raise ValueError("Manual popup screenshot cannot prove live X authenticity verification")
+    if data.get("followers_live") is not None:
+        raise ValueError("Static screenshot is not live follower analytics")
+    if data.get("preview_card_status") not in ("uncertain_grey_placeholder","unknown","checked_ok"):
+        raise ValueError("Unknown social preview state")
+    return data
+
+
 
 PINNED = (
     "🎮 GTA VI / GTA 6 ITALIA | PS5 & PS5 Pro\n\n"
@@ -32,10 +54,10 @@ PINNED = (
     "👇 " + PUBLIC + "\n\n#GTAVI #PS5"
 )
 BIO = (
-    "🎮 GTA VI in italiano | PS5 & PS5 Pro\n"
-    "🏆 Trofei, platino e guide rapide\n"
+    "🎮 GTA VI in italiano | Fan indipendente\n"
+    "🎮 PS5 & PS5 Pro | 🏆 Trofei e guide\n"
     "📺 HDR OLED per modello\n"
-    "🔎 Fonti e verifiche, senza hype"
+    "🔎 Fonti, rumor etichettati. Non affiliato"
 )
 
 DRAFTS = (
@@ -133,7 +155,7 @@ def validate_drafts() -> None:
 
 
 def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
-              manual_path=Path("metrics-manual-v142.csv")) -> dict:
+              manual_path=Path("metrics-manual-v142.csv"), profile_path=PROFILE_STATE) -> dict:
     validate_drafts()
     now = now or datetime.now(timezone.utc)
     if now.tzinfo is None:
@@ -141,6 +163,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     day = max(0, (now.astimezone(timezone.utc).date() - START_DATE).days)
     upcoming = [dict(DRAFTS[(day+i) % len(DRAFTS)]) for i in range(3)]
     metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
+    profile = load_profile_status(profile_path)
     return {
         "schema": SCHEMA,
         "generated_utc": now.astimezone(timezone.utc).isoformat(),
@@ -149,6 +172,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
         "pinned_draft": PINNED,
         "bio_suggestion": BIO,
         "profile_website": PUBLIC,
+        "profile_snapshot": profile,
         "drafts": upcoming,
         "delivery_reservations": metrics["delivery_reservations"],
         "delivery_status": metrics["by_status"],
@@ -167,14 +191,26 @@ def markdown(plan: dict) -> str:
         "# GTA VI - Crescita organica di @xFederiko11", "",
         "**Questa issue non invia post, commenti, menzioni, follow o like.**",
         "Follower e impression non vengono letti direttamente da X.", "",
-        "## Profilo: una sola volta", "",
-        "- [ ] Inserire il sito nel campo Sito web di Modifica profilo.",
-        "- [ ] Pubblicare manualmente il post di benvenuto e fissarlo al profilo.",
+        "## Profilo: stato osservato dagli screenshot", "",
+        "Questo stato riflette **solo le schermate del 19 novembre 2026**, non un controllo live di X. "
+        "Non mostra follower aggiornati, impression o un risultato di autenticità.",
+        "- [x] Sito web visibile nel profilo." if plan["profile_snapshot"]["website_link_visible"]
+        else "- [ ] Verificare manualmente il collegamento al sito web.",
+        "- [x] Post di presentazione fissato in alto." if plan["profile_snapshot"]["pinned_welcome_post_visible"]
+        else "- [ ] Pubblicare e fissare un post di presentazione originale.",
         "- [ ] Controllare che la bio spieghi cosa riceve chi segue il canale.",
-        "- [ ] Seguire soltanto account GTA e PlayStation genuinamente utili.",
+        "- [ ] Esaminare personalmente l'avviso «Sblocca di più su X» nell'app ufficiale; "
+        "non significa automaticamente shadowban, né prova che X abbia richiesto "
+        "una verifica biometrica. Se una verifica autentica appare, seguirne solo il percorso ufficiale."
+        if plan["profile_snapshot"]["authenticity_prompt_visible"] else
+        "- [ ] Verificare se il profilo ha limitazioni effettive nella ricerca o nei suggerimenti.",
+        "- [ ] Controllare da un altro browser l'anteprima grigia del post fissato: "
+        "potrebbe essere il caricamento di una card, non un media definitivamente rotto.",
+        "- [ ] Seguire e commentare manualmente soltanto account GTA e PlayStation di vero interesse.",
         "", "### Bio suggerita", fence+"text", plan["bio_suggestion"], fence,
         "Sito web: " + plan["profile_website"], "",
-        "### Post da fissare - non pubblicato", fence+"text",
+        "### Post da fissare - archivio (già visibile nel profilo)" if plan["profile_snapshot"]["pinned_welcome_post_visible"]
+        else "### Post da fissare - non pubblicato", fence+"text",
         plan["pinned_draft"], fence, "",
         "## Tre bozze da verificare prima di pubblicare", "",
         "Non sono nella coda Buffer. Mai copiarle tutte in blocco; "
@@ -203,6 +239,14 @@ def markdown(plan: dict) -> str:
         "Metriche da confrontare, quando disponibili: impression, visite al profilo, "
         "nuovi follower, risposte pertinenti e clic sul sito. "
         "Misurare almeno una settimana prima di cambiare formato.", "",
+        "## Priorità iniziali finché l'account è nuovo", "",
+        "- Non aumentare le automazioni solo perché lo screenshot mostra 0 follower; "
+        "il numero è un'osservazione storica, non una metrica live.",
+        "- Preferire contenuti unici, originali e verificati: una risposta breve e utile può "
+        "generare più fiducia di una sequenza di titoli di video.",
+        "- Non aprire ticket né usare servizi di sblocco a pagamento sulla base del solo popup.",
+        "- Niente follow/unfollow, like o risposte automatiche. "
+        "L'account deve restare riconoscibilmente gestito da una persona.", "",
         "## Routine manuale senza spam", "",
         "1. Leggere un post recente rilevante su GTA VI/PS5. "
         "Rispondere solo quando si ha un dettaglio utile sul caso reale.",
