@@ -45,11 +45,14 @@
       "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
     },
     "2a8135ab0e8466e543c24205": {
+      "attempted_utc": "2026-11-19T03:32:06.007950+00:00",
+      "buffer_id": "6afe6db646636f319e848d74",
+      "completed_utc": "2026-11-19T03:32:07.342443+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T03:32:00.820970+00:00",
       "run_id": "44452069525",
       "source": "Push Square",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nArticolo: Centro di lancio di GTA 6 - Condividi le tue prime impressioni sul capolavoro di Rockstar per PS5\n\n🔗 Fonte: Push Square\nhttps://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
