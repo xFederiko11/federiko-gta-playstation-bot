@@ -324,3 +324,8 @@ Per ridurre questo rischio il workflow `.github/workflows/gta6-schedule-keepaliv
 
 **Limiti:** questo sistema è preventivo e non garantisce che GitHub o i provider restino sempre disponibili, che tutti i run schedulati avvengano in orario o che GitHub continui a contare gli heartbeat automatici come attività idonea. Se GitHub disattiva il workflow prima dell'esecuzione, è necessario riabilitarlo manualmente. La manutenzione delle credenziali Buffer e dei feed rimane separata.
 
+
+
+### Nuovo: GTA Wiki e verifiche delle guide
+
+Il ricercatore GTA VI tenta anche il feed pubblico Atom delle modifiche di `gta.wiki`, senza confonderlo con Fandom e senza proclamare conferme: l'accesso è segnalato come `ok` o `unavailable` nella coda. `guide_claim_evidence_gate.py` valida dossier di prove per PS5, patch e trofei durante le scansioni ogni quattro ore, sempre **senza pubblicazione automatica di contenuti fattuali**. Il sistema non trasforma un titolo RSS in una guida trophy-safe. Maggiori dettagli in [COMMUNITY-RESEARCH-v1.md](COMMUNITY-RESEARCH-v1.md).

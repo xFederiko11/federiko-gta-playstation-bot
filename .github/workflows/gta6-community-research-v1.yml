@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/gta6-community-research-v1.yml']
+    paths:
+      - '.github/workflows/gta6-community-research-v1.yml'
+      - 'community-research-sources-v1.json'
+      - 'guide_evidence_review_v1.py'
+      - 'guide_claim_evidence_gate.py'
   schedule:
     # Sei scansioni al giorno; indipendente da ChatGPT.
     - cron: '17 */4 * * *'
@@ -18,6 +22,9 @@ on:
       - 'test_community_editorial_queue_v1.py'
       - 'guide_evidence_review_v1.py'
       - 'test_guide_evidence_review_v1.py'
+      - 'guide_claim_evidence_gate.py'
+      - 'test_guide_claim_evidence_gate.py'
+      - 'data/guide-claim-dossiers-v1.json'
       - '.github/workflows/gta6-community-research-v1.yml'
 
 permissions:
@@ -44,9 +51,9 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Validate community research code and sources
         run: |
-          python -m py_compile community_research_v1.py community_editorial_queue_v1.py guide_evidence_review_v1.py
+          python -m py_compile community_research_v1.py community_editorial_queue_v1.py guide_evidence_review_v1.py guide_claim_evidence_gate.py
           python community_research_v1.py --mode validate
-          python -m unittest -q test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1
+          python -m unittest -q test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1 test_guide_claim_evidence_gate
       - name: Preview public sources (no Buffer, no posts)
         if: github.event_name != 'pull_request'
         run: |
@@ -57,6 +64,19 @@ jobs:
           python community_editorial_queue_v1.py --input previews/community-research-digest.json --output previews/community-editorial-queue.md
           python guide_evidence_review_v1.py --input previews/community-research-digest.json --json previews/guide-review.json --markdown previews/guide-review.md
           cat previews/guide-review.md >> previews/community-editorial-queue.md
+          python guide_claim_evidence_gate.py --input data/guide-claim-dossiers-v1.json --output previews/claim-gate-review.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("previews/claim-gate-review.json").read_text(encoding="utf-8"))
+          ready=sum(x["editorially_reviewable"] for x in report["decisions"])
+          path=Path("previews/community-editorial-queue.md")
+          with path.open("a",encoding="utf-8") as file:
+              file.write("\n## Dossier di verifiche PS5\n\n")
+              file.write(f"{len(report['decisions'])} dossier controllati; {ready} pronti per **revisione editoriale**, non pubblicazione automatica.\n")
+              file.write("Trofei, patch e piattaforma devono essere documentati separatamente. Le dichiarazioni di revisione sono dati inseriti nel repository, non prove verificate dal bot in modo autonomo.\n")
+          print("CLAIM_GATE",len(report["decisions"]),"REVIEWABLE",ready,"AUTO_PUBLISH",False)
+          PY
           echo 'Lista di revisione delle guide generata senza nuove affermazioni verificate.' >> "$GITHUB_STEP_SUMMARY"
       - name: Save research digest as review artifact
         if: github.event_name != 'pull_request'

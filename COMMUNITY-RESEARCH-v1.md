@@ -74,3 +74,23 @@ Le guide emerse entrano in una sola issue `GTA VI - Coda fonti community`, aggio
 
 GTABase dispone di un endpoint RSS news indicato da strumenti pubblici di monitoraggio; viene controllato in sola lettura. Se non risponde in GitHub Actions, il guasto viene registrato, senza aggirare protezioni o interrompere gli altri feed. GTAForums e le wiki collaborative restano in verifica manuale finché non avremo un accesso pubblico strutturato valido e rispettoso dei loro sistemi.
 
+
+
+## GTA Wiki e Fandom: acquisizione diversa
+
+La nuova fonte sperimentale **GTA Wiki (independent), gta.wiki** usa soltanto l'interfaccia pubblica MediaWiki `action=feedrecentchanges` in formato Atom, per individuare titoli e collegamenti delle modifiche recenti. La sua disponibilità è verificata a runtime: un errore HTTP/permesso risulta `unavailable` nell'issue GitHub, senza aggirare restrizioni. Una modifica wiki non conferma che il contenuto sia vero.
+
+**GTA Wiki/Fandom (`gta.fandom.com`) e GTAForums** restano fonti manuali fino a una prova affidabile di accessibilità di feed/API consentiti. Non confondere il wiki indipendente con Fandom. Entrambi sono community: mai etichettarli ufficiali Rockstar.
+
+## Gate per la correzione delle guide PS5
+
+Il motore `guide_claim_evidence_gate.py` legge `data/guide-claim-dossiers-v1.json` ed emette `previews/claim-gate-review.json` in ogni scansione. Un dossier associa una singola affermazione alle URL originali, un resoconto della prova e alla data della revisione. Richiede:
+
+- Due fonti distinte e valutate indipendentemente sulla **stessa** affermazione, senza contraddizioni. Wiki e Fandom non contano come due fonti indipendenti.
+- Piattaforma PS5, identificazione della patch e verifica separata dell'effetto su trofei/salvataggi.
+- URL HTTPS dei domini ammessi e data di verifica recente. Titoli RSS e metadati automatici non soddisfano questi requisiti.
+- Tutti gli esiti restano `auto_publish: false`: **anche un dossier pronto produce soltanto una richiesta di revisione, non riscrive le guide né pubblica su Buffer**. La flag `reviewed_original` è una dichiarazione del revisore; il programma non può certificare da solo che il video/pagina supporti il testo osservato.
+
+Il file iniziale contiene `claims: []`. È intenzionale: non inseriamo prove o affermazioni inesistenti solo per mostrare contenuti. Il bot continua comunque a generare automaticamente la coda delle guide da controllare, con collegamenti a fonti, date, patch/trofei da verificare e relative pagine.
+
+**Limite attuale dichiarato:** si automatizzano scoperta, indicizzazione, controlli, collegamenti e QA; la riscrittura fattuale delle istruzioni richiede una fonte verificata nel contenuto, non solo nel titolo. Non è abilitato alcun auto-edit potenzialmente distruttivo delle procedure.
