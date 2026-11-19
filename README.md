@@ -304,3 +304,13 @@ Lo scanner `gta6-community-research-v1.yml` crea/aggiorna una singola GitHub Iss
 Il workflow `.github/workflows/gta6-bot-health-v1.yml` gira due volte al giorno, legge lo stato degli Actions di bot e sito e verifica il canale Buffer/X in **sola lettura**. In caso di errore, aggiorna/riapre una sola issue `GTA VI - Bot Health Alerts`, senza pubblicare, re-inviare o ri-autorizzare alcun post; quando il controllo ritorna sano, chiude l'avviso. I Quick Tips già sospesi restano sospesi finché non vengono verificati manualmente. L'accesso al repository non contiene token Buffer negli artifact.
 
 Questo insieme di workflow e dei controlli è indipendente dalle conversazioni ChatGPT, ma non è letteralmente eterno: GitHub può disattivare gli scheduler su repository pubblici inattivi, gli API provider possono cambiare e le credenziali scadere. Le issue di salute servono a rendere visibili le anomalie mentre i job vengono eseguiti; non possono notificare da sole un arresto totale di GitHub Actions.
+
+
+## Revisione automatica delle guide (senza invenzione di prove)
+
+`guide_evidence_review_v1.py` analizza i titoli dei feed pubblici di **PowerPyx, GTA Series Videos e GTABase** ogni quattro ore. Raggruppa le segnalazioni per argomento (trucchi, glitch, trofei, missioni, veicoli, collezionabili, HDR), suggerisce quali pagine del sito confrontare e allega una checklist alla stessa Issue editoriale già esistente. Non apre nuove Issue per ogni notizia.
+
+**Limiti documentati:** due notizie che parlano genericamente di veicoli non confermano lo stesso metodo o glitch. Le segnalazioni del feed non costituiscono prova dei passaggi, della patch o dello stato dei trofei. Per questo i campi `claim_verified`, `platform_verified`, `patch_verified`, `trophy_safe_verified` e `ready_to_publish` rimangono tutti `false`: nessuna guida, codice o articolo viene aggiornato automaticamente **nei suoi fatti** senza un sistema di verifica dei dettagli. Il sito può aggiornare automaticamente soltanto i collegamenti alle fonti pertinenti, chiaramente etichettati come non verificati. Anche i rumor sono mantenuti come piste, ma restano fuori dall'editoriale automatico X.
+
+GTABase dispone di un endpoint RSS news indicato da strumenti pubblici di monitoraggio; viene controllato in sola lettura. Se non risponde in GitHub Actions, il guasto viene registrato, senza aggirare protezioni o interrompere gli altri feed. GTAForums e le wiki collaborative restano in verifica manuale finché non avremo un accesso pubblico strutturato valido e rispettoso dei loro sistemi.
+

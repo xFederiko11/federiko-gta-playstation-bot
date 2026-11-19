@@ -49,6 +49,8 @@ class CommunityResearchTests(unittest.TestCase):
         self.assertIn("PowerPyx", [x["name"] for x in feeds])
         self.assertIn("GTAForums", [x["name"] for x in feeds])
         self.assertIn("GTA Wiki / Fandom", [x["name"] for x in feeds])
+        self.assertIn("GTABase", [x["name"] for x in feeds])
+        self.assertEqual(next(x for x in feeds if x["name"]=="GTABase")["collection"],"read_only_feed")
         for source in feeds:
             if source["collection"] != "read_only_feed":
                 self.assertNotIn("feed", source)
@@ -71,7 +73,7 @@ class CommunityResearchTests(unittest.TestCase):
                '</item></channel></rss>').encode()
         session = HTTP(source["feed"], rss)
         result = collect(self.config, session=session, now=NOW)
-        self.assertEqual(len(session.calls), 2)  # PowerPyx and YouTube; mock rejects the other.
+        self.assertEqual(len(session.calls), 3)  # PowerPyx, YouTube and GTABase; other two mocked unavailable.
         self.assertEqual(len(result["candidates"]), 1)
         self.assertFalse(result["candidates"][0]["official_rockstar"])
         self.assertIn("RICERCA", result["candidates"][0]["status"])
