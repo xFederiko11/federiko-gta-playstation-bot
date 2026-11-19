@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
-from editorial_director_v142 import allowed,priority,read_reservations,MIN_GAP,MAX_AUTOMATED_DELIVERIES_24H
+from editorial_director_v142 import allowed,priority,read_reservations,MIN_GAP,MAX_AUTOMATED_DELIVERIES_24H,current_limits,BOOST_UNTIL
 
 NOW=datetime(2026,11,18,20,0,tzinfo=timezone.utc)
 class EditorDirectorTests(unittest.TestCase):
@@ -31,23 +31,42 @@ class EditorDirectorTests(unittest.TestCase):
             self.assertEqual(allowed(NOW+timedelta(hours=4),root=root),(False,'global_spacing'))
             self.assertEqual(len(read_reservations(root)),2)
 
-    def test_conservative_daily_budget_and_three_hour_spacing(self):
-        self.assertEqual(MAX_AUTOMATED_DELIVERIES_24H,4)
-        self.assertEqual(MIN_GAP,timedelta(hours=3))
+    def test_balanced_eight_slot_budget_and_ninety_minute_spacing(self):
+        self.assertEqual(MAX_AUTOMATED_DELIVERIES_24H,8)
+        self.assertEqual(MIN_GAP,timedelta(minutes=90))
         with tempfile.TemporaryDirectory() as directory,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
             root=Path(directory)
-            for filename,field,offset,status in [
-                ('editorial-autopilot-v137.json','entries',21,'sent'),
-                ('special-campaign-v139.json','entries',16,'accepted_pending'),
-                ('launch-watch-v134.json','posts',11,'reserved'),
-                ('monitor-publication-v142.json','entries',5,'attempted'),
+            for filename,field,offsets,status in [
+                ('editorial-autopilot-v137.json','entries',[23,22],'sent'),
+                ('special-campaign-v139.json','entries',[17,16],'accepted_pending'),
+                ('launch-watch-v134.json','posts',[11,10],'reserved'),
+                ('monitor-publication-v142.json','entries',[5,4],'attempted'),
             ]:
                 (root/filename).write_text(json.dumps({field:{
-                    filename:{'reserved_utc':(NOW-timedelta(hours=offset)).isoformat(),
-                              'status':status}}}),encoding='utf-8')
+                    filename+'-'+str(offset):{
+                        'reserved_utc':(NOW-timedelta(hours=offset)).isoformat(),
+                        'status':status} for offset in offsets}}),encoding='utf-8')
             self.assertEqual(allowed(NOW,root=root),(False,'global_rolling_24h_budget'))
-            # Age out just one old reservation, but remain spaced from latest.
+            # Age out two older reservations; the remaining six stay below cap.
             self.assertEqual(allowed(NOW+timedelta(hours=4),root=root),(True,'ready'))
+
+    def test_automatic_taper_after_launch_without_manual_variables(self):
+        self.assertEqual(current_limits(BOOST_UNTIL-timedelta(minutes=1)),(8,timedelta(minutes=90)))
+        self.assertEqual(current_limits(BOOST_UNTIL),(6,timedelta(minutes=120)))
+        self.assertEqual(current_limits(BOOST_UNTIL+timedelta(days=21)),(6,timedelta(minutes=120)))
+        with tempfile.TemporaryDirectory() as p,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
+            root=Path(p)
+            clock=BOOST_UNTIL+timedelta(hours=6)
+            stamps=[(clock-timedelta(hours=3+i*3)).isoformat() for i in range(6)]
+            (root/'editorial-autopilot-v137.json').write_text(json.dumps({
+                'entries':{str(i):{'reserved_utc':s,'status':'sent'} for i,s in enumerate(stamps)}
+            }),encoding='utf-8')
+            self.assertEqual(allowed(clock,root=root),(False,'global_rolling_24h_budget'))
+            # Even when total posts are below six, steady mode requires 120 min.
+            (root/'editorial-autopilot-v137.json').write_text(json.dumps({
+                'entries':{'x':{'reserved_utc':(clock-timedelta(minutes=95)).isoformat(),'status':'sent'}}
+            }),encoding='utf-8')
+            self.assertEqual(allowed(clock,root=root),(False,'global_spacing'))
 
     def test_rejected_events_not_counted_and_future_entries_hold(self):
         with tempfile.TemporaryDirectory() as directory,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):

@@ -45,10 +45,10 @@ I quattro workflow che usano Buffer sono:
 
 Con `EDITORIAL_DIRECTOR_V142_ENABLED: 'true'`, tutti passano da `editorial_director_v142.allowed()`. Le soglie di cautela adottate **volontariamente** per un account nuovo sono:
 
-- **4 prenotazioni/invii automatizzati nelle 24 ore mobili** tra i quattro workflow.
-- **Almeno 3 ore** tra due prenotazioni automatiche nel registro condiviso.
+- **8 prenotazioni/invii automatizzati nelle 24 ore mobili** tra i quattro workflow.
+- **Almeno 90 minuti** tra due prenotazioni automatiche nel registro condiviso.
 - Anche tentativi pendenti o incerti contano per prudenza; nessun secondo invio automatico dello stesso tentativo.
-- I thread possono contenere **più tweet** e le pubblicazioni manuali non entrano nei ledger del bot: 4 è un numero di *invii registrati*, non un conteggio garantito di post X.
+- I thread possono contenere **più tweet** e le pubblicazioni manuali non entrano nei ledger del bot: 8 è un numero di *invii registrati*, non un conteggio garantito di post X.
 - Se raggiunge un limite, **non spegne la ricerca**. Blocca soltanto nuove prenotazioni per la consegna e lascia i workflow aggiornare le fonti come previsto.
 
 Non sono **limiti ufficiali** di X e non garantiscono assenza di filtri, shadowban o sospensioni. Un contatore di Buffer non è una misura di visibilità o reputazione del profilo. La coda di crescita sospende anche le proposte di nuove bozze promozionali quando il volume recente è elevato.
@@ -68,3 +68,14 @@ Manteniamo `TIPS_REAUTH_CONFIRMED_V149=false` salvo una conferma esplicita dell'
 Le [regole sull'automazione di X](https://help.x.com/en/rules-and-policies/x-automation), aggiornate nell'aprile 2026, autorizzano le pubblicazioni informative automatizzate entro altre condizioni, ma proibiscono le risposte automatiche non richieste generate su parole chiave. I bot che pubblicano **automaticamente risposte create dall'IA** necessitano di previa approvazione scritta di X. I repost automatici non sono vietati in assoluto, ma repost aggressivi o in blocco possono violare le regole. I like automatizzati sono vietati. Le [regole sull'autenticità](https://help.x.com/en/rules-and-policies/authenticity) scoraggiano spam, link ripetitivi e interazioni volte a manipolare le metriche.
 
 **La funzione sviluppata non si avvale di eccezioni né tenta di aggirare limiti, verifica d'identità o misure anti-abuso.**
+
+
+## Bilanciamento del lancio, modifica del 19 novembre 2026
+
+Per valorizzare la partenza di GTA VI, la cadenza iniziale passa temporaneamente a **8 prenotazioni automatiche ogni 24 ore mobili**, con un minimo di **90 minuti** fra due prenotazioni. Questa fase dura fino alle **00:00 UTC del 30 novembre 2026**, poi il coordinatore riduce automaticamente il tetto a **6/24h con 120 minuti** di intervallo. Non sono limiti o garanzie ufficiali di X.
+
+L'Editorial Autopilot non supera **5 prenotazioni al giorno** nel proprio ledger. All'interno di queste può pubblicare **una sola guida originale dal sito al giorno**, selezionandola tra dieci schede preparate e validando la pagina pubblica prima dell'invio. Le 55 guide trofei esistenti continuano a essere disponibili, così come le news e il monitor ufficiale. Si privilegiano contenuti distinti, utili e verificabili, non una moltiplicazione di copie.
+
+Il limite è sulle **prenotazioni automatiche** e non ingloba post manuali, quote tweet, thread multipli o contenuti già accettati e in coda su Buffer. Per valutare la reputazione del profilo bisogna osservare le metriche reali su X; un test verde su GitHub non può confermarla. L'account evita l'uso di interazioni automatizzate verso sconosciuti e non tenta di aggirare alcun controllo anti-abuso.
+
+I controlli automatici sono in `editorial_director_v142.py`, `x_automation_safety_v1.py` e nella pipeline editoriale. Il taper dopo il lancio è verificato con test e non richiede un'impostazione aggiuntiva.

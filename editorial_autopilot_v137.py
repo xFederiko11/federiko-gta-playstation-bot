@@ -24,7 +24,7 @@ STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
 MAX_DOWNLOAD = 1_800_000
 MAX_AGE_MIN = 720  # catch up on timely launch-day coverage, not only latest 3 hours
-MAX_POSTS_DAY = 6  # quality-oriented editorial pacing; official breaking monitor is separate
+MAX_POSTS_DAY = 5  # 1 owned guide + up to 2 trophies + selective news; leave capacity for official monitor
 MIN_SPACING_MIN = 45  # avoid back-to-back generic headline posts
 RUN_LIMIT = 1
 BRIDGE_URLS = {
@@ -450,15 +450,23 @@ def reserve():
         if quick_tip and not probe_image(quick_tip["media_url"]):
             print("QUICK_TIP_HOLD_IMAGE_UNAVAILABLE", quick_tip["tip_id"])
             quick_tip = None
+        # One factual, original guide-page excerpt daily provides ongoing
+        # value from our existing site without resending headline-only news.
+        # The exact canonical URL must return 200; unavailable pages stay on hold.
+        owned_guide = None
+        if not (spotlight or quick_tip):
+            from site_evergreen_posts_v1 import candidate as owned_candidate
+            owned_guide = owned_candidate(state, now)
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
         trophy_item = None
-        if not (spotlight or quick_tip):
+        if not (spotlight or quick_tip or owned_guide):
             from trophy_posts_v142 import candidate, landing_live
             draft_trophy = candidate(state, now)
             if draft_trophy and landing_live():
                 trophy_item = draft_trophy
         selected = ([quick_tip] if quick_tip else [spotlight] if spotlight
+                    else [owned_guide] if owned_guide
                     else [trophy_item] if trophy_item else select(items, state, now))
     for item in selected:
         state['entries'][item['key']] = {

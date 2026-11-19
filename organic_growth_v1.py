@@ -16,7 +16,7 @@ import re
 
 from editorial_autopilot_v137 import weight_x
 from growth_metrics_v142 import report as growth_report
-from editorial_director_v142 import read_reservations, MAX_AUTOMATED_DELIVERIES_24H, MIN_GAP
+from editorial_director_v142 import read_reservations, current_limits
 from x_community_review_v1 import plan as conversation_plan, markdown as conversation_markdown
 
 PUBLIC = "https://xfederiko11.github.io/gta-6/"
@@ -188,6 +188,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
     profile = load_profile_status(profile_path)
     pace = cadence_snapshot(now, ledger_root)
+    limit, gap = current_limits(now)
     # A busy new account should not be prompted to add even more original
     # posts; discovery searches remain available for selective human reading.
     if pace["review_high_volume"]:
@@ -203,6 +204,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
         "profile_website": PUBLIC,
         "profile_snapshot": profile,
         "cadence": pace,
+        "publishing_policy": {"max_rolling_24h":limit,"minimum_gap_minutes":int(gap.total_seconds()/60)},
         "community_queue": community,
         "drafts": upcoming,
         "delivery_reservations": metrics["delivery_reservations"],
@@ -283,9 +285,11 @@ def markdown(plan: dict) -> str:
          "Non significa che X consideri l'account verificato."),
         "Il monitor delle **notizie** continua anche quando gli invii sono trattenuti. "
         "Il coordinatore automatico limita le **prenotazioni pubblicabili** "
-        "a "+str(MAX_AUTOMATED_DELIVERIES_24H)+" nelle 24 ore mobili, con almeno "
-        +str(int(MIN_GAP.total_seconds()/3600))+
-        " ore di intervallo complessivo. Soglie volontarie, NON limiti ufficiali di X; "
+        "a "+str(plan["publishing_policy"]["max_rolling_24h"])+" nelle 24 ore mobili, con almeno "
+        +str(plan["publishing_policy"]["minimum_gap_minutes"])+
+        " minuti di intervallo complessivo. Il boost del lancio termina il 30/11/2026 "
+        "(successivamente 6 operazioni / 24h e almeno 120 minuti). "
+        "Soglie volontarie, NON limiti ufficiali di X; "
         "un thread può contenere più di un tweet. Non garantiscono immunità da restrizioni. "
         "Il controllo non elimina post, non riscrive ledger e non ferma la ricerca delle notizie.", "",
         "## Numeri effettivi, non impression inventate", "",
