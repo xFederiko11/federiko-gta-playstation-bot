@@ -54,3 +54,9 @@ Il digest contiene **piste** per articoli; non è una pubblicazione e non dimost
 - https://www.bloomberg.com/authors/AUyIKVhIKU8/jason-schreier
 
 La pagina è una policy operativa: **non promette** che ogni sito fornisca feed, API, o nuovi contenuti disponibili oggi.
+
+## Autonomia del monitor (v1)
+
+Il workflow GitHub Actions esegue la scansione tre volte al giorno indipendentemente da ChatGPT. Un job con soli permessi di lettura acquisisce i feed pubblici e produce un artifact JSON e un riepilogo. Un secondo job (solo ramo `main`) può creare/aggiornare una **sola GitHub Issue** chiamata `GTA VI - Coda fonti community`, con etichette `GUIDA INDIPENDENTE`, `COMMUNITY`, `DATAMINING` e `RUMOR` e indicazioni su errori feed. Un fallimento fa fallire il workflow invece di passare inosservato. Il bot Buffer conserva il proprio filtro più restrittivo: l'inserimento nella coda NON equivale a pubblicazione su X o sul sito, né a conferma della notizia.
+
+Il ricercatore conserva i rumor nei risultati *soltanto* per poterli segnalare come non verificati. Non elude protezioni di GTAForums o Fandom; queste fonti restano di consultazione manuale fino a validazione di un feed pubblico. Non possiamo garantire disponibilità eterna di GitHub Actions, RSS, Buffer o servizi esterni: manutenzione e controllo credenziali rimangono necessari.
