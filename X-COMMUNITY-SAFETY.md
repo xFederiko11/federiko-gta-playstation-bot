@@ -101,3 +101,6 @@ Le bozze sono *condizionali*, non risposte universali. Esempio: se Rockstar INTE
 5. Premi `Invia` direttamente su X. Il bot non finge di aver inviato né monitora follower, risposte ricevute o reaction senza evidenze.
 
 Non esistono quote obbligatorie di commenti. Le risposte generiche incollate in serie possono essere percepite come spam e rendono meno credibile il profilo. **Non automatizziamo** like, follow, repost né risposte non richieste. L'Editorial Autopilot e il Social Desk continuano a essere indipendenti: aumentare il volume dei post originali non crea il consenso necessario per auto-rispondere a terzi.
+
+
+**Conversazioni internazionali:** per un tweet originale in inglese usa `"language":"en"` e il campo `"draft_reply_en"` (anziché `draft_reply_it`). Le risposte italiane usano `"language":"it"` e `"draft_reply_it"`. Il sistema rifiuta bozze compilate nel campo della lingua sbagliata. Entrambe producono solo un link di composizione manuale, non un invio. Se il contesto è ambiguo, lascia vuota la bozza e scrivila direttamente dopo aver letto la conversazione.
