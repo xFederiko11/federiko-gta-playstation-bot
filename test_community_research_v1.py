@@ -59,6 +59,24 @@ class CommunityResearchTests(unittest.TestCase):
             if source["collection"] != "read_only_feed":
                 self.assertNotIn("feed", source)
 
+    def test_mediawiki_atom_is_read_as_link_metadata_only(self):
+        source=next(x for x in self.config["sources"]
+                    if x["name"]=="GTA Wiki (independent)")
+        atom=b'''<feed xmlns="http://www.w3.org/2005/Atom">
+        <entry><title>Grand Theft Auto VI missions</title>
+        <published>2026-11-19T07:00:00Z</published>
+        <link rel="alternate" href="https://gta.wiki/wiki/Grand_Theft_Auto_VI"/>
+        </entry>
+        <entry><title>Generic unrelated wiki cleanup</title>
+        <published>2026-11-19T06:00:00Z</published>
+        <link href="https://gta.wiki/wiki/Other"/></entry>
+        </feed>'''
+        entries=list(parse_research_feed(atom,source))
+        self.assertEqual(len(entries),1)
+        self.assertEqual(entries[0]["source"],"GTA Wiki (independent)")
+        self.assertIn("Grand Theft Auto VI",entries[0]["title"])
+        self.assertTrue(entries[0]["url"].startswith("https://gta.wiki/"))
+
     def test_untrusted_feeds_rejected_without_fetch(self):
         bad = json.loads(json.dumps(self.config))
         bad["sources"][1]["feed"] = "https://evil.example/content.xml"
