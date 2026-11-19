@@ -12,7 +12,8 @@
     "media_reuse": "Only with rights or official authorized media",
     "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence",
     "source_fetching": "Public RSS/Atom feeds only; do not bypass login, robots restrictions or scrape protected community pages",
-    "review_required": "Community / data-miner claims cannot be auto-published; all scraped claims need corroboration before being turned into news."
+    "review_required": "Community / data-miner claims cannot be auto-published; all scraped claims need corroboration before being turned into news.",
+    "existing_official_monitor": "The official Rockstar monitor remains sole owner of Rockstar's news and patches."
   },
   "sources": [
     {
@@ -23,8 +24,8 @@
         "news",
         "patches"
       ],
-      "collection": "manual_review",
-      "collection_note": "No validated public structured feed; consult manually for corroboration"
+      "collection": "existing_official_monitor",
+      "collection_note": "Already monitored by official-only source pipeline; do not fetch or duplicate here."
     },
     {
       "name": "PowerPyx",
