@@ -342,11 +342,14 @@
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     },
     "d33768ef41ab6a294934a5c1": {
+      "attempted_utc": "2026-11-19T08:52:11.324203+00:00",
+      "buffer_id": "6afeb8bbfc3e30ab95b72c40",
+      "completed_utc": "2026-11-19T08:52:12.530706+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T08:52:09.821546+00:00",
       "run_id": "44491245676",
       "source": "Everyeye",
-      "status": "reserved",
+      "status": "sent",
       "text": "🧭 GTA VI | Guida\n\nGTA 6: quante ore servono per sbloccare il Trofeo di Platino su PS5?\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-ore-servono-sbloccare-trofeo-platino-ps5-912441.html\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
