@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -16,6 +16,7 @@ import re
 
 from editorial_autopilot_v137 import weight_x
 from growth_metrics_v142 import report as growth_report
+from editorial_director_v142 import read_reservations
 
 PUBLIC = "https://xfederiko11.github.io/gta-6/"
 START_DATE = date(2026, 11, 19)
@@ -154,6 +155,27 @@ def validate_drafts() -> None:
         raise ValueError("Profile setup exceeds character budget")
 
 
+def cadence_snapshot(now: datetime, ledger_root=Path(".state")) -> dict:
+    """Assess ledger reservations only; no X reach, follower data or live API."""
+    if now.tzinfo is None:
+        raise ValueError("Timezone-aware clock required")
+    start=now.astimezone(timezone.utc)-timedelta(hours=24)
+    rows=read_reservations(ledger_root)
+    delivery=[r for r in rows
+              if r["status"] in ("sent","accepted")
+              and start <= r["at"] <= now.astimezone(timezone.utc)]
+    by_workflow={}
+    for r in delivery:
+        by_workflow[r["workflow"]]=by_workflow.get(r["workflow"],0)+1
+    return {
+        "window_hours":24,
+        "sent_or_accepted_ledger_entries":len(delivery),
+        "by_workflow":by_workflow,
+        "review_high_volume":len(delivery)>=8,
+        "not_x_reach_or_guaranteed_post_visibility":True,
+    }
+
+
 def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
               manual_path=Path("metrics-manual-v142.csv"), profile_path=PROFILE_STATE) -> dict:
     validate_drafts()
@@ -164,6 +186,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     upcoming = [dict(DRAFTS[(day+i) % len(DRAFTS)]) for i in range(3)]
     metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
     profile = load_profile_status(profile_path)
+    pace = cadence_snapshot(now, ledger_root)
     return {
         "schema": SCHEMA,
         "generated_utc": now.astimezone(timezone.utc).isoformat(),
@@ -173,6 +196,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
         "bio_suggestion": BIO,
         "profile_website": PUBLIC,
         "profile_snapshot": profile,
+        "cadence": pace,
         "drafts": upcoming,
         "delivery_reservations": metrics["delivery_reservations"],
         "delivery_status": metrics["by_status"],
@@ -229,6 +253,21 @@ def markdown(plan: dict) -> str:
     actual = ("disponibili per "+str(plan["x_metrics_count"])+" post"
               if plan["actual_x_metrics_available"] else "non disponibili")
     lines.extend([
+        "## Monitor di prudenza: cadenza del bot nelle ultime 24 ore", "",
+        "- Righe ledger `sent` o `accepted` nelle ultime 24 ore: " +
+        str(plan["cadence"]["sent_or_accepted_ledger_entries"]) +
+        ". Sono stati delle prenotazioni/pubblicazioni Buffer, **non impression X**.",
+        "- Workflow coinvolti: " +
+        (", ".join(k+": "+str(v) for k,v in sorted(
+            plan["cadence"]["by_workflow"].items())) or "nessuno") + ".",
+        ("- ⚠️ **Volume elevato da riesaminare manualmente.** "
+         "Su un account nuovo evitare di aumentare la frequenza; "
+         "questo dato non prova shadowban o violazioni della piattaforma."
+         if plan["cadence"]["review_high_volume"] else
+         "- Nessuna soglia di attenzione superata dal ledger osservato. "
+         "Non significa che X consideri l'account verificato."),
+        "La coda non disabilita alcun monitor di notizie, "
+        "non elimina post e non modifica la cadenza automatica.", "",
         "## Numeri effettivi, non impression inventate", "",
         "- Prenotazioni dei workflow nei ledger: " + str(plan["delivery_reservations"]) +
         " (non equivalgono a post letti su X).",
