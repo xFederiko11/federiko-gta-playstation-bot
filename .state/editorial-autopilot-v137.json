@@ -44,6 +44,19 @@
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
     },
+    "2058044becfae40b204de3e9": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_01.0zgz7tveur6y8.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-19T04:36:13.762624+00:00",
+      "run_id": "44459425222",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥈 GTA VI | ARGENTO: Cecchino\n\n🎯 Ottieni la medaglia d'oro in tutte le sfide dei poligoni di tiro.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-17-cecchino/\n\n#GTAVI #Platino",
+      "thread": null,
+      "tip_id": null,
+      "title": "Cecchino",
+      "trophy_number": 17,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-17-cecchino/"
+    },
     "2a8135ab0e8466e543c24205": {
       "attempted_utc": "2026-11-19T03:32:06.007950+00:00",
       "buffer_id": "6afe6db646636f319e848d74",
@@ -445,6 +458,13 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44455127418"
+    },
+    {
+      "at": "2026-11-19T04:36:13.762624+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44459425222"
     }
   ],
   "schema": "v13.7",
@@ -452,6 +472,7 @@
     "all collectible card sets locations": "12595b52c7043d9563bedca3",
     "all radio stations and songs": "cf7793967a1cc2f2b0e9b348",
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
+    "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "feature launch hub share your first impressions rockstar masterpiece": "2a8135ab0e8466e543c24205",
