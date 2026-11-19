@@ -26,7 +26,7 @@ ISSUE_MARKER = "<!-- gta6-community-editorial-queue-v1 -->"
 def safe_md(text: str) -> str:
     """Prevent source-controlled titles from injecting markdown links or formatting."""
     value = re.sub(r"[\x00-\x1f\x7f]+", " ", str(text)).strip()
-    return re.sub(r"([\\\`*_{}\[\]()#+.!>|])", r"\\\1", escape(value))
+    return "".join("\\" + char if char in "\\`*_{}[]()#+.!>|" else char for char in escape(value))
 
 
 
