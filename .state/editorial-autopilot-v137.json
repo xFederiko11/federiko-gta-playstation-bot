@@ -212,6 +212,19 @@
       "text": "📰 GTA VI | Novità\n\nTutte le stazioni radio e le canzoni di GTA 6\n\n🔗 Fonte: GameSpot\nhttps://gamespot.com/articles/all-gta-6-radio-stations-and-songs\n\n#GTAVI #GTA6",
       "title": "All GTA 6 Radio Stations And Songs",
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
+    },
+    "d72ab9b5e97cf094f20dee14": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T00:28:27.167181+00:00",
+      "run_id": "44429211199",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🎯 GTA VI | Sfide e 100%\n\n💡 Secondo PowerPyx bastano 70 sfide su 80 per la checklist del 100%. Puoi saltarne 10!\n\n📋 Guida alle sfide:\nhttps://www.powerpyx.com/gta-6-all-challenges-guide/\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA VI: 70 sfide su 80 per il completamento",
+      "trophy_number": null,
+      "url": "https://powerpyx.com/gta-6-all-challenges-guide"
     }
   },
   "run_history": [
@@ -326,6 +339,15 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44411817600"
+    },
+    {
+      "at": "2026-11-19T00:28:27.167181+00:00",
+      "errors": [
+        "PowerPyx: ParseError"
+      ],
+      "feeds_relevant": 85,
+      "reserved": 1,
+      "run": "44429211199"
     }
   ],
   "schema": "v13.7",
@@ -344,6 +366,7 @@
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
+    "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
