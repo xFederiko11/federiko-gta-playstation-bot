@@ -378,3 +378,10 @@ La serie si integra con **55 schede trofei**, notizie RSS verificate, post Rocks
 5. Altri articoli editoriali selezionati, senza trasformare il feed X in una raffica di titoli copiati.
 
 Non promettiamo crescita né immunità da ban: l'obiettivo è mantenere qualità, varietà e cadenza sostenibile usando soltanto GitHub e Buffer già collegato.
+
+
+### Social Desk: apri un post e rispondi davvero, senza reply bot
+
+L'Issue [Crescita organica X #42](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/42) contiene adesso, oltre ai post originali e alle cinque ricerche, una selezione giornaliera di **quattro account GTA/PlayStation** osservati nelle schermate dell'utente. Per ciascuno trovi link al profilo, ricerca mirata ai suoi post, condizioni per intervenire e un esempio in italiano o inglese **da adattare solo se il post reale è pertinente**.
+
+Per i singoli post già letti e inseriti nel repository dal revisore, il bot può costruire un **Web Intent di risposta** precompilato. Questo apre soltanto il modulo di X: l'invio finale è sempre umano. Non utilizziamo API X, browser automation, likes/repost/follow automatizzati o risposte automatiche non richieste. Leggi [X-COMMUNITY-SAFETY.md](X-COMMUNITY-SAFETY.md) per la guida operativa.

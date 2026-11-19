@@ -11,7 +11,7 @@ from html import escape
 import json
 from pathlib import Path
 import re
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, urlencode, urlsplit
 
 SCHEMA = "gta6-x-conversations-v1"
 DATA = Path("data/x-conversation-candidates-v1.json")
@@ -54,6 +54,55 @@ SEARCHES = (
 )
 MAX_MANUAL_POSTS = 8
 
+# Accounts and conversation examples come from user-supplied X screenshots,
+# NOT a live X search or proof of current post context. Do not initiate contact.
+TARGETS = (
+    {"handle":"PlayStationIT", "name":"PlayStation Italia", "language":"it",
+     "topic":"GTA VI e disponibilità PS5", "priority":1,
+     "query":'from:PlayStationIT ("GTA VI" OR "Grand Theft Auto")',
+     "when":"Solo sotto un annuncio GTA VI/PS5, non sotto comunicati estranei.",
+     "reply":"Buon lancio! Sono previste indicazioni ufficiali sulle differenze tra PS5 e PS5 Pro, soprattutto per HDR e modalità grafiche?",
+     "observed_reply":True},
+    {"handle":"GTASeries", "name":"GTA Series Videos", "language":"en",
+     "topic":"Walkthrough e missioni GTA VI", "priority":1,
+     "query":'from:GTASeries ("GTA 6" OR "GTA VI")',
+     "when":"Sotto un nuovo walkthrough visto davvero; non ripetere la domanda già inviata sulla missione 3.",
+     "reply":"For this mission, is there an optional objective that's easy to miss on a completionist playthrough?",
+     "observed_reply":True},
+    {"handle":"RockstarINTEL", "name":"Rockstar INTEL", "language":"en",
+     "topic":"Notizie Rockstar e fonti", "priority":1,
+     "query":'from:RockstarINTEL ("GTA VI" OR "GTA 6")',
+     "when":"Se parlano della colonna sonora (Overmono/Justice), resta sul tema musicale; non chiedere dei trofei.",
+     "reply":"Overmono alongside Justice is an exciting combination. I'm curious how that sound will fit different areas of Leonida.",
+     "observed_reply":True},
+    {"handle":"GTAVI_Countdown", "name":"GTA 6 Countdown", "language":"en",
+     "topic":"Discussione GTA VI e screenshot", "priority":2,
+     "query":'from:GTAVI_Countdown ("GTA 6" OR "GTA VI")',
+     "when":"Solo su uno screenshot specifico e con un'osservazione originale; non ripetere la domanda già pubblicata.",
+     "reply":"That sunset lighting really stands out. Has the team confirmed whether this is captured directly on PS5 or promotional footage?",
+     "observed_reply":True},
+    {"handle":"TexFunz2", "name":"Tex2", "language":"en",
+     "topic":"Datamining con cautela", "priority":2,
+     "query":'from:TexFunz2 ("GTA" OR "Rockstar")',
+     "when":"Soltanto per analisi pubbliche di file/patch documentate; evita di trattare il datamining come conferma.",
+     "reply":"Interesting find. Which game build or file supports it, and is this present in the released build or unused data?",
+     "observed_reply":False},
+    {"handle":"RockstarGames", "name":"Rockstar Games", "language":"en",
+     "topic":"Aggiornamenti ufficiali", "priority":2,
+     "query":'from:RockstarGames ("GTA VI" OR "GTA 6")',
+     "when":"Solo sotto comunicazioni recenti pertinenti; se contengono già la risposta non fare domande ripetitive.",
+     "reply":"Is there an official page listing the PS5 update notes and any changes to gameplay progression?",
+     "observed_reply":False},
+    {"handle":"PlayStation", "name":"PlayStation", "language":"en",
+     "topic":"PS5 e PS5 Pro", "priority":3,
+     "query":'from:PlayStation ("GTA VI" OR "Grand Theft Auto")',
+     "when":"Solo sotto aggiornamenti sul gioco e specificamente su console, non su altri titoli.",
+     "reply":"Will there be a detailed PS5 and PS5 Pro settings guide, including official HDR information?",
+     "observed_reply":False},
+)
+# Drafts are conditional examples, NOT permission to send. Existing user
+# interactions observed in screenshots must never be repeated automatically.
+
 
 def search_link(query: str) -> str:
     return "https://x.com/search?q=" + quote(query, safe="") + "&f=live"
@@ -79,15 +128,20 @@ def manual_candidates(path=DATA) -> list[dict]:
         seen.add(uri.path)
         if item.get("reviewed_original") is not True:
             raise ValueError("Only human-read original posts can appear")
-        if item.get("language") != "it":
-            raise ValueError("Italian-only review queue")
+        language=item.get("language")
+        if language not in ("it","en"):
+            raise ValueError("Only Italian or English manually reviewed discussion")
+        field="draft_reply_it" if language=="it" else "draft_reply_en"
+        other="draft_reply_en" if language=="it" else "draft_reply_it"
+        if item.get(other):
+            raise ValueError("Draft language mismatches original post")
         context=item.get("original_context")
         if not isinstance(context,str) or not 20 <= len(context.strip()) <= 450:
             raise ValueError("Need context from the actual post")
         note=item.get("editorial_note")
         if not isinstance(note,str) or not 12 <= len(note.strip()) <= 320:
             raise ValueError("Need one concrete reason to participate")
-        reply=item.get("draft_reply_it","")
+        reply=item.get(field,"")
         if not isinstance(reply,str) or len(reply) > 260:
             raise ValueError("Reply draft too long or invalid")
         if re.search(r"(?i)https?://|@\w+|#\w+",reply):
@@ -101,12 +155,18 @@ def manual_candidates(path=DATA) -> list[dict]:
                 raise ValueError("Timezone required")
         except (TypeError,ValueError):
             raise ValueError("Invalid human review date")
+        intent = ("https://x.com/intent/tweet?" +
+                  urlencode({"in_reply_to":hit[2],"text":reply})) if reply else None
         results.append({
             "post_url":"https://x.com"+uri.path.rstrip("/"),
+            "reply_intent_url":intent,
             "author":"@"+hit[1],
             "original_context":context,
             "editorial_note":note,
-            "draft_reply_it":reply,
+            "language":language,
+            "draft_reply":reply,
+            "draft_reply_it":reply if language=="it" else "",
+            "draft_reply_en":reply if language=="en" else "",
             "reviewed_utc":stamp.astimezone(timezone.utc).isoformat(),
             "approved_for_auto_reply":False,
         })
@@ -124,10 +184,19 @@ def plan(now:datetime, *, manual_path=DATA, limit=5) -> dict:
     picks=[SEARCHES[0]]+[SEARCHES[1+((day+i)%(len(SEARCHES)-1))]
                         for i in range(limit-1)]
     searches=[{**x,"url":search_link(x["query"]),"is_specific_post":False} for x in picks]
+    # Show a daily selection of *known accounts*, never invent individual
+    # tweets or claim they have posted on a particular date.
+    ordered=sorted(TARGETS,key=lambda item:(item["priority"],item["handle"]))
+    featured=ordered[:2] + [ordered[2+((day+i)%(len(ordered)-2))]
+                         for i in range(2)]
+    targets=[{**x,"search_url":search_link(x["query"]),
+              "profile_url":"https://x.com/"+x["handle"],
+              "specific_post_verified":False} for x in featured]
     return {
         "schema":SCHEMA,
         "generated_utc":now.astimezone(timezone.utc).isoformat(),
         "searches":searches,
+        "conversation_targets":targets,
         "exact_posts":manual_candidates(manual_path),
         "live_x_posts_verified_by_bot":0,
         "manual_actions_only":True,
@@ -155,6 +224,28 @@ def markdown(report) -> str:
             "se rispondere in italiano, citare la fonte o non intervenire.", "",
         ])
     lines.extend([
+        "## 🎯 Account rilevanti e conversazioni da valutare", "",
+        "Selezione dai profili **visibili negli screenshot del 19/11/2026**, "
+        "non monitorati in tempo reale. Il bot offre una bozza *condizionale* "
+        "per un argomento concreto; prima di inviarla verifica che il post "
+        "tratti proprio quell'argomento. Se hai già commentato, non replicare.", "",
+    ])
+    for target in report["conversation_targets"]:
+        lines.extend([
+            "### "+escape(target["name"])+" (@"+target["handle"]+")",
+            "[Apri profilo]("+target["profile_url"]+") · "
+            "[Cerca post pertinenti]("+target["search_url"]+")",
+            "- Tema: "+escape(target["topic"])+" · lingua della bozza: "+target["language"],
+            "- **Quando intervenire:** "+escape(target["when"]),
+            "- **Esempio pertinente solo se il post corrisponde:**", "",
+            "~~~text", target["reply"], "~~~",
+            "- Nota: "+("hai già interagito su un loro post negli screenshot, "
+                        "quindi non ripetere quella risposta." if target["observed_reply"]
+                        else "non è noto alcun scambio diretto da questo screenshot."),
+            "- **Azione finale:** apri il post specifico su X, rileggilo, "
+            "adatta la bozza e premi Invia personalmente.", "",
+        ])
+    lines.extend([
         "## 💬 Post specifici aggiunti dopo lettura umana", "",
         "I candidati con link al singolo tweet vengono inseriti **soltanto** "
         "da un revisore nel repository, con il testo letto e la ragione della risposta. "
@@ -166,12 +257,17 @@ def markdown(report) -> str:
     for item in report["exact_posts"]:
         lines.extend([
             "### "+escape(item["author"])+" · revisione umana",
-            "[Apri il post originale]("+item["post_url"]+")",
+            "[Apri il post originale]("+item["post_url"]+")" +
+            (" · [Apri bozza nella finestra Rispondi]("+item["reply_intent_url"]+")"
+             if item["reply_intent_url"] else ""),
+            "- Lingua: "+item["language"],
             "- Contesto letto: "+escape(item["original_context"]),
             "- Motivo per intervenire: "+escape(item["editorial_note"]),
             "- Bozza **facoltativa**, da adattare al contesto attuale: "
-              + (escape(item["draft_reply_it"]) if item["draft_reply_it"] else "da scrivere personalmente"),
-            "- Stato: **nessun invio, né approvazione ad auto-rispondere**.", "",
+              + (escape(item["draft_reply"]) if item["draft_reply"] else "da scrivere personalmente"),
+            "- Stato: **nessun invio, né approvazione ad auto-rispondere**. "
+            "L'intent apre soltanto un composer da verificare e inviare manualmente, "
+            "se X supporta questo collegamento nel tuo browser.", "",
         ])
     lines.extend([
         "### Regole operative di protezione account", "",
