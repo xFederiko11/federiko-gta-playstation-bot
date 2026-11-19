@@ -5,6 +5,7 @@ headlines as leads, never asserts the contents of an unread article.
 """
 from __future__ import annotations
 import argparse
+import base64
 from datetime import datetime, timezone
 from html import escape
 import json
@@ -21,6 +22,7 @@ GTA_TOPIC = re.compile(r"\b(?:gta[\s-]*(?:6|vi|online)|grand theft auto|vice cit
 GUIDE = re.compile(r"\b(?:guide|walkthrough|troph(?:y|ies)|achievement|cheat|glitch|collectible|mission|vehicle|cars|settings|hdr)\b", re.I)
 MAX_ENTRIES = 25
 ISSUE_MARKER = "<!-- gta6-community-editorial-queue-v1 -->"
+BRIDGE_MARKER = "<!-- gta6-verified-source-feed-b64:"
 
 
 def classify(item: dict) -> tuple[str, str]:
@@ -53,8 +55,23 @@ def markdown(digest: dict) -> str:
         raise ValueError("Unexpected research digest schema")
     candidates = [x for x in digest.get("candidates", []) if valid_candidate(x)]
     candidates = candidates[:MAX_ENTRIES]
+    # Machine-readable research leads for the independently deployed site.
+    # These are explicitly NOT verified article claims or permissions to tweet.
+    feed = {"schema": "gta6-community-feed-v1",
+            "generated_utc": str(digest.get("generated_utc", "")),
+            "items": [
+                {"source": x["source"], "tier": x.get("tier", "specialist"),
+                 "title": x["title"], "url": x["url"],
+                 "published_utc": x["published_utc"], "status": classify(x)[0],
+                 "verified": False}
+                for x in candidates
+            ]}
+    encoded = base64.urlsafe_b64encode(
+        json.dumps(feed, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).decode("ascii")
     lines = [
         ISSUE_MARKER,
+        BRIDGE_MARKER + encoded + " -->",
         "# GTA VI — coda editoriale indipendente",
         "",
         "**Generato automaticamente da GitHub Actions, senza ChatGPT.**",

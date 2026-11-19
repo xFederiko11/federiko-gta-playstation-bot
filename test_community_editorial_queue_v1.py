@@ -1,5 +1,8 @@
 """No-network checks for autonomous GitHub editorial intake."""
 import unittest
+import base64
+import json
+import re
 
 from community_editorial_queue_v1 import classify, valid_candidate, markdown, ISSUE_MARKER
 
@@ -33,6 +36,13 @@ class QueueTests(unittest.TestCase):
                 "manual_sources":[{"name":"GTAForums"}]}
         result=markdown(digest)
         self.assertIn(ISSUE_MARKER,result)
+        encoded=re.search(r"<!-- gta6-verified-source-feed-b64:([A-Za-z0-9_=-]+) -->",result)
+        self.assertIsNotNone(encoded)
+        payload=json.loads(base64.urlsafe_b64decode(encoded.group(1)).decode("utf-8"))
+        self.assertEqual(payload["schema"],"gta6-community-feed-v1")
+        self.assertEqual(len(payload["items"]),1)
+        self.assertFalse(payload["items"][0]["verified"])
+        self.assertIn("RUMOR",payload["items"][0]["status"])
         self.assertIn("RUMOR",result)
         self.assertIn("da controllare",result)
         self.assertIn("PowerPyx",result)
