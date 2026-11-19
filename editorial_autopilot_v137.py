@@ -230,6 +230,22 @@ POWERPYX_SPOTLIGHTS = [
 ]
 
 
+def editorial_day_slots(existing: dict, now: datetime) -> tuple[int,int]:
+    """Local editorial slots; launch recovery has a separate three-post budget.
+
+    Old launch posts remain permanently deduplicated, but do not stop all
+    editorial coverage during the one-off global director recovery.
+    """
+    from editorial_director_v142 import RECOVERY_START, RECOVERY_END
+    clock=now.astimezone(timezone.utc)
+    if RECOVERY_START<=clock<RECOVERY_END:
+        recent=[published(e.get('reserved_utc')) for e in existing.values()
+                if e.get('reserved_utc')]
+        return sum(stamp is not None and RECOVERY_START<=stamp<=clock for stamp in recent),3
+    return sum(1 for e in existing.values()
+               if e.get('reserved_utc','')[:10]==clock.date().isoformat()),MAX_POSTS_DAY
+
+
 def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
     """One original Italian guide spotlight, spaced across launch days.
 
@@ -244,7 +260,8 @@ def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
     stamped = [published(e.get('reserved_utc')) for e in entries.values()
                if e.get('reserved_utc')]
     stamped = [dt for dt in stamped if dt is not None]
-    if sum(1 for dt in stamped if dt.date() == now.date()) >= MAX_POSTS_DAY:
+    taken,limit=editorial_day_slots(entries,now)
+    if taken>=limit:
         return None
     if stamped and now - max(stamped) < timedelta(minutes=MIN_SPACING_MIN):
         return None
@@ -366,9 +383,8 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
     now = now.astimezone(timezone.utc)
     existing = state['entries']
     sigs = state['signatures']
-    entries_today = sum(1 for e in existing.values()
-                        if e.get('reserved_utc', '')[:10] == now.date().isoformat())
-    if entries_today >= MAX_POSTS_DAY:
+    entries_today,day_limit=editorial_day_slots(existing,now)
+    if entries_today >= day_limit:
         return []
     latest = max((published(e['reserved_utc']) for e in existing.values()
                   if e.get('reserved_utc')), default=None)
@@ -400,7 +416,7 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
         out.append(item)
         keys.add(key)
         new_sigs.append(sig)
-        if len(out) >= min(max_posts, MAX_POSTS_DAY - entries_today):
+        if len(out) >= min(max_posts, day_limit - entries_today):
             break
     return out
 
@@ -437,6 +453,8 @@ def reserve():
     local_hold = bool(prior and now - max(prior) < timedelta(minutes=MIN_SPACING_MIN))
     spotlight = None if local_hold else powerpyx_spotlight(state, now)
     ok, why = ((False, 'editorial_local_spacing') if local_hold else director_allowed(now))
+    if ok and editorial_day_slots(state['entries'],now)[0]>=editorial_day_slots(state['entries'],now)[1]:
+        ok, why = False, 'editorial_daily_capacity'
     if not ok:
         print("DIRECTOR_HOLD", why)
         selected = []

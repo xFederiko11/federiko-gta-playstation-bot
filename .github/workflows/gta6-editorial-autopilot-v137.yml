@@ -42,7 +42,7 @@ on:
   # Kick an immediate launch check when this workflow file is deployed to main.
   push:
     branches: [main]
-    paths: ['.github/workflows/gta6-editorial-autopilot-v137.yml']
+    paths: ['.github/workflows/gta6-editorial-autopilot-v137.yml', 'editorial_director_v142.py']
   workflow_dispatch:
     inputs:
       action:
@@ -129,6 +129,7 @@ jobs:
       - name: Verify Buffer X destination before reservation
         if: >-
           github.event_name == 'schedule' ||
+          (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
           github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         run: python buffer_status_summary_v151.py
@@ -140,6 +141,7 @@ jobs:
           TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'false' }}
         if: >-
           github.event_name == 'schedule' ||
+          (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
           github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         run: |

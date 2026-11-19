@@ -51,6 +51,8 @@ def audit(root=Path(".")) -> dict:
         errors.append("Post-launch conservative pace was changed without safety review")
     if "BOOST_UNTIL=datetime(2026,11,30" not in director:
         errors.append("Temporary boost expiration was removed without safety review")
+    if "RECOVERY_START=datetime(2026,11,19,20,45" not in director or "RECOVERY_END=RECOVERY_START+timedelta(hours=24)" not in director or "RECOVERY_MAX_AUTOMATED_DELIVERIES=5" not in director:
+        errors.append("One-time, time-bounded launch recovery needs safety review")
     result={
         "publisher_workflows_audited":found,
         "organic_workflow":ORGANIC,

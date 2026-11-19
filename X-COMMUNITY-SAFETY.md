@@ -139,3 +139,28 @@ Il workflow esegue **due ricerche Recent Search da massimo dieci risultati ciasc
 Apri [Social Radar #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48). Per ogni scheda apri il tweet originale; metti un cuore solo se lo apprezzi. Se la risposta proposta aggiunge davvero valore, copiala o usa **Apri risposta precompilata**, controllala e inviala tu su X. Nessun obiettivo obbligatorio di like o commenti.
 
 Riferimenti: [Search Posts](https://docs.x.com/x-api/posts/search/introduction), [Pricing](https://docs.x.com/x-api/getting-started/pricing), [X automation rules](https://help.x.com/en/rules-and-policies/x-automation).
+
+
+## Correzione del blocco editoriale, 19 novembre 2026
+
+I registri mostrano un totale di oltre 30 prenotazioni pubblicate/accettate il 18-19 novembre, con l'ultima prenotazione editoriale il 19/11 alle 12:36 UTC e un tentativo ufficiale alle 13:51 UTC. I workflow delle 20:22-20:37 UTC continuavano a leggere oltre 100 notizie ma uscivano senza creare post per il blocco GLOBAL_ROLLING_24H_BUDGET.
+
+**Rimedio immediato e limitato:** durante le 24 ore a partire dal 19/11/2026 alle 20:45 UTC, il direttore può approvare al massimo **5 nuove prenotazioni automatiche** senza lasciare che la raffica precedente congeli completamente il canale. La distanza minima globale di **90 minuti** continua a contare anche i vecchi record; non vengono cancellati ledger, non vengono ripetuti gli invii falliti e i doppi contenuti restano bloccati. Dopo la finestra temporanea torna automaticamente il tetto di 8 prenotazioni nelle 24 ore, poi il 30/11 il taper già previsto a 6/24 ore. Il tetto è volontario e NON equivale a un limite raccomandato o garantito da X.
+
+La modifica al coordinatore attiva anche un controllo di pubblicazione nell'Editorial Autopilot alla distribuzione del workflow su main (solo con AUTO_PUBLISH=true e preflight Buffer verificato): non è necessario lanciare manualmente una seconda Action.
+
+### Audit della coda Buffer già pagata
+
+Un workflow di sola lettura consulta **tre stati veri** dalle API Buffer per il canale X collegato: 15 record più recenti Sent, Scheduled ed Error e se la coda è in pausa. Pubblica il risultato nella [Issue #50](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/50) alcune volte al giorno, usando le **credenziali Buffer esistenti**, senza consumare API X aggiuntive né creare messaggi. Una API risposta non disponibile viene etichettata come tale: non fa partire retry automatici. Il fatto che GitHub Actions sia verde non prova che sia stato spedito un nuovo tweet.
+
+### Alternativa gratuita allo scanner X
+
+Finché l'API X Recent Search a consumo non è autorizzata, il radar della [Issue #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48) prova una **ricerca gratuita, limitata alle fonti note**:
+
+1. Legge i feed RSS degli otto editori già selezionati nel bot.
+2. Estrae i permalink X/Twitter **realmente riportati da quei feed**, senza navigare, scansionare timeline X o effettuare ricerche protette.
+3. Controlla fino a sei URL recenti attraverso l'endpoint di pubblico **oEmbed ufficiale X** su publish.x.com: è un embed destinato al pubblico, non la ricerca completa.
+4. Solo se trova un embed pubblico con autore, testo e ID coerenti e recente (ora inferita dallo Snowflake ID), mostra il permalink, un breve estratto e una bozza pertinente da copiare. Ricorda l'ID nella Issue per non ripetere il suggerimento.
+5. Se gli editori non includono URL X recenti, oppure l'embed non funziona, **mostra zero tweet**: non inventa risultati né aggira autenticazioni. Per una copertura completa di X resta necessaria un'API autorizzata.
+
+Il radar è in sola lettura; like, follow, quote e risposte sono sempre interazioni manuali e autentiche. Buffer Community in web/iOS permette di gestire commenti e menzioni del nostro canale X (la funzione Mentions è beta per X), ma non equivale a una ricerca universale di tweet di sconosciuti. Il piano Buffer include anche Insights e pubblicazione in coda, e permette repost programmati via composer/estensione; sfruttare queste funzioni ha priorità sull'aggiungere abbonamenti.

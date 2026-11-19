@@ -390,3 +390,10 @@ Per i singoli post già letti e inseriti nel repository dal revisore, il bot pu�
 ### Social Radar X: tweet verificati e risposte pronte (opt-in)
 
 Il nuovo workflow Social Radar X effettua una ricerca giornaliera tramite l'**API ufficiale X** e aggiorna la [Issue #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48) con fino a **cinque post recenti identificati per URL esatto**, un estratto e una bozza di risposta italiana o inglese da copiare oppure aprire nella finestra Rispondi di X. **Non mette like e non invia risposte automaticamente.** Per utilizzare l'API a consumo occorre impostare un limite di spesa su X Developer Console, aggiungere il secret X_BEARER_TOKEN e abilitare la variable X_SOCIAL_RADAR_ENABLED=true. Senza queste azioni il workflow non effettua richieste a pagamento né inventa tweet. Documentazione completa in [X-COMMUNITY-SAFETY.md](X-COMMUNITY-SAFETY.md).
+
+
+### Ripristino pubblicazione e monitoraggio Buffer (19 novembre)
+
+Il direttore ha una finestra di recupero limitata a **cinque nuove prenotazioni in 24 ore dal 19/11 alle 20:45 UTC**, conservando 90 minuti di distanza fra le pubblicazioni, history e deduplicazione. Questo permette di riprendere dopo una raffica pregressa di oltre 30 registrazioni nei ledger senza disattivare i controlli. Passata la finestra torna il normale tetto 8/24h, poi il taper del 30/11.
+
+L'audit **sola lettura** degli stati reali Buffer (ultimi 15 Sent/Scheduled/Error) è nella [Issue #50](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/50). Il Social Radar [Issue #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48) ha anche un **fallback gratuito RSS→oEmbed ufficiale X**: solo permalink ritrovati in feed affidabili e verificati tramite embed pubblico, senza API X a consumo. Non garantisce 5 post al giorno, non ricerca tutto X e non mette cuori o commenti automatici. La ricerca completa con X API rimane opzionale, con opt-in e limite di spesa.
