@@ -2,11 +2,12 @@
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+from urllib.parse import urlsplit,parse_qs
 from tempfile import TemporaryDirectory
 import unittest
 
 from x_community_review_v1 import (
-    SCHEMA, SEARCHES, search_link, manual_candidates, plan, markdown
+    SCHEMA, SEARCHES, TARGETS, search_link, manual_candidates, plan, markdown
 )
 
 NOW=datetime(2026,11,19,15,0,tzinfo=timezone.utc)
@@ -49,6 +50,51 @@ class ManualItalianDiscussionTests(unittest.TestCase):
         self.assertIn("Non sono approvazione",out.replace("Una bozza non è approvazione","Non sono approvazione"))
         self.assertIn("no",out.lower())
         self.assertNotIn("Segui ora 50",out)
+
+    def test_user_known_accounts_and_replies_are_context_specific(self):
+        report=plan(NOW)
+        self.assertEqual(len(TARGETS),7)
+        targets=report["conversation_targets"]
+        self.assertEqual(len(targets),4)
+        self.assertEqual(len({item["handle"] for item in targets}),4)
+        self.assertTrue(all(item["profile_url"]=="https://x.com/"+item["handle"]
+                            for item in targets))
+        self.assertTrue(all("from%3A" in item["search_url"] for item in targets))
+        self.assertTrue(all(not item["specific_post_verified"] for item in targets))
+        self.assertTrue(any(item["language"]=="it" for item in TARGETS))
+        self.assertTrue(any(item["language"]=="en" for item in TARGETS))
+        self.assertIn("colonna sonora",next(x for x in TARGETS
+                        if x["handle"]=="RockstarINTEL")["when"])
+        self.assertNotIn("troph",next(x for x in TARGETS
+                        if x["handle"]=="RockstarINTEL")["reply"].lower())
+        self.assertTrue(next(x for x in TARGETS if x["handle"]=="GTASeries")["observed_reply"])
+        for target in TARGETS:
+            self.assertLessEqual(len(target["reply"]),260)
+            self.assertNotIn("http",target["reply"])
+            self.assertNotIn("#GTAVI",target["reply"])
+        body=markdown(report)
+        self.assertIn("Account rilevanti e conversazioni da valutare",body)
+        self.assertIn("bozza *condizionale*",body)
+        self.assertIn("adatta la bozza e premi Invia personalmente",body)
+        self.assertIn("Se hai già commentato, non replicare",body)
+
+    def test_manually_reviewed_single_post_gets_one_click_reply_composer(self):
+        report=with_file([context()],lambda p:plan(NOW,manual_path=p))
+        reviewed=report["exact_posts"][0]
+        self.assertTrue(reviewed["reply_intent_url"].startswith(
+            "https://x.com/intent/tweet?"))
+        parts=urlsplit(reviewed["reply_intent_url"])
+        args=parse_qs(parts.query)
+        self.assertEqual(args["in_reply_to"],["1234567890123456789"])
+        self.assertEqual(args["text"],[context()["draft_reply_it"]])
+        self.assertEqual(reviewed["approved_for_auto_reply"],False)
+        body=markdown(report)
+        self.assertIn("Apri bozza nella finestra Rispondi",body)
+        self.assertIn("L'intent apre soltanto un composer",body)
+        self.assertIn("nessun invio",body)
+        no_draft={**context(),"draft_reply_it":""}
+        other=with_file([no_draft],lambda p:plan(NOW,manual_path=p))
+        self.assertIsNone(other["exact_posts"][0]["reply_intent_url"])
 
     def test_exact_tweet_accepted_only_after_human_review(self):
         report=with_file([context()],lambda path: plan(NOW,manual_path=path))
