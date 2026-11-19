@@ -68,3 +68,14 @@ Manteniamo `TIPS_REAUTH_CONFIRMED_V149=false` salvo una conferma esplicita dell'
 Le [regole sull'automazione di X](https://help.x.com/en/rules-and-policies/x-automation), aggiornate nell'aprile 2026, autorizzano le pubblicazioni informative automatizzate entro altre condizioni, ma proibiscono le risposte automatiche non richieste generate su parole chiave. I bot che pubblicano **automaticamente risposte create dall'IA** necessitano di previa approvazione scritta di X. I repost automatici non sono vietati in assoluto, ma repost aggressivi o in blocco possono violare le regole. I like automatizzati sono vietati. Le [regole sull'autenticità](https://help.x.com/en/rules-and-policies/authenticity) scoraggiano spam, link ripetitivi e interazioni volte a manipolare le metriche.
 
 **La funzione sviluppata non si avvale di eccezioni né tenta di aggirare limiti, verifica d'identità o misure anti-abuso.**
+
+
+## Bilanciamento del lancio, modifica del 19 novembre 2026
+
+Per valorizzare la partenza di GTA VI, la cadenza iniziale passa temporaneamente a **8 prenotazioni automatiche ogni 24 ore mobili**, con un minimo di **90 minuti** fra due prenotazioni. Questa fase dura fino alle **00:00 UTC del 30 novembre 2026**, poi il coordinatore riduce automaticamente il tetto a **6/24h con 120 minuti** di intervallo. Non sono limiti o garanzie ufficiali di X.
+
+L'Editorial Autopilot non supera **5 prenotazioni al giorno** nel proprio ledger. All'interno di queste può pubblicare **una sola guida originale dal sito al giorno**, selezionandola tra dieci schede preparate e validando la pagina pubblica prima dell'invio. Le 55 guide trofei esistenti continuano a essere disponibili, così come le news e il monitor ufficiale. Si privilegiano contenuti distinti, utili e verificabili, non una moltiplicazione di copie.
+
+Il limite è sulle **prenotazioni automatiche** e non ingloba post manuali, quote tweet, thread multipli o contenuti già accettati e in coda su Buffer. Per valutare la reputazione del profilo bisogna osservare le metriche reali su X; un test verde su GitHub non può confermarla. L'account evita l'uso di interazioni automatizzate verso sconosciuti e non tenta di aggirare alcun controllo anti-abuso.
+
+I controlli automatici sono in `editorial_director_v142.py`, `x_automation_safety_v1.py` e nella pipeline editoriale. Il taper dopo il lancio è verificato con test e non richiede un'impostazione aggiuntiva.
