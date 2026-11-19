@@ -214,11 +214,14 @@
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     },
     "d72ab9b5e97cf094f20dee14": {
+      "attempted_utc": "2026-11-19T00:28:28.793990+00:00",
+      "buffer_id": "6afe42ac01ba7c5e79236afa",
+      "completed_utc": "2026-11-19T00:28:30.118906+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T00:28:27.167181+00:00",
       "run_id": "44429211199",
       "source": "PowerPyx",
-      "status": "reserved",
+      "status": "rejected",
       "text": "🎯 GTA VI | Sfide e 100%\n\n💡 Secondo PowerPyx bastano 70 sfide su 80 per la checklist del 100%. Puoi saltarne 10!\n\n📋 Guida alle sfide:\nhttps://www.powerpyx.com/gta-6-all-challenges-guide/\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
