@@ -75,7 +75,7 @@ class OfficialXReadOnlyTests(unittest.TestCase):
         body=radar.markdown({"schema":radar.SCHEMA,"status":"ok","posts":items,"errors":[],"requests":2})
         self.assertIn("Apri tweet / metti cuore",body)
         self.assertIn("Testo già pronto da copiare",body)
-        self.assertIn("esclusivamente",body.lower() if "esclusivamente" in body else "esclusivamente")
+        self.assertIn("Nessun invio automatico",body)
 
     def test_no_invented_posts_when_search_fails(self):
         def error(*args):
@@ -134,6 +134,36 @@ class OfficialXReadOnlyTests(unittest.TestCase):
         z=radar.select([en],NOW)
         self.assertEqual(z[0]["language"],"en")
         self.assertIn("TV model",z[0]["reply"])
+
+    def test_previous_issue_hidden_ids_prevent_repeated_tweet_recommendations(self):
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+        with TemporaryDirectory() as folder:
+            previous=Path(folder)/"issue.md"
+            previous.write_text("A report\n<!-- x-social-radar-v1-seen:1234567890123456789 -->\n",
+                                encoding="utf-8")
+            seen=radar.read_previous_ids(previous)
+            self.assertEqual(seen,{"1234567890123456789"})
+            self.assertEqual(radar.select([result()],NOW,exclude_ids=seen),[])
+            collected=radar.collect(NOW,token="secret-with-enough-length",enabled=True,
+                                    previous_ids=seen,fetch=lambda token,query:result())
+            self.assertEqual(collected["posts"],[])
+            collected["previous_ids"]=sorted(seen)
+            body=radar.markdown(collected)
+            self.assertIn("<!-- x-social-radar-v1-seen:1234567890123456789 -->",body)
+        self.assertEqual(radar.read_previous_ids(Path("/missing/x-social-radar/issue")),set())
+
+    def test_prefer_distinct_topics_over_duplicate_comments(self):
+        first=result(pid="1234567890123456789",
+                     text="GTA VI PS5 HDR OLED looks different across these television models; settings vary")
+        second=result(pid="1234567890123456790",
+                      text="GTA VI OLED HDR brightness differences and comparisons among televisions look strange")
+        third=result(pid="1234567890123456791",
+                     text="GTA VI trophies platinum are tricky for the optional chapter requirements this year")
+        data={"data":first["data"]+second["data"]+third["data"],
+              "includes":{"users":[{"id":"789456123","username":"GTAHelper"}]}}
+        # All have one creator; a second account is required for variety.
+        self.assertEqual(len(radar.select([data],NOW)),1)
 
     def test_rejects_spoilers_blocked_replies_and_invalid_authors(self):
         base=result()
