@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 import json
+import requests
 from pathlib import Path
 import unittest
 
@@ -34,7 +35,7 @@ class HTTP:
     def get(self, url, **kwargs):
         self.calls.append(url)
         if url != self.feed:
-            raise AssertionError("Unexpected network call")
+            raise requests.ConnectionError("Fixture only: this feed is intentionally unavailable")
         return Reply(self.actual or url, self.data)
 
 
