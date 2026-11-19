@@ -342,11 +342,14 @@
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     },
     "d6b995b0794bd4529f4cb38d": {
+      "attempted_utc": "2026-11-19T07:47:58.463839+00:00",
+      "buffer_id": "6afea9ae9af0a73f7124d9d4",
+      "completed_utc": "2026-11-19T07:47:59.756257+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T07:47:54.401322+00:00",
       "run_id": "44482344843",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Trappola per turisti\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-tourist-trap-mission-walkthrough\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
