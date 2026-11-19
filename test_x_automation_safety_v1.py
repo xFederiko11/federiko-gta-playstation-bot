@@ -69,6 +69,16 @@ class XSustainablePublishingTests(unittest.TestCase):
                 "MAX_AUTOMATED_DELIVERIES_24H=100"),encoding="utf-8")
             with self.assertRaisesRegex(RuntimeError,"Global publication limit"):
                 audit(root)
+    def test_boost_expiration_is_a_required_safety_rule(self):
+        with TemporaryDirectory() as d:
+            root=self.stage(d)
+            path=root/"editorial_director_v142.py"
+            path.write_text(path.read_text(encoding="utf-8").replace(
+                "BOOST_UNTIL=datetime(2026,11,30",
+                "BOOST_UNTIL=datetime(2027,11,30"),encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError,"boost expiration"):
+                audit(root)
+
 
 
 if __name__=="__main__":
