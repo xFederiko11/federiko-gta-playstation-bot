@@ -18,7 +18,7 @@ La credibilità personale di una fonte non trasforma una notizia in una conferma
 ## Cosa è davvero automatizzato
 
 - PowerPyx: feed di guide **già attivo** nell'Editorial Autopilot, con regole di deduplicazione e attribuzione.
-- GTA Series Videos: RSS/Atom YouTube via ID canale pubblico, raccolto dal nuovo **ricercatore in sola lettura**. Non pubblica automaticamente video o screenshot e non copia i walkthrough.
+- GTA Series Videos: RSS/Atom YouTube via ID canale pubblico, raccolto dal nuovo **ricercatore in sola lettura**. I titoli dei video possono entrare separatamente nell'Editorial Autopilot solo dopo le stesse regole di traduzione, antirumor, dedupe e attribuzione come contenuti di un creator indipendente; non copia video o screenshot.
 - GTAForums, GTA Wiki/Fandom, GTABase, GTANet, Tez2, Jason Schreier: elenco consultabile in \`community-research-sources-v1.json\` come fonti di ricerca/verifica. Nessuna acquisizione automatica finché non è stato individuato e autorizzato un feed affidabile. GTAForums può rifiutare l'accesso automatizzato; non aggiriamo la protezione.
 - Rockstar: **resta nel monitor ufficiale esistente**, non viene duplicato nel ricercatore.
 
@@ -26,7 +26,7 @@ La credibilità personale di una fonte non trasforma una notizia in una conferma
 
 \`.github/workflows/gta6-community-research-v1.yml\` controlla i due feed pubblici alle 07:17, 13:17 e 19:17 UTC e tramite avvio manuale.
 
-Il workflow ha permessi GitHub di sola lettura, **non riceve credenziali Buffer e non può pubblicare**. Esegue test offline, filtra argomenti pertinenti e titoli rumorosi, limita le fonti agli host esplicitamente autorizzati, e deposita il file \`gta6-community-research\` come artifact per sette giorni.
+Il workflow di ricerca ha permesso di lettura del repository e permesso limitato `issues:write` per aggiornare una sola Issue editoriale. **Non riceve credenziali Buffer e non può pubblicare su X**. Esegue test offline, filtra argomenti pertinenti e titoli rumorosi, limita le fonti agli host esplicitamente autorizzati, e deposita il file \`gta6-community-research\` come artifact per sette giorni.
 
 Il digest contiene **piste** per articoli; non è una pubblicazione e non dimostra che tutti gli articoli proposti siano confermati. Ogni elemento segnala titolo, URL originale, data, tipo e fonte. I nuovi feed si aggiungono solo con dominio, permesso e prova di accessibilità validati.
 
