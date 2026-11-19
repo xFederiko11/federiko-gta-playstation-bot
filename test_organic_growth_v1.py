@@ -1,5 +1,6 @@
 """No-network regressions for useful X selection, pace and manual-only growth."""
 from datetime import datetime, timedelta, timezone
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -8,7 +9,7 @@ import unittest
 import editorial_autopilot_v137 as bot
 from organic_growth_v1 import (
     BIO, DRAFTS, ISSUE_TITLE, PINNED, PUBLIC, SCHEMA, make_plan,
-    markdown, validate_drafts, load_profile_status
+    markdown, validate_drafts, load_profile_status, cadence_snapshot
 )
 
 NOW = datetime(2026, 11, 19, 14, 0, tzinfo=timezone.utc)
@@ -85,6 +86,33 @@ class OrganicXTests(unittest.TestCase):
                 path.write_text(json.dumps(patch_state),encoding="utf-8")
                 with self.assertRaises(ValueError):
                     load_profile_status(path)
+
+    def test_high_ledger_volume_is_warning_not_restriction_assertion(self):
+        with TemporaryDirectory() as folder:
+            p=Path(folder)
+            entries={
+                "unique-"+str(i):{
+                    "reserved_utc":(NOW-timedelta(hours=i)).isoformat(),
+                    "status":"sent",
+                } for i in range(9)
+            }
+            (p/"editorial-autopilot-v137.json").write_text(
+                json.dumps({"schema":"v13.7","entries":entries}),encoding="utf-8")
+            pace=cadence_snapshot(NOW,p)
+            self.assertEqual(pace["sent_or_accepted_ledger_entries"],9)
+            self.assertTrue(pace["review_high_volume"])
+            plan=make_plan(now=NOW,ledger_root=p,manual_path=p/"no-x.csv")
+            self.assertEqual(plan["cadence"]["sent_or_accepted_ledger_entries"],9)
+            body=markdown(plan)
+            self.assertIn("Volume elevato da riesaminare manualmente",body)
+            self.assertIn("non prova shadowban",body)
+            self.assertIn("non elimina post",body)
+        with TemporaryDirectory() as folder:
+            small=cadence_snapshot(NOW,Path(folder))
+            self.assertFalse(small["review_high_volume"])
+            self.assertEqual(small["sent_or_accepted_ledger_entries"],0)
+        with self.assertRaises(ValueError):
+            cadence_snapshot(datetime(2026,11,19),Path("."))
 
     def test_rotation_produces_new_copy_without_bot_publishing(self):
         with TemporaryDirectory() as folder:
