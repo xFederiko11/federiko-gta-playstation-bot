@@ -24,6 +24,8 @@ MAX_QUERIES_PER_RUN = 2
 MAX_RESULTS_PER_QUERY = 10
 MAX_POSTS_IN_DIGEST = 5
 MAX_AGE_HOURS = 36
+HISTORY_TAG = 'x-social-radar-v1-seen:'
+MAX_HISTORY = 200
 # A conservative upper bound on resource reads from this workflow only;
 # it is NOT a spending cap in X. Configure a billing cap in console.x.com.
 MAX_RESOURCES_PER_SWEEP = MAX_QUERIES_PER_RUN * MAX_RESULTS_PER_QUERY * 2
@@ -98,11 +100,13 @@ def classify(content: str, language: str) -> tuple[str, str] | None:
     return None
 
 
-def select(responses: list[dict], now: datetime, *, limit=MAX_POSTS_IN_DIGEST) -> list[dict]:
+def select(responses: list[dict], now: datetime, *, limit=MAX_POSTS_IN_DIGEST,
+           exclude_ids=None) -> list[dict]:
     if now.tzinfo is None or not 1 <= limit <= MAX_POSTS_IN_DIGEST:
         raise ValueError("Invalid selection parameters")
     clock = now.astimezone(timezone.utc)
     candidates, ids = [], set()
+    excluded = set(exclude_ids or [])
     for response in responses:
         if response.get("errors"):
             continue
@@ -114,7 +118,7 @@ def select(responses: list[dict], now: datetime, *, limit=MAX_POSTS_IN_DIGEST) -
                 continue
             post_id = str(item.get("id", ""))
             author = users.get(str(item.get("author_id", "")))
-            if not POST_ID_RE.fullmatch(post_id) or post_id in ids or not author:
+            if not POST_ID_RE.fullmatch(post_id) or post_id in ids or post_id in excluded or not author:
                 continue
             handle = str(author.get("username", ""))
             if not HANDLE_RE.fullmatch(handle) or handle.lower() == "xfederiko11":
@@ -164,11 +168,12 @@ def select(responses: list[dict], now: datetime, *, limit=MAX_POSTS_IN_DIGEST) -
                 "verified_by": "x_api_v2_recent_search",
             })
     candidates.sort(key=lambda p: (-p["score"], p["post_id"]))
-    result, authors = [], set()
+    result, authors, themes = [], set(), set()
     for item in candidates:
-        if item["author"].lower() in authors:
+        if item["author"].lower() in authors or item["theme"] in themes:
             continue
         authors.add(item["author"].lower())
+        themes.add(item["theme"])
         result.append(item)
         if len(result) >= limit:
             break
@@ -183,7 +188,7 @@ def safe_count(value) -> int:
 
 
 def collect(now: datetime, *, token: str | None = None, enabled: bool = False,
-            fetch=api_recent) -> dict:
+            fetch=api_recent, previous_ids=None) -> dict:
     if now.tzinfo is None:
         raise ValueError("Timezone-aware timestamp required")
     if not enabled:
@@ -205,10 +210,22 @@ def collect(now: datetime, *, token: str | None = None, enabled: bool = False,
             break
     # Fail closed on any search failure: do not mix partial claims with a
     # supposedly complete daily verified radar.
-    posts = [] if errors else select(responses, now)
+    posts = [] if errors else select(responses, now, exclude_ids=previous_ids)
     return {"schema": SCHEMA, "status": "api_error" if errors else
             "ok" if posts else "no_matches", "posts": posts, "errors": errors,
-            "requests": len(responses) + len(errors)}
+            "requests": len(responses) + len(errors), "previous_ids": sorted(previous_ids or [])}
+
+
+def read_previous_ids(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    body = path.read_text(encoding="utf-8", errors="replace")
+    if len(body) > 150_000:
+        raise ValueError("Previous issue unexpectedly large")
+    match = re.search(r"<!-- " + re.escape(HISTORY_TAG) + r"([0-9,]*) -->", body)
+    if match is None:
+        return set()
+    return {x for x in match.group(1).split(",") if POST_ID_RE.fullmatch(x)}
 
 
 def markdown(report: dict) -> str:
@@ -250,6 +267,9 @@ def markdown(report: dict) -> str:
             "la bozza è selezionata per argomento, non approvata "
             "editorialmente. Nessun invio automatico.", "",
         ])
+    old = list(report.get("previous_ids", []))
+    current = [p["post_id"] for p in report["posts"]]
+    history = list(dict.fromkeys(old + current))[-MAX_HISTORY:]
     lines.extend([
         "---", "",
         "Costi: al massimo 2 ricerche da 10 risultati per esecuzione. "
@@ -258,6 +278,7 @@ def markdown(report: dict) -> str:
         "il limite di spesa nella X Developer Console.", "",
         "https://docs.x.com/x-api/posts/search/introduction", "",
         "https://docs.x.com/x-api/getting-started/pricing", "",
+        "<!-- " + HISTORY_TAG + ",".join(history) + " -->",
     ])
     return "\n".join(lines) + "\n"
 
@@ -265,11 +286,14 @@ def markdown(report: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--previous-report", type=Path)
     args = parser.parse_args()
     enabled = os.getenv("X_SOCIAL_RADAR_ENABLED", "false").lower() == "true"
+    previous_ids = read_previous_ids(args.previous_report) if args.previous_report else set()
     result = collect(datetime.now(timezone.utc),
                      token=os.getenv("X_BEARER_TOKEN", ""),
-                     enabled=enabled)
+                     enabled=enabled, previous_ids=previous_ids)
+    result["previous_ids"] = sorted(previous_ids)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(markdown(result), encoding="utf-8")
     print("X_RADAR_STATUS", result["status"], "verified_posts", len(result["posts"]),
