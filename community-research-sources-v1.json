@@ -10,7 +10,9 @@
     "auto_publish": false,
     "copy_full_text": false,
     "media_reuse": "Only with rights or official authorized media",
-    "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence"
+    "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence",
+    "source_fetching": "Public RSS/Atom feeds only; do not bypass login, robots restrictions or scrape protected community pages",
+    "review_required": "Community / data-miner claims cannot be auto-published; all scraped claims need corroboration before being turned into news."
   },
   "sources": [
     {
@@ -20,7 +22,9 @@
       "topics": [
         "news",
         "patches"
-      ]
+      ],
+      "collection": "manual_review",
+      "collection_note": "No validated public structured feed; consult manually for corroboration"
     },
     {
       "name": "PowerPyx",
@@ -32,7 +36,17 @@
         "collectibles",
         "walkthroughs"
       ],
-      "already_editorial_feed": true
+      "already_editorial_feed": true,
+      "collection": "read_only_feed",
+      "feed": "https://www.powerpyx.com/feed/",
+      "feed_domains": [
+        "www.powerpyx.com",
+        "powerpyx.com"
+      ],
+      "domains": [
+        "powerpyx.com"
+      ],
+      "language": "en"
     },
     {
       "name": "GTAForums",
@@ -43,7 +57,9 @@
         "mechanics",
         "patches",
         "community reports"
-      ]
+      ],
+      "collection": "manual_review",
+      "collection_note": "Forum homepage blocked to programmatic requests; follow source manually, no bypass"
     },
     {
       "name": "GTA Wiki / Fandom",
@@ -54,7 +70,9 @@
         "characters",
         "missions",
         "lore"
-      ]
+      ],
+      "collection": "manual_review",
+      "collection_note": "Wiki can include pre-release leaks and edit history: do not interpret as release facts"
     },
     {
       "name": "GTA Series Videos",
@@ -64,7 +82,19 @@
         "walkthroughs",
         "mechanics",
         "video evidence"
-      ]
+      ],
+      "collection": "read_only_feed",
+      "feed": "https://www.youtube.com/feeds/videos.xml?channel_id=UCuWcjpKbIDAbZfHoru1toFg",
+      "feed_domains": [
+        "www.youtube.com",
+        "youtube.com"
+      ],
+      "domains": [
+        "youtube.com"
+      ],
+      "language": "en",
+      "verified_source": "https://www.wikidata.org/wiki/Q61467454",
+      "channel_name": "GTASeriesVideos"
     },
     {
       "name": "GTABase",
@@ -75,7 +105,9 @@
         "locations",
         "cheats",
         "updates"
-      ]
+      ],
+      "collection": "manual_review",
+      "collection_note": "No validated public structured feed; consult manually for corroboration"
     },
     {
       "name": "GTANet",
@@ -84,7 +116,9 @@
       "topics": [
         "community",
         "updates"
-      ]
+      ],
+      "collection": "manual_review",
+      "collection_note": "No validated public structured feed; consult manually for corroboration"
     },
     {
       "name": "Tez2",
@@ -94,7 +128,9 @@
         "patch files",
         "upcoming content"
       ],
-      "requires_attribution": true
+      "requires_attribution": true,
+      "collection": "manual_review",
+      "collection_note": "No validated public structured feed; consult manually for corroboration"
     },
     {
       "name": "Jason Schreier / Bloomberg",
@@ -104,7 +140,9 @@
         "industry reporting",
         "Rockstar"
       ],
-      "requires_attribution": true
+      "requires_attribution": true,
+      "collection": "manual_review",
+      "collection_note": "No validated public structured feed; consult manually for corroboration"
     }
   ],
   "verification": {
