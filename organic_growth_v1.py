@@ -1,0 +1,241 @@
+"""GTA VI organic X growth planner: GitHub-native, no social mutations.
+
+Generates a human-reviewed seven-day rotating mix of original Italian posts
+using only existing site pages. Never invents engagement metrics or contacts
+users on X. Buffer quick-tips recovery gate is completely separate.
+"""
+from __future__ import annotations
+
+import argparse
+from datetime import date, datetime, timezone
+from html import escape
+from pathlib import Path
+from urllib.parse import urlsplit
+import re
+
+from editorial_autopilot_v137 import weight_x
+from growth_metrics_v142 import report as growth_report
+
+PUBLIC = "https://xfederiko11.github.io/gta-6/"
+START_DATE = date(2026, 11, 19)
+ISSUE_TITLE = "GTA VI - Crescita organica X"
+SCHEMA = "gta6-organic-x-plan-v1"
+MAX_X_WEIGHT = 280
+
+PINNED = (
+    "🎮 GTA VI / GTA 6 ITALIA | PS5 & PS5 Pro\n\n"
+    "🏆 Trofei e platino con checklist\n"
+    "⚡ Guide rapide in italiano\n"
+    "📺 HDR OLED per codice TV\n"
+    "🔎 Notizie con fonti e verifica\n\n"
+    "Niente rumor spacciati per fatti.\n"
+    "👇 " + PUBLIC + "\n\n#GTAVI #PS5"
+)
+BIO = (
+    "🎮 GTA VI in italiano | PS5 & PS5 Pro\n"
+    "🏆 Trofei, platino e guide rapide\n"
+    "📺 HDR OLED per modello\n"
+    "🔎 Fonti e verifiche, senza hype"
+)
+
+DRAFTS = (
+    {
+        "id": "cecchino-checklist", "format": "Soluzione rapida + risorsa",
+        "text": (
+            "🎯 GTA VI | Trofeo Cecchino (PS5)\n\n"
+            "Le medaglie Oro dei poligoni non sono le medaglie delle missioni storia. "
+            "La checklist ti aiuta a segnare le prove una per una.\n\n"
+            "🔗 " + PUBLIC + "trofei/trofeo-17-cecchino/\n\n#GTAVI #Platino"
+        ),
+        "url": PUBLIC + "trofei/trofeo-17-cecchino/",
+    },
+    {
+        "id": "hdr-tre-valori", "format": "Passaggi brevi + fonte",
+        "text": (
+            "📺 GTA VI su OLED (PS5)\n\n"
+            "Options → Impostazioni → Schermo → Calibrazione HDR.\n"
+            "Controlla Max Brightness, Black Levels e Paper White. "
+            "Non copiare i numeri di un pannello differente.\n\n"
+            "🔗 " + PUBLIC + "hdr-oled/\n\n#GTAVI #OLED"
+        ),
+        "url": PUBLIC + "hdr-oled/",
+    },
+    {
+        "id": "trophy-safety", "format": "Consiglio originale (senza link)",
+        "text": (
+            "🏆 Glitch in GTA VI? Prima di usarlo per il platino, verifica:\n\n"
+            "1️⃣ La patch PS5 effettiva\n"
+            "2️⃣ L'effetto sui trofei\n"
+            "3️⃣ Il rischio per i salvataggi\n\n"
+            "Un video con scritto «working» non è una prova aggiornata.\n\n#GTAVI #PS5"
+        ), "url": None,
+    },
+    {
+        "id": "oled-model-search", "format": "Trucco di navigazione",
+        "text": (
+            "📺 Hai una LG, Samsung, Sony o Philips OLED?\n\n"
+            "Per GTA VI cerca il codice completo della TV, non solo la marca: "
+            "le impostazioni HDR variano tra famiglie e diagonali.\n\n"
+            "🔎 " + PUBLIC + "hdr-oled/\n\n#GTAVI #PS5Pro"
+        ),
+        "url": PUBLIC + "hdr-oled/",
+    },
+    {
+        "id": "community-question", "format": "Conversazione autentica (manuale)",
+        "text": (
+            "🎮 GTA VI | PS5 e PS5 Pro\n\n"
+            "Quale guida ti sarebbe utile adesso: trofei, veicoli, missioni "
+            "oppure calibrazione HDR?\n\n"
+            "Sto organizzando i tutorial per andare subito al punto, "
+            "senza passaggi inutili. Mi interessa capire le priorità reali.\n\n#GTAVI"
+        ), "url": None,
+    },
+    {
+        "id": "scoperte-etichettate", "format": "Trasparenza e fiducia",
+        "text": (
+            "🔎 GTA VI | Scoperta ≠ conferma.\n\n"
+            "Distinguiamo guide specialistiche, community, rumor e datamining. "
+            "Fonti e date sono visibili: trofei e glitch richiedono prove separate.\n\n"
+            "📖 " + PUBLIC + "scoperte/\n\n#GTAVI"
+        ), "url": PUBLIC + "scoperte/",
+    },
+    {
+        "id": "platino-roadmap", "format": "Valore della guida + risorsa",
+        "text": (
+            "🏆 GTA VI | Puntiamo al platino su PS5.\n\n"
+            "Raccolgo requisiti, attività, checklist e avvisi sulle scelte "
+            "da non perdere. Le guide restano collegate alle fonti originali.\n\n"
+            "🔗 " + PUBLIC + "trofei/\n\n#GTAVI #Platino"
+        ), "url": PUBLIC + "trofei/",
+    },
+)
+
+
+def validate_drafts() -> None:
+    seen = set()
+    for draft in DRAFTS:
+        ident = draft["id"]
+        if not re.fullmatch(r"[a-z0-9-]{4,60}", ident) or ident in seen:
+            raise ValueError("Invalid or duplicated draft ID")
+        seen.add(ident)
+        text = draft["text"]
+        if not 40 <= weight_x(text) <= MAX_X_WEIGHT:
+            raise ValueError("X length limit exceeded: " + ident)
+        links = re.findall(r"https://[^\s]+", text)
+        for link in links:
+            p = urlsplit(link)
+            if p.scheme != "https" or p.hostname != "xfederiko11.github.io" or not p.path.startswith("/gta-6/"):
+                raise ValueError("Unexpected link host")
+        if links != ([draft["url"]] if draft["url"] else []):
+            raise ValueError("Draft URL does not match its source")
+    if weight_x(PINNED) > MAX_X_WEIGHT or weight_x(BIO) > 160:
+        raise ValueError("Profile setup exceeds character budget")
+
+
+def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
+              manual_path=Path("metrics-manual-v142.csv")) -> dict:
+    validate_drafts()
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("Timezone-aware timestamp required")
+    day = max(0, (now.astimezone(timezone.utc).date() - START_DATE).days)
+    upcoming = [dict(DRAFTS[(day+i) % len(DRAFTS)]) for i in range(3)]
+    metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
+    return {
+        "schema": SCHEMA,
+        "generated_utc": now.astimezone(timezone.utc).isoformat(),
+        "mode": "manual_review_only_no_buffer_no_x_api",
+        "account": "@xFederiko11",
+        "pinned_draft": PINNED,
+        "bio_suggestion": BIO,
+        "profile_website": PUBLIC,
+        "drafts": upcoming,
+        "delivery_reservations": metrics["delivery_reservations"],
+        "delivery_status": metrics["by_status"],
+        "actual_x_metrics_available": metrics["actual_x_metrics_available"],
+        "x_metrics_count": len(metrics["x_metrics"]),
+        "warning": "Buffer sent is not impressions or followers. Never infer growth.",
+    }
+
+
+def markdown(plan: dict) -> str:
+    if plan.get("schema") != SCHEMA:
+        raise ValueError("Unexpected organic growth plan schema")
+    fence = "~" * 3
+    lines = [
+        "<!-- gta6-organic-growth-v1 -->",
+        "# GTA VI - Crescita organica di @xFederiko11", "",
+        "**Questa issue non invia post, commenti, menzioni, follow o like.**",
+        "Follower e impression non vengono letti direttamente da X.", "",
+        "## Profilo: una sola volta", "",
+        "- [ ] Inserire il sito nel campo Sito web di Modifica profilo.",
+        "- [ ] Pubblicare manualmente il post di benvenuto e fissarlo al profilo.",
+        "- [ ] Controllare che la bio spieghi cosa riceve chi segue il canale.",
+        "- [ ] Seguire soltanto account GTA e PlayStation genuinamente utili.",
+        "", "### Bio suggerita", fence+"text", plan["bio_suggestion"], fence,
+        "Sito web: " + plan["profile_website"], "",
+        "### Post da fissare - non pubblicato", fence+"text",
+        plan["pinned_draft"], fence, "",
+        "## Tre bozze da verificare prima di pubblicare", "",
+        "Non sono nella coda Buffer. Mai copiarle tutte in blocco; "
+        "verificare i fatti, aggiornare il contesto e variarne la forma.", "",
+    ]
+    for d in plan["drafts"]:
+        lines.extend([
+            "### " + escape(d["format"]) + " - " + d["id"],
+            fence+"text", d["text"], fence,
+            "Caratteri stimati X: " + str(weight_x(d["text"])) + "/280. "
+            "**Stato: revisione e pubblicazione manuale**.", "",
+        ])
+    states = plan["delivery_status"]
+    status_line = (", ".join(escape(k)+": "+str(v)
+                             for k,v in sorted(states.items())) if states else "non disponibili")
+    actual = ("disponibili per "+str(plan["x_metrics_count"])+" post"
+              if plan["actual_x_metrics_available"] else "non disponibili")
+    lines.extend([
+        "## Numeri effettivi, non impression inventate", "",
+        "- Prenotazioni dei workflow nei ledger: " + str(plan["delivery_reservations"]) +
+        " (non equivalgono a post letti su X).",
+        "- Esiti ledger: " + status_line + ".",
+        "- Metriche X compilate manualmente: " + actual + ".",
+        "- Se il file X è vuoto, i nuovi follower sono **non disponibili**, "
+        "non automaticamente zero.", "",
+        "Metriche da confrontare, quando disponibili: impression, visite al profilo, "
+        "nuovi follower, risposte pertinenti e clic sul sito. "
+        "Misurare almeno una settimana prima di cambiare formato.", "",
+        "## Routine manuale senza spam", "",
+        "1. Leggere un post recente rilevante su GTA VI/PS5. "
+        "Rispondere solo quando si ha un dettaglio utile sul caso reale.",
+        "2. Rispondere a chi commenta il proprio account, "
+        "correggendo gli errori con fonti verificabili.",
+        "3. Alternare consigli rapidi, notizie confermate e conversazioni sincere. "
+        "Non imporsi una quota di risposte o follower.",
+        "4. Inserire solo dati effettivi letti da X in metrics-manual-v142.csv.", "",
+        "## Limiti non negoziabili", "",
+        "- No follower acquistati, scambi di engagement, follow/unfollow massivo, "
+        "risposte automatizzate non richieste, like automatici o commenti seriali.",
+        "- Quick Tips Buffer restano sospesi fino alla riconferma; "
+        "questo workflow non modifica alcuna variabile.",
+        "- Rumor, community e video non sono comunicati Rockstar. "
+        "Un titolo non prova la sicurezza dei trofei.",
+        "- Nessuna chiamata API a X o Buffer, nessuna modifica ai ledger.", "",
+        "Regole: https://help.x.com/en/rules-and-policies/x-automation "
+        "e https://help.x.com/en/rules-and-policies/authenticity", "",
+        "_Questa coda propone attività di qualità ma non garantisce follower._"
+    ])
+    return "\n".join(lines) + "\n"
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    plan = make_plan()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(markdown(plan), encoding="utf-8")
+    print("ORGANIC_GROWTH", len(plan["drafts"]),
+          "manual_only=true x_metrics_available="+str(plan["actual_x_metrics_available"]))
+
+
+if __name__ == "__main__":
+    main()
