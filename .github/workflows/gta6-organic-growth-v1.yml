@@ -6,6 +6,7 @@ on:
     paths:
       - 'organic_growth_v1.py'
       - 'test_organic_growth_v1.py'
+      - 'data/x-profile-status-v1.json'
       - 'editorial_autopilot_v137.py'
       - 'test_editorial_autopilot_v137.py'
       - 'growth_metrics_v142.py'
@@ -14,6 +15,7 @@ on:
     branches: [main]
     paths:
       - 'organic_growth_v1.py'
+      - 'data/x-profile-status-v1.json'
       - '.github/workflows/gta6-organic-growth-v1.yml'
   schedule:
     # Once daily; generates ideas, never calls X or Buffer.
