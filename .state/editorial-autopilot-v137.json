@@ -61,11 +61,14 @@
       "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
     },
     "30fde1d513737ed1a71e03e6": {
+      "attempted_utc": "2026-11-19T03:59:17.642907+00:00",
+      "buffer_id": "6afe741559eff0b616dae8b1",
+      "completed_utc": "2026-11-19T03:59:18.927990+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T03:59:13.236851+00:00",
       "run_id": "44455127418",
       "source": "IGN",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nIl lancio di GTA 6 provoca un enorme picco di traffico per il provider Internet Xfinity\n\n🔗 Fonte: IGN\nhttps://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
