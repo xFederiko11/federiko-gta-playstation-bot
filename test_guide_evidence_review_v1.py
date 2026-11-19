@@ -16,7 +16,7 @@ class ReviewTests(unittest.TestCase):
         r=make_report(digest([
             lead("PowerPyx","GTA 6 new money glitch guide","https://www.powerpyx.com/gta-6-glitch/"),
             lead("GTABase","GTA VI money glitch claimed","https://www.gtabase.com/news/gta-6-glitch"),
-            lead("GTA Series Videos","GTA 6 vehicles walkthrough","https://www.youtube.com/watch?v=ABCDE1234AB")
+            lead("GTA Series Videos","GTA 6 vehicle preview","https://www.youtube.com/watch?v=ABCDE1234AB")
         ]))
         x=next(x for x in r["sections"] if x["topic"]=="glitch")
         self.assertEqual(x["source_count"],2)
