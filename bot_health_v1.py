@@ -12,12 +12,16 @@ import os
 import sys
 import requests
 
-RUNS_API = "https://api.github.com/repos/xFederiko11/federiko-gta-playstation-bot/actions/runs?per_page=100"
+RUNS_APIS = (
+    "https://api.github.com/repos/xFederiko11/federiko-gta-playstation-bot/actions/runs?per_page=100",
+    "https://api.github.com/repos/xFederiko11/gta-6/actions/runs?per_page=30",
+)
 REQUIRED = (
     "GTA Monitor gratuito",
     "GTA VI - Breaking News Watch v13.4",
     "GTA VI - Editorial Autopilot v13.7",
     "GTA VI - Ricerca fonti indipendenti (sola lettura)",
+    "GTA 6 Italia - Website",
 )
 MAX_AGE_HOURS = 36
 
@@ -46,8 +50,9 @@ def summarize_runs(runs: list[dict], now: datetime) -> list[dict]:
             checked.append({"name": name, "health": "unknown", "reason": "timezone_missing"})
             continue
         age = (now.astimezone(timezone.utc) - date.astimezone(timezone.utc)).total_seconds() / 3600
+        # Website deployments are push-based: no recent changes is not an outage.
         health = "degraded" if latest.get("conclusion") != "success" else (
-            "stale" if age > MAX_AGE_HOURS else "healthy")
+            "stale" if name != "GTA 6 Italia - Website" and age > MAX_AGE_HOURS else "healthy")
         checked.append({
             "name": name, "health": health, "age_hours": round(age, 1),
             "conclusion": latest.get("conclusion"), "run_url": latest.get("html_url", "")
@@ -88,12 +93,15 @@ def fetch_runs(token: str | None = None) -> list[dict]:
     headers = {"Accept": "application/vnd.github+json", "User-Agent": "FederikoGTA6BotHealth/1"}
     if token:
         headers["Authorization"] = "Bearer " + token
-    response = requests.get(RUNS_API, headers=headers, timeout=(5, 20))
-    response.raise_for_status()
-    rows = response.json().get("workflow_runs", [])
-    if not isinstance(rows, list):
-        raise ValueError("Malformed run API response")
-    return rows
+    results = []
+    for api in RUNS_APIS:
+        response = requests.get(api, headers=headers, timeout=(5, 20))
+        response.raise_for_status()
+        rows = response.json().get("workflow_runs", [])
+        if not isinstance(rows, list):
+            raise ValueError("Malformed run API response")
+        results.extend(rows)
+    return results
 
 
 def main() -> None:
@@ -101,6 +109,7 @@ def main() -> None:
     parser.add_argument("--buffer-log", type=Path, required=True)
     parser.add_argument("--buffer-exit", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--issue-output", type=Path)
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
     runs = fetch_runs(os.getenv("GH_TOKEN"))
@@ -115,6 +124,21 @@ def main() -> None:
     result = assess(runs, lines, code, now)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if args.issue_output:
+        args.issue_output.parent.mkdir(parents=True, exist_ok=True)
+        lines = [
+            "# GTA VI — salute bot GitHub", "",
+            f"**Stato: {result['overall'].upper()}** · UTC: {result['checked_utc']}", "",
+            "Valutazione automatica di log GitHub e preflight Buffer in sola lettura.",
+            "Nessun post creato né ritentato.", "",
+            "## Workflow", ""
+        ]
+        lines.extend(f"- **{j['name']}**: {j['health']} · {j.get('run_url', 'nessun run trovato')}" for j in result["workflows"])
+        lines += ["", "## Buffer / X", "",
+                  f"**{result['buffer']['status']}** — {result['buffer']['reason']}", "",
+                  "Per ripristinare un canale scollegato serve conferma manuale; non riattivare i Quick Tips senza controllare i post su X.",
+                  "Se questa issue viene chiusa, le prossime verifiche potranno riaprirla su nuovi errori."]
+        args.issue_output.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("GTA6_BOT_HEALTH", result["overall"])
     for job in result["workflows"]:
         print("CHECK", job["name"], job["health"], job.get("run_url", ""))
