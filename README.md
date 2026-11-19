@@ -12,6 +12,8 @@ attribuzione e link. Nessuna ripubblicazione integrale di guide, foto o
 video di creator. I contenuti PowerPyx sono segnalati come provenienti
 dalla testata, non come conferme Rockstar.
 
+**Fonti della community:** il progetto dispone di un nuovo [registro delle fonti GTA VI](COMMUNITY-RESEARCH-v1.md) e di un [ricercatore read-only](community_research_v1.py). PowerPyx resta una fonte già attiva per l'editoriale; GTA Series Videos viene analizzato tramite feed pubblico per preparare nuove guide e notizie, mentre GTAForums, GTA Wiki/Fandom, GTABase, GTANet, Tez2 e Jason Schreier sono fonti per ricerca e corroborazione, **non conferme ufficiali**. Il nuovo workflow non può pubblicare su X né modificare la coda Buffer.
+
 **Budget:** nessun nuovo abbonamento né API X a pagamento. L'account Buffer
 può avere un piano già pagato: consultare la propria dashboard prima della
 scadenza, senza presume rinnovi. Commenti e retweet nativi non sono
