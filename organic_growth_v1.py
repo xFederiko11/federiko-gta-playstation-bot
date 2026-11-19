@@ -54,10 +54,10 @@ PINNED = (
     "👇 " + PUBLIC + "\n\n#GTAVI #PS5"
 )
 BIO = (
-    "🎮 GTA VI in italiano | PS5 & PS5 Pro\n"
-    "🏆 Trofei, platino e guide rapide\n"
+    "🎮 GTA VI in italiano | Fan indipendente\n"
+    "🎮 PS5 & PS5 Pro | 🏆 Trofei e guide\n"
     "📺 HDR OLED per modello\n"
-    "🔎 Fonti e verifiche, senza hype"
+    "🔎 Fonti, rumor etichettati. Non affiliato"
 )
 
 DRAFTS = (
