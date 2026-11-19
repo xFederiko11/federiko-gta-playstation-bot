@@ -7,7 +7,7 @@ decisions; it cannot publish, alter articles or post to Buffer.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -18,6 +18,8 @@ ALLOWED = {
     "GTA Series Videos": ("youtube.com", "www.youtube.com"),
     "GTABase": ("gtabase.com", "www.gtabase.com"),
     "Rockstar Games": ("rockstargames.com", "www.rockstargames.com"),
+    "GTA Wiki (independent)": ("gta.wiki",),
+    "GTA Wiki / Fandom": ("gta.fandom.com",),
 }
 VERDICTS = {"confirmed", "contradicted", "uncertain"}
 TARGETS = {"guide-e-tutorial/", "trofei/", "trucchi/", "hdr-oled/"}
@@ -30,7 +32,10 @@ def url_host(url):
     return p.hostname.lower()
 
 
-def review(dossier):
+def review(dossier, *, now=None):
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("Review clock must have timezone")
     if not isinstance(dossier, dict) or dossier.get("schema") != SCHEMA:
         raise ValueError("Invalid dossier schema")
     claims = dossier.get("claims")
@@ -86,8 +91,8 @@ def review(dossier):
                 continue
             try:
                 stamp = datetime.fromisoformat(item["reviewed_utc"].replace("Z", "+00:00"))
-                if stamp.tzinfo is None:
-                    raise ValueError("No timezone")
+                if stamp.tzinfo is None or stamp > now or (now - stamp).days > 30:
+                    raise ValueError("Stale, future or unzoned review")
             except ValueError:
                 rejected.append("invalid_review_time")
                 continue
@@ -98,26 +103,33 @@ def review(dossier):
         patch = isinstance(claim.get("patch"), str) and len(claim["patch"].strip()) >= 2
         # Explicit per-platform trophy evidence is required even for ordinary guides.
         trophy = claim.get("trophy_evidence")
+        trophy_host_ok = False
+        if isinstance(trophy, dict) and trophy.get("source") in ALLOWED and isinstance(trophy.get("url"), str):
+            try:
+                trophy_host_ok = url_host(trophy["url"]) in ALLOWED[trophy["source"]]
+            except ValueError:
+                trophy_host_ok = False
         trophy_ok = isinstance(trophy, dict) and trophy.get("platform") == "PS5" and (
             trophy.get("status") == "safe" and trophy.get("reviewed_original") is True
             and isinstance(trophy.get("observed"), str) and len(trophy["observed"].strip()) >= 35
-            and trophy.get("source") in ALLOWED
-            and isinstance(trophy.get("url"), str)
-            and url_host(trophy["url"]) in ALLOWED[trophy["source"]]
+            and trophy_host_ok
         ) if isinstance(trophy, dict) else False
         # Safety must be corroborated by an explicit source, not an editorial checkbox.
         if trophy_ok:
             trophy_ok = any(x["url"] == trophy["url"] and x["source"] == trophy["source"]
                             for x in accepted)
-        independent = len(confirmed) >= 2
+        # The two wiki mirrors/communities are not counted as two independent primary sources.
+        groups = {("community-wiki" if src in {"GTA Wiki (independent)", "GTA Wiki / Fandom"} else src) for src in confirmed}
+        independent = len(groups) >= 2
         ready = independent and not contradicted and platform and patch and trophy_ok
         decisions.append({
             "id": cid, "target_page": target, "claim": statement,
-            "independent_confirmations": len(confirmed),
+            "independent_confirmations": len(groups),
             "contradictions": len(contradicted),
             "platform_checked": platform, "patch_documented": patch,
             "trophy_safe_documented": trophy_ok,
             "editorially_reviewable": ready,
+            "reviewed_originals_are_user_assertions_not_fetched": True,
             "auto_publish": False,
             "rejected_evidence": rejected,
             "action": "human_review_for_possible_manual_update" if ready else "collect_more_evidence",
