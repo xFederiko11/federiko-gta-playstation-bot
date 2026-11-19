@@ -13,7 +13,12 @@ import re
 import hashlib
 
 STATE_DIR=Path(".state")
-MIN_GAP=timedelta(minutes=22)
+# Conservative voluntary limits for a newly created X profile. These are NOT
+# official X thresholds and provide no immunity from account restrictions.
+# Applies across editorial, official news, special campaigns and monitor jobs.
+MIN_GAP=timedelta(hours=3)
+MAX_AUTOMATED_DELIVERIES_24H=4
+ROLLING_WINDOW=timedelta(hours=24)
 BLOCK=re.compile(r"\b(?:parodi[ae]|spoof|parody|volvy|devolver|gta[- ]?like|rumou?r(?:s|ed)?|leaks?|fake|fan[- ]?made|deepfake|clickbait|giveaway|sponsored|sponsorizzat[oa]|gossip|actress\s+based|basat[oa]\s+su\s+un['a]?\s+attrice)\b",re.I)
 HIGH=re.compile(r"\b(?:trofe[io]|troph(?:y|ies)|platino|platinum|powerpyx|100\s?%|ps5\s*pro|performance|fps|patch|hotfix|rockstar\s+games|launch|lancio|guida|walkthrough|glitch|veicol[io]|collezionabil[ie]|collectibles?)\b",re.I)
 MID=re.compile(r"\b(?:gta\s*\+|bonus|missioni|mission|gameplay|trailer|armi|weapon|online|mappa|map|vice city)\b",re.I)
@@ -72,8 +77,14 @@ def allowed(now:datetime, *,root:Path|None=None, gap:timedelta=MIN_GAP)->tuple[b
     if now.tzinfo is None:raise ValueError("Timezone-aware time required")
     entries=read_reservations(root)
     if not entries:return True,"empty"
+    clock=now.astimezone(timezone.utc)
+    # Reservations/uncertain submissions count too: false positives reduce
+    # volume, while assuming failed deliveries could produce duplicates.
+    recent=[x for x in entries if clock-ROLLING_WINDOW <= x["at"] <= clock]
+    if len(recent)>=MAX_AUTOMATED_DELIVERIES_24H:
+        return False,"global_rolling_24h_budget"
     latest=max(x["at"] for x in entries)
-    dt=now.astimezone(timezone.utc)-latest
+    dt=clock-latest
     if dt < gap:return False,"global_spacing"
     return True,"ready"
 

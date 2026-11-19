@@ -100,7 +100,9 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verifica gratuita i link ufficiali prima di pubblicare
         if: ${{ steps.launch_window.outputs.active == 'true' }}
-        run: python -m unittest -q test_official_links_free_v140
+        run: |
+          python x_automation_safety_v1.py
+          python -m unittest -q test_official_links_free_v140
       - name: Raccogli, prepara le schede e pubblica se attivato
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:

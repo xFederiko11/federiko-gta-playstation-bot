@@ -54,7 +54,9 @@ jobs:
             python -m playwright install --with-deps --only-shell chromium
           fi
       - name: Check code
-        run: python -m py_compile launch_watch_v134.py buffer_publisher.py rockstar_render.py editorial_v13.py editorial_seo_v135.py
+        run: |
+          python x_automation_safety_v1.py
+          python -m py_compile launch_watch_v134.py buffer_publisher.py rockstar_render.py editorial_v13.py editorial_seo_v135.py
       - name: Official source preview (manual read-only)
         if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
         run: python launch_watch_v134.py --mode preview
