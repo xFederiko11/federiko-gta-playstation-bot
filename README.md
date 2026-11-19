@@ -385,3 +385,8 @@ Non promettiamo crescita né immunità da ban: l'obiettivo è mantenere qualità
 L'Issue [Crescita organica X #42](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/42) contiene adesso, oltre ai post originali e alle cinque ricerche, una selezione giornaliera di **quattro account GTA/PlayStation** osservati nelle schermate dell'utente. Per ciascuno trovi link al profilo, ricerca mirata ai suoi post, condizioni per intervenire e un esempio in italiano o inglese **da adattare solo se il post reale è pertinente**.
 
 Per i singoli post già letti e inseriti nel repository dal revisore, il bot può costruire un **Web Intent di risposta** precompilato. Questo apre soltanto il modulo di X: l'invio finale è sempre umano. Non utilizziamo API X, browser automation, likes/repost/follow automatizzati o risposte automatiche non richieste. Leggi [X-COMMUNITY-SAFETY.md](X-COMMUNITY-SAFETY.md) per la guida operativa.
+
+
+### Social Radar X: tweet verificati e risposte pronte (opt-in)
+
+Il nuovo workflow Social Radar X effettua una ricerca giornaliera tramite l'**API ufficiale X** e aggiorna la [Issue #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48) con fino a **cinque post recenti identificati per URL esatto**, un estratto e una bozza di risposta italiana o inglese da copiare oppure aprire nella finestra Rispondi di X. **Non mette like e non invia risposte automaticamente.** Per utilizzare l'API a consumo occorre impostare un limite di spesa su X Developer Console, aggiungere il secret X_BEARER_TOKEN e abilitare la variable X_SOCIAL_RADAR_ENABLED=true. Senza queste azioni il workflow non effettua richieste a pagamento né inventa tweet. Documentazione completa in [X-COMMUNITY-SAFETY.md](X-COMMUNITY-SAFETY.md).

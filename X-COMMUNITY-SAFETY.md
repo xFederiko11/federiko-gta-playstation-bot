@@ -104,3 +104,38 @@ Non esistono quote obbligatorie di commenti. Le risposte generiche incollate in 
 
 
 **Conversazioni internazionali:** per un tweet originale in inglese usa `"language":"en"` e il campo `"draft_reply_en"` (anziché `draft_reply_it`). Le risposte italiane usano `"language":"it"` e `"draft_reply_it"`. Il sistema rifiuta bozze compilate nel campo della lingua sbagliata. Entrambe producono solo un link di composizione manuale, non un invio. Se il contesto è ambiguo, lascia vuota la bozza e scrivila direttamente dopo aver letto la conversazione.
+
+
+## Social Radar automatico: tweet X reali e risposte pronte (API ufficiale)
+
+**Obiettivo pratico:** massimo cinque post X specifici al giorno, ciascuno con autore, permalink diretto, estratto di massimo 100 caratteri, data, tema e risposta italiana/inglese già pronta. Il normale web intent apre una bozza di risposta collegata al tweet: l'utente deve controllarla e premere Invia. Cuori, repost e follow sono sempre manuali, mai obbligatori.
+
+### Stato e configurazione iniziale
+
+La coda si trova nella [Issue #48 - GTA VI - X Social Radar verificato](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48), distinta dalla [Issue #42](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/42) con le ricerche gratuite e il piano editoriale. Il codice è nel file x_verified_social_radar_v1.py; il workflow è gta6-x-verified-social-radar-v1.yml. Una scansione al giorno alle **07:17 UTC** (08:17 d'inverno a Berlino, 09:17 d'estate), salvo ritardi di GitHub Actions.
+
+L'accesso richiede una X Developer App con permesso di Recent Search, un Bearer Token e **crediti/limite di spesa impostati dal proprietario**. Non si può usare il segreto Buffer per leggere i tweet pubblici altrui. App e pagamenti richiedono un intervento esplicito dell'utente. Nessuna richiesta X viene eseguita fino a quando sono soddisfatte entrambe le condizioni:
+
+1. Segreto Actions X_BEARER_TOKEN impostato con il token ufficiale. **Non incollare mai un token nella chat o in Issue, codice o workflow pubblici.**
+2. Variabile Actions X_SOCIAL_RADAR_ENABLED=true attivata **solo dopo** aver impostato un limite di spesa nella [X Developer Console](https://console.x.com/). Il default rimane false.
+
+È prudente lasciare disabilitato auto-recharge fino a quando conosciamo il consumo reale.
+
+Il workflow esegue **due ricerche Recent Search da massimo dieci risultati ciascuna**. In condizioni massime può leggere 20 post e fino a 20 risorse utente. Con i prezzi X pubblicati il 19 novembre 2026, 0,005 USD/post e 0,010 USD/utente, il consumo indicativo massimo è **circa 0,30 USD a esecuzione**, soggetto alla fatturazione effettiva per risorsa e a variazioni tariffarie. Il workflow NON può imporre un tetto monetario su X; il **limite nella Developer Console** è necessario per gestire l'esposizione ai costi.
+
+### Evidenza, qualità e deduplicazione
+
+- Solo X API v2 Recent Search, endpoint GET /2/tweets/search/recent; niente scraping X, browser automatizzato, accesso PSN o servizi che richiedono password.
+- **Verificato** significa che ID, autore, testo e data provengono da X API; **non** che le affermazioni del post siano necessariamente vere.
+- Post delle ultime **36 ore**, italiani o inglesi, con verifica formato ID, autore e data. Esclusi retweet, risposte a terzi, contenuti sospetti, spoiler evidenti e tweet con reply limitate.
+- Massimo **cinque proposte**, una per autore e una per argomento. Priorità alle discussioni italiane, recenti e pertinenti.
+- La bozza di risposta è selezionata per **tema riconosciuto nel testo** (HDR, trofei, missioni, patch, glitch, prestazioni o musica): è una proposta pronta, **non un commento personalizzato e già approvato editorialmente**. Se non è pertinente al tweet specifico, non inviarla.
+- I post già consigliati vengono ricordati per **solo ID** nel commento tecnico della Issue #48. Il report mostra brevi estratti di massimo 100 caratteri, non copia interamente i tweet.
+- Se mancano token, permessi o credito API, il report dichiara il problema; **nessun falso permalink** e nessun invio.
+- La scansione è indipendente dai workflow Buffer, non modifica le prenotazioni o il limite di pubblicazione e non riattiva i Quick Tips sospesi.
+
+### Uso quotidiano: 1-2 minuti
+
+Apri [Social Radar #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48). Per ogni scheda apri il tweet originale; metti un cuore solo se lo apprezzi. Se la risposta proposta aggiunge davvero valore, copiala o usa **Apri risposta precompilata**, controllala e inviala tu su X. Nessun obiettivo obbligatorio di like o commenti.
+
+Riferimenti: [Search Posts](https://docs.x.com/x-api/posts/search/introduction), [Pricing](https://docs.x.com/x-api/getting-started/pricing), [X automation rules](https://help.x.com/en/rules-and-policies/x-automation).
