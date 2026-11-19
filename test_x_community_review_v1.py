@@ -106,6 +106,22 @@ class ManualItalianDiscussionTests(unittest.TestCase):
         self.assertIn("Qual è la fonte ufficiale",out)
         self.assertIn("nessun invio",out)
 
+    def test_english_reply_requires_english_draft_and_still_manual_send(self):
+        en={**context(),"language":"en"}
+        en.pop("draft_reply_it")
+        en["original_context"]="GTA Series Videos shares a walkthrough with a specific mission objective."
+        en["editorial_note"]="Ask about an optional objective after reading the exact walkthrough."
+        en["draft_reply_en"]="Is there an optional objective in this mission worth checking before moving on?"
+        result=with_file([en],lambda path:plan(NOW,manual_path=path))
+        item=result["exact_posts"][0]
+        self.assertEqual(item["language"],"en")
+        self.assertEqual(item["draft_reply_en"],en["draft_reply_en"])
+        self.assertEqual(item["draft_reply"],en["draft_reply_en"])
+        self.assertFalse(item["approved_for_auto_reply"])
+        self.assertIn(en["draft_reply_en"],parse_qs(
+            urlsplit(item["reply_intent_url"]).query)["text"])
+        self.assertIn("Lingua: en",markdown(result))
+
     def test_no_fake_post_or_external_host_bypass(self):
         invalid=[
             {"post_url":"https://x.com.evil.example/PlayStationIT/status/123456789"},
@@ -115,9 +131,10 @@ class ManualItalianDiscussionTests(unittest.TestCase):
             {"post_url":"https://user:pass@x.com/PlayStationIT/status/123456789"},
             {"post_url":"https://x.com/PlayStationIT/status/no-id"},
             {"reviewed_original":False},
-            {"language":"en"},
+            {"language":"xx"},
             {"draft_reply_it":"Hey check https://xfederiko11.github.io/gta-6/"},
             {"draft_reply_it":"Nice!"},
+            {"language":"en","draft_reply_it":"Questo va nel campo inglese, non italiano."},
             {"reviewed_utc":"yesterday"},
         ]
         for diff in invalid:
