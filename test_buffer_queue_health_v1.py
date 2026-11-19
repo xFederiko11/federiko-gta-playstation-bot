@@ -38,9 +38,23 @@ class BufferQueueAuditTests(unittest.TestCase):
         self.assertIn("Sent: 1",body)
         self.assertIn("Scheduled: 2",body)
         self.assertIn("Coda sospesa: sì",body)
-        self.assertIn("Apri post su X",body)
+        self.assertIn("Apri collegamento Buffer al post su X",body)
         self.assertIn("non invia, ritenta o rischedula post",body)
         self.assertNotIn("Buffer: 0 follower",body)
+
+    def test_numeric_account_id_is_not_misrepresented_as_verified_public_x_link(self):
+        data=h.summarize(payload(),paused=False)
+        data["sent"][0]["externalLink"]="https://x.com/2122776704191995904/status/2123425658265104635"
+        body=h.render(data,NOW)
+        self.assertIn("handle non verificabile",body)
+        self.assertNotIn("[Apri collegamento Buffer al post su X]",body)
+        self.assertIsNone(h.verified_account_post_link(data["sent"][0]["externalLink"]))
+        self.assertIsNone(h.verified_account_post_link("https://x.com.evil.test/xFederiko11/status/1234567890"))
+        self.assertIsNone(h.verified_account_post_link("https://x.com/xFederiko11/status/1234567890?redirect=yes"))
+        self.assertIsNone(h.verified_account_post_link("https://x.com/@xFederiko11/status/1234567890"))
+        self.assertEqual(h.verified_account_post_link(
+            "https://x.com/xFederiko11/status/1234567890"),
+            "https://x.com/xFederiko11/status/1234567890")
 
     def test_api_diagnostic_has_no_post_mutations(self):
         fake=Mock()
