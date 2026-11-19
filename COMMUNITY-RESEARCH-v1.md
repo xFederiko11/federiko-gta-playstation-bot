@@ -24,7 +24,7 @@ La credibilità personale di una fonte non trasforma una notizia in una conferma
 
 ### Workflow
 
-\`.github/workflows/gta6-community-research-v1.yml\` controlla i due feed pubblici alle 07:17, 13:17 e 19:17 UTC e tramite avvio manuale.
+\`.github/workflows/gta6-community-research-v1.yml\` controlla i due feed pubblici ogni quattro ore (sei scansioni al giorno, orario UTC) e tramite avvio manuale.
 
 Il workflow di ricerca ha permesso di lettura del repository e permesso limitato `issues:write` per aggiornare una sola Issue editoriale. **Non riceve credenziali Buffer e non può pubblicare su X**. Esegue test offline, filtra argomenti pertinenti e titoli rumorosi, limita le fonti agli host esplicitamente autorizzati, e deposita il file \`gta6-community-research\` come artifact per sette giorni.
 
@@ -57,7 +57,7 @@ La pagina è una policy operativa: **non promette** che ogni sito fornisca feed,
 
 ## Autonomia del monitor (v1)
 
-Il workflow GitHub Actions esegue la scansione tre volte al giorno indipendentemente da ChatGPT. Un job con soli permessi di lettura acquisisce i feed pubblici e produce un artifact JSON e un riepilogo. Un secondo job (solo ramo `main`) può creare/aggiornare una **sola GitHub Issue** chiamata `GTA VI - Coda fonti community`, con etichette `GUIDA INDIPENDENTE`, `COMMUNITY`, `DATAMINING` e `RUMOR` e indicazioni su errori feed. Un fallimento fa fallire il workflow invece di passare inosservato. Il bot Buffer conserva il proprio filtro più restrittivo: l'inserimento nella coda NON equivale a pubblicazione su X o sul sito, né a conferma della notizia.
+Il workflow GitHub Actions esegue la scansione sei volte al giorno indipendentemente da ChatGPT. Un job con soli permessi di lettura acquisisce i feed pubblici e produce un artifact JSON e un riepilogo. Un secondo job (solo ramo `main`) può creare/aggiornare una **sola GitHub Issue** chiamata `GTA VI - Coda fonti community`, con etichette `GUIDA INDIPENDENTE`, `COMMUNITY`, `DATAMINING` e `RUMOR` e indicazioni su errori feed. Un fallimento fa fallire il workflow invece di passare inosservato. Il bot Buffer conserva il proprio filtro più restrittivo: l'inserimento nella coda NON equivale a pubblicazione su X o sul sito, né a conferma della notizia.
 
 Il ricercatore conserva i rumor nei risultati *soltanto* per poterli segnalare come non verificati. Non elude protezioni di GTAForums o Fandom; queste fonti restano di consultazione manuale fino a validazione di un feed pubblico. Non possiamo garantire disponibilità eterna di GitHub Actions, RSS, Buffer o servizi esterni: manutenzione e controllo credenziali rimangono necessari.
 
