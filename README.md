@@ -314,3 +314,13 @@ Questo insieme di workflow e dei controlli è indipendente dalle conversazioni C
 
 GTABase dispone di un endpoint RSS news indicato da strumenti pubblici di monitoraggio; viene controllato in sola lettura. Se non risponde in GitHub Actions, il guasto viene registrato, senza aggirare protezioni o interrompere gli altri feed. GTAForums e le wiki collaborative restano in verifica manuale finché non avremo un accesso pubblico strutturato valido e rispettoso dei loro sistemi.
 
+
+
+## Continuità dei workflow programmati
+
+La repository è pubblica: GitHub documenta la possibile disattivazione dei workflow `schedule` dopo **60 giorni senza attività** (<https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows>).
+
+Per ridurre questo rischio il workflow `.github/workflows/gta6-schedule-keepalive.yml` esegue **un controllo settimanale**, ma crea un commit minimale nel solo file `.state/workflow-keepalive.json` **soltanto dopo almeno 35 giorni senza nuovi commit su `main`**. Usa `GITHUB_TOKEN` con il solo permesso GitHub `contents:write`; non legge o modifica Buffer, X, guide, trofei o contenuti editoriali e non richiede servizi esterni.
+
+**Limiti:** questo sistema è preventivo e non garantisce che GitHub o i provider restino sempre disponibili, che tutti i run schedulati avvengano in orario o che GitHub continui a contare gli heartbeat automatici come attività idonea. Se GitHub disattiva il workflow prima dell'esecuzione, è necessario riabilitarlo manualmente. La manutenzione delle credenziali Buffer e dei feed rimane separata.
+
