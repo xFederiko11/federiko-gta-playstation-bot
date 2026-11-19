@@ -2,6 +2,8 @@
 from __future__ import annotations
 from datetime import datetime,timezone
 from pathlib import Path
+from urllib.parse import urlsplit
+import re
 import argparse
 from buffer_publisher import BufferClient, BufferAPIError, BufferConfigurationError, ORGANIZATIONS_QUERY
 
@@ -17,6 +19,27 @@ POST_QUERY = """query BufferHealth($orgId:OrganizationId!,$channelId:ChannelId!)
     sort:[{field:dueAt,direction:desc}]}) { edges { node { id status dueAt externalLink } } }
 }"""
 CHANNELS_URL="https://publish.buffer.com/settings/channels"
+
+
+def verified_account_post_link(value: str | None) -> str | None:
+    """Only render canonical links already bound to the verified channel handle.
+
+    Buffer sometimes returns account numeric IDs instead of an X username:
+    those URLs should not be described as publicly confirmed X tweets.
+    """
+    if not isinstance(value,str):
+        return None
+    try:
+        url=urlsplit(value)
+    except ValueError:
+        return None
+    if (url.scheme!="https" or url.hostname not in ("x.com","www.x.com",
+         "twitter.com","www.twitter.com") or url.username or url.password
+         or url.query or url.fragment or url.port not in (None,443)):
+        return None
+    if not re.fullmatch(r"/xFederiko11/status/[0-9]{8,25}/?",url.path,re.I):
+        return None
+    return value
 
 def summarize(data,*,paused=False):
     result={"status":"ok","is_queue_paused":bool(paused),"sample_limit_per_state":15}
@@ -76,8 +99,12 @@ def render(snapshot_data,now):
             last=snapshot_data["sent"][0]
             lines += ["Ultimo post Sent nel campione: "+str(last["dueAt"] or "data non disponibile")]
             url=last["externalLink"] or ""
-            if url.startswith(("https://x.com/","https://twitter.com/")):
-                lines += ["[Apri post su X]("+url+")"]
+            trusted=verified_account_post_link(url)
+            if trusted:
+                lines += ["[Apri collegamento Buffer al post su X]("+trusted+")"]
+            elif url:
+                lines += ["Buffer ha restituito un link con handle non verificabile: "
+                          "controlla il post direttamente nella dashboard Buffer."]
             lines += [""]
         if snapshot_data["scheduled"]:
             lines += ["Prossimo Scheduled nel campione: "+
