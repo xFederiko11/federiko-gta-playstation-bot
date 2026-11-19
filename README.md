@@ -12,7 +12,7 @@ attribuzione e link. Nessuna ripubblicazione integrale di guide, foto o
 video di creator. I contenuti PowerPyx sono segnalati come provenienti
 dalla testata, non come conferme Rockstar.
 
-**Fonti della community:** il progetto dispone di un nuovo [registro delle fonti GTA VI](COMMUNITY-RESEARCH-v1.md) e di un [ricercatore read-only](community_research_v1.py). PowerPyx resta una fonte già attiva per l'editoriale; GTA Series Videos viene analizzato tramite feed pubblico per preparare nuove guide e notizie, mentre GTAForums, GTA Wiki/Fandom, GTABase, GTANet, Tez2 e Jason Schreier sono fonti per ricerca e corroborazione, **non conferme ufficiali**. Il nuovo workflow non può pubblicare su X né modificare la coda Buffer.
+**Fonti della community:** il progetto dispone di un nuovo [registro delle fonti GTA VI](COMMUNITY-RESEARCH-v1.md) e di un [ricercatore read-only](community_research_v1.py). PowerPyx resta una fonte già attiva per l'editoriale; GTA Series Videos viene analizzato tramite feed pubblico per preparare nuove guide e notizie, mentre GTAForums, GTA Wiki/Fandom, GTABase, GTANet, Tez2 e Jason Schreier sono fonti per ricerca e corroborazione, **non conferme ufficiali**. La scansione della community produce soltanto una coda GitHub per verifica; separatamente l'Editorial Autopilot può pubblicare automaticamente i **titoli di video GTA VI / GTA Online** provenienti dal feed pubblico verificato di GTA Series Videos, con attribuzione 'video community (non ufficiale)', deduplicazione e filtri anti-rumor. Non copia i filmati né li presenta come Rockstar.
 
 **Budget:** nessun nuovo abbonamento né API X a pagamento. L'account Buffer
 può avere un piano già pagato: consultare la propria dashboard prima della
@@ -294,3 +294,13 @@ Carica i nuovi file nello stesso repository, mantenendo i Secrets e
 esterni e filtra anche le bozze precedenti non più ammesse. Il prossimo controllo
 riscrive lo storico pubblico con i soli dati ufficiali PlayStation.
 Gli invii già accettati da Buffer prima del cambio non vengono annullati dal filtro.
+
+### Coda editoriale GitHub autonoma (novembre 2026)
+
+Lo scanner `gta6-community-research-v1.yml` crea/aggiorna una singola GitHub Issue chiamata `GTA VI - Coda fonti community`. Contiene titoli, link e data delle fonti consultate, classificati (rumor, datamining, community e guida indipendente) ma **non** afferma di aver letto gli articoli e **non** accede a Buffer. Aggiornamenti e pubblicazioni sono separati; i post del canale X restano soggetti a traduzione, limiti, dedupe e controllo dei destinatari. Se il permesso GitHub Issues non è disponibile, l'Action fallisce e il digest rimane come artifact. Non è un sistema automatico di riscrittura del sito: i claim non verificati non vengono inseriti nel portale.
+
+### Diagnostica autonoma e limiti reali
+
+Il workflow `.github/workflows/gta6-bot-health-v1.yml` gira due volte al giorno, legge lo stato degli Actions di bot e sito e verifica il canale Buffer/X in **sola lettura**. In caso di errore, aggiorna/riapre una sola issue `GTA VI - Bot Health Alerts`, senza pubblicare, re-inviare o ri-autorizzare alcun post; quando il controllo ritorna sano, chiude l'avviso. I Quick Tips già sospesi restano sospesi finché non vengono verificati manualmente. L'accesso al repository non contiene token Buffer negli artifact.
+
+Questo insieme di workflow e dei controlli è indipendente dalle conversazioni ChatGPT, ma non è letteralmente eterno: GitHub può disattivare gli scheduler su repository pubblici inattivi, gli API provider possono cambiare e le credenziali scadere. Le issue di salute servono a rendere visibili le anomalie mentre i job vengono eseguiti; non possono notificare da sole un arresto totale di GitHub Actions.
