@@ -155,6 +155,19 @@
       "title": "GTA VI: roadmap del platino PowerPyx",
       "url": "https://powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap"
     },
+    "a5f8e56c731dafd20c4868e7": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T02:39:02.703427+00:00",
+      "run_id": "44445815016",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6, Rockstar conferma: nessuna modalità a 40 o 60fps in arrivo, nemmeno su PS5 PRO\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-rockstar-conferma-modalita-40-60fps-arrivo-ps5-pro-912372.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6, Rockstar conferma: nessuna modalità a 40 o 60fps in arrivo, nemmeno su PS5 PRO",
+      "trophy_number": null,
+      "url": "https://everyeye.it/notizie/gta-6-rockstar-conferma-modalita-40-60fps-arrivo-ps5-pro-912372.html"
+    },
     "a7585b90667b279c490a4185": {
       "attempted_utc": "2026-11-18T17:35:15.163432+00:00",
       "buffer_id": "6afde1d3a11f24337a0dd99f",
@@ -374,6 +387,15 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44439652277"
+    },
+    {
+      "at": "2026-11-19T02:39:02.703427+00:00",
+      "errors": [
+        "PowerPyx: ParseError"
+      ],
+      "feeds_relevant": 86,
+      "reserved": 1,
+      "run": "44445815016"
     }
   ],
   "schema": "v13.7",
@@ -391,6 +413,7 @@
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
+    "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "una lunga strada": "11fab389461a1bb02dddafd8",
