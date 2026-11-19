@@ -49,6 +49,10 @@ class CommunityResearchTests(unittest.TestCase):
         self.assertIn("PowerPyx", [x["name"] for x in feeds])
         self.assertIn("GTAForums", [x["name"] for x in feeds])
         self.assertIn("GTA Wiki / Fandom", [x["name"] for x in feeds])
+        self.assertIn("GTA Wiki (independent)", [x["name"] for x in feeds])
+        wiki=next(x for x in feeds if x["name"]=="GTA Wiki (independent)")
+        self.assertEqual(wiki["collection"],"read_only_feed")
+        self.assertIn("feedrecentchanges",wiki["feed"])
         self.assertIn("GTABase", [x["name"] for x in feeds])
         self.assertEqual(next(x for x in feeds if x["name"]=="GTABase")["collection"],"read_only_feed")
         for source in feeds:
@@ -73,12 +77,13 @@ class CommunityResearchTests(unittest.TestCase):
                '</item></channel></rss>').encode()
         session = HTTP(source["feed"], rss)
         result = collect(self.config, session=session, now=NOW)
-        self.assertEqual(len(session.calls), 3)  # PowerPyx, YouTube and GTABase; other two mocked unavailable.
+        self.assertEqual(len(session.calls), 4)  # PowerPyx, independent GTA Wiki, YouTube and GTABase.
         self.assertEqual(len(result["candidates"]), 1)
         self.assertFalse(result["candidates"][0]["official_rockstar"])
         self.assertIn("RICERCA", result["candidates"][0]["status"])
         self.assertEqual(result["publication"], "read_only__no_buffer_post__no_articles_auto_created")
         self.assertTrue(any(x["source"] == "GTA Series Videos" for x in result["errors"]))
+        self.assertTrue(any(x["source"] == "GTA Wiki (independent)" for x in result["errors"]))
 
     def test_reject_wrong_feed_redirect(self):
         src = next(x for x in self.config["sources"] if x["name"] == "GTA Series Videos")
