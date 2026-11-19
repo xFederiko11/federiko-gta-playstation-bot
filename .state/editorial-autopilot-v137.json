@@ -287,6 +287,19 @@
       "title": "How to change the time of day in GTA 6",
       "url": "https://videogameschronicle.com/guide/how-to-change-the-time-of-day-in-gta-6"
     },
+    "8229d1264b07ed9da2de0593": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T21:11:44.437003+00:00",
+      "run_id": "44616225868",
+      "source": "Guide GTA VI Italia",
+      "status": "reserved",
+      "text": "📺 GTA VI su PS5 e PS5 Pro: prima di copiare una calibrazione HDR, cerca il codice completo della TV. Un numero visto su un'altra OLED non è un preset universale.\n\n🔎 Modelli, impostazioni e affidabilità:\nhttps://xfederiko11.github.io/gta-6/hdr-oled/\n\n#GTAVI",
+      "thread": null,
+      "tip_id": null,
+      "title": "TV OLED: trova il codice preciso",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/hdr-oled/"
+    },
     "88f9cbde4c19d0e059000e49": {
       "attempted_utc": "2026-11-18T19:22:15.367643+00:00",
       "buffer_id": "6afdfae72553d428edbef6d1",
@@ -700,6 +713,13 @@
       "feeds_relevant": 109,
       "reserved": 1,
       "run": "44525442034"
+    },
+    {
+      "at": "2026-11-19T21:11:44.437003+00:00",
+      "errors": [],
+      "feeds_relevant": 110,
+      "reserved": 1,
+      "run": "44616225868"
     }
   ],
   "schema": "v13.7",
@@ -724,6 +744,7 @@
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
+    "oled trova codice preciso": "8229d1264b07ed9da2de0593",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "quante ore servono per sbloccare trofeo platino": "d33768ef41ab6a294934a5c1",
