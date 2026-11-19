@@ -7,7 +7,7 @@ import requests
 from pathlib import Path
 import unittest
 
-from community_research_v1 import collect, fetch_candidates, load_registry, validate
+from community_research_v1 import collect, fetch_candidates, load_registry, validate, parse_research_feed
 
 NOW = datetime(2026, 11, 19, 8, 0, tzinfo=timezone.utc)
 
@@ -96,9 +96,22 @@ class CommunityResearchTests(unittest.TestCase):
         <item><title>Cooking guide</title><link>https://www.powerpyx.com/cooking</link><pubDate>{fresh}</pubDate></item>
         </channel></rss>'''.encode()
         entries = fetch_candidates(source, session=HTTP(source["feed"], rss), now=NOW)
-        self.assertEqual(len(entries), 1)
+        self.assertEqual(len(entries), 2)
+        self.assertTrue(any("leaked" in x["title"] for x in entries))
         self.assertEqual(entries[0]["source"], "PowerPyx")
         self.assertEqual(entries[0]["url"], "https://powerpyx.com/gta-6-guide")
+
+    def test_rumors_survive_research_but_not_the_publishing_filter(self):
+        src = next(x for x in self.config["sources"] if x["name"] == "PowerPyx")
+        stamp = (NOW - timedelta(hours=1)).isoformat()
+        rss = (f"<rss><channel><item><title>GTA VI rumored new property system</title>"
+               f"<link>https://www.powerpyx.com/rumour/</link><pubDate>{stamp}</pubDate>"
+               "</item></channel></rss>").encode()
+        entries = list(parse_research_feed(rss, src))
+        self.assertEqual(len(entries), 1)
+        self.assertIn("rumored", entries[0]["title"])
+        from editorial_autopilot_v137 import topic
+        self.assertIsNone(topic(entries[0]["title"]))
 
     def test_atom_videos_are_not_rockstar_announcements(self):
         src = next(x for x in self.config["sources"] if x["name"] == "GTA Series Videos")
