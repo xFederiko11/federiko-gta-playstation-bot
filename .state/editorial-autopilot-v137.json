@@ -115,6 +115,19 @@
       "trophy_number": null,
       "url": "https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/"
     },
+    "5f8a94faab04dc45298a0f02": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_05.0i5b7k6a7_w6p.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-19T01:48:40.369712+00:00",
+      "run_id": "44439652277",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "💎 GTA VI | PLATINO: Il vizio ha un prezzo!\n\n🎯 Ottieni tutti gli altri 54 trofei di GTA VI.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/\n\n#GTAVI #Platino",
+      "thread": null,
+      "tip_id": null,
+      "title": "Il vizio ha un prezzo!",
+      "trophy_number": 1,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/"
+    },
     "7b7859d3035b39a1ec3a70c7": {
       "attempted_utc": "2026-11-18T20:20:03.590713+00:00",
       "buffer_id": "6afe087372a787cbb5dd3887",
@@ -351,6 +364,13 @@
       "feeds_relevant": 85,
       "reserved": 1,
       "run": "44429211199"
+    },
+    {
+      "at": "2026-11-19T01:48:40.369712+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44439652277"
     }
   ],
   "schema": "v13.7",
@@ -371,6 +391,7 @@
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "una lunga strada": "11fab389461a1bb02dddafd8",
+    "vizio prezzo": "5f8a94faab04dc45298a0f02",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
   }
 }
