@@ -13,11 +13,11 @@ import re
 import hashlib
 
 STATE_DIR=Path(".state")
-# Conservative voluntary limits for a newly created X profile. These are NOT
+# Balanced launch-phase voluntary limits for a new X profile. These are NOT
 # official X thresholds and provide no immunity from account restrictions.
 # Applies across editorial, official news, special campaigns and monitor jobs.
-MIN_GAP=timedelta(hours=3)
-MAX_AUTOMATED_DELIVERIES_24H=4
+MIN_GAP=timedelta(minutes=90)
+MAX_AUTOMATED_DELIVERIES_24H=8
 ROLLING_WINDOW=timedelta(hours=24)
 BLOCK=re.compile(r"\b(?:parodi[ae]|spoof|parody|volvy|devolver|gta[- ]?like|rumou?r(?:s|ed)?|leaks?|fake|fan[- ]?made|deepfake|clickbait|giveaway|sponsored|sponsorizzat[oa]|gossip|actress\s+based|basat[oa]\s+su\s+un['a]?\s+attrice)\b",re.I)
 HIGH=re.compile(r"\b(?:trofe[io]|troph(?:y|ies)|platino|platinum|powerpyx|100\s?%|ps5\s*pro|performance|fps|patch|hotfix|rockstar\s+games|launch|lancio|guida|walkthrough|glitch|veicol[io]|collezionabil[ie]|collectibles?)\b",re.I)
