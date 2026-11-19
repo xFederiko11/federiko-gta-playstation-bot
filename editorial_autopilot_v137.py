@@ -24,8 +24,8 @@ STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
 MAX_DOWNLOAD = 1_800_000
 MAX_AGE_MIN = 720  # catch up on timely launch-day coverage, not only latest 3 hours
-MAX_POSTS_DAY = 16
-MIN_SPACING_MIN = 12
+MAX_POSTS_DAY = 6  # quality-oriented editorial pacing; official breaking monitor is separate
+MIN_SPACING_MIN = 45  # avoid back-to-back generic headline posts
 RUN_LIMIT = 1
 BRIDGE_URLS = {
     'https://www.videogameschronicle.com/review/grand-theft-auto-6/',
@@ -37,6 +37,39 @@ TOPIC_RE = re.compile(r'\b(?:gta[\s\-]*(?:vi|6|online)|grand\s+theft\s+auto\s*(?
 REJECT_RE = re.compile(r'\b(?:rumou?r(?:s|ed)?|leak(?:ed|s)?|datamine(?:d)?|unconfirmed|alleged|supposedly|insider|speculat(?:ion|e|es)|prediction|predicts|theory|theories|could|might|maybe|may\s+be|possibly|what\s+if|spoilers?|spoilerosi|indiscrezion[ei]|fuga\s+di\s+notizie|trapelat[oi]|ipotetic[oi]|svelat[oi]\s+da\s+un\s+insider|non\s+confermato|screenshot\s+rubat[oi]|mod\s+menu|hack(?:ed|s|ing)?|pirat[ae]|torrent|giveaway|gift\s+card|sponsored|#ad|offerta\s+amazon|black\s+friday)\b', re.I)
 CLICK_RE = re.compile(r'(?:you\s+won.t\s+believe|sconvolgente|incredibile\s+segreto|nessuno\s+te\s+lo\s+dice|shock|gioc[a-z]*\s+gratis|buy\s+now|preorder\s+now)', re.I)
 STRIP_TAGS = re.compile(r'<[^>]*>')
+# Episodic walkthrough uploads remain available via the independent research
+# feed and website, but raw "mission 8 chapter 1" titles are a weak X format.
+# Concrete how-to, trophy and calibration video titles remain eligible.
+GENERIC_VIDEO_EPISODE = re.compile(
+    r'\b(?:mission(?:e)?\s*(?:n\.?|no\.?|number|#)?\s*\d+|'
+    r'chapter\s*\d+|capitolo\s*\d+|episode\s*\d+|episodio\s*\d+|'
+    r'(?:full|complete)\s+(?:walkthrough|playthrough)|'
+    r'(?:walkthrough|gameplay)\s*(?:part|ep\.?|#)\s*\d+)\b', re.I)
+VIDEO_HELPFUL = re.compile(
+    r'\b(?:how\s+to|come\s+fare|guide\s+to|tutorial|'
+    r'troph(?:y|ies)|trofeo|platinum|platino|'
+    r'collectibles?|collezionabil[ie]|all\s+locations?|'
+    r'gold\s+medals?|medagli[ae]\s+oro|'
+    r'hdr|oled|glitch|duplication|'
+    r'tips?\s+(?:and|&)\s+tricks?|fast\s+travel|'
+    r'100\s*%|settings|impostazioni)\b', re.I)
+
+
+def x_quality_gate(item: dict) -> tuple[bool, str]:
+    """Filter headline-only X posts; do not certify unseen video content.
+
+    The research issue and website retain original source leads even if the
+    public X autopublisher skips a low-value episodic title.
+    """
+    if item.get("source") != "GTA Series Videos":
+        return True, "editorial_source"
+    title = clean(item.get("title", ""))
+    if GENERIC_VIDEO_EPISODE.search(title) and not VIDEO_HELPFUL.search(title):
+        return False, "episode_only"
+    if not VIDEO_HELPFUL.search(title):
+        return False, "no_actionable_topic"
+    return True, "actionable_independent_video"
+
 
 def clean(s: str) -> str:
     return re.sub(r'\s+', ' ', unescape(STRIP_TAGS.sub(' ', str(s)))).strip()
@@ -355,6 +388,10 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
         if key in existing or key in keys or (sig and any(same_story(sig, other) for other in old_sigs + new_sigs)):
             continue
         if not topic(item['title']):
+            continue
+        passes, reason = x_quality_gate(item)
+        if not passes:
+            print("EDITORIAL_SKIP_LOW_VALUE", item.get("source", ""), reason)
             continue
         try:
             item = {**item, 'text': post_text(item), 'key': key, 'sig': sig}

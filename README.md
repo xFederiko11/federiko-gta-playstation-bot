@@ -329,3 +329,18 @@ Per ridurre questo rischio il workflow `.github/workflows/gta6-schedule-keepaliv
 ### Nuovo: GTA Wiki e verifiche delle guide
 
 Il ricercatore GTA VI tenta anche il feed pubblico Atom delle modifiche di `gta.wiki`, senza confonderlo con Fandom e senza proclamare conferme: l'accesso è segnalato come `ok` o `unavailable` nella coda. `guide_claim_evidence_gate.py` valida dossier di prove per PS5, patch e trofei durante le scansioni ogni quattro ore, sempre **senza pubblicazione automatica di contenuti fattuali**. Il sistema non trasforma un titolo RSS in una guida trophy-safe. Maggiori dettagli in [COMMUNITY-RESEARCH-v1.md](COMMUNITY-RESEARCH-v1.md).
+
+
+## Crescita organica X: un bot utile, non un feed di titoli
+
+Il profilo @xFederiko11 ha un piano di crescita autonoma che non implica né promette follower automatici.
+
+- **Publisher:** la selezione X ora evita video creator che riportano solo episodi numerati e non risolvono un problema; i video restano in Ricerca e sul sito. I contenuti che insegnano concretamente qualcosa restano candidabili. L'Editorial Autopilot passa a un massimo prudenziale di **6** prenotazioni/giorno e almeno **45 minuti** tra le sue prenotazioni; il monitor breaking/ufficiale rimane indipendente.
+- **Coda giornaliera GitHub:** workflow GTA VI - Crescita X organica (solo bozze), senza X/Buffer API, genera un'unica Issue permanente con bio, post introduttivo da fissare, tre proposte originali che ruotano tra checklist trofei, HDR OLED, sicurezza dei glitch e ricerche community. Nessun post viene automaticamente inviato dalla coda.
+- **Engagement umano:** risposte contestuali dopo aver visto davvero il contenuto, no bulk follow/like/reply, no engagement swap, nessun link non richiesto.
+- **Metriche:** il report growth_metrics_v142.py separa prenotazioni/delivery Buffer dalle metriche X inserite manualmente nel CSV. Impressions e follower restano non disponibili finché non vengono rilevati realmente.
+- **Quick Tips Buffer:** non vengono riattivati o aggirati. Nessuna nuova API, account o abbonamento.
+
+Guida: [OUTREACH-X-PLAYBOOK.md](OUTREACH-X-PLAYBOOK.md). Per usare il profilo come porta d'ingresso al sito, inserire https://xfederiko11.github.io/gta-6/ nel campo **Sito web** di X e pubblicare/fissare manualmente il post introduttivo dall'Issue organica.
+
+Le regole ufficiali X su automazione, contenuti duplicati e manipolazione della crescita sono referenziate nel playbook. Ridurre i post seriali può aumentare la qualità percepita, ma **non esistono metriche X che provino già un aumento dei follower**.
