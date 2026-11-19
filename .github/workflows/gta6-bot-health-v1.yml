@@ -1,0 +1,100 @@
+name: GTA VI - Bot Health (GitHub e Buffer)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 8,20 * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bot_health_v1.py'
+      - 'test_bot_health_v1.py'
+      - '.github/workflows/gta6-bot-health-v1.yml'
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: gta6-bot-health-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout pinned (no write credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Python pinned
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install minimal dependencies
+        run: python -m pip install -r requirements-free.txt
+      - name: Validate safe health checker without network
+        run: |
+          python -m py_compile bot_health_v1.py
+          python -m unittest -q test_bot_health_v1
+      - name: Buffer / X preflight (read-only)
+        if: github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_EXPECTED_USERNAME: xFederiko11
+          TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'false' }}
+        run: |
+          mkdir -p previews
+          set +e
+          python buffer_status_summary_v151.py > previews/buffer-health.log 2>&1
+          printf '%s\n' "$?" > previews/buffer-health.exit
+          exit 0
+      - name: Assess production workflows and Buffer without publishing
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python bot_health_v1.py --buffer-log previews/buffer-health.log --buffer-exit previews/buffer-health.exit --output previews/bot-health.json --issue-output previews/bot-health.md
+          echo "BOT_HEALTH_CODE=$?" >> "$GITHUB_ENV"
+          exit 0
+      - name: Raise or resolve one persistent health alert
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          status="$(python -c 'import json;print(json.load(open("previews/bot-health.json"))["overall"])')"
+          issue="$(gh issue list --state open --search 'in:title GTA VI - Bot Health Alerts' --json number,title --jq '.[] | select(.title == "GTA VI - Bot Health Alerts") | .number' | head -n 1)"
+          if [ "$status" = "healthy" ]; then
+            if [ -n "$issue" ]; then
+              gh issue close "$issue" --comment "Rientrato: controlli GitHub e Buffer senza errori rilevati."
+            fi
+            echo "### GTA VI Bot Health: healthy" >> "$GITHUB_STEP_SUMMARY"
+          else
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body-file previews/bot-health.md
+            else
+              old="$(gh issue list --state closed --search 'in:title GTA VI - Bot Health Alerts' --json number,title --jq '.[] | select(.title == "GTA VI - Bot Health Alerts") | .number' | head -n 1)"
+              if [ -n "$old" ]; then
+                gh issue reopen "$old"
+                gh issue edit "$old" --body-file previews/bot-health.md
+              else
+                gh issue create --title "GTA VI - Bot Health Alerts" --body-file previews/bot-health.md
+              fi
+            fi
+            echo "### GTA VI Bot Health: $status" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Nessun post Buffer o retry effettuato." >> "$GITHUB_STEP_SUMMARY"
+      - name: Fail alert run on degraded services (after updating issue)
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ "${BOT_HEALTH_CODE:-0}" != "0" ]; then
+            echo "Degraded service; see persistent Bot Health issue."
+            exit 1
+          fi
+          python -c 'import json,sys; sys.exit(0 if json.load(open("previews/bot-health.json"))["overall"] == "healthy" else 1)'
