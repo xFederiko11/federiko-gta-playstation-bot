@@ -283,6 +283,19 @@
       "title": "GTA VI: roadmap del platino PowerPyx",
       "url": "https://powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap"
     },
+    "8ed59c76a92d7a48379e3cee": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T12:00:43.455130+00:00",
+      "run_id": "44519861161",
+      "source": "GTA Series Videos",
+      "status": "reserved",
+      "text": "🎥 GTA VI | Video community (non ufficiale)\n\nGTA 6 Missione n. 9 - Sogni sull'isola (Capitolo 1) [Soluzione completa – PS5 4K]\n\n🔗 Fonte: GTA Series Videos\nhttps://youtube.com/watch?v=Sv1_DptbiYE\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Mission #9 - Island Dreams (Chapter 1) [Full Walkthrough – PS5 4K]",
+      "trophy_number": null,
+      "url": "https://youtube.com/watch?v=Sv1_DptbiYE"
+    },
     "a5f8e56c731dafd20c4868e7": {
       "attempted_utc": "2026-11-19T02:39:06.720898+00:00",
       "buffer_id": "6afe614a46636f319e801f18",
@@ -654,6 +667,13 @@
       "feeds_relevant": 112,
       "reserved": 1,
       "run": "44516176830"
+    },
+    {
+      "at": "2026-11-19T12:00:43.455130+00:00",
+      "errors": [],
+      "feeds_relevant": 110,
+      "reserved": 1,
+      "run": "44519861161"
     }
   ],
   "schema": "v13.7",
@@ -675,6 +695,7 @@
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
+    "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
