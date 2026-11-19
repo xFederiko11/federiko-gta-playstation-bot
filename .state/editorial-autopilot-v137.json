@@ -195,6 +195,19 @@
       "trophy_number": 1,
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/"
     },
+    "6647ce251bd1ba3f46879c6b": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T06:22:02.393146+00:00",
+      "run_id": "44471603184",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Casa dolce casa\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-home-sweet-home-mission-walkthrough\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Home Sweet Home Mission Walkthrough",
+      "trophy_number": null,
+      "url": "https://videogameschronicle.com/guide/gta-6-home-sweet-home-mission-walkthrough"
+    },
     "761d516f9962451f807f2271": {
       "attempted_utc": "2026-11-19T05:36:17.647341+00:00",
       "buffer_id": "6afe8ad1f6b6aa0cd4a48541",
@@ -514,6 +527,13 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44466274069"
+    },
+    {
+      "at": "2026-11-19T06:22:02.393146+00:00",
+      "errors": [],
+      "feeds_relevant": 95,
+      "reserved": 1,
+      "run": "44471603184"
     }
   ],
   "schema": "v13.7",
@@ -530,6 +550,7 @@
     "first minutes gameplay": "4969df7e9b145d22eef7b6d5",
     "full walkthrough all missions": "590290210b2200c5d7053bec",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
+    "home sweet home mission walkthrough": "6647ce251bd1ba3f46879c6b",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
