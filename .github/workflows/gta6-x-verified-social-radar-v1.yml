@@ -45,6 +45,14 @@ jobs:
         run: |
           python -m py_compile x_verified_social_radar_v1.py test_x_verified_social_radar_v1.py
           python -m unittest -q test_x_verified_social_radar_v1
+      - name: Load old tweet IDs from persistent issue, no X API cost
+        if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          mkdir -p .runtime
+          gh issue view 48 --json body --jq '.body' > .runtime/previous-social-radar.md || true
       - name: Make a daily report without automatic social interactions
         if: github.event_name != 'pull_request'
         env:
@@ -52,7 +60,7 @@ jobs:
           X_SOCIAL_RADAR_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && vars.X_SOCIAL_RADAR_ENABLED || 'false' }}
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: |
-          python x_verified_social_radar_v1.py --output previews/verified-x-social-radar-v1.md
+          python x_verified_social_radar_v1.py --output previews/verified-x-social-radar-v1.md --previous-report .runtime/previous-social-radar.md
           test -s previews/verified-x-social-radar-v1.md
           echo 'GTA VI radar: X API read-only, reply links manual only.' >> "$GITHUB_STEP_SUMMARY"
       - name: Save human-review digest
@@ -63,7 +71,7 @@ jobs:
           path: previews/verified-x-social-radar-v1.md
           retention-days: 7
       - name: Maintain a single Social Radar issue without spamming GitHub
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && github.ref == 'refs/heads/main'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
