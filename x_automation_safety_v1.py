@@ -50,7 +50,8 @@ def audit(root=Path(".")) -> dict:
     result={
         "publisher_workflows_audited":found,
         "organic_workflow":ORGANIC,
-        "no_auto_replies_or_follow_likes_reposts":not errors,
+        "posting_workflows_have_guards":not errors,
+        "conversation_workflow_manual_only":not errors,
         "errors":errors,
         "scope":"static_GitHub_workflow_audit_only_not_X_account_assessment",
     }
