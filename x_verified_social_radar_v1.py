@@ -240,7 +240,11 @@ def markdown(report: dict) -> str:
         "commenti, repost, follow o messaggi.", "",
     ]
     if report["status"] == "disabled_pending_cost_authorization":
-        lines.extend(["**Stato: pronto ma non autorizzato a consumare crediti X.** "
+        lines.extend(["**Ricerca X API a consumo disattivata.** Lo scanner gratuito "
+                      "RSS + oEmbed opera separatamente e non richiede pagamenti. "
+                      "Per la ricerca completa nell'archivio recente di X, "
+                      "serve l'API ufficiale.", "",
+                      "**Stato API: pronto ma non autorizzato a consumare crediti X.** "
                       "Serve attivare la variabile repository X_SOCIAL_RADAR_ENABLED=true "
                       "dopo aver impostato un limite di spesa su console.x.com.", ""])
     elif report["status"] == "missing_x_bearer_token":
@@ -267,8 +271,13 @@ def markdown(report: dict) -> str:
             "la bozza è selezionata per argomento, non approvata "
             "editorialmente. Nessun invio automatico.", "",
         ])
+    if report.get("free_scout") is not None:
+        from x_free_public_embed_scout_v1 import section
+        lines.extend(section(report["free_scout"]).rstrip().splitlines())
+        lines.append("")
     old = list(report.get("previous_ids", []))
-    current = [p["post_id"] for p in report["posts"]]
+    current = ([p["post_id"] for p in report["posts"]]
+               +[p["post_id"] for p in report.get("free_scout",{}).get("posts",[])])
     history = list(dict.fromkeys(old + current))[-MAX_HISTORY:]
     lines.extend([
         "---", "",
@@ -294,9 +303,21 @@ def main() -> None:
                      token=os.getenv("X_BEARER_TOKEN", ""),
                      enabled=enabled, previous_ids=previous_ids)
     result["previous_ids"] = sorted(previous_ids)
+    if not enabled:
+        # Zero-cost fallback uses only exact X status links already present
+        # in trusted RSS and validates them via the public official embed.
+        try:
+            from x_free_public_embed_scout_v1 import collect as free_collect
+            result["free_scout"]=free_collect(datetime.now(timezone.utc),
+                                               previous_ids=previous_ids)
+        except (ValueError,OSError,TypeError) as error:
+            result["free_scout"]={"status":"source_unavailable","posts":[],
+                                   "feed_errors":[type(error).__name__],
+                                   "oembed_checks":0,"discovered_links":0}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(markdown(result), encoding="utf-8")
-    print("X_RADAR_STATUS", result["status"], "verified_posts", len(result["posts"]),
+    print("X_RADAR_STATUS", result["status"], "official_api_posts", len(result["posts"]),
+          "free_oembed_posts",len(result.get("free_scout",{}).get("posts",[])),
           "api_requests", result["requests"], "manual_only", True)
 
 
