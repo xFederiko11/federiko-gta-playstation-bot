@@ -60,6 +60,19 @@
       "trophy_number": 17,
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-17-cecchino/"
     },
+    "22cefae2430575059569ef32": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T10:45:46.347990+00:00",
+      "run_id": "44508606818",
+      "source": "Multiplayer.it",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6 non riceverà una modalità a 60 fps o 40 fps su PS5 Pro: \"non è abbastanza potente\" per Rockstar\n\n🔗 Fonte: Multiplayer.it\nhttps://multiplayer.it/notizie/gta-6-non-ricevera-una-modalita-a-60-fps-o-40-fps-su-ps5-pro-non-e-abbastanza-potente-per-rockstar.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 non riceverà una modalità a 60 fps o 40 fps su PS5 Pro: \"non è abbastanza potente\" per Rockstar",
+      "trophy_number": null,
+      "url": "https://multiplayer.it/notizie/gta-6-non-ricevera-una-modalita-a-60-fps-o-40-fps-su-ps5-pro-non-e-abbastanza-potente-per-rockstar.html"
+    },
     "2a8135ab0e8466e543c24205": {
       "attempted_utc": "2026-11-19T03:32:06.007950+00:00",
       "buffer_id": "6afe6db646636f319e848d74",
@@ -608,6 +621,13 @@
       "feeds_relevant": 113,
       "reserved": 1,
       "run": "44500283905"
+    },
+    {
+      "at": "2026-11-19T10:45:46.347990+00:00",
+      "errors": [],
+      "feeds_relevant": 114,
+      "reserved": 1,
+      "run": "44508606818"
     }
   ],
   "schema": "v13.7",
@@ -629,6 +649,7 @@
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
+    "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "quante ore servono per sbloccare trofeo platino": "d33768ef41ab6a294934a5c1",
