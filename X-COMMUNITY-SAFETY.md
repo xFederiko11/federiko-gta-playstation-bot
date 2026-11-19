@@ -45,10 +45,10 @@ I quattro workflow che usano Buffer sono:
 
 Con `EDITORIAL_DIRECTOR_V142_ENABLED: 'true'`, tutti passano da `editorial_director_v142.allowed()`. Le soglie di cautela adottate **volontariamente** per un account nuovo sono:
 
-- **4 prenotazioni/invii automatizzati nelle 24 ore mobili** tra i quattro workflow.
-- **Almeno 3 ore** tra due prenotazioni automatiche nel registro condiviso.
+- **8 prenotazioni/invii automatizzati nelle 24 ore mobili** tra i quattro workflow.
+- **Almeno 90 minuti** tra due prenotazioni automatiche nel registro condiviso.
 - Anche tentativi pendenti o incerti contano per prudenza; nessun secondo invio automatico dello stesso tentativo.
-- I thread possono contenere **più tweet** e le pubblicazioni manuali non entrano nei ledger del bot: 4 è un numero di *invii registrati*, non un conteggio garantito di post X.
+- I thread possono contenere **più tweet** e le pubblicazioni manuali non entrano nei ledger del bot: 8 è un numero di *invii registrati*, non un conteggio garantito di post X.
 - Se raggiunge un limite, **non spegne la ricerca**. Blocca soltanto nuove prenotazioni per la consegna e lascia i workflow aggiornare le fonti come previsto.
 
 Non sono **limiti ufficiali** di X e non garantiscono assenza di filtri, shadowban o sospensioni. Un contatore di Buffer non è una misura di visibilità o reputazione del profilo. La coda di crescita sospende anche le proposte di nuove bozze promozionali quando il volume recente è elevato.
