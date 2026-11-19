@@ -341,6 +341,19 @@
       "title": "All GTA 6 Radio Stations And Songs",
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     },
+    "d33768ef41ab6a294934a5c1": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T08:52:09.821546+00:00",
+      "run_id": "44491245676",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "🧭 GTA VI | Guida\n\nGTA 6: quante ore servono per sbloccare il Trofeo di Platino su PS5?\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-ore-servono-sbloccare-trofeo-platino-ps5-912441.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6: quante ore servono per sbloccare il Trofeo di Platino su PS5?",
+      "trophy_number": null,
+      "url": "https://everyeye.it/notizie/gta-6-ore-servono-sbloccare-trofeo-platino-ps5-912441.html"
+    },
     "d6b995b0794bd4529f4cb38d": {
       "attempted_utc": "2026-11-19T07:47:58.463839+00:00",
       "buffer_id": "6afea9ae9af0a73f7124d9d4",
@@ -560,6 +573,15 @@
       "feeds_relevant": 94,
       "reserved": 1,
       "run": "44482344843"
+    },
+    {
+      "at": "2026-11-19T08:52:09.821546+00:00",
+      "errors": [
+        "PowerPyx: SSLError"
+      ],
+      "feeds_relevant": 99,
+      "reserved": 1,
+      "run": "44491245676"
     }
   ],
   "schema": "v13.7",
@@ -582,6 +604,7 @@
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
+    "quante ore servono per sbloccare trofeo platino": "d33768ef41ab6a294934a5c1",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
