@@ -24,6 +24,8 @@ class QueueTests(unittest.TestCase):
         self.assertFalse(valid_candidate(item("GTA 6 hack",url="javascript:alert(1)")))
         self.assertFalse(valid_candidate(item("GTA 6 patch",url="https://user:pw@fake.test/a")))
         self.assertFalse(valid_candidate(item("GTA 6 " + "x" * 350)))
+        self.assertFalse(valid_candidate(item("GTA 6 patch",url="https://powerpyx.com:8080/a")))
+
 
     def test_markdown_contains_attribution_and_safety(self):
         digest={"schema":"gta6-research-digest-v1","generated_utc":"2026-11-19T08:00:00Z",
@@ -41,6 +43,14 @@ class QueueTests(unittest.TestCase):
         self.assertIn("GTA Series Videos",result)
         self.assertNotIn("Cooking advice",result)
         self.assertNotIn("Buffer: invio",result)
+
+    def test_untrusted_markdown_is_escaped(self):
+        digest = {'schema':'gta6-research-digest-v1',
+                  'candidates':[item('GTA VI [click](https://evil.example) <script>alert(1)</script>')],
+                  'errors':[], 'manual_sources':[]}
+        body = markdown(digest)
+        self.assertNotIn('<script>',body)
+        self.assertNotIn('[click](https://evil.example)',body)
 
     def test_unknown_schema_fails_closed(self):
         with self.assertRaises(ValueError):
