@@ -353,3 +353,28 @@ Il pianificatore organico GitHub propone ogni giorno **cinque ricerche X in ling
 A causa del profilo molto recente e del volume elevato registrato il 19 novembre 2026, i quattro workflow che possono inviare tramite Buffer condividono ora un **limite prudenziale volontario di 8 invii/prenotazioni nelle 24 ore mobili e 90 minuti di distanza minima**. Non sono soglie ufficiali di X, non contano i post manuali e non garantiscono immunità da restrizioni. Ricerca, fonti e sito restano attivi anche quando il coordinatore trattiene nuovi post. Un audit statico interrompe gli invii se vengono rimossi i controlli fondamentali. Le bozze promozionali del piano organico vengono trattenute quando il volume registrato è alto.
 
 **Procedure, limiti, politica X e pausa d'emergenza:** [X-COMMUNITY-SAFETY.md](X-COMMUNITY-SAFETY.md). L'account non deve ricorrere a servizi follower, reply di massa, like automatici o bot IA per risposte non richieste. Buffer Quick Tips rimane in pausa.
+
+
+## Piano launch boost autonomo (dal 19 novembre 2026)
+
+I precedenti 4 invii automatizzati in 24 ore si sono rivelati un freno eccessivo per un portale GTA VI appena lanciato. Il coordinatore condiviso ora consente **fino a 8 prenotazioni/invii nelle 24 ore mobili**, con **almeno 90 minuti** tra una prenotazione e la successiva, fino al **29 novembre 2026 incluso** (UTC). Dal **30 novembre** scende automaticamente a **6/24 ore e 120 minuti**, senza bisogno di interventi manuali.
+
+È un limite **volontario**, non imposto o approvato da X. Non comprende i post manuali e un thread Buffer può contenere più tweet. Se le prenotazioni degli ultimi giorni superano il budget, le fonti continuano a essere monitorate ma le pubblicazioni vengono trattenute; non si svuotano né riciclano i ledger. Il canale non fa follow, reply, like o repost automatici di utenti esterni. Le connessioni sono sempre manuali.
+
+### Nuova rubrica automatica dalle guide del sito
+
+`site_evergreen_posts_v1.py` aggiunge al normale Editorial Autopilot una serie **di 10 post originali distinti** che valorizzano le guide GTA VI già costruite: HDR per codice TV, sfide 100%, registrazione veicoli, studio animali, viaggio taxi, poligoni, meditazione Capitolo 1, checklist trofei, avvisi sui trucchi PS5 e scoperte community.
+
+Il bot ne seleziona al massimo **uno al giorno**, dopo aver confermato che il permalink del sito risponda **200** con `canonical` esatto; in caso di pagina non disponibile non pubblica un link rotto. Usa chiavi stabili e lo stesso ledger di tutti gli altri post, per non ripetere una guida già utilizzata. Sono testi informativi (non affermazioni sullo stato della patch né sulle metriche X). La preview Open Graph è ospitata direttamente nel nostro sito.
+
+La serie si integra con **55 schede trofei**, notizie RSS verificate, post Rockstar e gallerie. L'Editorial Autopilot può riservare al massimo **5 post al giorno nel proprio ledger**, lasciando spazio agli altri workflow nel tetto globale di otto. I Quick Tips Buffer rimangono sospesi. L'Issue #42 continua ad aggiornare una coda di ricerche italiane per risposte **manuali e contestuali**.
+
+### Priorità del bot
+
+1. Monitoraggio ufficiale e verifica delle notizie sempre attivi.
+2. Pubblicazione di notizie ufficiali e aggiornamenti importanti entro il tetto globale.
+3. Contenuti originali del sito: un estratto utile al giorno con fonte verificabile.
+4. Trofei e progressione: schede individuali, senza pubblicare lo stesso requisito due volte.
+5. Altri articoli editoriali selezionati, senza trasformare il feed X in una raffica di titoli copiati.
+
+Non promettiamo crescita né immunità da ban: l'obiettivo è mantenere qualità, varietà e cadenza sostenibile usando soltanto GitHub e Buffer già collegato.
