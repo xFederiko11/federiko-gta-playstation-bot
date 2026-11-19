@@ -209,6 +209,9 @@ def markdown(report) -> str:
     if report.get("schema") != SCHEMA:
         raise ValueError("Bad review report")
     lines=[
+        "## ❤️ Social Radar: tweet reali e risposte pronte", "",
+        "[Apri la coda dei tweet verificati con il testo già pronto](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48). "
+        "Richiede accesso X API ufficiale autorizzato; se non attivo, il bot mostra lo stato e non inventa tweet.", "",
         "## 🔎 Community Italia: conversazioni da trovare manualmente", "",
         "**Questi sono link a ricerche X, non link a tweet verificati.** "
         "Il bot non legge il feed X, non identifica autori interessati "
