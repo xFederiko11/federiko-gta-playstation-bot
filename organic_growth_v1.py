@@ -16,7 +16,8 @@ import re
 
 from editorial_autopilot_v137 import weight_x
 from growth_metrics_v142 import report as growth_report
-from editorial_director_v142 import read_reservations
+from editorial_director_v142 import read_reservations, MAX_AUTOMATED_DELIVERIES_24H, MIN_GAP
+from x_community_review_v1 import plan as conversation_plan, markdown as conversation_markdown
 
 PUBLIC = "https://xfederiko11.github.io/gta-6/"
 START_DATE = date(2026, 11, 19)
@@ -187,6 +188,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
     profile = load_profile_status(profile_path)
     pace = cadence_snapshot(now, ledger_root)
+    community = conversation_plan(now)
     return {
         "schema": SCHEMA,
         "generated_utc": now.astimezone(timezone.utc).isoformat(),
@@ -197,6 +199,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
         "profile_website": PUBLIC,
         "profile_snapshot": profile,
         "cadence": pace,
+        "community_queue": community,
         "drafts": upcoming,
         "delivery_reservations": metrics["delivery_reservations"],
         "delivery_status": metrics["by_status"],
@@ -247,6 +250,8 @@ def markdown(plan: dict) -> str:
             "Caratteri stimati X: " + str(weight_x(d["text"])) + "/280. "
             "**Stato: revisione e pubblicazione manuale**.", "",
         ])
+    lines.extend(conversation_markdown(plan["community_queue"]).rstrip().splitlines())
+    lines.append("")
     states = plan["delivery_status"]
     status_line = (", ".join(escape(k)+": "+str(v)
                              for k,v in sorted(states.items())) if states else "non disponibili")
@@ -266,8 +271,12 @@ def markdown(plan: dict) -> str:
          if plan["cadence"]["review_high_volume"] else
          "- Nessuna soglia di attenzione superata dal ledger osservato. "
          "Non significa che X consideri l'account verificato."),
-        "La coda non disabilita alcun monitor di notizie, "
-        "non elimina post e non modifica la cadenza automatica.", "",
+        "Il monitor delle **notizie** continua anche quando gli invii sono trattenuti. "
+        "Il coordinatore automatico limita le **prenotazioni pubblicabili** "
+        "a "+str(MAX_AUTOMATED_DELIVERIES_24H)+" nelle 24 ore mobili, con almeno "
+        +str(int(MIN_GAP.total_seconds()/3600))+
+        " ore di intervallo complessivo. Soglie volontarie, NON limiti ufficiali di X; "
+        "un thread può contenere più di un tweet. Non garantiscono immunità da restrizioni.", "",
         "## Numeri effettivi, non impression inventate", "",
         "- Prenotazioni dei workflow nei ledger: " + str(plan["delivery_reservations"]) +
         " (non equivalgono a post letti su X).",
