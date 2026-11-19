@@ -6,7 +6,7 @@
     "official_sources": "primary evidence for Rockstar announcements and patch notes",
     "specialist_guides": "secondary evidence for mechanics and cheat inputs; require direct in-game evidence for verified status",
     "journalists": "attribute claims; never label leaks or reports official",
-    "community": "leads only; cross-check and label rumors",
+    "community": "Collect source titles as leads with labels; never publish an unverified gameplay claim based only on metadata.",
     "auto_publish": false,
     "copy_full_text": false,
     "media_reuse": "Only with rights or official authorized media",
@@ -107,8 +107,17 @@
         "cheats",
         "updates"
       ],
-      "collection": "manual_review",
-      "collection_note": "No validated public structured feed; consult manually for corroboration"
+      "collection": "read_only_feed",
+      "collection_note": "GTABase news public RSS endpoint reported by open source monitoring. Runtime probes source access each scan; failure stays explicitly unavailable and does not affect other feeds.",
+      "feed": "https://www.gtabase.com/news/?format=feed&type=rss",
+      "feed_domains": [
+        "www.gtabase.com",
+        "gtabase.com"
+      ],
+      "domains": [
+        "gtabase.com"
+      ],
+      "language": "en"
     },
     {
       "name": "GTANet",
