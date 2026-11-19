@@ -15,7 +15,7 @@ class BotHealthTests(unittest.TestCase):
         rows=[run(x,60) for x in REQUIRED]
         check=assess(rows,"BUFFER_PREFLIGHT_OK account=@xFederiko11\nQUICK_TIPS_READY",0,NOW)
         self.assertEqual(check["overall"],"healthy")
-        self.assertEqual(len(check["workflows"]),4)
+        self.assertEqual(len(check["workflows"]),5)
 
     def test_failed_recent_workflow_overrides_past_success(self):
         rows=[run(x,60) for x in REQUIRED]
@@ -29,6 +29,12 @@ class BotHealthTests(unittest.TestCase):
         check=summarize_runs(rows,NOW)
         self.assertEqual(check[0]["health"],"stale")
         self.assertTrue(any(x["health"]=="unknown" for x in check[1:]))
+
+    def test_inactive_site_with_last_successful_deploy_is_not_stale(self):
+        rows=[run(x,60) for x in REQUIRED[:-1]]
+        rows.append(run("GTA 6 Italia - Website", 14*24*60, event="push"))
+        result=assess(rows,"BUFFER_PREFLIGHT_OK\nQUICK_TIPS_READY",0,NOW)
+        self.assertEqual(result["overall"],"healthy")
 
     def test_buffer_read_only_status_never_claims_delivery(self):
         self.assertEqual(buffer_health("BUFFER_PREFLIGHT_OK\nQUICK_TIPS_PAUSED",0)["status"],"degraded")
