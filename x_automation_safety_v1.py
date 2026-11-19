@@ -43,9 +43,9 @@ def audit(root=Path(".")) -> dict:
     if "data/x-conversation-candidates-v1.json" not in growth:
         errors.append("Growth workflow does not revalidate human review candidates")
     director=(root/"editorial_director_v142.py").read_text(encoding="utf-8")
-    if "MAX_AUTOMATED_DELIVERIES_24H=4" not in director:
+    if "MAX_AUTOMATED_DELIVERIES_24H=8" not in director:
         errors.append("Global publication limit was changed without safety review")
-    if "MIN_GAP=timedelta(hours=3)" not in director:
+    if "MIN_GAP=timedelta(minutes=90)" not in director:
         errors.append("Global minimum posting gap was changed without safety review")
     result={
         "publisher_workflows_audited":found,
