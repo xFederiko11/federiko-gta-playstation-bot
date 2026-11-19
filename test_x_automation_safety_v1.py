@@ -65,7 +65,7 @@ class XSustainablePublishingTests(unittest.TestCase):
             root=self.stage(d)
             path=root/"editorial_director_v142.py"
             path.write_text(path.read_text(encoding="utf-8").replace(
-                "MAX_AUTOMATED_DELIVERIES_24H=4",
+                "MAX_AUTOMATED_DELIVERIES_24H=8",
                 "MAX_AUTOMATED_DELIVERIES_24H=100"),encoding="utf-8")
             with self.assertRaisesRegex(RuntimeError,"Global publication limit"):
                 audit(root)
