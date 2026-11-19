@@ -105,11 +105,14 @@
       "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
     },
     "4969df7e9b145d22eef7b6d5": {
+      "attempted_utc": "2026-11-19T05:08:20.762935+00:00",
+      "buffer_id": "6afe8444f6b6aa0cd4a28b7c",
+      "completed_utc": "2026-11-19T05:08:22.198146+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T05:08:16.647207+00:00",
       "run_id": "44463028591",
       "source": "GameSpot",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nGTA 6: i primi 20 minuti di gameplay su PS5 Pro\n\n🔗 Fonte: GameSpot\nhttps://gamespot.com/videos/gta-6-first-20-minutes-of-ps5-pro-gameplay\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
