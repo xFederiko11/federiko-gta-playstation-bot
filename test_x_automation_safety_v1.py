@@ -20,7 +20,8 @@ class XSustainablePublishingTests(unittest.TestCase):
         result=audit(ROOT)
         self.assertEqual(len(result["publisher_workflows_audited"]),4)
         self.assertEqual(result["errors"],[])
-        self.assertTrue(result["no_auto_replies_or_follow_likes_reposts"])
+        self.assertTrue(result["posting_workflows_have_guards"])
+        self.assertTrue(result["conversation_workflow_manual_only"])
         self.assertEqual(result["scope"],"static_GitHub_workflow_audit_only_not_X_account_assessment")
 
     def test_missing_global_gate_fails_closed(self):
