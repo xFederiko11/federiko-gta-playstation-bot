@@ -9,13 +9,14 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
 
 import requests
 
-from editorial_autopilot_v137 import canonical, parse_feed, published
+from editorial_autopilot_v137 import canonical, published, clean, TOPIC_RE
 
 REGISTRY = Path("community-research-sources-v1.json")
 MAX_DOWNLOAD = 1_800_000
@@ -69,6 +70,45 @@ def load_registry(path: Path = REGISTRY) -> dict:
     return registry
 
 
+def parse_research_feed(raw: bytes, source: dict):
+    """Parse RSS and YouTube Atom without the auto-publisher's rumor filter.
+
+    Unconfirmed or leaked titles are retained strictly as labeled research.
+    No article bodies are parsed, copied, summarized or published.
+    """
+    if len(raw) > MAX_DOWNLOAD:
+        raise ValueError("Excessive feed size")
+    root = ET.fromstring(raw)
+    rows = []
+    if root.tag.lower().endswith("rss") or root.tag.lower().endswith("rdf"):
+        for node in root.findall(".//item"):
+            rows.append((node.findtext("title"), node.findtext("link"),
+                         node.findtext("pubDate") or
+                         node.findtext("{http://purl.org/dc/elements/1.1/}date")))
+    else:
+        ns = "{http://www.w3.org/2005/Atom}"
+        for node in root.findall(f".//{ns}entry"):
+            alternate = next((x.get("href") for x in node.findall(ns + "link")
+                              if x.get("rel") in (None, "alternate") and x.get("href")), "")
+            rows.append((node.findtext(ns + "title"), alternate,
+                         node.findtext(ns + "published") or node.findtext(ns + "updated")))
+    for title, link, stamp in rows:
+        title = clean(title or "")
+        if not title or not TOPIC_RE.search(title):
+            continue
+        dt = published(stamp or "")
+        if dt is None:
+            continue
+        try:
+            link = canonical(link or "")
+        except (ValueError, TypeError):
+            continue
+        if urlsplit(link).hostname not in set(source["domains"]):
+            continue
+        yield {"source": source["name"], "title": title, "url": link,
+               "published": dt.isoformat()}
+
+
 def fetch_candidates(source: dict, *, session, now: datetime) -> list[dict]:
     """Fetch one pinned public feed and retain attribution and age."""
     response = session.get(
@@ -87,8 +127,7 @@ def fetch_candidates(source: dict, *, session, now: datetime) -> list[dict]:
     finally:
         response.close()
     candidates = []
-    feed_src = {k: source[k] for k in ("name", "domains", "language")}
-    for item in parse_feed(bytes(raw), feed_src):
+    for item in parse_research_feed(bytes(raw), source):
         when = published(item["published"])
         if when is None or when > now + timedelta(minutes=5) or now - when > timedelta(hours=WINDOW_HOURS):
             continue
