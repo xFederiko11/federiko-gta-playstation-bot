@@ -22,8 +22,8 @@ TOPICS = (
     ("glitch", re.compile(r"\b(glitch|exploit|duplication|duplicate|money farm|xp farm)\b",re.I)),
     ("trucchi", re.compile(r"\b(cheat|code|codici|trucchi)\b",re.I)),
     ("missioni", re.compile(r"\b(mission|walkthrough|chapter|heist)\b",re.I)),
-    ("veicoli", re.compile(r"\b(vehicle|car|bike|boat|jet ski|garage)\b",re.I)),
     ("collezionabili", re.compile(r"\b(collectible|collectable|hidden package|easter egg)\b",re.I)),
+    ("veicoli", re.compile(r"\b(vehicle|car|bike|boat|jet ski|garage)\b",re.I)),
     ("hdr", re.compile(r"\b(hdr|oled|brightness|graphics|display)\b",re.I)),
 )
 SOURCES = {
@@ -86,7 +86,7 @@ def make_report(digest:dict) -> dict:
         targets=list(target_pages.get(name,["scoperte/"]))
         # A vehicle headline alone does not imply relevance to WAiNK scanning.
         if name=="veicoli" and any(re.search(
-                r"\b(waink|vehicle\s+database|scan(?:ning)?\s+(?:cars|vehicles))\b",
+                r"\b(waink|scan(?:ning)?\s+(?:cars|vehicles))\b",
                 x["title"],re.I) for x in rows):
             targets.append("guide-e-tutorial/scansionare-veicoli/")
         sections.append({
