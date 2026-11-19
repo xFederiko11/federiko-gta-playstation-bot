@@ -18,15 +18,15 @@ La credibilità personale di una fonte non trasforma una notizia in una conferma
 ## Cosa è davvero automatizzato
 
 - PowerPyx: feed di guide **già attivo** nell'Editorial Autopilot, con regole di deduplicazione e attribuzione.
-- GTA Series Videos: RSS/Atom YouTube via ID canale pubblico, raccolto dal nuovo **ricercatore in sola lettura**. Non pubblica automaticamente video o screenshot e non copia i walkthrough.
+- GTA Series Videos: RSS/Atom YouTube via ID canale pubblico, raccolto dal nuovo **ricercatore in sola lettura**. I titoli dei video possono entrare separatamente nell'Editorial Autopilot solo dopo le stesse regole di traduzione, antirumor, dedupe e attribuzione come contenuti di un creator indipendente; non copia video o screenshot.
 - GTAForums, GTA Wiki/Fandom, GTABase, GTANet, Tez2, Jason Schreier: elenco consultabile in \`community-research-sources-v1.json\` come fonti di ricerca/verifica. Nessuna acquisizione automatica finché non è stato individuato e autorizzato un feed affidabile. GTAForums può rifiutare l'accesso automatizzato; non aggiriamo la protezione.
 - Rockstar: **resta nel monitor ufficiale esistente**, non viene duplicato nel ricercatore.
 
 ### Workflow
 
-\`.github/workflows/gta6-community-research-v1.yml\` controlla i due feed pubblici alle 07:17, 13:17 e 19:17 UTC e tramite avvio manuale.
+\`.github/workflows/gta6-community-research-v1.yml\` controlla i due feed pubblici ogni quattro ore (sei scansioni al giorno, orario UTC) e tramite avvio manuale.
 
-Il workflow ha permessi GitHub di sola lettura, **non riceve credenziali Buffer e non può pubblicare**. Esegue test offline, filtra argomenti pertinenti e titoli rumorosi, limita le fonti agli host esplicitamente autorizzati, e deposita il file \`gta6-community-research\` come artifact per sette giorni.
+Il workflow di ricerca ha permesso di lettura del repository e permesso limitato `issues:write` per aggiornare una sola Issue editoriale. **Non riceve credenziali Buffer e non può pubblicare su X**. Esegue test offline, filtra argomenti pertinenti e titoli rumorosi, limita le fonti agli host esplicitamente autorizzati, e deposita il file \`gta6-community-research\` come artifact per sette giorni.
 
 Il digest contiene **piste** per articoli; non è una pubblicazione e non dimostra che tutti gli articoli proposti siano confermati. Ogni elemento segnala titolo, URL originale, data, tipo e fonte. I nuovi feed si aggiungono solo con dominio, permesso e prova di accessibilità validati.
 
@@ -57,6 +57,10 @@ La pagina è una policy operativa: **non promette** che ogni sito fornisca feed,
 
 ## Autonomia del monitor (v1)
 
-Il workflow GitHub Actions esegue la scansione tre volte al giorno indipendentemente da ChatGPT. Un job con soli permessi di lettura acquisisce i feed pubblici e produce un artifact JSON e un riepilogo. Un secondo job (solo ramo `main`) può creare/aggiornare una **sola GitHub Issue** chiamata `GTA VI - Coda fonti community`, con etichette `GUIDA INDIPENDENTE`, `COMMUNITY`, `DATAMINING` e `RUMOR` e indicazioni su errori feed. Un fallimento fa fallire il workflow invece di passare inosservato. Il bot Buffer conserva il proprio filtro più restrittivo: l'inserimento nella coda NON equivale a pubblicazione su X o sul sito, né a conferma della notizia.
+Il workflow GitHub Actions esegue la scansione sei volte al giorno indipendentemente da ChatGPT. Un job con soli permessi di lettura acquisisce i feed pubblici e produce un artifact JSON e un riepilogo. Un secondo job (solo ramo `main`) può creare/aggiornare una **sola GitHub Issue** chiamata `GTA VI - Coda fonti community`, con etichette `GUIDA INDIPENDENTE`, `COMMUNITY`, `DATAMINING` e `RUMOR` e indicazioni su errori feed. Un fallimento fa fallire il workflow invece di passare inosservato. Il bot Buffer conserva il proprio filtro più restrittivo: l'inserimento nella coda NON equivale a pubblicazione su X o sul sito, né a conferma della notizia.
 
 Il ricercatore conserva i rumor nei risultati *soltanto* per poterli segnalare come non verificati. Non elude protezioni di GTAForums o Fandom; queste fonti restano di consultazione manuale fino a validazione di un feed pubblico. Non possiamo garantire disponibilità eterna di GitHub Actions, RSS, Buffer o servizi esterni: manutenzione e controllo credenziali rimangono necessari.
+
+### Coda GitHub e health check autonomi
+
+Le guide emerse entrano in una sola issue `GTA VI - Coda fonti community`, aggiornata periodicamente dal workflow di ricerca. È un flusso editoriale che non deve pubblicare affermazioni non verificate e non richiede ChatGPT. Un secondo workflow `.github/workflows/gta6-bot-health-v1.yml` controlla due volte al giorno workflow, deployment del sito e preflight Buffer in sola lettura, aprendo/aggiornando la issue `GTA VI - Bot Health Alerts` se necessario. In tutti i casi le autorizzazioni GitHub sono limitate a lettura e modifica delle Issue: le azioni di ricerca non possiedono le credenziali Buffer.

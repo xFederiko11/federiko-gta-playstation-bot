@@ -6,8 +6,8 @@ on:
     branches: [main]
     paths: ['.github/workflows/gta6-community-research-v1.yml']
   schedule:
-    # Nuove guide, walkthrough e articoli rilevati tre volte al giorno.
-    - cron: '17 7,13,19 * * *'
+    # Sei scansioni al giorno; indipendente da ChatGPT.
+    - cron: '17 */4 * * *'
   pull_request:
     branches: [main]
     paths:

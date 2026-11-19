@@ -15,6 +15,21 @@
       "enabled": true
     },
     {
+      "name": "GTA Series Videos",
+      "feed": "https://www.youtube.com/feeds/videos.xml?channel_id=UCuWcjpKbIDAbZfHoru1toFg",
+      "feed_domains": [
+        "www.youtube.com",
+        "youtube.com"
+      ],
+      "domains": [
+        "youtube.com"
+      ],
+      "language": "en",
+      "enabled": true,
+      "editorial_tier": "specialist_video",
+      "notes": "Original videos only. GTA VI / GTA Online title required; rumors filtered; label as an independent creator, not Rockstar."
+    },
+    {
       "name": "VGC",
       "feed": "https://www.videogameschronicle.com/feed/",
       "feed_domains": [

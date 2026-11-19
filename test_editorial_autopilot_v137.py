@@ -49,6 +49,15 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertEqual(len(list(bot.parse_feed(good.encode(), src))), 1)
         self.assertEqual(len(list(bot.parse_feed(bad.encode(), src))), 0)
 
+    def test_gta_series_is_labeled_as_independent_not_official(self):
+        item = {'source':'GTA Series Videos','title':'GTA 6 walkthrough part 1',
+                'language':'it','url':'https://youtube.com/watch?v=ABCDEFGHIJK'}
+        post = bot.post_text(item)
+        self.assertIn('Video community (non ufficiale)', post)
+        self.assertIn('Fonte: GTA Series Videos', post)
+        self.assertNotIn('Rockstar conferma', post)
+        self.assertLessEqual(bot.weight_x(post), 280)
+
     def test_atom_feed(self):
         src = {'name': 'VGC', 'domains': ['videogameschronicle.com']}
         atom = f'<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>GTA VI review details</title><link rel="alternate" href="https://www.videogameschronicle.com/news/a"/><published>{NOW.isoformat()}</published></entry></feed>'

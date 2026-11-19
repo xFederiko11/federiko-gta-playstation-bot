@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
-import re
 from pathlib import Path
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET

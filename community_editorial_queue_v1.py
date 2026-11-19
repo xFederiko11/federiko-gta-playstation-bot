@@ -25,6 +25,13 @@ ISSUE_MARKER = "<!-- gta6-community-editorial-queue-v1 -->"
 BRIDGE_MARKER = "<!-- gta6-verified-source-feed-b64:"
 
 
+def safe_md(text: str) -> str:
+    """Escape Markdown metacharacters from untrusted feed titles."""
+    value = re.sub(r"[\x00-\x1f\x7f]+", " ", str(text)).strip()
+    return "".join("\\" + char if char in "\\`*_{}[]()#+.!>|" else char for char in escape(value))
+
+
+
 def classify(item: dict) -> tuple[str, str]:
     title = item["title"]
     for label, pattern in CATEGORIES:
@@ -40,7 +47,7 @@ def classify(item: dict) -> tuple[str, str]:
 def valid_candidate(item: dict) -> bool:
     try:
         url = urlsplit(item["url"])
-        if url.scheme != "https" or not url.hostname or url.username or url.password:
+        if url.scheme != "https" or not url.hostname or url.username or url.password or url.port not in (None, 443):
             return False
         if not item["title"] or len(item["title"]) > 300:
             return False
@@ -88,12 +95,12 @@ def markdown(digest: dict) -> str:
         lines.append("Nessun nuovo titolo pertinente nella finestra di scansione.")
     for item in candidates:
         status, note = classify(item)
-        title = escape(item["title"]).replace("\n", " ")
-        source = escape(item["source"])
+        title = safe_md(item["title"])
+        source = safe_md(item["source"])
         url = item["url"].replace(")", "%29")
         lines.extend([
             f"### {status} — {title}",
-            f"Fonte: **{source}** · Data fonte: {escape(item['published_utc'])}",
+            f"Fonte: **{source}** · Data fonte: {safe_md(item['published_utc'])}",
             f" · [Apri originale]({url})",
             f"Verifica: {note} **Nessun controllo trophy-safe implicito.**",
             "",
@@ -102,14 +109,14 @@ def markdown(digest: dict) -> str:
     lines.extend(["## Salute dei feed", ""])
     if errors:
         for e in errors:
-            lines.append(f"- ⚠️ {escape(e['source'])}: {escape(e['error'])} — acquisizione non riuscita")
+            lines.append(f"- ⚠️ {safe_md(e['source'])}: {safe_md(e['error'])} — acquisizione non riuscita")
     else:
         lines.append("- Feed interrogati senza errori segnalati.")
     lines.extend([
         "",
         "## Fonti registrate per verifica manuale",
         "",
-        ", ".join(escape(x["name"]) for x in digest.get("manual_sources", [])) or "Nessuna",
+        ", ".join(safe_md(x["name"]) for x in digest.get("manual_sources", [])) or "Nessuna",
         "",
         "## Regole per la pubblicazione",
         "",
