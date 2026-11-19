@@ -16,7 +16,7 @@ class ReviewTests(unittest.TestCase):
         r=make_report(digest([
             lead("PowerPyx","GTA 6 new money glitch guide","https://www.powerpyx.com/gta-6-glitch/"),
             lead("GTABase","GTA VI money glitch claimed","https://www.gtabase.com/news/gta-6-glitch"),
-            lead("GTA Series Videos","GTA 6 vehicles walkthrough","https://www.youtube.com/watch?v=ABCDE1234AB")
+            lead("GTA Series Videos","GTA 6 vehicle preview","https://www.youtube.com/watch?v=ABCDE1234AB")
         ]))
         x=next(x for x in r["sections"] if x["topic"]=="glitch")
         self.assertEqual(x["source_count"],2)
@@ -27,6 +27,15 @@ class ReviewTests(unittest.TestCase):
         self.assertFalse(x["platform_verified"])
         self.assertFalse(x["patch_verified"])
         self.assertIn("guide-e-tutorial/",x["target_page_candidates"])
+        v=next(x for x in r["sections"] if x["topic"]=="veicoli")
+        self.assertIn("guide-e-tutorial/",v["target_page_candidates"])
+        self.assertNotIn("guide-e-tutorial/scansionare-veicoli/",v["target_page_candidates"])
+        linked=make_report(digest([
+            lead("PowerPyx","GTA VI WAiNK vehicle database scan guide",
+                 "https://www.powerpyx.com/gta-6-vehicle-database/")
+        ]))
+        target=next(x for x in linked["sections"] if x["topic"]=="veicoli")
+        self.assertIn("guide-e-tutorial/scansionare-veicoli/",target["target_page_candidates"])
         self.assertEqual(r["publication"],"review_only__no_site_or_buffer_changes")
 
     def test_no_trust_bypass_from_fake_external_links_or_dates(self):

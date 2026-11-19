@@ -78,11 +78,17 @@ def make_report(digest:dict) -> dict:
     sections=[]
     target_pages={"trofei":["trofei/"],"trucchi":["trucchi/"],
                   "glitch":["guide-e-tutorial/"],"missioni":["guide-e-tutorial/"],
-                  "veicoli":["guide-e-tutorial/scansionare-veicoli/"],
+                  "veicoli":["guide-e-tutorial/"],
                   "collezionabili":["guide-e-tutorial/"],"hdr":["hdr-oled/"],
                   "altro":["scoperte/"]}
     for name in sorted(grouped):
         rows=grouped[name]
+        targets=list(target_pages.get(name,["scoperte/"]))
+        # A vehicle headline alone does not imply relevance to WAiNK scanning.
+        if name=="veicoli" and any(re.search(
+                r"\b(waink|vehicle\s+database|scan(?:ning)?\s+(?:cars|vehicles))\b",
+                x["title"],re.I) for x in rows):
+            targets.append("guide-e-tutorial/scansionare-veicoli/")
         sections.append({
             "topic":name,
             "source_count":len({x["source"] for x in rows}),
@@ -95,7 +101,7 @@ def make_report(digest:dict) -> dict:
             "patch_verified":False,
             "ready_to_publish":False,
             "editorial_action":"review_original_sources_and_independent_in_game_evidence",
-            "target_page_candidates":target_pages.get(name,["scoperte/"]),
+            "target_page_candidates":targets,
         })
     return {"schema":SCHEMA,"generated_utc":digest.get("generated_utc"),
             "sections":sections,"publication":"review_only__no_site_or_buffer_changes"}
