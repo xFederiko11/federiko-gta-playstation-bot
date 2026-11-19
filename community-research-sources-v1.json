@@ -13,7 +13,8 @@
     "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence",
     "source_fetching": "Public RSS/Atom feeds only; do not bypass login, robots restrictions or scrape protected community pages",
     "review_required": "Community / data-miner claims cannot be auto-published; all scraped claims need corroboration before being turned into news.",
-    "existing_official_monitor": "The official Rockstar monitor remains sole owner of Rockstar's news and patches."
+    "existing_official_monitor": "The official Rockstar monitor remains sole owner of Rockstar's news and patches.",
+    "mediawiki_metadata": "RecentChanges titles and edit URLs are metadata only; never verified gameplay claims. Experimental endpoint may be inaccessible."
   },
   "sources": [
     {
@@ -74,6 +75,28 @@
       ],
       "collection": "manual_review",
       "collection_note": "Wiki can include pre-release leaks and edit history: do not interpret as release facts"
+    },
+    {
+      "name": "GTA Wiki (independent)",
+      "url": "https://gta.wiki/",
+      "tier": "community_wiki",
+      "topics": [
+        "GTA VI recent changes",
+        "community discoveries",
+        "vehicles",
+        "missions",
+        "mechanics"
+      ],
+      "collection": "read_only_feed",
+      "feed": "https://gta.wiki/api.php?action=feedrecentchanges&feedformat=atom&days=2&limit=40&hidebots=1&hideminor=1&namespace=0",
+      "feed_domains": [
+        "gta.wiki"
+      ],
+      "domains": [
+        "gta.wiki"
+      ],
+      "language": "en",
+      "collection_note": "Experimental public MediaWiki recentchanges Atom API. Not Fandom. Collect only edit titles and links. If forbidden, record unavailable; no bypass."
     },
     {
       "name": "GTA Series Videos",
