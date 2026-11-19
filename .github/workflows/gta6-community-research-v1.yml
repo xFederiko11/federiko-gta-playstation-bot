@@ -2,6 +2,9 @@ name: GTA VI - Ricerca fonti indipendenti (sola lettura)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/gta6-community-research-v1.yml']
   schedule:
     # Nuove guide, walkthrough e articoli rilevati tre volte al giorno.
     - cron: '17 7,13,19 * * *'
@@ -90,3 +93,16 @@ jobs:
             gh issue create --title "GTA VI - Coda fonti community" --body-file previews/community-editorial-queue.md
             echo "Created persistent editorial issue" >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Detect complete research feed outage
+        if: github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("previews/community-research-digest.json").read_text(encoding="utf-8"))
+          checked=report.get("sources_checked",[])
+          if not checked or all(row.get("status")!="ok" for row in checked):
+              raise SystemExit("ALL_RESEARCH_FEEDS_UNAVAILABLE: check source health in editorial issue")
+          print("RESEARCH_HEALTH",sum(row.get("status")=="ok" for row in checked),"sources reachable")
+          PY
