@@ -18,7 +18,21 @@ STATE_DIR=Path(".state")
 # Applies across editorial, official news, special campaigns and monitor jobs.
 MIN_GAP=timedelta(minutes=90)
 MAX_AUTOMATED_DELIVERIES_24H=8
+# Use the stronger launch pulse only during the first release window.
+# Thereafter automatically reduce volume without changing GitHub settings.
+BOOST_UNTIL=datetime(2026,11,30,0,0,tzinfo=timezone.utc)
+STEADY_MAX_AUTOMATED_DELIVERIES_24H=6
+STEADY_MIN_GAP=timedelta(minutes=120)
 ROLLING_WINDOW=timedelta(hours=24)
+
+
+def current_limits(now:datetime)->tuple[int,timedelta]:
+    """Temporary release boost, automatically tapering to a steady cadence."""
+    if now.tzinfo is None:
+        raise ValueError("Timezone-aware date required")
+    clock=now.astimezone(timezone.utc)
+    return ((MAX_AUTOMATED_DELIVERIES_24H,MIN_GAP) if clock<BOOST_UNTIL
+            else (STEADY_MAX_AUTOMATED_DELIVERIES_24H,STEADY_MIN_GAP))
 BLOCK=re.compile(r"\b(?:parodi[ae]|spoof|parody|volvy|devolver|gta[- ]?like|rumou?r(?:s|ed)?|leaks?|fake|fan[- ]?made|deepfake|clickbait|giveaway|sponsored|sponsorizzat[oa]|gossip|actress\s+based|basat[oa]\s+su\s+un['a]?\s+attrice)\b",re.I)
 HIGH=re.compile(r"\b(?:trofe[io]|troph(?:y|ies)|platino|platinum|powerpyx|100\s?%|ps5\s*pro|performance|fps|patch|hotfix|rockstar\s+games|launch|lancio|guida|walkthrough|glitch|veicol[io]|collezionabil[ie]|collectibles?)\b",re.I)
 MID=re.compile(r"\b(?:gta\s*\+|bonus|missioni|mission|gameplay|trailer|armi|weapon|online|mappa|map|vice city)\b",re.I)
@@ -71,21 +85,23 @@ def read_reservations(root:Path|None=None):
             raise RuntimeError("Publication ledger cannot be read: "+filename)
     return result
 
-def allowed(now:datetime, *,root:Path|None=None, gap:timedelta=MIN_GAP)->tuple[bool,str]:
+def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None)->tuple[bool,str]:
     if os.getenv("EDITORIAL_DIRECTOR_V142_ENABLED","false").lower()!="true":
         return True,"disabled"
     if now.tzinfo is None:raise ValueError("Timezone-aware time required")
     entries=read_reservations(root)
     if not entries:return True,"empty"
     clock=now.astimezone(timezone.utc)
+    daily_budget, policy_gap = current_limits(clock)
+    effective_gap = policy_gap if gap is None else max(gap,policy_gap)
     # Reservations/uncertain submissions count too: false positives reduce
     # volume, while assuming failed deliveries could produce duplicates.
     recent=[x for x in entries if clock-ROLLING_WINDOW <= x["at"] <= clock]
-    if len(recent)>=MAX_AUTOMATED_DELIVERIES_24H:
+    if len(recent)>=daily_budget:
         return False,"global_rolling_24h_budget"
     latest=max(x["at"] for x in entries)
     dt=clock-latest
-    if dt < gap:return False,"global_spacing"
+    if dt < effective_gap:return False,"global_spacing"
     return True,"ready"
 
 def candidate_sort_key(item):
