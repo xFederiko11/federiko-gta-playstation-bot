@@ -164,6 +164,19 @@
       "trophy_number": null,
       "url": "https://youtube.com/watch?v=eFMv_LH_k8M"
     },
+    "528b4fcb1f54e6b5b4c77d2c": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T22:51:44.024452+00:00",
+      "run_id": "44632481275",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🏆 GTA VI | Guida PowerPyx\n\nSoluzione di GTA 6 Making Gainz\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-making-gainz-walkthrough\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Making Gainz Walkthrough",
+      "trophy_number": null,
+      "url": "https://powerpyx.com/gta-6-making-gainz-walkthrough"
+    },
     "5681a5403e143f8366d8877e": {
       "attempted_utc": "2026-11-18T14:58:08.894267+00:00",
       "buffer_id": "6afdbd010a57e5a157152532",
@@ -723,6 +736,13 @@
       "feeds_relevant": 110,
       "reserved": 1,
       "run": "44616225868"
+    },
+    {
+      "at": "2026-11-19T22:51:44.024452+00:00",
+      "errors": [],
+      "feeds_relevant": 110,
+      "reserved": 1,
+      "run": "44632481275"
     }
   ],
   "schema": "v13.7",
@@ -744,6 +764,7 @@
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
+    "making gainz walkthrough": "528b4fcb1f54e6b5b4c77d2c",
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
