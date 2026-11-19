@@ -288,11 +288,14 @@
       "url": "https://videogameschronicle.com/guide/how-to-change-the-time-of-day-in-gta-6"
     },
     "8229d1264b07ed9da2de0593": {
+      "attempted_utc": "2026-11-19T21:11:45.860483+00:00",
+      "buffer_id": "6aff66118ba5b0cdc4ade728",
+      "completed_utc": "2026-11-19T21:11:47.034616+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T21:11:44.437003+00:00",
       "run_id": "44616225868",
       "source": "Guide GTA VI Italia",
-      "status": "reserved",
+      "status": "sent",
       "text": "📺 GTA VI su PS5 e PS5 Pro: prima di copiare una calibrazione HDR, cerca il codice completo della TV. Un numero visto su un'altra OLED non è un preset universale.\n\n🔎 Modelli, impostazioni e affidabilità:\nhttps://xfederiko11.github.io/gta-6/hdr-oled/\n\n#GTAVI",
       "thread": null,
       "tip_id": null,
