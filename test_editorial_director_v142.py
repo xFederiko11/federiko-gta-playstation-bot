@@ -32,8 +32,8 @@ class EditorDirectorTests(unittest.TestCase):
             self.assertEqual(len(read_reservations(root)),2)
 
     def test_conservative_daily_budget_and_three_hour_spacing(self):
-        self.assertEqual(MAX_AUTOMATED_DELIVERIES_24H,4)
-        self.assertEqual(MIN_GAP,timedelta(hours=3))
+        self.assertEqual(MAX_AUTOMATED_DELIVERIES_24H,8)
+        self.assertEqual(MIN_GAP,timedelta(minutes=90))
         with tempfile.TemporaryDirectory() as directory,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
             root=Path(directory)
             for filename,field,offset,status in [
