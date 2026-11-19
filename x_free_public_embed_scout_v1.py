@@ -19,7 +19,7 @@ from x_verified_social_radar_v1 import classify
 
 FEEDS=Path("editorial-autopilot-v137-sources.json")
 OEMBED="https://publish.x.com/oembed"
-MAX_FEEDS=6
+MAX_FEEDS=8
 MAX_BYTES=500_000
 MAX_EMBEDS=6
 MAX_DAILY_POSTS=5
