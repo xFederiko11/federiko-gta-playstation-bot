@@ -48,7 +48,7 @@ GENERIC_VIDEO_EPISODE = re.compile(
 VIDEO_HELPFUL = re.compile(
     r'\b(?:how\s+to|come\s+fare|guide\s+to|tutorial|'
     r'troph(?:y|ies)|trofeo|platinum|platino|'
-    r'collectible|collezionabil|all\s+locations?|'
+    r'collectibles?|collezionabil[ie]|all\s+locations?|'
     r'gold\s+medals?|medagli[ae]\s+oro|'
     r'hdr|oled|glitch|duplication|'
     r'tips?\s+(?:and|&)\s+tricks?|fast\s+travel|'
