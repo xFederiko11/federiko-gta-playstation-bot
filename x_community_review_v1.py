@@ -151,8 +151,7 @@ def manual_candidates(path=DATA) -> list[dict]:
         except (TypeError,ValueError):
             raise ValueError("Invalid human review date")
         intent = ("https://x.com/intent/tweet?" +
-                  urlencode({"in_reply_to":hit[2],"text":reply}))
-                  if reply else None
+                  urlencode({"in_reply_to":hit[2],"text":reply})) if reply else None
         results.append({
             "post_url":"https://x.com"+uri.path.rstrip("/"),
             "reply_intent_url":intent,
@@ -217,7 +216,7 @@ def markdown(report) -> str:
             "se rispondere in italiano, citare la fonte o non intervenire.", "",
         ])
     lines.extend([
-        "## 🎯 Conversazioni su account realmente seguiti", "",
+        "## 🎯 Account rilevanti e conversazioni da valutare", "",
         "Selezione dai profili **visibili negli screenshot del 19/11/2026**, "
         "non monitorati in tempo reale. Il bot offre una bozza *condizionale* "
         "per un argomento concreto; prima di inviarla verifica che il post "
