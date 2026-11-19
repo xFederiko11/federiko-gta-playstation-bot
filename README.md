@@ -294,3 +294,9 @@ Carica i nuovi file nello stesso repository, mantenendo i Secrets e
 esterni e filtra anche le bozze precedenti non più ammesse. Il prossimo controllo
 riscrive lo storico pubblico con i soli dati ufficiali PlayStation.
 Gli invii già accettati da Buffer prima del cambio non vengono annullati dal filtro.
+
+
+### Watchdog autonomo (senza ChatGPT)
+
+Il workflow `.github/workflows/gta6-autonomous-health-v1.yml` controlla ogni tre ore quattro sistemi: monitor ufficiale, Editorial Autopilot, ricerca community e deploy del sito. Legge in sola lettura il ledger delle consegne Buffer per individuare rifiuti recenti. Se trova anomalie apre/aggiorna una sola GitHub Issue **GTA VI - Stato automazioni**; quando tutti i controlli ritornano regolari la chiude. Non usa le credenziali Buffer, non ritenta post rifiutati, non interviene su X e non richiede ChatGPT. Il controllo segue intervalli prudenziali e non sostituisce la dashboard Buffer per i dettagli degli errori.
+
