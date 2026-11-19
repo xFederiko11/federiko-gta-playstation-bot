@@ -6,8 +6,16 @@ on:
     paths:
       - 'x_verified_social_radar_v1.py'
       - 'test_x_verified_social_radar_v1.py'
+      - 'x_free_public_embed_scout_v1.py'
+      - 'test_x_free_public_embed_scout_v1.py'
+      - 'editorial-autopilot-v137-sources.json'
       - '.github/workflows/gta6-x-verified-social-radar-v1.yml'
       - 'X-COMMUNITY-SAFETY.md'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gta6-x-verified-social-radar-v1.yml'
+      - 'x_free_public_embed_scout_v1.py'
   schedule:
     # One daily query window, at 07:17 UTC; no paid API without opt-in.
     - cron: '17 7 * * *'
@@ -43,8 +51,8 @@ jobs:
           python-version: '3.12'
       - name: Run offline X API schema, compliance and editorial tests
         run: |
-          python -m py_compile x_verified_social_radar_v1.py test_x_verified_social_radar_v1.py
-          python -m unittest -q test_x_verified_social_radar_v1
+          python -m py_compile x_verified_social_radar_v1.py test_x_verified_social_radar_v1.py x_free_public_embed_scout_v1.py test_x_free_public_embed_scout_v1.py
+          python -m unittest -q test_x_verified_social_radar_v1 test_x_free_public_embed_scout_v1
       - name: Load old tweet IDs from persistent issue, no X API cost
         if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         env:
@@ -71,7 +79,7 @@ jobs:
           path: previews/verified-x-social-radar-v1.md
           retention-days: 7
       - name: Maintain a single Social Radar issue without spamming GitHub
-        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'schedule' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && github.ref == 'refs/heads/main'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
