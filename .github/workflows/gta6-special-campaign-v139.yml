@@ -40,6 +40,7 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Offline tests, no Buffer secrets
         run: |
+          python x_automation_safety_v1.py
           python -m py_compile gta6_special_campaign_v139.py buffer_publisher.py
           python -m unittest -q test_gta6_special_campaign_v139 test_buffer_publisher
 
@@ -70,6 +71,7 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Verify tests before any Buffer write
         run: |
+          python x_automation_safety_v1.py
           python -m py_compile gta6_special_campaign_v139.py buffer_publisher.py
           python -m unittest -q test_gta6_special_campaign_v139 test_buffer_publisher
       - name: Preview only
