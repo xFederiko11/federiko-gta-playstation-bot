@@ -74,7 +74,7 @@ class CommunityResearchTests(unittest.TestCase):
         self.assertEqual(len(session.calls), 2)  # PowerPyx and YouTube; mock rejects the other.
         self.assertEqual(len(result["candidates"]), 1)
         self.assertFalse(result["candidates"][0]["official_rockstar"])
-        self.assertIn("RESEARCH", result["candidates"][0]["status"])
+        self.assertIn("RICERCA", result["candidates"][0]["status"])
         self.assertEqual(result["publication"], "read_only__no_buffer_post__no_articles_auto_created")
         self.assertTrue(any(x["source"] == "GTA Series Videos" for x in result["errors"]))
 
