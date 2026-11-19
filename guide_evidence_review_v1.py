@@ -10,6 +10,7 @@ import argparse
 from collections import defaultdict
 from datetime import datetime
 from html import escape
+from community_editorial_queue_v1 import safe_md
 import json
 from pathlib import Path
 import re
@@ -28,6 +29,7 @@ TOPICS = (
 SOURCES = {
     "PowerPyx": {"powerpyx.com","www.powerpyx.com"},
     "GTA Series Videos": {"youtube.com","www.youtube.com"},
+    "GTABase": {"gtabase.com", "www.gtabase.com"},
 }
 MAX_ITEMS = 50
 
@@ -74,6 +76,11 @@ def make_report(digest:dict) -> dict:
             "source":item["source"],"title":item["title"],
             "url":item["url"],"published_utc":item["published_utc"]})
     sections=[]
+    target_pages={"trofei":["trofei/"],"trucchi":["trucchi/"],
+                  "glitch":["guide-e-tutorial/"],"missioni":["guide-e-tutorial/"],
+                  "veicoli":["guide-e-tutorial/scansionare-veicoli/"],
+                  "collezionabili":["guide-e-tutorial/"],"hdr":["hdr-oled/"],
+                  "altro":["scoperte/"]}
     for name in sorted(grouped):
         rows=grouped[name]
         sections.append({
@@ -88,6 +95,7 @@ def make_report(digest:dict) -> dict:
             "patch_verified":False,
             "ready_to_publish":False,
             "editorial_action":"review_original_sources_and_independent_in_game_evidence",
+            "target_page_candidates":target_pages.get(name,["scoperte/"]),
         })
     return {"schema":SCHEMA,"generated_utc":digest.get("generated_utc"),
             "sections":sections,"publication":"review_only__no_site_or_buffer_changes"}
@@ -115,10 +123,13 @@ def markdown(report:dict) -> str:
             "- [ ] Usare media con diritti e citare gli autori",
             "",
         ])
+        lines.append("Pagine da confrontare: " + ", ".join(
+            "`"+p+"`" for p in section["target_page_candidates"]))
+        lines.append("")
         for lead in section["leads"]:
-            title=escape(re.sub(r"[\x00-\x1f]+"," ",lead["title"]))
+            title=safe_md(lead["title"])
             url=lead["url"].replace(")","%29")
-            lines.append(f"- {escape(lead['source'])}: [{title}]({url}) ({escape(lead['published_utc'][:10])})")
+            lines.append(f"- {safe_md(lead['source'])}: [{title}]({url}) ({escape(lead['published_utc'][:10])})")
         lines.append("")
     lines.extend(["**Regola:** la verifica dei titoli non abilita mai la pubblicazione automatica.",
                   "Per pubblicare una guida occorre evidenza verificata sul contenuto e sui trofei.",""])
