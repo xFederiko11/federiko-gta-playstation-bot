@@ -119,8 +119,10 @@ def plan(now:datetime, *, manual_path=DATA, limit=5) -> dict:
     if not isinstance(limit,int) or not 1 <= limit <= 5:
         raise ValueError("At most five searches, never post claims")
     day=now.astimezone(timezone.utc).date().toordinal()
-    picks=[SEARCHES[(day+i)%len(SEARCHES)] for i in range(limit)]
-    picks=sorted(picks,key=lambda item: item["id"]!="italia-domande")
+    # The general Italian discussion search always comes first; rotate the
+    # other niches so GitHub's daily issue does not become a repetitive list.
+    picks=[SEARCHES[0]]+[SEARCHES[1+((day+i)%(len(SEARCHES)-1))]
+                        for i in range(limit-1)]
     searches=[{**x,"url":search_link(x["query"]),"is_specific_post":False} for x in picks]
     return {
         "schema":SCHEMA,
