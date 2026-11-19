@@ -1,6 +1,12 @@
 """Network-free tests of scheduled GTA VI bot workflow/Buffer health check."""
 from datetime import datetime, timedelta, timezone
 import unittest
+import json
+import requests
+import sys
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 from bot_health_v1 import summarize_runs, buffer_health, assess, REQUIRED
 
 NOW = datetime(2026, 11, 19, 12, 0, tzinfo=timezone.utc)
@@ -41,6 +47,28 @@ class BotHealthTests(unittest.TestCase):
         self.assertEqual(buffer_health("BUFFER_PREFLIGHT_FAILED",2)["status"],"degraded")
         self.assertEqual(buffer_health("",0)["status"],"unknown")
         self.assertEqual(buffer_health("BUFFER_PREFLIGHT_OK\nQUICK_TIPS_STATUS_UNKNOWN",0)["status"],"unknown")
+
+
+    def test_github_api_outage_generates_persistent_health_report(self):
+        from bot_health_v1 import main
+        with tempfile.TemporaryDirectory() as root:
+            d=Path(root)
+            (d/"buffer.log").write_text("BUFFER_PREFLIGHT_OK\nQUICK_TIPS_READY",encoding="utf-8")
+            (d/"buffer.exit").write_text("0",encoding="utf-8")
+            report=d/"health.json"
+            note=d/"health.md"
+            args=["bot_health_v1.py","--buffer-log",str(d/"buffer.log"),
+                  "--buffer-exit",str(d/"buffer.exit"),
+                  "--output",str(report),"--issue-output",str(note)]
+            with patch("sys.argv",args), patch("bot_health_v1.fetch_runs",
+                                                side_effect=requests.ConnectionError("offline")):
+                with self.assertRaises(SystemExit) as exit_status:
+                    main()
+            self.assertEqual(exit_status.exception.code,2)
+            result=json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(result["overall"],"degraded")
+            self.assertEqual(result["api_error"],"github_runs_api_ConnectionError")
+            self.assertIn("GitHub API",note.read_text(encoding="utf-8"))
 
     def test_timezone_required(self):
         with self.assertRaises(ValueError):
