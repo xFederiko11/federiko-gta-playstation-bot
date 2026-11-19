@@ -196,11 +196,14 @@
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/"
     },
     "761d516f9962451f807f2271": {
+      "attempted_utc": "2026-11-19T05:36:17.647341+00:00",
+      "buffer_id": "6afe8ad1f6b6aa0cd4a48541",
+      "completed_utc": "2026-11-19T05:36:19.010692+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T05:36:13.674242+00:00",
       "run_id": "44466274069",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Ora di scaricare\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-discharge-time-mission-walkthrough\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
