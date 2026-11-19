@@ -27,6 +27,15 @@ class ReviewTests(unittest.TestCase):
         self.assertFalse(x["platform_verified"])
         self.assertFalse(x["patch_verified"])
         self.assertIn("guide-e-tutorial/",x["target_page_candidates"])
+        v=next(x for x in r["sections"] if x["topic"]=="veicoli")
+        self.assertIn("guide-e-tutorial/",v["target_page_candidates"])
+        self.assertNotIn("guide-e-tutorial/scansionare-veicoli/",v["target_page_candidates"])
+        linked=make_report(digest([
+            lead("PowerPyx","GTA VI WAiNK vehicle database scan guide",
+                 "https://www.powerpyx.com/gta-6-vehicle-database/")
+        ]))
+        target=next(x for x in linked["sections"] if x["topic"]=="veicoli")
+        self.assertIn("guide-e-tutorial/scansionare-veicoli/",target["target_page_candidates"])
         self.assertEqual(r["publication"],"review_only__no_site_or_buffer_changes")
 
     def test_no_trust_bypass_from_fake_external_links_or_dates(self):
