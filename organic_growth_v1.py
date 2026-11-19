@@ -284,8 +284,8 @@ def markdown(plan: dict) -> str:
         "Il monitor delle **notizie** continua anche quando gli invii sono trattenuti. "
         "Il coordinatore automatico limita le **prenotazioni pubblicabili** "
         "a "+str(MAX_AUTOMATED_DELIVERIES_24H)+" nelle 24 ore mobili, con almeno "
-        +str(int(MIN_GAP.total_seconds()/3600))+
-        " ore di intervallo complessivo. Soglie volontarie, NON limiti ufficiali di X; "
+        +str(int(MIN_GAP.total_seconds()/60))+
+        " minuti di intervallo complessivo. Soglie volontarie, NON limiti ufficiali di X; "
         "un thread può contenere più di un tweet. Non garantiscono immunità da restrizioni. "
         "Il controllo non elimina post, non riscrive ledger e non ferma la ricerca delle notizie.", "",
         "## Numeri effettivi, non impression inventate", "",
