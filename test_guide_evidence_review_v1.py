@@ -38,6 +38,23 @@ class ReviewTests(unittest.TestCase):
         self.assertIn("guide-e-tutorial/scansionare-veicoli/",target["target_page_candidates"])
         self.assertEqual(r["publication"],"review_only__no_site_or_buffer_changes")
 
+    def test_collectible_vehicle_easter_egg_does_not_target_waink(self):
+        title="GTA 6 Easter Egg - Cool Dog on a Jet Ski"
+        self.assertEqual(topic(title),"collezionabili")
+        found=make_report(digest([
+            lead("GTA Series Videos",title,"https://www.youtube.com/watch?v=ABCD1234567")
+        ]))
+        section=found["sections"][0]
+        self.assertEqual(section["topic"],"collezionabili")
+        self.assertNotIn("guide-e-tutorial/scansionare-veicoli/",
+                         section["target_page_candidates"])
+        generic=make_report(digest([
+            lead("GTABase","GTA 6 vehicle database updates",
+                 "https://www.gtabase.com/gta-6/vehicles")
+        ]))
+        self.assertNotIn("guide-e-tutorial/scansionare-veicoli/",
+                         generic["sections"][0]["target_page_candidates"])
+
     def test_no_trust_bypass_from_fake_external_links_or_dates(self):
         examples=[
             lead("PowerPyx","GTA 6 weapons", "https://evil.example/cheats"),
