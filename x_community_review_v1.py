@@ -72,7 +72,7 @@ TARGETS = (
     {"handle":"RockstarINTEL", "name":"Rockstar INTEL", "language":"en",
      "topic":"Notizie Rockstar e fonti", "priority":1,
      "query":'from:RockstarINTEL ("GTA VI" OR "GTA 6")',
-     "when":"Se parlano di musica, rispondi sulla musica; non chiedere dei trofei sotto il post Overmono.",
+     "when":"Se parlano della colonna sonora (Overmono/Justice), resta sul tema musicale; non chiedere dei trofei.",
      "reply":"Overmono alongside Justice is an exciting combination. I'm curious how that sound will fit different areas of Leonida.",
      "observed_reply":True},
     {"handle":"GTAVI_Countdown", "name":"GTA 6 Countdown", "language":"en",
