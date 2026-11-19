@@ -78,15 +78,6 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          existing="$(gh issue list --state open \
-            --search 'in:title "GTA VI - X Social Radar verificato"' \
-            --json number,title \
-            --jq '.[] | select(.title == "GTA VI - X Social Radar verificato") | .number' | head -n 1)"
-          if [ -n "$existing" ]; then
-            gh issue edit "$existing" --body-file previews/verified-x-social-radar-v1.md
-            echo "Updated X Social Radar issue #$existing" >> "$GITHUB_STEP_SUMMARY"
-          else
-            gh issue create --title "GTA VI - X Social Radar verificato" \
-              --body-file previews/verified-x-social-radar-v1.md
-            echo "Created one persistent X Social Radar issue" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          # Issue #48 was created at installation; never spawn duplicates.
+          gh issue edit 48 --body-file previews/verified-x-social-radar-v1.md
+          echo "Updated verified X Social Radar issue #48" >> "$GITHUB_STEP_SUMMARY"
