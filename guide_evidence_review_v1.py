@@ -30,6 +30,7 @@ SOURCES = {
     "PowerPyx": {"powerpyx.com","www.powerpyx.com"},
     "GTA Series Videos": {"youtube.com","www.youtube.com"},
     "GTABase": {"gtabase.com", "www.gtabase.com"},
+    "GTA Wiki (independent)": {"gta.wiki"},
 }
 MAX_ITEMS = 50
 
