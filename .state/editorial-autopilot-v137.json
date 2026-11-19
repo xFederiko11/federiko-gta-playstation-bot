@@ -195,6 +195,19 @@
       "trophy_number": 1,
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-01-il-vizio-ha-un-prezzo/"
     },
+    "761d516f9962451f807f2271": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T05:36:13.674242+00:00",
+      "run_id": "44466274069",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Ora di scaricare\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-discharge-time-mission-walkthrough\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Discharge Time Mission Walkthrough",
+      "trophy_number": null,
+      "url": "https://videogameschronicle.com/guide/gta-6-discharge-time-mission-walkthrough"
+    },
     "7b7859d3035b39a1ec3a70c7": {
       "attempted_utc": "2026-11-18T20:20:03.590713+00:00",
       "buffer_id": "6afe087372a787cbb5dd3887",
@@ -491,6 +504,13 @@
       "feeds_relevant": 97,
       "reserved": 1,
       "run": "44463028591"
+    },
+    {
+      "at": "2026-11-19T05:36:13.674242+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "44466274069"
     }
   ],
   "schema": "v13.7",
@@ -500,6 +520,7 @@
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
+    "discharge time mission walkthrough": "761d516f9962451f807f2271",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "feature launch hub share your first impressions rockstar masterpiece": "2a8135ab0e8466e543c24205",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
