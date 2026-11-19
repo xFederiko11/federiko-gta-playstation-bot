@@ -104,6 +104,19 @@
       "title": "GTA 6 Base PS5 Performance Suffers 'Minor' and 'Sustained' Frame Rate Drops, But It's 'Unwavering' on PS5 Pro",
       "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
     },
+    "4969df7e9b145d22eef7b6d5": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T05:08:16.647207+00:00",
+      "run_id": "44463028591",
+      "source": "GameSpot",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6: i primi 20 minuti di gameplay su PS5 Pro\n\n🔗 Fonte: GameSpot\nhttps://gamespot.com/videos/gta-6-first-20-minutes-of-ps5-pro-gameplay\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 First 20 Minutes of PS5 Pro Gameplay",
+      "trophy_number": null,
+      "url": "https://gamespot.com/videos/gta-6-first-20-minutes-of-ps5-pro-gameplay"
+    },
     "4a6b3746800881b206df1617": {
       "attempted_utc": "2026-11-18T16:38:34.081534+00:00",
       "buffer_id": "6afdd48ab3f8322ac74ecae9",
@@ -468,6 +481,13 @@
       "feeds_relevant": 96,
       "reserved": 1,
       "run": "44459425222"
+    },
+    {
+      "at": "2026-11-19T05:08:16.647207+00:00",
+      "errors": [],
+      "feeds_relevant": 97,
+      "reserved": 1,
+      "run": "44463028591"
     }
   ],
   "schema": "v13.7",
@@ -480,6 +500,7 @@
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "feature launch hub share your first impressions rockstar masterpiece": "2a8135ab0e8466e543c24205",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
+    "first minutes gameplay": "4969df7e9b145d22eef7b6d5",
     "full walkthrough all missions": "590290210b2200c5d7053bec",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
