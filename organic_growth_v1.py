@@ -188,6 +188,10 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     metrics = growth_report(ledger_path=ledger_root, manual_path=manual_path)
     profile = load_profile_status(profile_path)
     pace = cadence_snapshot(now, ledger_root)
+    # A busy new account should not be prompted to add even more original
+    # posts; discovery searches remain available for selective human reading.
+    if pace["review_high_volume"]:
+        upcoming=[]
     community = conversation_plan(now)
     return {
         "schema": SCHEMA,
@@ -243,6 +247,12 @@ def markdown(plan: dict) -> str:
         "Non sono nella coda Buffer. Mai copiarle tutte in blocco; "
         "verificare i fatti, aggiornare il contesto e variarne la forma.", "",
     ]
+    if not plan["drafts"]:
+        lines.extend([
+            "**Bozze promozionali sospese nella coda di crescita**: volume recente "
+            "elevato. Non aggiungere altri post soltanto per aumentare la visibilità; "
+            "concentrati su lettura e risposte autentiche se realmente utili.", "",
+        ])
     for d in plan["drafts"]:
         lines.extend([
             "### " + escape(d["format"]) + " - " + d["id"],
