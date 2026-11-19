@@ -10,6 +10,7 @@ import argparse
 from datetime import datetime, timedelta, timezone
 import json
 import re
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
@@ -26,6 +27,51 @@ VALID_TIERS = {
     "community_wiki", "database", "community_news", "dataminer", "journalist",
 }
 VALID_MODES = {"read_only_feed", "manual_review", "existing_official_monitor"}
+
+
+# Deliberately different from the X auto-publisher's strict news filter.
+# Community rumors are research leads, NOT Buffer-eligible posts.
+RESEARCH_RE = re.compile(
+    r"\b(?:gta[\s-]*(?:6|vi|online)|grand[\s-]+theft[\s-]+auto|vice city|"
+    r"lucia(?: caminos)?|jason duval)\b", re.I
+)
+
+
+def parse_research_feed(data: bytes, src: dict):
+    """RSS/Atom parser that preserves flagged rumors for review ONLY."""
+    if len(data) > MAX_DOWNLOAD:
+        raise ValueError("Excessive feed size")
+    root = ET.fromstring(data)
+    items = []
+    if root.tag.lower().endswith(("rss", "rdf")):
+        for node in root.findall(".//item"):
+            items.append((node.findtext("title") or "", node.findtext("link") or "",
+                          node.findtext("pubDate") or
+                          node.findtext("{http://purl.org/dc/elements/1.1/}date") or ""))
+    else:
+        atom = "{http://www.w3.org/2005/Atom}"
+        for node in root.findall(f".//{atom}entry"):
+            links=node.findall(atom + "link")
+            url=next((x.get("href", "") for x in links if x.get("rel", "alternate") == "alternate"), "")
+            if not url:
+                url=next((x.get("href", "") for x in links if not x.get("rel")), "")
+            items.append((node.findtext(atom + "title") or "", url,
+                          node.findtext(atom + "published") or node.findtext(atom + "updated") or ""))
+    for raw_title, raw_url, raw_date in items:
+        title = clean(raw_title)
+        if not RESEARCH_RE.search(title):
+            continue
+        stamp = published(raw_date)
+        if stamp is None:
+            continue
+        try:
+            url = canonical(raw_url)
+        except (ValueError, TypeError):
+            continue
+        if urlsplit(url).hostname not in set(src["domains"]):
+            continue
+        yield {"source":src["name"],"title":title,"url":url,
+               "published":stamp.isoformat(),"language":src.get("language","")}
 
 
 def hostname(url: str) -> str:
