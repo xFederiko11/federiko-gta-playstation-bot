@@ -341,6 +341,19 @@
       "title": "All GTA 6 Radio Stations And Songs",
       "url": "https://gamespot.com/articles/all-gta-6-radio-stations-and-songs"
     },
+    "d6b995b0794bd4529f4cb38d": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T07:47:54.401322+00:00",
+      "run_id": "44482344843",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nSoluzione della missione \"Trappola per turisti\" di GTA 6\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-tourist-trap-mission-walkthrough\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Tourist Trap Mission Walkthrough",
+      "trophy_number": null,
+      "url": "https://videogameschronicle.com/guide/gta-6-tourist-trap-mission-walkthrough"
+    },
     "d72ab9b5e97cf094f20dee14": {
       "attempted_utc": "2026-11-19T00:28:28.793990+00:00",
       "buffer_id": "6afe42ac01ba7c5e79236afa",
@@ -537,6 +550,13 @@
       "feeds_relevant": 95,
       "reserved": 1,
       "run": "44471603184"
+    },
+    {
+      "at": "2026-11-19T07:47:54.401322+00:00",
+      "errors": [],
+      "feeds_relevant": 94,
+      "reserved": 1,
+      "run": "44482344843"
     }
   ],
   "schema": "v13.7",
@@ -563,6 +583,7 @@
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
+    "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "vizio prezzo": "5f8a94faab04dc45298a0f02",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
