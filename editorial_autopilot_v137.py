@@ -108,6 +108,8 @@ def post_text(item: dict) -> str:
     src = item['source']
     if src == 'PowerPyx':
         lead = '🏆 GTA VI | Guida PowerPyx'
+    elif src == 'GTA Series Videos':
+        lead = '🎥 GTA VI | Video community (non ufficiale)'
     elif re.search('review|recension', item['title'], re.I):
         lead = '📝 GTA VI | Recensione'
     elif re.search('guide|guida|trophy|trofeo|achiev|soluzion', item['title'], re.I):
