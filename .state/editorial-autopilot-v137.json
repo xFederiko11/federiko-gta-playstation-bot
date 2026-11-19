@@ -420,6 +420,19 @@
       "title": "GTA VI: 70 sfide su 80 per il completamento",
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-challenges-guide"
+    },
+    "f1d01c920af8776baed7b2d7": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T11:35:40.526270+00:00",
+      "run_id": "44516176830",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6 Cosa c'è nella borsa? Soluzione\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-whats-in-the-bag-walkthrough\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 What’s In The Bag? Walkthrough",
+      "trophy_number": null,
+      "url": "https://videogameschronicle.com/guide/gta-6-whats-in-the-bag-walkthrough"
     }
   },
   "run_history": [
@@ -631,6 +644,13 @@
       "feeds_relevant": 114,
       "reserved": 1,
       "run": "44508606818"
+    },
+    {
+      "at": "2026-11-19T11:35:40.526270+00:00",
+      "errors": [],
+      "feeds_relevant": 112,
+      "reserved": 1,
+      "run": "44516176830"
     }
   ],
   "schema": "v13.7",
@@ -663,6 +683,7 @@
     "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "vizio prezzo": "5f8a94faab04dc45298a0f02",
-    "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5"
+    "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5",
+    "whats the bag walkthrough": "f1d01c920af8776baed7b2d7"
   }
 }
