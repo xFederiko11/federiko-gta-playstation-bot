@@ -128,15 +128,20 @@ def manual_candidates(path=DATA) -> list[dict]:
         seen.add(uri.path)
         if item.get("reviewed_original") is not True:
             raise ValueError("Only human-read original posts can appear")
-        if item.get("language") != "it":
-            raise ValueError("Italian-only review queue")
+        language=item.get("language")
+        if language not in ("it","en"):
+            raise ValueError("Only Italian or English manually reviewed discussion")
+        field="draft_reply_it" if language=="it" else "draft_reply_en"
+        other="draft_reply_en" if language=="it" else "draft_reply_it"
+        if item.get(other):
+            raise ValueError("Draft language mismatches original post")
         context=item.get("original_context")
         if not isinstance(context,str) or not 20 <= len(context.strip()) <= 450:
             raise ValueError("Need context from the actual post")
         note=item.get("editorial_note")
         if not isinstance(note,str) or not 12 <= len(note.strip()) <= 320:
             raise ValueError("Need one concrete reason to participate")
-        reply=item.get("draft_reply_it","")
+        reply=item.get(field,"")
         if not isinstance(reply,str) or len(reply) > 260:
             raise ValueError("Reply draft too long or invalid")
         if re.search(r"(?i)https?://|@\w+|#\w+",reply):
@@ -158,7 +163,10 @@ def manual_candidates(path=DATA) -> list[dict]:
             "author":"@"+hit[1],
             "original_context":context,
             "editorial_note":note,
-            "draft_reply_it":reply,
+            "language":language,
+            "draft_reply":reply,
+            "draft_reply_it":reply if language=="it" else "",
+            "draft_reply_en":reply if language=="en" else "",
             "reviewed_utc":stamp.astimezone(timezone.utc).isoformat(),
             "approved_for_auto_reply":False,
         })
@@ -252,10 +260,11 @@ def markdown(report) -> str:
             "[Apri il post originale]("+item["post_url"]+")" +
             (" · [Apri bozza nella finestra Rispondi]("+item["reply_intent_url"]+")"
              if item["reply_intent_url"] else ""),
+            "- Lingua: "+item["language"],
             "- Contesto letto: "+escape(item["original_context"]),
             "- Motivo per intervenire: "+escape(item["editorial_note"]),
             "- Bozza **facoltativa**, da adattare al contesto attuale: "
-              + (escape(item["draft_reply_it"]) if item["draft_reply_it"] else "da scrivere personalmente"),
+              + (escape(item["draft_reply"]) if item["draft_reply"] else "da scrivere personalmente"),
             "- Stato: **nessun invio, né approvazione ad auto-rispondere**. "
             "L'intent apre soltanto un composer da verificare e inviare manualmente, "
             "se X supporta questo collegamento nel tuo browser.", "",
