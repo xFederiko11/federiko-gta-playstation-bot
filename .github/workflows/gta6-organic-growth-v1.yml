@@ -18,6 +18,8 @@ on:
       - '.github/workflows/launch-watch-v134.yml'
       - 'data/x-profile-status-v1.json'
       - 'editorial_autopilot_v137.py'
+      - 'site_evergreen_posts_v1.py'
+      - 'test_site_evergreen_posts_v1.py'
       - 'test_editorial_autopilot_v137.py'
       - 'growth_metrics_v142.py'
       - '.github/workflows/gta6-organic-growth-v1.yml'
