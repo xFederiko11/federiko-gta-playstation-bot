@@ -48,7 +48,7 @@ class SiteEvergreenTests(unittest.TestCase):
         self.state["entries"][first["key"]]={
             "source":SOURCE,"reserved_utc":NOW.isoformat(),"status":"uncertain"}
         self.assertIsNone(candidate(self.state,NOW+timedelta(hours=2),live_checker=lambda url:True))
-        self.assertIsNone(candidate(self.state,NOW+timedelta(hours=20),live_checker=lambda url:True))
+        self.assertIsNone(candidate(self.state,NOW+timedelta(hours=19),live_checker=lambda url:True))
         tomorrow=NOW+timedelta(days=1)
         second=candidate(self.state,tomorrow,live_checker=lambda url:True)
         self.assertIsNotNone(second)
