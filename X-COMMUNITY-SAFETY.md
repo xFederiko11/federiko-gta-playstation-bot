@@ -79,3 +79,25 @@ L'Editorial Autopilot non supera **5 prenotazioni al giorno** nel proprio ledger
 Il limite è sulle **prenotazioni automatiche** e non ingloba post manuali, quote tweet, thread multipli o contenuti già accettati e in coda su Buffer. Per valutare la reputazione del profilo bisogna osservare le metriche reali su X; un test verde su GitHub non può confermarla. L'account evita l'uso di interazioni automatizzate verso sconosciuti e non tenta di aggirare alcun controllo anti-abuso.
 
 I controlli automatici sono in `editorial_director_v142.py`, `x_automation_safety_v1.py` e nella pipeline editoriale. Il taper dopo il lancio è verificato con test e non richiede un'impostazione aggiuntiva.
+
+
+## Social Desk v2 · conversazioni per ottenere follower autentici
+
+La parte sociale **resta attiva** e ora è più operativa della precedente lista di ricerche. L'Issue di crescita #42 presenta ogni giorno:
+
+- **5 ricerche tematiche** su GTA VI, trofei, PS5, missioni e HDR, con priorità alle domande italiane.
+- **4 account selezionati** fra profili già visibili negli screenshot: PlayStation Italia, GTA Series Videos, Rockstar INTEL, GTA 6 Countdown, Tex2, Rockstar e PlayStation. Ci sono un link diretto al profilo, un link per trovare post dell'account, l'argomento cui rispondere e una bozza nella lingua pertinente.
+- **Avviso sulle interazioni già avvenute** negli screenshot, così il bot non ti invita a incollare due volte lo stesso commento.
+- In caso di **post specifico inserito dopo lettura umana**, un link `Apri bozza nella finestra Rispondi` che usa il normale Web Intent di X (`in_reply_to` e `text`). Quel collegamento apre un composer: **non invia nulla**, non autorizza reply automatici e può non essere supportato dal browser integrato X. Restano il permalink originale e il testo da copiare.
+
+Le bozze sono *condizionali*, non risposte universali. Esempio: se Rockstar INTEL parla di Overmono/Justice, commenta la musica, **non** trofei e progressione; se GTASeries ha pubblicato un walkthrough, verifica prima la missione effettiva e non riciclare una domanda già inviata. Sotto notizie non pertinenti, la risposta migliore è **non commentare**.
+
+### Procedura velocissima da telefono
+
+1. Apri [Issue #42](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/42).
+2. Dalla sezione `🎯 Account rilevanti e conversazioni da valutare`, scegli un account e apri `Cerca post pertinenti`.
+3. Apri il tweet effettivo; leggi tutto, verifica che la bozza risponda proprio al suo contenuto, poi eventualmente copiala e modificala nella lingua del post.
+4. Se vuoi un reply precompilato sul **singolo post**, fai annotare manualmente la URL precisa in `data/x-conversation-candidates-v1.json` con `reviewed_original: true`, contesto verificato, nota editoriale e bozza. Il link al composer comparirà nella successiva Issue.
+5. Premi `Invia` direttamente su X. Il bot non finge di aver inviato né monitora follower, risposte ricevute o reaction senza evidenze.
+
+Non esistono quote obbligatorie di commenti. Le risposte generiche incollate in serie possono essere percepite come spam e rendono meno credibile il profilo. **Non automatizziamo** like, follow, repost né risposte non richieste. L'Editorial Autopilot e il Social Desk continuano a essere indipendenti: aumentare il volume dei post originali non crea il consenso necessario per auto-rispondere a terzi.
