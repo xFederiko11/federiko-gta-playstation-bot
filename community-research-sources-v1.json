@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "updated": "2026-11-19",
+  "purpose": "GTA VI research, corroboration and article discovery. Not an automatic publishing allowlist.",
+  "policy": {
+    "official_sources": "primary evidence for Rockstar announcements and patch notes",
+    "specialist_guides": "secondary evidence for mechanics and cheat inputs; require direct in-game evidence for verified status",
+    "journalists": "attribute claims; never label leaks or reports official",
+    "community": "leads only; cross-check and label rumors",
+    "auto_publish": false,
+    "copy_full_text": false,
+    "media_reuse": "Only with rights or official authorized media",
+    "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence"
+  },
+  "sources": [
+    {
+      "name": "Rockstar Newswire",
+      "url": "https://www.rockstargames.com/newswire",
+      "tier": "official",
+      "topics": [
+        "news",
+        "patches"
+      ]
+    },
+    {
+      "name": "PowerPyx",
+      "url": "https://www.powerpyx.com/",
+      "tier": "specialist",
+      "topics": [
+        "cheats",
+        "trophies",
+        "collectibles",
+        "walkthroughs"
+      ],
+      "already_editorial_feed": true
+    },
+    {
+      "name": "GTAForums",
+      "url": "https://gtaforums.com/",
+      "tier": "community",
+      "topics": [
+        "datamining",
+        "mechanics",
+        "patches",
+        "community reports"
+      ]
+    },
+    {
+      "name": "GTA Wiki / Fandom",
+      "url": "https://gta.fandom.com/wiki/Grand_Theft_Auto_VI",
+      "tier": "community_wiki",
+      "topics": [
+        "vehicles",
+        "characters",
+        "missions",
+        "lore"
+      ]
+    },
+    {
+      "name": "GTA Series Videos",
+      "url": "https://www.youtube.com/@GTASeriesVideos",
+      "tier": "specialist_video",
+      "topics": [
+        "walkthroughs",
+        "mechanics",
+        "video evidence"
+      ]
+    },
+    {
+      "name": "GTABase",
+      "url": "https://www.gtabase.com/",
+      "tier": "database",
+      "topics": [
+        "vehicles",
+        "locations",
+        "cheats",
+        "updates"
+      ]
+    },
+    {
+      "name": "GTANet",
+      "url": "https://www.gtanet.com/",
+      "tier": "community_news",
+      "topics": [
+        "community",
+        "updates"
+      ]
+    },
+    {
+      "name": "Tez2",
+      "url": "https://x.com/TezFunz2",
+      "tier": "dataminer",
+      "topics": [
+        "patch files",
+        "upcoming content"
+      ],
+      "requires_attribution": true
+    },
+    {
+      "name": "Jason Schreier / Bloomberg",
+      "url": "https://www.bloomberg.com/authors/AUyIKVhIKU8/jason-schreier",
+      "tier": "journalist",
+      "topics": [
+        "industry reporting",
+        "Rockstar"
+      ],
+      "requires_attribution": true
+    }
+  ],
+  "verification": {
+    "cheats": "Compare exact buttons, unlocks, version, platform and independent sources; if conflicting mark disputed; no inferred sequences",
+    "news": "Prefer original reporting; distinguish first-party confirmation, attributed journalism, community discovery and speculation",
+    "seo": "Original Italian explanation, canonical source link, descriptive title and date; avoid duplicating original article"
+  }
+}
