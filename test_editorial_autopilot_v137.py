@@ -146,6 +146,24 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertIsNone(bot.powerpyx_spotlight(self.state,
                           now + timedelta(minutes=123)))
 
+    def test_three_fresh_editorial_slots_during_recovery_only(self):
+        from editorial_director_v142 import RECOVERY_START,RECOVERY_END
+        now=RECOVERY_START+timedelta(hours=1)
+        old={str(i):{"reserved_utc":(RECOVERY_START-timedelta(hours=7,minutes=i)).isoformat(),
+                     "status":"sent"} for i in range(16)}
+        taken,limit=bot.editorial_day_slots(old,now)
+        self.assertEqual((taken,limit),(0,3))
+        self.assertEqual(bot.select([article(date=now-timedelta(minutes=10))],
+                                    {'entries':old,'signatures':{}},now)[0]['source'],'VGC')
+        for i in range(3):
+            old["new-"+str(i)]={"reserved_utc":(now-timedelta(minutes=50+i)).isoformat(),
+                               "status":"reserved"}
+        self.assertEqual(bot.editorial_day_slots(old,now),(3,3))
+        self.assertEqual(bot.select([article(date=now-timedelta(minutes=10))],
+                                    {'entries':old,'signatures':{}},now),[])
+        steady=RECOVERY_END+timedelta(minutes=1)
+        self.assertEqual(bot.editorial_day_slots(old,steady)[1],bot.MAX_POSTS_DAY)
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime.now(timezone.utc)
         with tempfile.TemporaryDirectory() as temp, patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
