@@ -165,11 +165,14 @@
       "url": "https://youtube.com/watch?v=eFMv_LH_k8M"
     },
     "528b4fcb1f54e6b5b4c77d2c": {
+      "attempted_utc": "2026-11-19T22:51:46.652977+00:00",
+      "buffer_id": "6aff7d825a09fa1760f4ef5e",
+      "completed_utc": "2026-11-19T22:51:47.862939+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-19T22:51:44.024452+00:00",
       "run_id": "44632481275",
       "source": "PowerPyx",
-      "status": "reserved",
+      "status": "sent",
       "text": "🏆 GTA VI | Guida PowerPyx\n\nSoluzione di GTA 6 Making Gainz\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-making-gainz-walkthrough\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
