@@ -74,6 +74,7 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Check Italian-only policy without publishing
         run: |
+          python x_automation_safety_v1.py
           python -m py_compile buffer_status_summary_v151.py portal_links_v148.py editorial_director_v142.py trophy_posts_v142.py build_trophy_site_v142.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py quick_tips_v146.py
           python -m unittest discover -q
 
@@ -114,6 +115,7 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Validate code
         run: |
+          python x_automation_safety_v1.py
           python -m py_compile buffer_status_summary_v151.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
           python -m unittest -q test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
       - name: Inspect last rejected Buffer thread (read-only)
