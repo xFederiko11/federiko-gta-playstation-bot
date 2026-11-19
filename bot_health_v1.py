@@ -112,7 +112,13 @@ def main() -> None:
     parser.add_argument("--issue-output", type=Path)
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
-    runs = fetch_runs(os.getenv("GH_TOKEN"))
+    api_error = None
+    try:
+        runs = fetch_runs(os.getenv("GH_TOKEN"))
+    except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
+        # Always produce the health issue even when GitHub metadata is unreachable.
+        runs = []
+        api_error = "github_runs_api_" + type(exc).__name__
     try:
         code = int(args.buffer_exit.read_text(encoding="utf-8").strip())
     except (OSError, ValueError):
@@ -122,6 +128,9 @@ def main() -> None:
     except OSError:
         lines = ""
     result = assess(runs, lines, code, now)
+    if api_error:
+        result["overall"] = "degraded"
+        result["api_error"] = api_error
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.issue_output:
@@ -130,6 +139,7 @@ def main() -> None:
             "# GTA VI — salute bot GitHub", "",
             f"**Stato: {result['overall'].upper()}** · UTC: {result['checked_utc']}", "",
             "Valutazione automatica di log GitHub e preflight Buffer in sola lettura.",
+            ("⚠️ GitHub API: " + result["api_error"] if result.get("api_error") else ""),
             "Nessun post creato né ritentato.", "",
             "## Workflow", ""
         ]

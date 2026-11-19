@@ -2,6 +2,9 @@ name: GTA VI - Bot Health (GitHub e Buffer)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/gta6-bot-health-v1.yml']
   schedule:
     - cron: '43 8,20 * * *'
   pull_request:
