@@ -179,6 +179,19 @@
       "trophy_number": null,
       "url": "https://www.powerpyx.com/gta-6-how-to-study-animals-scan-vehicles/"
     },
+    "5e6c87ebccb5a16d21e76073": {
+      "media_url": null,
+      "reserved_utc": "2026-11-19T09:52:01.469373+00:00",
+      "run_id": "44500283905",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nGTA 6 distrugge ogni record con oltre 6 milioni di spettatori in diretta prima del lancio\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-distrugge-record-6-milioni-spettatori-diretta-lancio-912470.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 distrugge ogni record con oltre 6 milioni di spettatori in diretta prima del lancio",
+      "trophy_number": null,
+      "url": "https://everyeye.it/notizie/gta-6-distrugge-record-6-milioni-spettatori-diretta-lancio-912470.html"
+    },
     "5f8a94faab04dc45298a0f02": {
       "attempted_utc": "2026-11-19T01:48:42.209912+00:00",
       "buffer_id": "6afe557a46636f319e7bfbc2",
@@ -585,6 +598,13 @@
       "feeds_relevant": 99,
       "reserved": 1,
       "run": "44491245676"
+    },
+    {
+      "at": "2026-11-19T09:52:01.469373+00:00",
+      "errors": [],
+      "feeds_relevant": 113,
+      "reserved": 1,
+      "run": "44500283905"
     }
   ],
   "schema": "v13.7",
@@ -595,6 +615,7 @@
     "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
     "discharge time mission walkthrough": "761d516f9962451f807f2271",
+    "distrugge ogni record con oltre milioni spettatori diretta prima del lancio": "5e6c87ebccb5a16d21e76073",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
     "feature launch hub share your first impressions rockstar masterpiece": "2a8135ab0e8466e543c24205",
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
