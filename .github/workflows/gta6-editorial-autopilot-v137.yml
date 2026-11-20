@@ -1,48 +1,29 @@
 name: GTA VI - Editorial Autopilot v13.7
 
 on:
-  # Code quality checks on PRs never receive Buffer credentials or post anything.
   pull_request:
     branches: [main]
     paths:
-      - 'editorial_language_it.py'
-      - 'editorial_autopilot_v137.py'
-      - 'site_evergreen_posts_v1.py'
-      - 'test_site_evergreen_posts_v1.py'
-      - 'editorial_seo_v135.py'
-      - 'online.py'
-      - 'video_cards_v12.py'
-      - 'test_editorial_language_it.py'
-      - 'test_editorial_autopilot_v137.py'
-      - 'quick_tips_v146.py'
-      - 'trophy_posts_v142.py'
-      - 'portal_links_v148.py'
-      - 'test_portal_links_v148.py'
-      - 'test_quick_tips_v146.py'
+      - '*.py'
       - 'editorial-calendar-v149.json'
-      - 'legacy_pages_redirect_v149.py'
-      - 'test_legacy_pages_redirect_v149.py'
-      - 'buffer_failed_diagnostics_v147.py'
-      - 'buffer_status_summary_v151.py'
-      - 'test_buffer_status_summary_v151.py'
-      - 'test_buffer_failed_diagnostics_v147.py'
-      - 'README.md'
-      - 'SECURITY.md'
-      - 'test_official_links_free_v140.py'
       - '.github/workflows/gta-monitor.yml'
       - '.github/workflows/gta6-editorial-autopilot-v137.yml'
   workflow_run:
     workflows: ["GTA Monitor gratuito"]
     types: [completed]
-  # Independent schedule: protects against delayed/missed upstream workflow_run events.
+  # Permanent fallback: scanning frequency is NOT the publication frequency.
+  # The existing global director still enforces spacing, budget and dedupe.
   schedule:
-    - cron: '*/10 * 18-20 11 *'
-    - cron: '7,27,47 * 21-30 11 *'
-    - cron: '7,37 * 1-15 12 *'
-  # Kick an immediate launch check when this workflow file is deployed to main.
+    - cron: '7,37 * * * *'
   push:
     branches: [main]
-    paths: ['.github/workflows/gta6-editorial-autopilot-v137.yml', 'editorial_director_v142.py']
+    paths:
+      - '.github/workflows/gta6-editorial-autopilot-v137.yml'
+      - 'editorial_director_v142.py'
+      - 'editorial_autopilot_v137.py'
+      - 'site_evergreen_posts_v1.py'
+      - 'buffer_delivery_receipts_v1.py'
+      - 'test_buffer_delivery_receipts_v1.py'
   workflow_dispatch:
     inputs:
       action:
@@ -66,8 +47,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -77,7 +58,7 @@ jobs:
       - name: Check Italian-only policy without publishing
         run: |
           python x_automation_safety_v1.py
-          python -m py_compile buffer_status_summary_v151.py portal_links_v148.py editorial_director_v142.py trophy_posts_v142.py build_trophy_site_v142.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py quick_tips_v146.py
+          python -m py_compile buffer_delivery_receipts_v1.py buffer_status_summary_v151.py portal_links_v148.py editorial_director_v142.py trophy_posts_v142.py build_trophy_site_v142.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py quick_tips_v146.py
           python -m unittest discover -q
 
   editorial:
@@ -103,12 +84,12 @@ jobs:
       BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
       BUFFER_EXPECTED_USERNAME: xFederiko11
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
           persist-credentials: true
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -118,8 +99,8 @@ jobs:
       - name: Validate code
         run: |
           python x_automation_safety_v1.py
-          python -m py_compile buffer_status_summary_v151.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
-          python -m unittest -q test_site_evergreen_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
+          python -m py_compile buffer_delivery_receipts_v1.py buffer_status_summary_v151.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
+          python -m unittest -q test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
       - name: Inspect last rejected Buffer thread (read-only)
         if: github.event_name == 'push'
         run: python buffer_failed_diagnostics_v147.py
@@ -172,3 +153,6 @@ jobs:
             git pull --rebase origin "${{ github.event.repository.default_branch }}"
             git push origin "HEAD:${{ github.event.repository.default_branch }}"
           fi
+      - name: Verify actual delivery receipt without retry
+        if: always() && steps.reserve.outcome == 'success'
+        run: python buffer_delivery_receipts_v1.py
