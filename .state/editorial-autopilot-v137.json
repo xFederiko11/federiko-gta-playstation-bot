@@ -523,6 +523,21 @@
       "trophy_number": null,
       "url": "https://everyeye.it/notizie/gta-6-ore-servono-sbloccare-trofeo-platino-ps5-912441.html"
     },
+    "d37596316fd55e16628d40ba": {
+      "attempted_utc": "2026-11-20T08:50:27.777181+00:00",
+      "due_at": "2026-11-20T10:35:00+00:00",
+      "reserved_utc": "2026-11-20T10:35:00+00:00",
+      "run_id": "44705701471",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🚗 GTA VI | Prima di cercare auto speciali, impara a scansionare i veicoli con WAiNK. Controllare tracker e registrazione ti fa evitare giri inutili.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-vehicles-scan",
+      "title": "Auto e scanner WAiNK",
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/"
+    },
     "d6b995b0794bd4529f4cb38d": {
       "attempted_utc": "2026-11-19T07:47:58.463839+00:00",
       "buffer_id": "6afea9ae9af0a73f7124d9d4",

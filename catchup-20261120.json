@@ -22,7 +22,8 @@
       "title": "Auto e scanner WAiNK",
       "main": "🚗 GTA VI | Prima di cercare auto speciali, impara a scansionare i veicoli con WAiNK. Controllare tracker e registrazione ti fa evitare giri inutili.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T11:35:00+01:00"
     },
     {
       "id": "save-cars",
