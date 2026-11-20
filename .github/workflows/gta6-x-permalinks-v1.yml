@@ -1,0 +1,54 @@
+name: GTA VI - Buffer X permalink bridge (read only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 7-20 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'x_permalink_bridge_v1.py'
+      - 'test_x_permalink_bridge_v1.py'
+      - '.github/workflows/gta6-x-permalinks-v1.yml'
+permissions:
+  contents: write
+concurrency:
+  group: gta6-x-permalinks
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install lean Buffer client dependencies
+        run: python -m pip install -r requirements-free.txt
+      - name: Verify the read-only permalink algorithm without external APIs
+        run: |
+          python -m py_compile x_permalink_bridge_v1.py
+          python -m unittest -q test_x_permalink_bridge_v1
+      - name: Read only sent X posts from verified Buffer channel
+        if: github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_EXPECTED_USERNAME: xFederiko11
+        run: python x_permalink_bridge_v1.py
+      - name: Commit only public X URLs and guide associations
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f data/x-permalinks-v1.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Verify X permalink links from sent Buffer receipts'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo 'No new verified X permalink associations'
+          fi
