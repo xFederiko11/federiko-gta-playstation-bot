@@ -95,7 +95,7 @@ class CommunityResearchTests(unittest.TestCase):
                '</item></channel></rss>').encode()
         session = HTTP(source["feed"], rss)
         result = collect(self.config, session=session, now=NOW)
-        self.assertEqual(len(session.calls), 5)  # Specialists, GTA Wiki, YouTube, GTABase, Reddit.
+        self.assertEqual(len(session.calls), 4)  # Specialists, GTA Wiki, YouTube, GTABase; Reddit RSS retired.
         self.assertEqual(len(result["candidates"]), 1)
         self.assertFalse(result["candidates"][0]["official_rockstar"])
         self.assertIn("RICERCA", result["candidates"][0]["status"])
@@ -103,23 +103,14 @@ class CommunityResearchTests(unittest.TestCase):
         self.assertTrue(any(x["source"] == "GTA Series Videos" for x in result["errors"]))
         self.assertTrue(any(x["source"] == "GTA Wiki (independent)" for x in result["errors"]))
 
-    def test_reddit_public_atom_is_filtered_to_relevant_same_subreddit_posts(self):
+    def test_reddit_rss_retired_no_live_scraping(self):
         source=next(x for x in self.config["sources"] if x["name"]=="Reddit r/GTA6")
-        stamp=(NOW-timedelta(hours=1)).isoformat()
-        atom=(f'<feed xmlns="http://www.w3.org/2005/Atom">'
-              f'<entry><title>PS5 garage locations and rare cars</title>'
-              f'<published>{stamp}</published>'
-              '<link rel="alternate" href="https://www.reddit.com/r/GTA6/comments/abc123/garage_locations/"/>'
-              '</entry>'
-              f'<entry><title>PS5 trophy guide</title>'
-              f'<published>{stamp}</published>'
-              '<link href="https://www.reddit.com/r/Other/comments/xyz123/unrelated/"/>'
-              '</entry>'
-              '</feed>').encode()
-        items=list(parse_research_feed(atom,source))
-        self.assertEqual(len(items),1)
-        self.assertEqual(items[0]["source"],"Reddit r/GTA6")
-        self.assertIn("garage",items[0]["title"])
+        self.assertEqual(source["collection"],"manual_review")
+        self.assertNotIn("feed",source)
+        self.assertNotIn("feed_domains",source)
+        self.assertIn("IFTTT",source["collection_note"])
+        self.assertIn("Reddit r/GTA6",
+                      [x["name"] for x in self.config["sources"]])
 
     def test_reject_wrong_feed_redirect(self):
         src = next(x for x in self.config["sources"] if x["name"] == "GTA Series Videos")
