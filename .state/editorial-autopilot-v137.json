@@ -108,6 +108,19 @@
       "trophy_number": null,
       "url": "https://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity"
     },
+    "4114d48c2ead8758ea05d75e": {
+      "media_url": null,
+      "reserved_utc": "2026-11-20T01:26:56.777877+00:00",
+      "run_id": "44653659495",
+      "source": "Insider Gaming",
+      "status": "reserved",
+      "text": "💰 GTA VI | SOLDI SUBITO\n\nQuattro luoghi da esplorare nel Capitolo 1 per trovare denaro e oggetti utili. ⚠️ Posizioni con spoiler nella guida.\n\n🔗 Fonte: Insider Gaming\nhttps://insider-gaming.com/gta-6-early-game-locations-make-money/\n\n#GTA6 #GTAVI",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA VI: quattro luoghi per fare soldi subito",
+      "trophy_number": null,
+      "url": "https://insider-gaming.com/gta-6-early-game-locations-make-money"
+    },
     "41b163b5da10f556bcd230fd": {
       "attempted_utc": "2026-11-18T16:02:24.156452+00:00",
       "buffer_id": "6afdcc100a57e5a1571c5558",
@@ -746,6 +759,13 @@
       "feeds_relevant": 110,
       "reserved": 1,
       "run": "44632481275"
+    },
+    {
+      "at": "2026-11-20T01:26:56.777877+00:00",
+      "errors": [],
+      "feeds_relevant": 110,
+      "reserved": 1,
+      "run": "44653659495"
     }
   ],
   "schema": "v13.7",
@@ -775,6 +795,7 @@
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "quante ore servono per sbloccare trofeo platino": "d33768ef41ab6a294934a5c1",
+    "quattro luoghi per fare soldi subito": "4114d48c2ead8758ea05d75e",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
