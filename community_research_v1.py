@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
@@ -20,6 +21,9 @@ from editorial_autopilot_v137 import canonical, published, clean, TOPIC_RE
 REGISTRY = Path("community-research-sources-v1.json")
 MAX_DOWNLOAD = 1_800_000
 WINDOW_HOURS = 96
+REDDIT_TOPIC = re.compile(
+    r'\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|'
+    r'trophy|platinum|secret|trick|tips|PS5|100\s*%)\b', re.I)
 VALID_TIERS = {
     "official", "specialist", "specialist_video", "community",
     "community_wiki", "database", "community_news", "dataminer", "journalist",
@@ -93,7 +97,9 @@ def parse_research_feed(raw: bytes, source: dict):
                          node.findtext(ns + "published") or node.findtext(ns + "updated")))
     for title, link, stamp in rows:
         title = clean(title or "")
-        if not title or not TOPIC_RE.search(title):
+        reddit_actionable=(source.get("name")=="Reddit r/GTA6"
+                           and REDDIT_TOPIC.search(title))
+        if not title or not (TOPIC_RE.search(title) or reddit_actionable):
             continue
         dt = published(stamp or "")
         if dt is None:
@@ -102,7 +108,12 @@ def parse_research_feed(raw: bytes, source: dict):
             link = canonical(link or "")
         except (ValueError, TypeError):
             continue
-        if urlsplit(link).hostname not in set(source["domains"]):
+        parsed_url=urlsplit(link)
+        if parsed_url.hostname not in set(source["domains"]):
+            continue
+        if source.get("name")=="Reddit r/GTA6" and not (
+                parsed_url.path.startswith("/r/GTA6/comments/")
+                or parsed_url.path.startswith("/r/gta6/comments/")):
             continue
         yield {"source": source["name"], "title": title, "url": link,
                "published": dt.isoformat()}

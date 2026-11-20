@@ -176,6 +176,29 @@
       "requires_attribution": true,
       "collection": "manual_review",
       "collection_note": "No validated public structured feed; consult manually for corroboration"
+    },
+    {
+      "name": "Reddit r/GTA6",
+      "url": "https://www.reddit.com/r/GTA6/",
+      "tier": "community",
+      "topics": [
+        "public player discoveries",
+        "locations",
+        "cars and garages",
+        "PS5 trophy tips"
+      ],
+      "collection": "read_only_feed",
+      "feed": "https://www.reddit.com/r/GTA6/.rss",
+      "feed_domains": [
+        "www.reddit.com",
+        "reddit.com"
+      ],
+      "domains": [
+        "www.reddit.com",
+        "reddit.com"
+      ],
+      "language": "en",
+      "collection_note": "Opt-in public subreddit Atom metadata only; skip on 403/rate limits, never scrape login or private messages. All posts remain unverified community leads."
     }
   ],
   "verification": {
