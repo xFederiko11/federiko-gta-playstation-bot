@@ -251,6 +251,12 @@ def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
         "Non sono nella coda Buffer. Mai copiarle tutte in blocco; "
         "verificare i fatti, aggiornare il contesto e variarne la forma.", "",
     ]
+    # Put the five-minute review queue immediately below the Issue heading.
+    # On a phone the reader should not scroll through archived profile copies.
+    if radar_report is not None:
+        now=datetime.fromisoformat(plan["generated_utc"])
+        social_lines=render_social_desk(radar_report,now).rstrip().splitlines()
+        lines[6:6]=social_lines+[""]
     if not plan["drafts"]:
         lines.extend([
             "**Bozze promozionali sospese nella coda di crescita**: volume recente "
@@ -264,13 +270,6 @@ def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
             "Caratteri stimati X: " + str(weight_x(d["text"])) + "/280. "
             "**Stato: revisione e pubblicazione manuale**.", "",
         ])
-    # The real-tweet social desk appears first for a fast mobile workflow.
-    # The source is a read-only, persistent GitHub Issue 48 snapshot; absence
-    # never becomes invented X posts. Reply links open X but do not send.
-    now=datetime.fromisoformat(plan["generated_utc"])
-    if radar_report is not None:
-        lines.extend(render_social_desk(radar_report,now).rstrip().splitlines())
-        lines.append("")
     lines.extend(conversation_markdown(plan["community_queue"]).rstrip().splitlines())
     lines.append("")
     states = plan["delivery_status"]
