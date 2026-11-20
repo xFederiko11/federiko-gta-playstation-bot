@@ -22,8 +22,8 @@ REGISTRY = Path("community-research-sources-v1.json")
 MAX_DOWNLOAD = 1_800_000
 WINDOW_HOURS = 96
 REDDIT_TOPIC = re.compile(
-    r'\\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|'
-    r'trophy|platinum|secret|trick|tips|PS5|100\\s*%)\\b', re.I)
+    r'\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|'
+    r'trophy|platinum|secret|trick|tips|PS5|100\s*%)\b', re.I)
 VALID_TIERS = {
     "official", "specialist", "specialist_video", "community",
     "community_wiki", "database", "community_news", "dataminer", "journalist",
