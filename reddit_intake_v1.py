@@ -19,6 +19,7 @@ PREFIX="[REDDIT-LEAD]"
 SUBS={"gta6":"r/GTA6","gtavi":"r/GTAVI","italygames":"r/italygames"}
 MAX_AGE=timedelta(days=7)
 MAX_ITEMS=18
+PHOTO_MAX_ITEMS=8
 LINK=re.compile(r"https://(?:www\.)?reddit\.com/r/[A-Za-z0-9_]+/comments/[A-Za-z0-9]+(?:/[A-Za-z0-9_%-]+)?/?",re.I)
 SCORE=(
   ("soldi",r"\b(?:money|cash|soldi|farming|guadagn|heist|rapin|glitch|duplicate|duplicazion)\w*\b"),
@@ -187,6 +188,27 @@ def select(rows,now):
     # Greatest relevance score first, then NEWEST issues first (previously oldest first).
     return sorted(unique.values(),key=lambda e:(e["rank"],e["created_at"]),reverse=True)[:MAX_ITEMS]
 
+def select_visual(rows,now):
+    """Independent, bounded photo queue so generic news cannot hide imagery.
+
+    This is triage of verified-format owner-created Issues, NOT an image feed.
+    Visual leads about money and vehicles take priority, then recency.
+    """
+    if not isinstance(rows,list):
+        return []
+    uniq={}
+    for row in rows[:100]:
+        item=parse_issue(row,now)
+        if item is None or not item["photo_candidate"]:
+            continue
+        key=item["reddit_url"]
+        if key not in uniq or item["created_at"]>uniq[key]["created_at"]:
+            uniq[key]=item
+    return sorted(uniq.values(),key=lambda item: (
+        int("soldi" in item["topics"]),int("auto" in item["topics"]),
+        item["created_at"]),reverse=True)[:PHOTO_MAX_ITEMS]
+
+
 def markdown(rows,now):
     selected=select(rows,now)
     received=sum(1 for item in (rows if isinstance(rows,list) else [])
@@ -208,7 +230,7 @@ def markdown(rows,now):
         and not generic_question(str(item.get("title") or "")[len(PREFIX):]))
     generic_count=sum(1 for item in selected if item.get("generic_question"))
     relevant_count=len(selected)-generic_count
-    photo_candidates=[item for item in selected if item.get("photo_candidate")]
+    photo_candidates=select_visual(rows,now)
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
       "**Reddit → IFTTT → GitHub: ricezione confermata dall'Issue #69 del 20 novembre 2026.** "
       "Questa dashboard misura gli eventi effettivamente ricevuti, non lo stato live di IFTTT.",
