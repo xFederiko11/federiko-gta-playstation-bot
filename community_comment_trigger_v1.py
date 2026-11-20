@@ -94,7 +94,7 @@ def candidate(state,now,*,read=get_json,live_checker=page_live):
     for issue in sorted(issues[:MAX_ISSUES],key=lambda i:i.get("updated_at",""),reverse=True):
         known=allowed_issue(issue)
         if not known or not isinstance(issue.get("comments"),int) or issue["comments"]<1:continue
-        target=PORTAL_BASE+known["path"]
+        target=PORTAL_BASE+"/"+known["path"]
         parsed=urlsplit(target)
         if parsed.scheme!="https" or parsed.hostname!="xfederiko11.github.io":continue
         if any(isinstance(e,dict) and str(e.get("url","")).rstrip("/")==target.rstrip("/")
