@@ -3,18 +3,23 @@
     "0e1b6c71114e27201aec02e8": {
       "attempted_utc": "2026-11-20T08:53:24.355239+00:00",
       "buffer_id": "6b000a860f5eda1a57d61243",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T16:35:04.399000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T16:35:00+00:00",
       "reserved_utc": "2026-11-20T16:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "💎 GTA VI | Stai puntando al platino? Non dare per scontato che un trucco o un exploit lasci intatti i trofei e i salvataggi. Controlla prima gli avvisi.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trucchi/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-cheats-safety",
       "title": "Trucchi e trofei PS5",
-      "url": "https://xfederiko11.github.io/gta-6/trucchi/"
+      "url": "https://xfederiko11.github.io/gta-6/trucchi/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123817410763411534"
     },
     "0ed4e0d113e0fbc30bd97875": {
       "attempted_utc": "2026-11-18T18:10:12.872063+00:00",
@@ -288,18 +293,23 @@
     "580240c0a6d9fa386655064b": {
       "attempted_utc": "2026-11-20T08:53:24.355246+00:00",
       "buffer_id": "6b000a86ca85ebefb00ce100",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T17:35:01.775000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T17:35:00+00:00",
       "reserved_utc": "2026-11-20T17:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🏆 GTA VI | La checklist del platino separa missioni, attività, requisiti e rischi perdibili. Meglio controllarla prima di investire ore su un obiettivo sbagliato.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trofei/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-trophies-tracker",
       "title": "Checklist trofei",
-      "url": "https://xfederiko11.github.io/gta-6/trofei/"
+      "url": "https://xfederiko11.github.io/gta-6/trofei/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123832499377676789"
     },
     "590290210b2200c5d7053bec": {
       "attempted_utc": "2026-11-18T22:00:23.881934+00:00",
@@ -595,18 +605,23 @@
     "ba15df13426271859b24bc58": {
       "attempted_utc": "2026-11-20T08:53:24.355252+00:00",
       "buffer_id": "6b000a867b0a126cebbf90c8",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T18:35:05.537000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T18:35:00+00:00",
       "reserved_utc": "2026-11-20T18:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🚙 GTA VI | Per il completamento conta anche la scoperta dei veicoli. Una buona routine: scansiona ciò che incontri, verifica il tracker e registra solo i mezzi da tenere.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/auto-speciali/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-vehicle-completion",
       "title": "Veicoli per il 100%",
-      "url": "https://xfederiko11.github.io/gta-6/auto-speciali/"
+      "url": "https://xfederiko11.github.io/gta-6/auto-speciali/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123847614332280833"
     },
     "bce83f32e0f01951b37b76c5": {
       "attempted_utc": "2026-11-18T18:24:14.029790+00:00",
