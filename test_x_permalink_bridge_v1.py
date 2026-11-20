@@ -55,6 +55,16 @@ class PermalinkTests(unittest.TestCase):
         self.assertEqual(merge([older],[],now=NOW)[0]["x_url"],X)
         self.assertIsNone(parse_sent("no date",NOW))
         self.assertIsNone(parse_sent("2031-01-01T00:00:00Z",NOW))
+    def test_four_daily_buffer_scans_include_evening_launch_receipts(self):
+        workflow=Path('.github/workflows/gta6-x-permalinks-v1.yml').read_text(encoding='utf-8')
+        self.assertIn("- cron: '20 7,11,15 * * *'",workflow)
+        self.assertIn("- cron: '50 19 * * *'",workflow)
+        self.assertEqual(workflow.count("- cron:"),2)
+        self.assertNotIn("20 7,11,15,19",workflow)
+        self.assertIn("if: github.event_name != 'pull_request'",workflow)
+        self.assertIn("python buffer_ledger_reconcile_v1.py",workflow)
+        self.assertNotIn("createPost",workflow)
+
     def test_no_private_token_or_fake_engagement_in_schema(self):
         client=FakeBuffer()
         state={"entries":{"one":{"status":"sent","url":ARTICLE,"buffer_id":"buf1234567890abc",
