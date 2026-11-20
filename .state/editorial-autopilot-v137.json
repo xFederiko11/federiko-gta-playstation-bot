@@ -63,18 +63,23 @@
     "16c473477c74404c7eb56608": {
       "attempted_utc": "2026-11-20T08:53:24.355211+00:00",
       "buffer_id": "6b000a85738ce4635f9e0ffd",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T13:35:05.385000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T13:35:00+00:00",
       "reserved_utc": "2026-11-20T13:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🚕 GTA VI | Vuoi risparmiare tempo tra due missioni? Il taxi consente di saltare il tragitto con un supplemento di 100 GTA$, oltre alla tariffa della corsa.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-taxi-fast",
       "title": "Taxi e viaggio rapido",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123772116491231442"
     },
     "2058044becfae40b204de3e9": {
       "attempted_utc": "2026-11-19T04:36:15.996538+00:00",
@@ -143,18 +148,23 @@
     "3640e1f7463bb96f21375a7b": {
       "attempted_utc": "2026-11-20T08:53:24.355221+00:00",
       "buffer_id": "6b000a857b0a126cebbf9097",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T14:35:05.383000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T14:35:00+00:00",
       "reserved_utc": "2026-11-20T14:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🎯 GTA VI | Poligoni: medaglia Oro e potenziamento Concentrazione non sono la stessa cosa. Prima di ripetere le prove, controlla il requisito che ti serve.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-shooting-focus",
       "title": "Poligoni e Concentrazione",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123787215859769725"
     },
     "4114d48c2ead8758ea05d75e": {
       "attempted_utc": "2026-11-20T01:26:58.442646+00:00",
@@ -440,18 +450,23 @@
     "88cbcdf3b93f34e6b9491472": {
       "attempted_utc": "2026-11-20T08:50:25.083123+00:00",
       "buffer_id": "6b0009d2d5f8acdd0d856976",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T09:35:01.107000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T09:35:00+00:00",
       "reserved_utc": "2026-11-20T09:35:00+00:00",
       "run_id": "44705701471",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "💰 GTA VI | Soldi nascosti: durante l'incarico di Shirley, controlla il retro del negozio vicino al generatore. La guida distingue i passaggi con spoiler.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/soldi-2500-three-sheets-liquor/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-money-liquor",
       "title": "Soldi nascosti al negozio",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/soldi-2500-three-sheets-liquor/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/soldi-2500-three-sheets-liquor/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123711700641661059"
     },
     "88f9cbde4c19d0e059000e49": {
       "attempted_utc": "2026-11-18T19:22:15.367643+00:00",
@@ -554,18 +569,23 @@
     "af3afe0afe07b402f0b11cc3": {
       "attempted_utc": "2026-11-20T08:53:24.355191+00:00",
       "buffer_id": "6b000a854c1afd05de072532",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T12:35:01.430000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T12:35:00+00:00",
       "reserved_utc": "2026-11-20T12:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🏆 GTA VI | Per il 100% sono richieste 70 sfide su 80, secondo la guida PowerPyx. Scegli prima quelle più rapide ed evita di perdere tempo sulle altre.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-seventy-challenges",
       "title": "70 sfide per il 100%",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123757000236343484"
     },
     "ba15df13426271859b24bc58": {
       "attempted_utc": "2026-11-20T08:53:24.355252+00:00",
@@ -610,18 +630,23 @@
     "cc156e586b4fb343b4264762": {
       "attempted_utc": "2026-11-20T08:50:30.450768+00:00",
       "buffer_id": "6b0009d8d5f8acdd0d856bd9",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T11:35:01.834000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T11:35:00+00:00",
       "reserved_utc": "2026-11-20T11:35:00+00:00",
       "run_id": "44705701471",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🚘 GTA VI | Hai trovato un'auto da conservare? Controlla il tracker, gli slot e la registrazione prima di abbandonarla. Ecco cosa verificare.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/salvare-auto/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-save-cars",
       "title": "Salvare un'auto speciale",
-      "url": "https://xfederiko11.github.io/gta-6/salvare-auto/"
+      "url": "https://xfederiko11.github.io/gta-6/salvare-auto/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123741902625218841"
     },
     "cf7793967a1cc2f2b0e9b348": {
       "attempted_utc": "2026-11-18T17:08:52.712020+00:00",
@@ -654,18 +679,23 @@
     "d37596316fd55e16628d40ba": {
       "attempted_utc": "2026-11-20T08:50:27.777181+00:00",
       "buffer_id": "6b0009d54c1afd05de06fbcb",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T10:35:03.899000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T10:35:00+00:00",
       "reserved_utc": "2026-11-20T10:35:00+00:00",
       "run_id": "44705701471",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "🚗 GTA VI | Prima di cercare auto speciali, impara a scansionare i veicoli con WAiNK. Controllare tracker e registrazione ti fa evitare giri inutili.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-vehicles-scan",
       "title": "Auto e scanner WAiNK",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123726811414618465"
     },
     "d6b995b0794bd4529f4cb38d": {
       "attempted_utc": "2026-11-19T07:47:58.463839+00:00",
