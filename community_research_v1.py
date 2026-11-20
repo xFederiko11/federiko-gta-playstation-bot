@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
@@ -20,9 +21,9 @@ from editorial_autopilot_v137 import canonical, published, clean, TOPIC_RE
 REGISTRY = Path("community-research-sources-v1.json")
 MAX_DOWNLOAD = 1_800_000
 WINDOW_HOURS = 96
-REDDIT_TOPIC = __import__('re').compile(
+REDDIT_TOPIC = re.compile(
     r'\\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|'
-    r'trophy|platinum|secret|trick|tips|PS5|100\\s*%)\\b', __import__('re').I)
+    r'trophy|platinum|secret|trick|tips|PS5|100\\s*%)\\b', re.I)
 VALID_TIERS = {
     "official", "specialist", "specialist_video", "community",
     "community_wiki", "database", "community_news", "dataminer", "journalist",
