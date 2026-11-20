@@ -9,7 +9,9 @@ from __future__ import annotations
 import argparse,json,re
 from datetime import datetime,timezone,timedelta
 from pathlib import Path
-from urllib.parse import urlsplit,unquote
+from urllib.parse import urlsplit,urlunsplit
+from urllib.request import Request, build_opener, HTTPRedirectHandler
+from urllib.error import HTTPError, URLError
 from html import escape
 
 OWNER="xfederiko11"
@@ -37,6 +39,62 @@ def canonical_url(text):
     if sub not in SUBS or not re.fullmatch(r"[A-Za-z0-9]{4,12}",parts[3]):return None
     if len(parts)==5 and not re.fullmatch(r"[A-Za-z0-9_-]{1,180}",parts[4]):return None
     return "https://www.reddit.com/r/"+SUBS[sub][2:]+"/comments/"+parts[3]+"/"
+
+# IFTTT shortens PostURL to ift.tt by default. Resolve only the redirect
+# response header from that ONE approved shortener host. Never follow a
+# redirect or access arbitrary URLs, private networks or Reddit contents.
+SHORT_URL=re.compile(r"^https://ift\\.tt/[A-Za-z0-9]{4,20}$")
+SHORT_BODY=re.compile(r"(Reddit source:\\s*)(https://ift\\.tt/[A-Za-z0-9]{4,20})(?=\\s|$)",re.I)
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self,req,fp,code,msg,headers,newurl):
+        return None
+
+def expand_ift_link(link):
+    if not isinstance(link,str) or not SHORT_URL.fullmatch(link):return None
+    req=Request(link,method="HEAD",headers={"User-Agent":"GTA6-Italia-Reddit-Review/1.0"})
+    try:
+        response=build_opener(NoRedirect()).open(req,timeout=6)
+        response.close()
+        return None
+    except HTTPError as err:
+        if err.code not in (301,302,303,307,308):return None
+        location=err.headers.get("Location","")
+    except (URLError,TimeoutError,OSError,ValueError):
+        return None
+    try:
+        final=urlsplit(location)
+        if final.scheme!="https" or final.hostname not in ("reddit.com","www.reddit.com"):
+            return None
+        if final.username or final.password or final.port not in (None,443):
+            return None
+        normalized=urlunsplit(("https","www.reddit.com",final.path,"",""))
+        return canonical_url(normalized)
+    except (ValueError,TypeError):
+        return None
+
+def expand_short_links(rows,resolve=expand_ift_link,max_lookups=20):
+    """Materialize verified Reddit permalink only in owner-created Issue leads."""
+    if not isinstance(rows,list):return []
+    result=[];cache={};remaining=max_lookups
+    for original in rows:
+        if not isinstance(original,dict):
+            result.append(original);continue
+        item=dict(original)
+        if (str((item.get("author") or {}).get("login","")).lower()==OWNER
+            and str(item.get("title") or "").startswith(PREFIX+" ")
+            and re.fullmatch(r"https://github\\.com/xFederiko11/federiko-gta-playstation-bot/issues/[0-9]+",str(item.get("url") or ""))):
+            body=str(item.get("body") or "")
+            match=SHORT_BODY.search(body)
+            if match:
+                link=match.group(2)
+                if link not in cache and remaining>0:
+                    remaining-=1
+                    cache[link]=resolve(link)
+                target=cache.get(link)
+                if target and canonical_url(target):
+                    item["body"]=body[:match.start(2)]+target+body[match.end(2):]
+        result.append(item)
+    return result
 
 def parse_issue(row,now):
     if not isinstance(row,dict):return None
@@ -122,6 +180,7 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     args=p.parse_args()
     rows=json.loads(args.input.read_text(encoding="utf-8"))
+    rows=expand_short_links(rows)
     now=datetime.now(timezone.utc)
     output=markdown(rows,now)
     args.output.parent.mkdir(parents=True,exist_ok=True)
