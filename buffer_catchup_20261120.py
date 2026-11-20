@@ -97,7 +97,7 @@ def make_plan(data:dict, state:dict, now:datetime, other:list[dict])->list[dict]
 
 
 def persist(state, data, description):
-    """Commit and push BEFORE every Buffer mutation, then after each receipt."""
+    """Commit and push a batch; reserve all slots before ANY mutation."""
     LEDGER.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     CAMPAIGN.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     subprocess.run(["git","add","-f",str(LEDGER),str(CAMPAIGN)],check=True)
@@ -150,39 +150,67 @@ def run(*,dry_run=False,now=None):
     dest=client.verify_destination()
     if dest.get("isQueuePaused"):raise RuntimeError("Buffer channel is paused")
     current=snapshot(client=client)
-    if current["status"]!="ok" or current["is_queue_paused"] or current["scheduled"] or current["error"]:
-        raise RuntimeError("Buffer queue not clean; reconcile existing scheduled/errors before new writes")
+    if current["status"]!="ok" or current["is_queue_paused"] or current["error"]:
+        raise RuntimeError("Buffer queue unavailable/paused/errored; manual reconciliation needed")
+    # Previously confirmed Buffer scheduling must be retained, not treated as
+    # an unknown foreign queue. Unrecognized times fail closed.
+    prior_dates=set()
+    for original in data["slots"]:
+        if original.get("status")=="scheduled" and original.get("buffer_id"):
+            due=original.get("scheduled_for_rome")
+            if due:
+                prior_dates.add(datetime.fromisoformat(due).astimezone(timezone.utc))
+    for scheduled in current["scheduled"]:
+        stamp=scheduled.get("dueAt")
+        try:
+            at=datetime.fromisoformat(stamp.replace("Z","+00:00")).astimezone(timezone.utc)
+        except (ValueError,AttributeError):
+            raise RuntimeError("Scheduled Buffer queue contains an unknown date")
+        if at not in prior_dates:
+            raise RuntimeError("Foreign Buffer queue slot detected: reconcile before writes")
+    print("BUFFER_SCHEDULED_RECONCILED",len(current["scheduled"]),flush=True)
     from portal_links_v148 import page_live
     for row in plan:
         if not page_live(row["link"]):
             raise RuntimeError("Source guide not publicly verified: "+row["id"])
-    ids=[]
+
+    # One durable Git commit reserves ALL seven remaining mutations ahead of
+    # time; one final commit records results. This avoids GitHub burst limits.
     for row in plan:
         if row["key"] in state["entries"]:continue
-        entry={"status":"attempted","run_id":os.environ["GITHUB_RUN_ID"],
-               "reserved_utc":row["due"].isoformat(),"due_at":row["due"].isoformat(),
-               "source":"Guide GTA VI Italia","title":row["title"],
-               "url":row["link"],"thread":row["thread"],"tip_id":"catchup-"+row["id"],
-               "attempted_utc":datetime.now(timezone.utc).isoformat()}
-        state["entries"][row["key"]]=entry
+        state["entries"][row["key"]]={
+            "status":"attempted","run_id":os.environ["GITHUB_RUN_ID"],
+            "reserved_utc":row["due"].isoformat(),"due_at":row["due"].isoformat(),
+            "source":"Guide GTA VI Italia","title":row["title"],
+            "url":row["link"],"thread":row["thread"],"tip_id":"catchup-"+row["id"],
+            "attempted_utc":datetime.now(timezone.utc).isoformat()}
         slot=next(x for x in data["slots"] if x["id"]==row["id"])
-        slot["status"]="attempted"
-        slot["scheduled_for_rome"]=local(row["due"]).isoformat()
-        persist(state,data,"Attempt scheduled GTA VI double-thread "+row["id"])
-        try:
-            buffer_id=schedule_one(client,row)
-        except BufferAPIError as exc:
-            entry["status"]="uncertain" if exc.outcome_unknown else "rejected"
-            entry["buffer_id"]=exc.post_id
-            slot["status"]=entry["status"]
-            persist(state,data,"Record Buffer catchup outcome "+row["id"])
-            print("CATCHUP_STOP",row["id"],entry["status"],type(exc).__name__,flush=True)
-            break
-        entry.update(status="scheduled",buffer_id=buffer_id)
-        slot.update(status="scheduled",buffer_id=buffer_id)
-        ids.append(buffer_id)
-        persist(state,data,"Confirm real scheduled GTA VI thread "+row["id"])
-        print("BUFFER_SCHEDULED",row["id"],local(row["due"]).strftime("%H:%M"),"buffer_id",buffer_id,flush=True)
+        slot.update(status="attempted",scheduled_for_rome=local(row["due"]).isoformat())
+    data["state"]="batch_attempted_before_buffer"
+    persist(state,data,"Reserve remaining GTA VI Buffer catchup slots before mutations")
+
+    ids=[]
+    try:
+        for row in plan:
+            entry=state["entries"][row["key"]]
+            slot=next(x for x in data["slots"] if x["id"]==row["id"])
+            try:
+                buffer_id=schedule_one(client,row)
+            except BufferAPIError as exc:
+                entry["status"]="uncertain" if exc.outcome_unknown else "rejected"
+                entry["buffer_id"]=exc.post_id
+                slot["status"]=entry["status"]
+                print("CATCHUP_STOP",row["id"],entry["status"],type(exc).__name__,flush=True)
+                break
+            entry.update(status="scheduled",buffer_id=buffer_id)
+            slot.update(status="scheduled",buffer_id=buffer_id)
+            ids.append(buffer_id)
+            print("BUFFER_SCHEDULED",row["id"],local(row["due"]).strftime("%H:%M"),
+                  "buffer_id",buffer_id,flush=True)
+    finally:
+        statuses=[x["status"] for x in data["slots"]]
+        data["state"]="all_10_buffer_scheduled" if all(x=="scheduled" for x in statuses) else "partially_scheduled_reconciliation_needed"
+        persist(state,data,"Confirm Buffer scheduled GTA VI catchup batch receipts")
     print("CATCHUP_SCHEDULED_TOTAL",len(ids),flush=True)
     return ids
 
