@@ -56,7 +56,7 @@ def valid_candidate(item: dict) -> bool:
         reddit=(item.get("source")=="Reddit r/GTA6"
                 and url.hostname in {"www.reddit.com","reddit.com"}
                 and url.path.lower().startswith("/r/gta6/comments/")
-                and re.search(r"\\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|trophy|platinum|secret|tips|PS5|100\\s*%)\\b",
+                and re.search(r"\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|trophy|platinum|secret|tips|PS5|100\s*%)\b",
                               item["title"],re.I))
         return bool(GTA_TOPIC.search(item["title"]) or reddit or
                     (item.get("source") == "PowerPyx" and GUIDE.search(item["title"])))
