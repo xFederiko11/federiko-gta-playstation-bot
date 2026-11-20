@@ -19,6 +19,9 @@ SPACING = timedelta(hours=20)
 # Every entry is original editorial copy pointing to an existing public
 # informational landing page; do not claim the third-party source verified it.
 CONTENT = (
+    {"id": "ps5-first-person-glitch", "path": "/guide-e-tutorial/glitch-prima-persona-ps5/",
+     "title": "GTA VI PS5: glitch prima persona, comandi e rischi trofei",
+     "text": "🎮 GTA VI | PRIMA PERSONA PS5\n\nController > Touch Pad Button: Camera. In auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Segnalato funzionante; ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:"},
     {"id": "money-early-four", "path": "/guide-e-tutorial/soldi-facili-capitolo-1/",
      "title": "GTA VI: quattro luoghi per trovare soldi subito",
      "text": "💰 GTA VI | SOLDI NEL CAPITOLO 1\n\nQuattro posti da controllare per trovare denaro e oggetti di valore. La guida spiega dove andare, cosa cercare e quali rischi evitare. ⚠️ Spoiler sulle posizioni.\n\n📍 Passaggi e fonte:"},
