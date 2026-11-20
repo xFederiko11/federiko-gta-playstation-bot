@@ -19,13 +19,18 @@ PREFIX="[REDDIT-LEAD]"
 SUBS={"gta6":"r/GTA6","gtavi":"r/GTAVI","italygames":"r/italygames"}
 MAX_AGE=timedelta(days=7)
 MAX_ITEMS=18
+PHOTO_MAX_ITEMS=8
 LINK=re.compile(r"https://(?:www\.)?reddit\.com/r/[A-Za-z0-9_]+/comments/[A-Za-z0-9]+(?:/[A-Za-z0-9_%-]+)?/?",re.I)
 SCORE=(
   ("soldi",r"\b(?:money|cash|soldi|farming|guadagn|heist|rapin|glitch|duplicate|duplicazion)\w*\b"),
   ("auto",r"\b(?:cars?|auto|veicol|vehicle|garage|save car|salvare|randy|rare car)\w*\b"),
   ("platino",r"\b(?:trophy|trophies|trofe|platino|platinum|100%|achievement|missable)\w*\b"),
   ("guida",r"\b(?:mission|missioni|location|posizion|map|mappa|how to|guide|guida|ps5|help|aiuto)\w*\b"),
+  # Title-only lead: an image/clip is NOT downloaded, visually inspected or licensed.
+  ("foto",r"\b(?:screenshots?|screen[ -]?shots?|screencaps?|captures?|photomode|photos?|pics?|foto(?:grafi[ae])?|immagin[ei]|mappe|maps?|clips?|gameplay[ -]?footage)\b"),
 )
+GTA_TITLE=re.compile(r"\b(?:gta[ -]?(?:6|vi)|grand theft auto[ -]?(?:6|vi))\b",re.I)
+PHOTO_HUB="https://xfederiko11.github.io/gta-6/screenshot-ps5/"
 
 QUESTION_START=re.compile(r"^(?:how\s+(?:do|can)\s+i\b|where\s+(?:do|can)\s+i\b|anyone\s+know\b|is\s+there\s+a\s+way\b|come\s+(?:faccio|si\s+fa|posso|arrivo)\b|dove\s+(?:trovo|si\s+trova|posso)\b)",re.I)
 
@@ -158,8 +163,18 @@ def parse_issue(row,now):
             generic=True
         else:
             return None
+    # r/italygames covers games other than GTA. A photo-only title from
+    # there needs an explicit GTA VI reference to enter our visual queue.
+    photo_only=(topics==["foto"])
+    if photo_only and subreddit.lower()=="italygames" and not GTA_TITLE.search(candidate):
+        return None
+    photo_candidate=("foto" in topics and
+                     (subreddit.lower() in ("gta6","gtavi") or
+                      GTA_TITLE.search(candidate) is not None))
     return {"title":candidate,"reddit_url":url,"issue_url":issue_url,
             "subreddit":subreddit,"topics":topics,"generic_question":generic,
+            "photo_candidate":bool(photo_candidate),
+            "photo_reviewed":False,"reuse_authorized":False,
             "created_at":when.astimezone(timezone.utc).isoformat(),"rank":0 if generic else len(topics)}
 
 def select(rows,now):
@@ -172,6 +187,27 @@ def select(rows,now):
             if key not in unique or value["created_at"]>unique[key]["created_at"]:unique[key]=value
     # Greatest relevance score first, then NEWEST issues first (previously oldest first).
     return sorted(unique.values(),key=lambda e:(e["rank"],e["created_at"]),reverse=True)[:MAX_ITEMS]
+
+def select_visual(rows,now):
+    """Independent, bounded photo queue so generic news cannot hide imagery.
+
+    This is triage of verified-format owner-created Issues, NOT an image feed.
+    Visual leads about money and vehicles take priority, then recency.
+    """
+    if not isinstance(rows,list):
+        return []
+    uniq={}
+    for row in rows[:100]:
+        item=parse_issue(row,now)
+        if item is None or not item["photo_candidate"]:
+            continue
+        key=item["reddit_url"]
+        if key not in uniq or item["created_at"]>uniq[key]["created_at"]:
+            uniq[key]=item
+    return sorted(uniq.values(),key=lambda item: (
+        int("soldi" in item["topics"]),int("auto" in item["topics"]),
+        item["created_at"]),reverse=True)[:PHOTO_MAX_ITEMS]
+
 
 def markdown(rows,now):
     selected=select(rows,now)
@@ -194,6 +230,7 @@ def markdown(rows,now):
         and not generic_question(str(item.get("title") or "")[len(PREFIX):]))
     generic_count=sum(1 for item in selected if item.get("generic_question"))
     relevant_count=len(selected)-generic_count
+    photo_candidates=select_visual(rows,now)
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
       "**Reddit → IFTTT → GitHub: ricezione confermata dall'Issue #69 del 20 novembre 2026.** "
       "Questa dashboard misura gli eventi effettivamente ricevuti, non lo stato live di IFTTT.",
@@ -204,8 +241,33 @@ def markdown(rows,now):
       f"Eventi Reddit ricevuti: {received} · non pertinenti dal titolo: {irrelevant} · "
       f"pertinenti e con URL verificato: {relevant_count} · "
       f"domande generiche da rivedere: {generic_count} · "
+      f"possibili foto/clip dal solo titolo: {len(photo_candidates)} · "
       f"link IFTTT da risolvere: {shortened} · "
       "nessuna metrica X o Reddit disponibile.",""]
+    # A standalone, proof-only opportunity list uses previously trusted
+    # owner-created Issue links. It NEVER scrapes Reddit posts or downloads
+    # image bytes, and it cannot promise contributor rights or even an image.
+    lines += ["## 📸 Possibili prove visive per le guide", "",
+      "Queste sono **segnalazioni dal titolo**, non screenshot verificati, "
+      "scaricati o ricevuti. Prima di usare una foto controlla il post, "
+      "la piattaforma/patch, gli spoiler, la pertinenza al singolo passaggio "
+      "e il consenso esplicito per la ripubblicazione.",
+      "[Centro richieste screenshot PS5]("+PHOTO_HUB+") · "
+      "[Materiali promozionali ufficiali Rockstar](https://www.rockstargames.com/VI/media/screenshots) "
+      "(da non contare come prova delle singole procedure).", ""]
+    if not photo_candidates:
+        lines.append("Nessuna segnalazione fotografica verificabile nei titoli della coda attuale.")
+    for item in photo_candidates[:8]:
+        title=escape(re.sub(r"[\x00-\x1f\x7f]"," ",item["title"]))
+        title=re.sub(r"([\\\x60*_{}\[\]()#+.!>|])",r"\\\1",title)
+        lines.extend([
+          "- **Da verificare:** "+title+" · r/"+item["subreddit"]+
+          " · [Apri il post]("+item["reddit_url"]+") · "
+          "[Issue originale]("+item["issue_url"]+")",
+          "  - Non esaminato: non sappiamo se contenga un file originale, "
+          "se raffiguri GTA VI su PS5 o se possa essere condiviso sul sito.",
+        ])
+    lines.append("")
     if not selected:
         reason=("La connessione IFTTT → GitHub è verificata: sono arrivati eventi, ma "
                 "nessuno supera per ora i controlli di pertinenza e permalink."
