@@ -10,7 +10,7 @@ from __future__ import annotations
 from urllib.parse import urlencode
 import re
 
-OWNED = re.compile(r"^https://xfederiko11\\.github\\.io/gta-6/(?:[a-z0-9-]+/)*$")
+OWNED = re.compile(r"^https://xfederiko11\.github\.io/gta-6/(?:[a-z0-9-]+/)*$")
 SOURCE = "x"
 MEDIUM = "social"
 CAMPAIGN = "gta_vi_italia_organic_2026"
