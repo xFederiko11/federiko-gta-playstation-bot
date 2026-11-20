@@ -58,7 +58,7 @@ TIPS=[
         "title":"GTA VI PS5: sblocca il viaggio rapido con il taxi",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-fast-travel/",
         "media_url":IMAGES["taxi"],
-        "main":"🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Dopo la prima missione, chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
+        "main":"🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
     },
     {
         "id":"shooting ranges",
