@@ -19,6 +19,9 @@ import xml.etree.ElementTree as ET
 import requests
 from editorial_language_it import italian_title, TranslationUnavailable
 from editorial_director_v142 import priority, allowed as director_allowed
+from launch_cadence_v1 import (active as launch_active, in_hours as launch_in_hours,
+    count_local_day as launch_day_count, TARGET_MAX as LAUNCH_DAILY_CAP)
+from editorial_double_threads_v1 import double as launch_double
 
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
@@ -250,6 +253,8 @@ def editorial_day_slots(existing: dict, now: datetime) -> tuple[int,int]:
     """
     from editorial_director_v142 import RECOVERY_START, RECOVERY_END
     clock=now.astimezone(timezone.utc)
+    if launch_active(clock):
+        return launch_day_count(existing,clock),LAUNCH_DAILY_CAP
     if RECOVERY_START<=clock<RECOVERY_END:
         recent=[published(e.get('reserved_utc')) for e in existing.values()
                 if e.get('reserved_utc')]
@@ -458,6 +463,9 @@ def reserve():
     state = load_state()
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
+    if launch_active(now) and not launch_in_hours(now):
+        print('LAUNCH_HOLD outside 08:00-21:00 Europe/Rome; no reservation')
+        return
     # Local reservation cooldown applies to ALL editorial types, including
     # quick tips, trophy posts and old PowerPyx spotlights. Never let a
     # second reserve in the same Actions run queue a different story.
@@ -466,7 +474,8 @@ def reserve():
     prior = [dt for dt in prior if dt is not None]
     local_hold = bool(prior and now - max(prior) < timedelta(minutes=MIN_SPACING_MIN))
     spotlight = None if local_hold else powerpyx_spotlight(state, now)
-    ok, why = ((False, 'editorial_local_spacing') if local_hold else director_allowed(now))
+    ok, why = ((False, 'editorial_local_spacing') if local_hold else
+               director_allowed(now,kind='launch_thread' if launch_active(now) else None))
     if ok and editorial_day_slots(state['entries'],now)[0]>=editorial_day_slots(state['entries'],now)[1]:
         ok, why = False, 'editorial_daily_capacity'
     if not ok:
@@ -500,6 +509,21 @@ def reserve():
         selected = ([quick_tip] if quick_tip else [spotlight] if spotlight
                     else [owned_guide] if owned_guide
                     else [trophy_item] if trophy_item else select(items, state, now))
+        if launch_active(now):
+            converted=[]
+            for item in selected:
+                try:
+                    converted.append(launch_double(item))
+                except (KeyError,ValueError,TypeError) as exc:
+                    print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
+            if not converted:
+                for alternative in select(items,state,now,max_posts=5):
+                    try:
+                        converted=[launch_double(alternative)]
+                        break
+                    except (KeyError,ValueError,TypeError):
+                        continue
+            selected=converted[:1]
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
@@ -540,6 +564,14 @@ def deliver():
     client = BufferClient(expected_username='xFederiko11')
     client.verify_destination()
     for entry in mine:
+        clock=datetime.now(timezone.utc)
+        if launch_active(clock) and (not launch_in_hours(clock) or
+                                     not isinstance(entry.get('thread'),list) or
+                                     len(entry['thread'])!=2):
+            entry['status']='held_launch_format_or_window'
+            save_state(state)
+            print('LAUNCH_DELIVERY_HOLD: outside hours or not exactly two messages')
+            continue
         # No retry after attempted mutation: avoid duplicate Buffer posts.
         entry['status'] = 'attempted'
         entry['attempted_utc'] = datetime.now(timezone.utc).isoformat()
