@@ -48,7 +48,7 @@ class RedditIntakeTests(unittest.TestCase):
             "https://www.reddit.com/r/GTA6/comments/abc123/garage_location/")
         self.assertEqual(select(clean,NOW)[0]["reddit_url"],URL)
         self.assertIn("Eventi Reddit ricevuti: 1",markdown(clean,NOW))
-        self.assertIn("non pertinenti dal titolo: 1",markdown(clean,NOW))
+        self.assertIn("non pertinenti dal titolo: 0",markdown(clean,NOW))
         self.assertIn("pertinenti e con URL verificato: 1",markdown(clean,NOW))
         spoof=issue(author={"login":"other"},body=shortened["body"])
         called=[]
@@ -70,6 +70,7 @@ class RedditIntakeTests(unittest.TestCase):
             "https://www.reddit.com/r/GTA6/comments/abc123/streaming_music/")
         self.assertEqual(select(clean,NOW),[])
         self.assertIn("Eventi Reddit ricevuti: 1",markdown(clean,NOW))
+        self.assertIn("non pertinenti dal titolo: 1",markdown(clean,NOW))
     def test_ift_tt_relevant_title_only_and_hard_request_limit(self):
         relevant=issue(title="[REDDIT-LEAD] GTA VI money glitch PS5 update",
                        body="Reddit source: https://ift.tt/abcde123")
