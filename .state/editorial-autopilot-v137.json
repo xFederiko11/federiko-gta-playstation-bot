@@ -497,11 +497,12 @@
     },
     "cc156e586b4fb343b4264762": {
       "attempted_utc": "2026-11-20T08:50:30.450768+00:00",
+      "buffer_id": "6b0009d8d5f8acdd0d856bd9",
       "due_at": "2026-11-20T11:35:00+00:00",
       "reserved_utc": "2026-11-20T11:35:00+00:00",
       "run_id": "44705701471",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🚘 GTA VI | Hai trovato un'auto da conservare? Controlla il tracker, gli slot e la registrazione prima di abbandonarla. Ecco cosa verificare.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/salvare-auto/\n\n#GTAVI"
