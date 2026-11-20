@@ -12,8 +12,9 @@
       "title": "Soldi nascosti al negozio",
       "main": "💰 GTA VI | Soldi nascosti: durante l'incarico di Shirley, controlla il retro del negozio vicino al generatore. La guida distingue i passaggi con spoiler.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/soldi-2500-three-sheets-liquor/",
-      "status": "attempted",
-      "scheduled_for_rome": "2026-11-20T10:35:00+01:00"
+      "status": "scheduled",
+      "scheduled_for_rome": "2026-11-20T10:35:00+01:00",
+      "buffer_id": "6b0009d2d5f8acdd0d856976"
     },
     {
       "id": "vehicles-scan",
