@@ -1,6 +1,14 @@
 name: GTA VI - Reddit discovery inbox (review only)
 on:
   workflow_dispatch:
+  # Refresh dashboard on code changes, without requiring a manual button.
+  # Updating a GitHub Issue does not create a push, so this cannot recurse.
+  push:
+    branches: [main]
+    paths:
+      - 'reddit_intake_v1.py'
+      - 'test_reddit_intake_v1.py'
+      - '.github/workflows/gta6-reddit-intake-v1.yml'
   issues:
     types: [opened]
   schedule:
