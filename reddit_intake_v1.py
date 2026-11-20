@@ -27,6 +27,13 @@ SCORE=(
   ("guida",r"\b(?:mission|missioni|location|posizion|map|mappa|how to|guide|guida|ps5|help|aiuto)\w*\b"),
 )
 
+QUESTION_START=re.compile(r"^(?:how\s+(?:do|can)\s+i\b|where\s+(?:do|can)\s+i\b|anyone\s+know\b|is\s+there\s+a\s+way\b|come\s+(?:faccio|si\s+fa|posso|arrivo)\b|dove\s+(?:trovo|si\s+trova|posso)\b)",re.I)
+
+def generic_question(title):
+    """Ambiguous gameplay question: review ONLY after resolving exact GTA VI subreddit."""
+    return (isinstance(title,str) and 14<=len(title.strip())<=180
+            and QUESTION_START.search(title.strip()) is not None and "?" in title)
+
 def title_topics(title):
     """Use only headline terms for triage; do not infer claims from link text."""
     if not isinstance(title,str):return []
@@ -102,7 +109,8 @@ def expand_short_links(rows,resolve=expand_ift_link,max_lookups=20):
         item=dict(original)
         if (str((item.get("author") or {}).get("login","")).lower()==OWNER
             and str(item.get("title") or "").startswith(PREFIX+" ")
-            and title_topics(str(item.get("title") or "")[len(PREFIX):])
+            and (title_topics(str(item.get("title") or "")[len(PREFIX):])
+                 or generic_question(str(item.get("title") or "")[len(PREFIX):]))
             and re.fullmatch(r"https://github\.com/xFederiko11/federiko-gta-playstation-bot/issues/[0-9]+",str(item.get("url") or ""))):
             body=str(item.get("body") or "")
             match=SHORT_BODY.search(body)
@@ -139,12 +147,20 @@ def parse_issue(row,now):
     candidate=title[len(PREFIX):].strip()
     if len(candidate)<12 or len(candidate)>180:return None
     topics=title_topics(candidate)
-    if not topics:return None
-    # No inferred content: subject only, user must inspect the actual Reddit post.
     url=next(iter(urls))
+    subreddit=urlsplit(url).path.split("/")[2]
+    generic=False
+    if not topics:
+        if generic_question(candidate) and subreddit.lower() in ("gta6","gtavi"):
+            # A bare question such as "How do I reach this item?" might be a
+            # useful GTA VI help request, but no gameplay conclusion follows.
+            topics=["domanda generica da verificare"]
+            generic=True
+        else:
+            return None
     return {"title":candidate,"reddit_url":url,"issue_url":issue_url,
-            "subreddit":urlsplit(url).path.split("/")[2],"topics":topics,
-            "created_at":when.astimezone(timezone.utc).isoformat(),"rank":len(topics)}
+            "subreddit":subreddit,"topics":topics,"generic_question":generic,
+            "created_at":when.astimezone(timezone.utc).isoformat(),"rank":0 if generic else len(topics)}
 
 def select(rows,now):
     if not isinstance(rows,list):return []
@@ -167,13 +183,17 @@ def markdown(rows,now):
         if isinstance(item,dict)
         and str((item.get("author") or {}).get("login","")).lower()==OWNER
         and str(item.get("title") or "").startswith(PREFIX+" ")
-        and title_topics(str(item.get("title") or "")[len(PREFIX):])
+        and (title_topics(str(item.get("title") or "")[len(PREFIX):])
+             or generic_question(str(item.get("title") or "")[len(PREFIX):]))
         and "https://ift.tt/" in str(item.get("body") or ""))
     irrelevant=sum(1 for item in (rows if isinstance(rows,list) else [])
         if isinstance(item,dict)
         and str((item.get("author") or {}).get("login","")).lower()==OWNER
         and str(item.get("title") or "").startswith(PREFIX+" ")
-        and not title_topics(str(item.get("title") or "")[len(PREFIX):]))
+        and not title_topics(str(item.get("title") or "")[len(PREFIX):])
+        and not generic_question(str(item.get("title") or "")[len(PREFIX):]))
+    generic_count=sum(1 for item in selected if item.get("generic_question"))
+    relevant_count=len(selected)-generic_count
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
       "**Reddit → IFTTT → GitHub: ricezione confermata dall'Issue #69 del 20 novembre 2026.** "
       "Questa dashboard misura gli eventi effettivamente ricevuti, non lo stato live di IFTTT.",
@@ -182,8 +202,9 @@ def markdown(rows,now):
       "Apri il permalink e controlla regole del subreddit, contenuto e data prima di intervenire.","",
       f"Controllo UTC: {now.astimezone(timezone.utc).isoformat()} · "
       f"Eventi Reddit ricevuti: {received} · non pertinenti dal titolo: {irrelevant} · "
-      f"pertinenti e con URL verificato: {len(selected)} · "
-      f"link IFTTT pertinenti ancora da risolvere: {shortened} · "
+      f"pertinenti e con URL verificato: {relevant_count} · "
+      f"domande generiche da rivedere: {generic_count} · "
+      f"link IFTTT da risolvere: {shortened} · "
       "nessuna metrica X o Reddit disponibile.",""]
     if not selected:
         reason=("La connessione IFTTT → GitHub è verificata: sono arrivati eventi, ma "
@@ -198,6 +219,8 @@ def markdown(rows,now):
         lines.extend([f"### {i}. {title}",
           "- Subreddit: r/"+item["subreddit"]+" · temi: "+", ".join(item["topics"]),
           "- [Leggi il post originale]("+item["reddit_url"]+") · [Segnalazione importata]("+item["issue_url"]+")",
+          ("- ⚠️ Titolo generico, **non è una scoperta GTA VI verificata**: leggi il contenuto reale prima di intervenire."
+           if item.get("generic_question") else "- Argomento specifico: resta comunque da verificare il post completo."),
           "- Se puoi aiutare: prepara una risposta concreta **senza link promozionali**. "
           "Leggi prima le regole del subreddit e invia manualmente solo se appropriato.",
           "- Non affermare che un glitch funziona, che i trofei sono al sicuro o che il "

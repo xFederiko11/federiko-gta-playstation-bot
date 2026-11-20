@@ -62,7 +62,7 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertEqual(len(select(expand_short_links([shortened],resolve=lambda value:None),NOW)),0)
         report=markdown([shortened],NOW)
         self.assertIn("Eventi Reddit ricevuti: 1",report)
-        self.assertIn("link IFTTT pertinenti ancora da risolvere: 1",report)
+        self.assertIn("link IFTTT da risolvere: 1",report)
     def test_real_ift_url_does_not_mean_relevant_gta_tip(self):
         irrelevant=issue(title="[REDDIT-LEAD] I feel sorry for streamers without any music",
                          body="Reddit source: https://ift.tt/bMAG9Kx")
@@ -84,7 +84,45 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertEqual(calls,["https://ift.tt/abcde123"])
         self.assertEqual(select(rows,NOW)[0]["title"],"GTA VI money glitch PS5 update")
         self.assertIn("non pertinenti dal titolo: 1", markdown(rows,NOW))
-        self.assertIn("link IFTTT pertinenti ancora da risolvere: 0",markdown(rows,NOW))
+        self.assertIn("link IFTTT da risolvere: 0",markdown(rows,NOW))
+
+    def test_generic_question_is_manual_review_only_after_verified_gta6_permalinks(self):
+        generic=issue(title="[REDDIT-LEAD] How do I reach this item?",
+                      body="Reddit source: https://ift.tt/YMKx9DG")
+        called=[]
+        def verified(_):
+            called.append(1)
+            return "https://www.reddit.com/r/GTA6/comments/qwerty123/"
+        rows=expand_short_links([generic],resolve=verified,max_lookups=1)
+        self.assertEqual(called,[1])
+        selected=select(rows,NOW)
+        self.assertEqual(len(selected),1)
+        self.assertTrue(selected[0]["generic_question"])
+        self.assertEqual(selected[0]["rank"],0)
+        self.assertEqual(selected[0]["topics"],["domanda generica da verificare"])
+        report=markdown(rows,NOW)
+        self.assertIn("domande generiche da rivedere: 1",report)
+        self.assertIn("pertinenti e con URL verificato: 0",report)
+        self.assertIn("non è una scoperta GTA VI verificata",report)
+        self.assertIn("https://www.reddit.com/r/GTA6/comments/qwerty123/",report)
+        self.assertIn("non pubblica",report)
+        self.assertNotIn("glitch confermato",report)
+        other=expand_short_links([generic],resolve=lambda _: "https://www.reddit.com/r/italygames/comments/qwerty123/")
+        self.assertEqual(select(other,NOW),[])
+        spoof=issue(title=generic["title"],body=generic["body"],author={"login":"spam-account"})
+        self.assertEqual(expand_short_links([spoof],resolve=lambda _: (_ for _ in ()).throw(AssertionError("network")))[0]["body"],spoof["body"])
+        self.assertEqual(select([generic],NOW),[])
+        self.assertIn("domande generiche da rivedere: 0",markdown([generic],NOW))
+        self.assertIn("link IFTTT da risolvere: 1",markdown([generic],NOW))
+
+    def test_non_question_lead_without_topics_is_still_excluded(self):
+        irrelevant=issue(title="[REDDIT-LEAD] Lovely background music on streams",
+                         body="Reddit source: https://ift.tt/abcde123")
+        calls=[]
+        rows=expand_short_links([irrelevant],resolve=lambda link:calls.append(link))
+        self.assertEqual(calls,[])
+        self.assertEqual(select(rows,NOW),[])
+        self.assertIn("non pertinenti dal titolo: 1",markdown(rows,NOW))
 
     def test_newest_relevant_issue_wins_tie(self):
         first=issue(title="[REDDIT-LEAD] GTA VI money farming glitch",
