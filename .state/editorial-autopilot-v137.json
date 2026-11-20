@@ -2,11 +2,12 @@
   "entries": {
     "0e1b6c71114e27201aec02e8": {
       "attempted_utc": "2026-11-20T08:53:24.355239+00:00",
+      "buffer_id": "6b000a860f5eda1a57d61243",
       "due_at": "2026-11-20T16:35:00+00:00",
       "reserved_utc": "2026-11-20T16:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "💎 GTA VI | Stai puntando al platino? Non dare per scontato che un trucco o un exploit lasci intatti i trofei e i salvataggi. Controlla prima gli avvisi.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trucchi/\n\n#GTAVI"
@@ -61,11 +62,12 @@
     },
     "16c473477c74404c7eb56608": {
       "attempted_utc": "2026-11-20T08:53:24.355211+00:00",
+      "buffer_id": "6b000a85738ce4635f9e0ffd",
       "due_at": "2026-11-20T13:35:00+00:00",
       "reserved_utc": "2026-11-20T13:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🚕 GTA VI | Vuoi risparmiare tempo tra due missioni? Il taxi consente di saltare il tragitto con un supplemento di 100 GTA$, oltre alla tariffa della corsa.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/\n\n#GTAVI"
@@ -140,11 +142,12 @@
     },
     "3640e1f7463bb96f21375a7b": {
       "attempted_utc": "2026-11-20T08:53:24.355221+00:00",
+      "buffer_id": "6b000a857b0a126cebbf9097",
       "due_at": "2026-11-20T14:35:00+00:00",
       "reserved_utc": "2026-11-20T14:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🎯 GTA VI | Poligoni: medaglia Oro e potenziamento Concentrazione non sono la stessa cosa. Prima di ripetere le prove, controlla il requisito che ti serve.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/\n\n#GTAVI"
@@ -274,11 +277,12 @@
     },
     "580240c0a6d9fa386655064b": {
       "attempted_utc": "2026-11-20T08:53:24.355246+00:00",
+      "buffer_id": "6b000a86ca85ebefb00ce100",
       "due_at": "2026-11-20T17:35:00+00:00",
       "reserved_utc": "2026-11-20T17:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🏆 GTA VI | La checklist del platino separa missioni, attività, requisiti e rischi perdibili. Meglio controllarla prima di investire ore su un obiettivo sbagliato.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trofei/\n\n#GTAVI"
@@ -533,11 +537,12 @@
     },
     "aeb11e2c9144773a4bcb5030": {
       "attempted_utc": "2026-11-20T08:53:24.355232+00:00",
+      "buffer_id": "6b000a860f5eda1a57d6121e",
       "due_at": "2026-11-20T15:35:00+00:00",
       "reserved_utc": "2026-11-20T15:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "⚠️ GTA VI | Prima di lasciare il Capitolo 1, controlla le attività opzionali potenzialmente perdibili. Nella guida separiamo i fatti dagli effetti sui trofei ancora incerti.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/\n\n#GTAVI"
@@ -548,11 +553,12 @@
     },
     "af3afe0afe07b402f0b11cc3": {
       "attempted_utc": "2026-11-20T08:53:24.355191+00:00",
+      "buffer_id": "6b000a854c1afd05de072532",
       "due_at": "2026-11-20T12:35:00+00:00",
       "reserved_utc": "2026-11-20T12:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🏆 GTA VI | Per il 100% sono richieste 70 sfide su 80, secondo la guida PowerPyx. Scegli prima quelle più rapide ed evita di perdere tempo sulle altre.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/\n\n#GTAVI"
@@ -563,11 +569,12 @@
     },
     "ba15df13426271859b24bc58": {
       "attempted_utc": "2026-11-20T08:53:24.355252+00:00",
+      "buffer_id": "6b000a867b0a126cebbf90c8",
       "due_at": "2026-11-20T18:35:00+00:00",
       "reserved_utc": "2026-11-20T18:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "attempted",
+      "status": "scheduled",
       "thread": [
         "🚙 GTA VI | Per il completamento conta anche la scoperta dei veicoli. Una buona routine: scansiona ciò che incontri, verifica il tracker e registra solo i mezzi da tenere.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/auto-speciali/\n\n#GTAVI"
