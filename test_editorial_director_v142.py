@@ -56,7 +56,7 @@ class EditorDirectorTests(unittest.TestCase):
         self.assertEqual(current_limits(BOOST_UNTIL+timedelta(days=21)),(6,timedelta(minutes=120)))
         with tempfile.TemporaryDirectory() as p,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
             root=Path(p)
-            clock=BOOST_UNTIL+timedelta(hours=6)
+            clock=BOOST_UNTIL+timedelta(days=3,hours=6)
             stamps=[(clock-timedelta(hours=3+i*3)).isoformat() for i in range(6)]
             (root/'editorial-autopilot-v137.json').write_text(json.dumps({
                 'entries':{str(i):{'reserved_utc':s,'status':'sent'} for i,s in enumerate(stamps)}
@@ -68,33 +68,40 @@ class EditorDirectorTests(unittest.TestCase):
             }),encoding='utf-8')
             self.assertEqual(allowed(clock,root=root),(False,'global_spacing'))
 
-    def test_one_time_launch_recovery_from_preexisting_burst(self):
+    def test_launch_double_thread_exclusive_and_prior_activity_respected(self):
         self.assertEqual(RECOVERY_MAX_AUTOMATED_DELIVERIES,5)
         self.assertEqual(RECOVERY_END-RECOVERY_START,timedelta(hours=24))
-        clock=RECOVERY_START+timedelta(hours=2)
+        clock=datetime(2026,11,20,10,0,tzinfo=timezone.utc)
         with tempfile.TemporaryDirectory() as p,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
             root=Path(p)
-            old={str(i):{'reserved_utc':(RECOVERY_START-timedelta(hours=8,minutes=i)).isoformat(),
-                        'status':'sent'} for i in range(28)}
+            old={str(i):{'reserved_utc':(clock-timedelta(hours=21,minutes=i)).isoformat(),
+                         'status':'sent'} for i in range(22)}
             (root/'editorial-autopilot-v137.json').write_text(json.dumps({'entries':old}),encoding='utf-8')
-            self.assertEqual(allowed(clock,root=root),(True,'ready'))
-            recent={'n'+str(i):{'reserved_utc':(clock-timedelta(hours=1,minutes=31+i)).isoformat(),
-                                'status':'reserved'} for i in range(5)}
+            self.assertEqual(allowed(clock,root=root),(False,'launch_double_thread_only'))
+            self.assertEqual(allowed(clock,root=root,kind='launch_thread'),(True,'launch_thread_ready'))
+            self.assertEqual(allowed(datetime(2026,11,20,20,tzinfo=timezone.utc),
+                                root=root,kind='launch_thread'),(False,'launch_outside_08_21_rome'))
+            recent={'new-'+str(i):{'reserved_utc':(clock-timedelta(hours=3,minutes=i)).isoformat(),
+                                  'thread':['parent','source'],'status':'reserved'} for i in range(13)}
             (root/'launch-watch-v134.json').write_text(json.dumps({'posts':recent}),encoding='utf-8')
-            self.assertEqual(allowed(clock,root=root),(False,'recovery_tranche_budget'))
-            # Outside recovery, old entries count again under the rolling policy.
-            self.assertEqual(allowed(RECOVERY_END+timedelta(minutes=1),root=root),(True,'ready'))
+            self.assertEqual(allowed(clock,root=root,kind='launch_thread'),
+                             (False,'launch_x_rolling_message_budget'))
 
-    def test_recovery_still_keeps_minimum_spacing_from_old_and_new_reservations(self):
-        clock=RECOVERY_START+timedelta(minutes=40)
+    def test_launch_requires_minimum_gap_and_cap_16_per_local_day(self):
+        clock=datetime(2026,11,20,10,tzinfo=timezone.utc)
         with tempfile.TemporaryDirectory() as p,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
             root=Path(p)
             (root/'editorial-autopilot-v137.json').write_text(json.dumps({'entries':{
-                'old':{'reserved_utc':(RECOVERY_START-timedelta(minutes=20)).isoformat(),
-                       'status':'sent'}
+                'last':{'reserved_utc':(clock-timedelta(minutes=20)).isoformat(),
+                        'thread':['main','reply'],'status':'sent'}
             }}),encoding='utf-8')
-            self.assertEqual(allowed(clock,root=root),(False,'global_spacing'))
-            self.assertEqual(allowed(clock+timedelta(minutes=40),root=root),(True,'ready'))
+            self.assertEqual(allowed(clock,root=root,kind='launch_thread'),(False,'launch_minimum_gap'))
+            self.assertEqual(allowed(clock+timedelta(minutes=40),root=root,kind='launch_thread'),
+                             (True,'launch_thread_ready'))
+            reserved={str(i):{'reserved_utc':(clock-timedelta(hours=2,minutes=i)).isoformat(),
+                               'status':'sent','thread':['main','reply']} for i in range(16)}
+            (root/'editorial-autopilot-v137.json').write_text(json.dumps({'entries':reserved}),encoding='utf-8')
+            self.assertEqual(allowed(clock,root=root,kind='launch_thread'),(False,'launch_local_day_cap'))
 
     def test_rejected_events_not_counted_and_future_entries_hold(self):
         with tempfile.TemporaryDirectory() as directory,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
