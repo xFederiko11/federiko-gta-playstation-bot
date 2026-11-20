@@ -22,8 +22,7 @@ PAGE_SIZE=80
 POSTS_QUERY="""query SiteXPosts($org: OrganizationId!, $chan: ChannelId!, $after: String) {
  posts(first: 80, after: $after, input: {
    organizationId: $org
-   filter: {status: sent, channelIds: [$chan]}
-   sort: [{field: createdAt, direction: desc}]
+   filter: {status: [sent], channelIds: [$chan]}
  }) {
    edges { node { id status channelId channelService text sentAt externalLink } }
    pageInfo { hasNextPage endCursor }
@@ -90,9 +89,8 @@ def comparable(a):
 def node_match(node,known):
     expected=comparable(known.get("first_text"))
     actual=comparable(node.get("text"))
-    # Full text or same opening paragraph is enough to protect ledger matching.
-    return not expected or (len(expected)>=15 and len(actual)>=15 and
-                             (expected[:55]==actual[:55] or expected==actual))
+    # Own posts should match the first paragraph; otherwise no URL attribution.
+    return len(expected)>=15 and len(actual)>=15 and (expected[:55]==actual[:55] or expected==actual)
 
 def records(nodes,ledger,channel_id,*,now):
     matches=[]
