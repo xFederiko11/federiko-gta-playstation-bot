@@ -6,6 +6,7 @@ from urllib.parse import urlsplit
 import re
 import argparse
 from buffer_publisher import BufferClient, BufferAPIError, BufferConfigurationError, ORGANIZATIONS_QUERY
+from buffer_slot_reconcile_v1 import from_ledger
 
 POST_QUERY = """query BufferHealth($orgId:OrganizationId!,$channelId:ChannelId!) {
   sent:posts(first:15,input:{organizationId:$orgId,
@@ -54,13 +55,16 @@ def summarize(data,*,paused=False):
             node=edge.get("node") if isinstance(edge,dict) else None
             if not isinstance(node,dict) or node.get("status")!=state:
                 raise ValueError("Unexpected Buffer post status")
+            bid=node.get("id")
+            if not isinstance(bid,str) or not re.fullmatch(r"[A-Za-z0-9_-]{6,80}",bid):
+                raise ValueError("Invalid Buffer post ID in verified sample")
             due=node.get("dueAt")
             url=node.get("externalLink")
             if due is not None and not isinstance(due,str):
                 raise ValueError("Invalid dueAt")
             if url is not None and not isinstance(url,str):
                 raise ValueError("Invalid externalLink")
-            posts.append({"dueAt":due,"externalLink":url})
+            posts.append({"id":bid,"dueAt":due,"externalLink":url})
         result[state]=posts
     return result
 
@@ -127,8 +131,11 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     args=p.parse_args()
     result=snapshot()
+    now=datetime.now(timezone.utc)
+    report=render(result,now)
+    report+='\n'+from_ledger(result,now)
     args.output.parent.mkdir(parents=True,exist_ok=True)
-    args.output.write_text(render(result,datetime.now(timezone.utc)),encoding="utf-8")
+    args.output.write_text(report,encoding="utf-8")
     print("BUFFER_QUEUE_HEALTH",result["status"],"sent",len(result["sent"]),
           "scheduled",len(result["scheduled"]),"errors",len(result["error"]))
 

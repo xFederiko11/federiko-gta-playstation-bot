@@ -6,6 +6,8 @@ on:
     paths:
       - 'buffer_queue_health_v1.py'
       - 'test_buffer_queue_health_v1.py'
+      - 'buffer_slot_reconcile_v1.py'
+      - 'test_buffer_slot_reconcile_v1.py'
       - 'buffer_insights_probe_v1.py'
       - 'test_buffer_insights_probe_v1.py'
       - 'launch_delivery_audit_v1.py'
@@ -19,6 +21,8 @@ on:
     paths:
       - '.github/workflows/gta6-buffer-queue-health-v1.yml'
       - 'buffer_queue_health_v1.py'
+      - 'buffer_slot_reconcile_v1.py'
+      - 'test_buffer_slot_reconcile_v1.py'
       - 'buffer_insights_probe_v1.py'
       - 'test_buffer_insights_probe_v1.py'
       - 'launch_delivery_audit_v1.py'
@@ -27,6 +31,10 @@ on:
     - cron: '17 6 * * *'
     - cron: '17 12 * * *'
     - cron: '17 18 * * *'
+    # Campaign-day close (20:42 Rome) to reconcile the final 19:35 slot.
+    # GitHub cron is best effort; the report records actual execution time.
+    - cron: '42 19 19-30 11 *'
+    - cron: '42 19 1-2 12 *'
   workflow_dispatch:
 
 permissions:
@@ -54,9 +62,9 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: No-network unit tests and publication gate checks
         run: |
-          python -m unittest -q test_buffer_queue_health_v1 test_buffer_insights_probe_v1 test_launch_delivery_audit_v1 test_editorial_director_v142 test_x_automation_safety_v1
+          python -m unittest -q test_buffer_queue_health_v1 test_buffer_slot_reconcile_v1 test_buffer_insights_probe_v1 test_launch_delivery_audit_v1 test_editorial_director_v142 test_x_automation_safety_v1
           python x_automation_safety_v1.py
-      - name: Read Buffer scheduled sent error without any mutation
+      - name: Read Buffer scheduled sent error and compare today's slots against GitHub ledger
         if: github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}

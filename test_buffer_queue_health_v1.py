@@ -32,6 +32,8 @@ class BufferQueueAuditTests(unittest.TestCase):
         report=h.summarize(payload(),paused=True)
         self.assertEqual(len(report["sent"]),1)
         self.assertEqual(len(report["scheduled"]),2)
+        self.assertEqual(report["scheduled"][0]["id"],"buffer-0")
+        self.assertEqual(report["sent"][0]["id"],"buffer-0")
         self.assertEqual(len(report["error"]),0)
         self.assertTrue(report["is_queue_paused"])
         body=h.render(report,NOW)
@@ -87,6 +89,10 @@ class BufferQueueAuditTests(unittest.TestCase):
                    "scheduled":{"edges":[]},"error":{"edges":[]}}):
             with self.assertRaises(ValueError):
                 h.summarize(bad)
+        bad=payload()
+        bad["scheduled"]["edges"][0]["node"]["id"]="invalid#internal"
+        with self.assertRaises(ValueError):
+            h.summarize(bad)
         self.assertIn("Dati Buffer non disponibili",h.render(
             {"status":"unavailable","reason":"BufferConfigurationError"},NOW))
 
