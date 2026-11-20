@@ -28,6 +28,21 @@ class SiteEvergreenTests(unittest.TestCase):
             self.assertNotIn("@Rockstar",copy)
             self.assertTrue(item["path"].endswith("/"))
 
+    def test_ps5_first_person_glitch_copy_is_cautious_and_requires_live_guide(self):
+        item=next(x for x in CONTENT if x["id"]=="ps5-first-person-glitch")
+        self.assertEqual(item["path"],"/guide-e-tutorial/glitch-prima-persona-ps5/")
+        self.assertIn("trofei NON verificati",item["text"])
+        self.assertIn("Salva prima",item["text"])
+        self.assertNotIn("Trophy Safe",item["text"])
+        self.assertNotIn("infinito",item["text"])
+        self.assertNotIn("tutti i trofei",item["text"])
+        self.assertEqual(DAY_BUDGET,1)
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda url:False))
+        proposed=candidate(self.state,NOW,live_checker=lambda url:url.endswith(item["path"]))
+        self.assertIsNotNone(proposed)
+        self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
+        self.assertLessEqual(x_weight(proposed["text"]),280)
+
     def test_first_public_site_canonical_selected_only_if_200(self):
         calls=[]
         def live(url):
