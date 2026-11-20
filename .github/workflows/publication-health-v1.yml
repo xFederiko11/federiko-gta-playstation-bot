@@ -2,8 +2,14 @@ name: Publication Health (read-only)
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths: ['publishing_health_v1.py', 'test_publishing_health_launch_v1.py', '.github/workflows/publication-health-v1.yml']
   schedule:
     - cron: '17 */6 * * *'
+    # Rome = UTC+1 during the GTA VI launch. Actual dates guarded in Python.
+    - cron: '30 7,11,15,19 19-30 11 *'
+    - cron: '30 7,11,15,19 1-2 12 *'
 
 permissions:
   contents: read
@@ -14,10 +20,26 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Validate read-only launch totals
+        run: python -m unittest -q test_publishing_health_launch_v1
       - name: Check scanner freshness and publishing ledgers
         run: |
           python publishing_health_v1.py > publication-health-report.json || status=$?
           cat publication-health-report.json
+          python - <<'PY'
+          import json,os
+          data=json.load(open('publication-health-report.json',encoding='utf-8'))
+          launch=data.get('launch_campaign',{})
+          if launch.get('active'):
+              sent=launch.get('sent_double_threads',0)
+              print(f"LAUNCH_DAILY_THREAD_PROGRESS sent={sent} goal=12 min=10 cap=16 queued_not_counted")
+              with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as file:
+                  file.write(f"## GTA VI launch — {launch['date']}\n")
+                  file.write(f"Thread doppi **inviati** nel registro: **{sent}** / obiettivo 12 (10–16).\n\n")
+                  file.write("Orario 08:00–21:00 Europe/Rome. Nessun retry automatico, Buffer Sent non prova le impression X.\n")
+              if launch.get('under_min_at_close'):
+                  print('::warning::Launch daily under minimum 10 by 20:30 Rome; inspect source queue and Buffer Sent.')
+          PY
           if [ "${status:-0}" -ne 0 ]; then
             echo "::warning::Publishing health requires attention; see artifact and Buffer Sent."
           fi
