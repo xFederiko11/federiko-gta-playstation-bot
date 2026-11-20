@@ -1,0 +1,31 @@
+name: Publication Health (read-only)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check scanner freshness and publishing ledgers
+        run: |
+          python publishing_health_v1.py > publication-health-report.json || status=$?
+          cat publication-health-report.json
+          if [ "${status:-0}" -ne 0 ]; then
+            echo "::warning::Publishing health requires attention; see artifact and Buffer Sent."
+          fi
+      - name: Upload diagnostic report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: publication-health-${{ github.run_id }}
+          path: publication-health-report.json
+          retention-days: 7
+          if-no-files-found: warn
