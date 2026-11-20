@@ -8,6 +8,21 @@ from quick_tips_v146 import TIPS, validate, reply, candidate
 
 NOW=datetime(2026,11,18,18,0,tzinfo=timezone.utc)
 
+# The test runs every 15 minutes, including after the 21:00 Rome cutoff.
+# Freeze time for the *test*, not the bot's real, protective launch gate.
+class LaunchHoursClock(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        fixed = datetime(2026, 11, 20, 14, 0, tzinfo=timezone.utc)
+        return fixed if tz is None else fixed.astimezone(tz)
+
+class AfterHoursClock(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        fixed = datetime(2026, 11, 20, 20, 15, tzinfo=timezone.utc)
+        return fixed if tz is None else fixed.astimezone(tz)
+
+
 def answer(payload):
     response=Mock(status_code=200, headers={})
     response.json.return_value={"data":payload}
@@ -85,10 +100,13 @@ class QuickTipsV146Tests(unittest.TestCase):
         import editorial_autopilot_v137 as bot
         with tempfile.TemporaryDirectory() as td, \
              patch.object(bot,"STATE",Path(td)/"state.json"), \
+             patch.object(bot,"datetime",LaunchHoursClock), \
              patch.object(bot,"read_feeds",return_value=([],[])), \
              patch.object(bot,"load_sources",return_value=[]), \
              patch.object(bot,"powerpyx_spotlight",return_value=None), \
              patch.object(bot,"director_allowed",return_value=(True,"ready")), \
+             patch("growth_conversion_v1.candidate",return_value=None), \
+             patch("portal_links_v148.guide_if_live",return_value=None), \
              patch("gta6_special_campaign_v139.probe_image",return_value=True), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-125"}):
             bot.reserve()
@@ -113,15 +131,35 @@ class QuickTipsV146Tests(unittest.TestCase):
         import editorial_autopilot_v137 as bot
         with tempfile.TemporaryDirectory() as td, \
              patch.object(bot,"STATE",Path(td)/"state.json"), \
+             patch.object(bot,"datetime",LaunchHoursClock), \
              patch.object(bot,"read_feeds",return_value=([],[])), \
              patch.object(bot,"load_sources",return_value=[]), \
              patch.object(bot,"powerpyx_spotlight",return_value=None), \
              patch.object(bot,"director_allowed",return_value=(True,"ready")), \
+             patch("growth_conversion_v1.candidate",return_value=None), \
+             patch("site_evergreen_posts_v1.candidate",return_value=None), \
+             patch("portal_links_v148.guide_if_live",return_value=None), \
              patch("gta6_special_campaign_v139.probe_image",return_value=False), \
              patch("trophy_posts_v142.candidate",return_value=None), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-126"}):
             bot.reserve()
             self.assertFalse(bot.STATE.exists())
+
+    def test_production_safety_gate_still_holds_after_2100_rome(self):
+        import os
+        import tempfile
+        from pathlib import Path
+        import editorial_autopilot_v137 as bot
+        with tempfile.TemporaryDirectory() as td, \
+             patch.object(bot, "STATE", Path(td)/"state.json"), \
+             patch.object(bot, "datetime", AfterHoursClock), \
+             patch.object(bot, "read_feeds", return_value=([],[])), \
+             patch.object(bot, "load_sources", return_value=[]), \
+             patch.object(bot, "director_allowed", return_value=(True,"ready")) as director, \
+             patch.dict(os.environ, {"GITHUB_RUN_ID":"test-run-afterhours"}):
+            bot.reserve()
+            self.assertFalse(bot.STATE.exists())
+            director.assert_not_called()
 
     def test_reauthorization_gates_resume_without_repeating_old_rejected_tip(self):
         from unittest.mock import patch
