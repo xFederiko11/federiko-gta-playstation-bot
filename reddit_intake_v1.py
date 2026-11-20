@@ -43,8 +43,8 @@ def canonical_url(text):
 # IFTTT shortens PostURL to ift.tt by default. Resolve only the redirect
 # response header from that ONE approved shortener host. Never follow a
 # redirect or access arbitrary URLs, private networks or Reddit contents.
-SHORT_URL=re.compile(r"^https://ift\\.tt/[A-Za-z0-9]{4,20}$")
-SHORT_BODY=re.compile(r"(Reddit source:\\s*)(https://ift\\.tt/[A-Za-z0-9]{4,20})(?=\\s|$)",re.I)
+SHORT_URL=re.compile(r"^https://ift\.tt/[A-Za-z0-9]{4,20}$")
+SHORT_BODY=re.compile(r"(Reddit source:\s*)(https://ift\.tt/[A-Za-z0-9]{4,20})(?=\s|$)",re.I)
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self,req,fp,code,msg,headers,newurl):
         return None
@@ -82,7 +82,7 @@ def expand_short_links(rows,resolve=expand_ift_link,max_lookups=20):
         item=dict(original)
         if (str((item.get("author") or {}).get("login","")).lower()==OWNER
             and str(item.get("title") or "").startswith(PREFIX+" ")
-            and re.fullmatch(r"https://github\\.com/xFederiko11/federiko-gta-playstation-bot/issues/[0-9]+",str(item.get("url") or ""))):
+            and re.fullmatch(r"https://github\.com/xFederiko11/federiko-gta-playstation-bot/issues/[0-9]+",str(item.get("url") or ""))):
             body=str(item.get("body") or "")
             match=SHORT_BODY.search(body)
             if match:
@@ -174,7 +174,7 @@ def markdown(rows,now):
       "Account Reddit e GitHub già collegati in IFTTT secondo lo screenshot del 20 novembre; non ripetere la configurazione. In assenza di segnalazioni controlla l'Activity dell'Applet.",
       "Applet: Reddit (nuovo post pertinente in r/GTA6/r/GTAVI/r/italygames, "
       "secondo i trigger disponibili) → GitHub Create Issue nel repo del bot.",
-      "Prefisso titolo: \`[REDDIT-LEAD]\` seguito dal titolo del post; body con il permalink completo "
+      "Prefisso titolo: `[REDDIT-LEAD]` seguito dal titolo del post; body con il permalink completo "
       "https://www.reddit.com/r/.../comments/ID/. Senza URL valido o autore del "
       "repository, la segnalazione viene scartata.",
       "Non autorizzare pubblicazioni o commenti Reddit per questo flusso.","",
