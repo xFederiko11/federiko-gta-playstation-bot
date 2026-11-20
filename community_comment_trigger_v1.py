@@ -21,6 +21,7 @@ KEYPREFIX="community-first-comment-v1:"
 MAX_ISSUES=50
 MAX_BODY=25000
 MAX_DAILY=1
+MAX_COMMENT_CHECKS=5
 AGE=timedelta(days=7)
 BAD=re.compile(r"(?i)(?:https?://|www\.|t\.me/|discord\.gg|free\s+followers|guadagn[ai]\s+facil[ei]|crypto|airdrop|buy\s+now|casino|\bseo\b)")
 TOPIC=re.compile(r"(?i)(?:gta|vi\b|ps5|auto|veicol|trofe|platino|gioco|mission|garage|mappa|soldi|guid|posizion|salvat|funzion|prova|quest|capitol|sfid)")
@@ -89,6 +90,7 @@ def candidate(state,now,*,read=get_json,live_checker=page_live):
     except (requests.RequestException,ValueError,TypeError):
         return None
     if not isinstance(issues,list):return None
+    checked=0
     for issue in sorted(issues[:MAX_ISSUES],key=lambda i:i.get("updated_at",""),reverse=True):
         known=allowed_issue(issue)
         if not known or not isinstance(issue.get("comments"),int) or issue["comments"]<1:continue
@@ -100,6 +102,8 @@ def candidate(state,now,*,read=get_json,live_checker=page_live):
                for e in entries.values()):continue
         key=sha256((KEYPREFIX+str(known["number"])).encode()).hexdigest()[:24]
         if key in entries:continue
+        if checked>=MAX_COMMENT_CHECKS:break
+        checked+=1
         try:
             comments=read(f"/issues/{known['number']}/comments?per_page=30")
         except (requests.RequestException,ValueError,TypeError):
