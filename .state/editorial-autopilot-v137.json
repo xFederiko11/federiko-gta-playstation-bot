@@ -136,6 +136,22 @@
       "title": "GTA 6 Base PS5 Performance Suffers 'Minor' and 'Sustained' Frame Rate Drops, But It's 'Unwavering' on PS5 Pro",
       "url": "https://pushsquare.com/news/2026/11/gta-6-base-ps5-performance-suffers-minor-and-sustained-frame-rate-drops-but-its-unwavering-on-ps5-pro"
     },
+    "43d67ac8133ea12010282a67": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_01.0zgz7tveur6y8.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-20T08:42:08.672747+00:00",
+      "run_id": "44704607855",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥉 GTA VI | BRONZO: Mentalità positiva\n\n🎯 Medita in tutti i luoghi di meditazione di Leonida.\n\n💡 PowerPyx segnala una meditazione nel Capitolo 1 che potrebbe essere mancabile. Salva manualmente prima di avanzare.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-28-mentalita-positiva/\n\n#GTAVI #Platino",
+      "thread": [
+        "🥉 GTA VI | BRONZO: Mentalità positiva\n\n🎯 Medita in tutti i luoghi di meditazione di Leonida.\n\n💡 PowerPyx segnala una meditazione nel Capitolo 1 che potrebbe essere mancabile. Salva manualmente prima di avanzare.\n\n#GTAVI",
+        "🏆 Requisiti, consigli e avvisi sul platino nella checklist:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-28-mentalita-positiva/"
+      ],
+      "tip_id": null,
+      "title": "Mentalità positiva",
+      "trophy_number": 28,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-28-mentalita-positiva/"
+    },
     "4969df7e9b145d22eef7b6d5": {
       "attempted_utc": "2026-11-19T05:08:20.762935+00:00",
       "buffer_id": "6afe8444f6b6aa0cd4a28b7c",
@@ -795,6 +811,13 @@
       "feeds_relevant": 108,
       "reserved": 1,
       "run": "44697978895"
+    },
+    {
+      "at": "2026-11-20T08:42:08.672747+00:00",
+      "errors": [],
+      "feeds_relevant": 108,
+      "reserved": 1,
+      "run": "44704607855"
     }
   ],
   "schema": "v13.7",
@@ -817,6 +840,7 @@
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
     "making gainz walkthrough": "528b4fcb1f54e6b5b4c77d2c",
+    "mentalita positiva": "43d67ac8133ea12010282a67",
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
