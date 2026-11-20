@@ -47,7 +47,7 @@ def launch_progress(now, root=ROOT):
     for item in entries.values():
         if not isinstance(item,dict): continue
         at=timestamp(item.get('completed_utc') or item.get('reserved_utc'))
-        if at is None or launch_local(at).date()!=launch_local(now).date():continue
+        if at is None or at>now or launch_local(at).date()!=launch_local(now).date():continue
         thread=item.get('thread')
         if item.get('status')=='sent':
             if isinstance(thread,list) and len(thread)==2:sent+=1
