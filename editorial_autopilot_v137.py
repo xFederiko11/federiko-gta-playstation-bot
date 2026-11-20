@@ -500,8 +500,10 @@ def reserve():
         # Comments on our own authenticated GitHub Issues can create one
         # independent, original X discussion, never an automatic reply to a
         # visitor. Use the SAME director rate limits, quotas and Buffer receipts.
-        from community_comment_trigger_v1 import candidate as community_candidate
-        comment_question = community_candidate(state, now)
+        comment_question = None
+        if os.getenv("COMMUNITY_COMMENT_X_ENABLED", "false").lower() == "true":
+            from community_comment_trigger_v1 import candidate as community_candidate
+            comment_question = community_candidate(state, now)
         growth_question = None
         if not comment_question and launch_active(now):
             from growth_conversion_v1 import candidate as growth_candidate
