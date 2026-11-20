@@ -12,6 +12,7 @@ import json
 import re
 from urllib.parse import urlsplit
 from editorial_seo_v135 import x_weight
+from owned_utm_attribution_v1 import tagged_site_url
 from launch_cadence_v1 import active as launch_active, local as launch_local, TARGET_MAX as LAUNCH_DAILY_CAP
 
 # The original Rockstar screenshots are illustrative, not screenshots of the
@@ -92,7 +93,10 @@ def validate():
 
 def reply(t, portal_link=None):
     if portal_link:
-        return ("📖 Guida completa in italiano:\n"+portal_link+
+        # Only a verified first-party guide may be tagged; external
+        # PowerPyx citations remain unchanged and fully attributed.
+        attributed=tagged_site_url(portal_link,placement="quick_tip")
+        return ("📖 Guida completa in italiano:\n"+attributed+
                 "\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina.")
     return "📖 Fonte: PowerPyx\n\n🔗 Procedura completa e dettagli:\n"+t["source_url"]+"\n\n📸 Foto illustrativa: Rockstar Games."
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 import re
 from urllib.parse import urlsplit
 from editorial_seo_v135 import x_weight
+from owned_utm_attribution_v1 import is_owned_site_url, tagged_site_url
 
 TRAILING_CTA=re.compile(r'(?i)^(?:[📍🔗🔎📖💾🎯✅⚠️🏆📸]\s*)?(?:fonte|guida completa|guida in italiano|procedura illustrata|dettagli|requisiti|passaggi e fonte|consulta|approfondimento|apri la guida|leggi i passaggi|checklist|verifica prima|prosegui|mappa e dettagli|source)\s*:?\s*$')
 TAG_LINE=re.compile(r'^\s*(?:#\w+\s*)+$')
@@ -40,9 +41,13 @@ def reply_for(item: dict) -> str:
     url=verify_link(str(item['url']))
     source=str(item.get('source') or 'Fonte originale').strip()
     if source=='Guide GTA VI Italia':
-        text='🗺️ Guida italiana con passaggi, immagini e fonti (spoiler a scelta):\n'+url
+        placement=('community_question' if str(item.get('tip_id') or '').startswith('growth-question-')
+                   else 'guide_reply')
+        public_url=tagged_site_url(url,placement=placement)
+        text='🗺️ Guida italiana con passaggi, immagini e fonti (spoiler a scelta):\n'+public_url
     elif source=='Trofei GTA VI':
-        text='🏆 Requisiti, consigli e avvisi sul platino nella checklist:\n'+url
+        public_url=tagged_site_url(url,placement='trophy_reply') if is_owned_site_url(url) else url
+        text='🏆 Requisiti, consigli e avvisi sul platino nella checklist:\n'+public_url
     elif source=='PowerPyx Tips':
         text='📍 Procedura di riferimento con controlli PS5 e fonte:\n'+url
     elif source in {'PowerPyx','Insider Gaming'}:
