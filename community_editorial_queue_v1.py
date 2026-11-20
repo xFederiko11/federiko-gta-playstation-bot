@@ -37,6 +37,8 @@ def classify(item: dict) -> tuple[str, str]:
     for label, pattern in CATEGORIES:
         if pattern.search(title):
             return label, "Titolo da verificare; non è una conferma."
+    if item.get("tier") == "community":
+        return "🟡 COMMUNITY", "Segnalazione pubblica di giocatori: verificare nel gioco e con fonti indipendenti."
     if item.get("tier") == "specialist_video":
         return "🔵 GUIDA INDIPENDENTE", "Video del creator: controllare contenuti e versione prima di citarlo."
     if item.get("tier") == "specialist":
@@ -51,7 +53,12 @@ def valid_candidate(item: dict) -> bool:
             return False
         if not item["title"] or len(item["title"]) > 300:
             return False
-        return bool(GTA_TOPIC.search(item["title"]) or
+        reddit=(item.get("source")=="Reddit r/GTA6"
+                and url.hostname in {"www.reddit.com","reddit.com"}
+                and url.path.lower().startswith("/r/gta6/comments/")
+                and re.search(r"\\b(?:money|cash|glitch|vehicle|garage|car|location|map|collectible|mission|trophy|platinum|secret|tips|PS5|100\\s*%)\\b",
+                              item["title"],re.I))
+        return bool(GTA_TOPIC.search(item["title"]) or reddit or
                     (item.get("source") == "PowerPyx" and GUIDE.search(item["title"])))
     except (KeyError, TypeError, ValueError):
         return False
