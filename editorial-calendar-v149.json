@@ -4,7 +4,7 @@
   "created_for": "2026-11-19 through 2026-12-02 (14 calendar days inclusive)",
   "publication_target": "X @xFederiko11 via existing Buffer integration",
   "public_base": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/",
-  "mode": "launch_12_double_threads_goal_not_prequeued_in_buffer",
+  "mode": "launch_daily_targets_with_real_20261120_buffer_schedule",
   "format": {
     "parent": "Post originale italiano con azione o fatto verificato, posizione solo se confermata, eventuale immagine pertinente autorizzata. Limite prudente 235 caratteri pesati con foto.",
     "first_reply": "Fonte consultabile o guida italiana con passaggi, immagini, avvisi e scelta spoiler; ogni risposta resta contestuale al post principale.",
@@ -119,5 +119,99 @@
     "platform_risks": "Frequenze elevate su X possono causare limitazioni; la soglia dichiarata non è una garanzia anti-spam",
     "reconcile": "Contare solo ricevute Buffer sent come inviate, distinguere le prenotazioni, non duplicare after timeout.",
     "taper_after": "2026-12-02 21:00 Europe/Rome; ripristina automaticamente la cadenza prudente"
+  },
+  "actual_today": {
+    "date": "2026-11-20",
+    "timezone": "Europe/Rome",
+    "confirmed_at_utc": "2026-11-20T08:53:29Z",
+    "source_of_truth": "Actual Buffer scheduled receipts in catchup-20261120.json and sent entries in the editorial journal",
+    "double_threads_sent": 2,
+    "double_threads_buffer_scheduled": 10,
+    "remaining_intended_messages": 20,
+    "status_note": "scheduled is a queue receipt, NOT a guarantee of future X delivery; use Buffer Sent and read-only health for follow-up",
+    "slots": [
+      {
+        "time_rome": "08:51",
+        "title": "GTA VI PS5: studia gli animali senza cacciare",
+        "status": "sent",
+        "buffer_id": "6afffbef738ce4635f9850a7"
+      },
+      {
+        "time_rome": "09:42",
+        "title": "Mentalità positiva",
+        "status": "sent",
+        "buffer_id": "6b0007e3738ce4635f9d533b"
+      },
+      {
+        "time_rome": "10:35",
+        "title": "Soldi nascosti al negozio",
+        "status": "scheduled",
+        "buffer_id": "6b0009d2d5f8acdd0d856976",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/soldi-2500-three-sheets-liquor/"
+      },
+      {
+        "time_rome": "11:35",
+        "title": "Auto e scanner WAiNK",
+        "status": "scheduled",
+        "buffer_id": "6b0009d54c1afd05de06fbcb",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/"
+      },
+      {
+        "time_rome": "12:35",
+        "title": "Salvare un'auto speciale",
+        "status": "scheduled",
+        "buffer_id": "6b0009d8d5f8acdd0d856bd9",
+        "guide": "https://xfederiko11.github.io/gta-6/salvare-auto/"
+      },
+      {
+        "time_rome": "13:35",
+        "title": "70 sfide per il 100%",
+        "status": "scheduled",
+        "buffer_id": "6b000a854c1afd05de072532",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/"
+      },
+      {
+        "time_rome": "14:35",
+        "title": "Taxi e viaggio rapido",
+        "status": "scheduled",
+        "buffer_id": "6b000a85738ce4635f9e0ffd",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/"
+      },
+      {
+        "time_rome": "15:35",
+        "title": "Poligoni e Concentrazione",
+        "status": "scheduled",
+        "buffer_id": "6b000a857b0a126cebbf9097",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/"
+      },
+      {
+        "time_rome": "16:35",
+        "title": "Capitolo 1: attività da controllare",
+        "status": "scheduled",
+        "buffer_id": "6b000a860f5eda1a57d6121e",
+        "guide": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/"
+      },
+      {
+        "time_rome": "17:35",
+        "title": "Trucchi e trofei PS5",
+        "status": "scheduled",
+        "buffer_id": "6b000a860f5eda1a57d61243",
+        "guide": "https://xfederiko11.github.io/gta-6/trucchi/"
+      },
+      {
+        "time_rome": "18:35",
+        "title": "Checklist trofei",
+        "status": "scheduled",
+        "buffer_id": "6b000a86ca85ebefb00ce100",
+        "guide": "https://xfederiko11.github.io/gta-6/trofei/"
+      },
+      {
+        "time_rome": "19:35",
+        "title": "Veicoli per il 100%",
+        "status": "scheduled",
+        "buffer_id": "6b000a867b0a126cebbf90c8",
+        "guide": "https://xfederiko11.github.io/gta-6/auto-speciali/"
+      }
+    ]
   }
 }
