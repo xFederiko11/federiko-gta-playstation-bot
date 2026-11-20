@@ -1,67 +1,123 @@
 {
   "schema": "gta6-editorial-calendar-v149",
-  "timezone": "Europe/Berlin",
-  "created_for": "2026-11-19 through 2026-11-21",
+  "timezone": "Europe/Rome",
+  "created_for": "2026-11-19 through 2026-12-02 (14 calendar days inclusive)",
   "publication_target": "X @xFederiko11 via existing Buffer integration",
   "public_base": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/",
-  "mode": "planned_not_buffer_queued",
+  "mode": "launch_12_double_threads_goal_not_prequeued_in_buffer",
   "format": {
-    "parent": "Post breve in italiano con emoji, passaggi PS5, una immagine illustrativa ufficiale utilizzabile, massimo 235 caratteri pesati",
-    "first_reply": "📖 Link diretto alla guida italiana con fonte PowerPyx e crediti",
-    "thread": "Un'unica mutazione Buffer per due post, previa verifica live della guida"
+    "parent": "Post originale italiano con azione o fatto verificato, posizione solo se confermata, eventuale immagine pertinente autorizzata. Limite prudente 235 caratteri pesati con foto.",
+    "first_reply": "Fonte consultabile o guida italiana con passaggi, immagini, avvisi e scelta spoiler; ogni risposta resta contestuale al post principale.",
+    "thread": "Un solo createPost Buffer con due messaggi collegati. Mai due invii separati o retry dopo esito incerto."
   },
   "limits": {
-    "max_quick_tips_per_utc_day": 2,
-    "min_minutes_between_tips": 110,
-    "min_minutes_between_any_workflows": 22
+    "first_day": "2026-11-19",
+    "last_day": "2026-12-02",
+    "local_hours": "08:00-21:00",
+    "daily_min_target": 10,
+    "daily_default_target": 12,
+    "daily_max_cap": 16,
+    "minimum_minutes_between_any_posts": 45,
+    "buffer_x_messages_rolling_24h_cap": 48,
+    "policy": "Il minimo è un obiettivo. Se non ci sono 10 fonti diverse e pertinenti, pubblicare meno, mai spam o fatti inventati."
   },
   "preconditions": [
-    "Riautorizzare canale X in Buffer",
-    "Verificare due messaggi thread + media nel test manuale",
-    "Confermare diritti e disponibilità immagini",
-    "Non ripetere il post WAiNK rifiutato; conservare registro",
-    "Non inviare nello stesso momento di breaking news; gli orari sono slot indicativi"
+    "Verificare destinazione @xFederiko11 e non effettuare nuove mutazioni se Buffer disconnesso",
+    "Pubblicare soltanto due messaggi collegati in un'unica mutazione Buffer durante la campagna",
+    "Non usare immagini decorative come prova di posizioni: fonti, attribuzione e diritto di riutilizzo",
+    "Dettagli geografici e pulsanti PS5 solo quando documentati; se la fonte ha soltanto un titolo, non inventare un tutorial",
+    "Confermare la ricevuta sent, mantenere deduplica e storico anche dopo errore o timeout",
+    "Non riutilizzare lo stesso testo o URL per riempire slot inutilizzati; fermarsi in caso di segnalazioni/limitazioni di X",
+    "Le finestre qui sotto sono obiettivi del direttore, NON prenotazioni già accettate da Buffer"
   ],
   "slots": [
     {
-      "date": "2026-11-19",
-      "time": "10:00",
-      "tip_id": "study animals",
-      "guide": "studiare-animali",
-      "theme": "Collezionabili: studio animali",
-      "status": "hold_until_buffer_reauthorized"
+      "time": "08:05",
+      "priority": "Soldi iniziali",
+      "status": "target_only_not_buffer_scheduled"
     },
     {
-      "date": "2026-11-19",
-      "time": "14:00",
-      "tip_id": "70 challenges",
-      "guide": "70-sfide-100-percento",
-      "theme": "Checklist 100%: 70 sfide su 80",
-      "status": "hold_until_buffer_reauthorized"
+      "time": "09:10",
+      "priority": "Auto rare e posizioni",
+      "status": "target_only_not_buffer_scheduled"
     },
     {
-      "date": "2026-11-20",
-      "time": "10:00",
-      "tip_id": "fast travel taxi",
-      "guide": "viaggio-rapido-taxi",
-      "theme": "Viaggio rapido via taxi",
-      "status": "hold_until_buffer_reauthorized"
+      "time": "10:15",
+      "priority": "Guida per il platino",
+      "status": "target_only_not_buffer_scheduled"
     },
     {
-      "date": "2026-11-20",
-      "time": "14:00",
-      "tip_id": "shooting ranges",
-      "guide": "poligoni-concentrazione",
-      "theme": "Poligoni: medaglie Oro e Concentrazione",
-      "status": "hold_until_buffer_reauthorized"
+      "time": "11:20",
+      "priority": "Trucco per risparmiare tempo",
+      "status": "target_only_not_buffer_scheduled"
     },
     {
-      "date": "2026-11-21",
-      "time": "10:00",
-      "tip_id": "chapter one meditation",
-      "guide": "meditazione-capitolo-1",
-      "theme": "Meditazione Capitolo 1; revisione spoiler/trofeo prima di pubblicare",
-      "status": "manual_fact_check_required"
+      "time": "12:25",
+      "priority": "Posizione da mappa verificata",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "13:30",
+      "priority": "Garage / registrazione auto",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "14:35",
+      "priority": "Guida alle attività",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "15:40",
+      "priority": "Novità confermata",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "16:45",
+      "priority": "Ricompense e farming",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "17:50",
+      "priority": "Poligoni / animali / collezionabili",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "18:55",
+      "priority": "Tips pratici PS5",
+      "status": "target_only_not_buffer_scheduled"
+    },
+    {
+      "time": "20:00",
+      "priority": "Riepilogo delle guide migliori",
+      "status": "target_only_not_buffer_scheduled"
     }
-  ]
+  ],
+  "category_priorities": [
+    {
+      "category": "Soldi e farming",
+      "weight": "highest"
+    },
+    {
+      "category": "Auto speciali, salvataggio e garage",
+      "weight": "highest"
+    },
+    {
+      "category": "Mappe e posizioni verificabili",
+      "weight": "high"
+    },
+    {
+      "category": "Platino, trofei, collezionabili",
+      "weight": "high"
+    },
+    {
+      "category": "Notizie confermate, fisica e performance",
+      "weight": "medium"
+    }
+  ],
+  "safety": {
+    "rule": "Se nessuna fonte verificata supera il quality gate, lasciare lo slot vuoto",
+    "platform_risks": "Frequenze elevate su X possono causare limitazioni; la soglia dichiarata non è una garanzia anti-spam",
+    "reconcile": "Contare solo ricevute Buffer sent come inviate, distinguere le prenotazioni, non duplicare after timeout.",
+    "taper_after": "2026-12-02 21:00 Europe/Rome; ripristina automaticamente la cadenza prudente"
+  }
 }
