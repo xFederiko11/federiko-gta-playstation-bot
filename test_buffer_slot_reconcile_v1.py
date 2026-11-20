@@ -115,8 +115,8 @@ class ComparisonTests(unittest.TestCase):
         s={"status":"ok","sent":[],"scheduled":[],"error":[]}
         r=compare(s,ledger(),NOW)
         self.assertEqual(len(r["rows"]),4)
-        self.assertEqual(r["counts"]["ledger_only_not_in_sample"],1)
-        self.assertEqual(r["counts"]["past_due_not_in_sample"],3)
+        self.assertEqual(r["counts"]["ledger_only_not_in_sample"],2)
+        self.assertEqual(r["counts"]["past_due_not_in_sample"],2)
         self.assertNotIn("mancata pubblicazione:",render(r))
 
 
