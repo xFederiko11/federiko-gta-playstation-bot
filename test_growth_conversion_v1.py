@@ -35,6 +35,44 @@ class GrowthConversionTests(unittest.TestCase):
                                     live_checker=lambda url:True))
         self.assertIsNone(candidate({'entries':{}},now,live_checker=lambda url:False))
 
+    def test_verified_ps5_photo_hub_replaces_existing_launch_slot_without_extra_posts(self):
+        from growth_conversion_v1 import FIRST_DAY
+        from editorial_double_threads_v1 import double
+        from owned_utm_attribution_v1 import tagged_site_url
+        from editorial_seo_v135 import x_weight
+        self.assertEqual(FIRST_DAY.isoformat(),"2026-11-21")
+        self.assertEqual(len(PROMPTS),12)
+        prompt=PROMPTS[1]
+        self.assertEqual(prompt["id"],"ps5-original-screenshots")
+        self.assertEqual(prompt["path"],"/screenshot-ps5/")
+        self.assertIn("55 richieste fotografiche",prompt["text"])
+        self.assertNotIn("già ricevute",prompt["text"])
+        self.assertNotIn("foto già inviate",prompt["text"])
+        self.assertEqual(prompt["text"].count("?"),1)
+        now=datetime(2026,11,22,13,0,tzinfo=timezone.utc)
+        examined=[]
+        item=candidate({"entries":{}},now,
+                       live_checker=lambda url: examined.append(url) or True)
+        expected="https://xfederiko11.github.io/gta-6/screenshot-ps5/"
+        self.assertIsNotNone(item)
+        self.assertEqual(examined,[expected])
+        self.assertEqual(item["url"],expected)
+        self.assertEqual(item["source"],"Guide GTA VI Italia")
+        self.assertEqual(item["tip_id"],"growth-question-ps5-original-screenshots")
+        result=double(item)
+        self.assertEqual(result["url"],expected)
+        self.assertEqual(len(result["thread"]),2)
+        self.assertLessEqual(x_weight(result["thread"][0]),280)
+        self.assertLessEqual(x_weight(result["thread"][1]),280)
+        self.assertIn(tagged_site_url(expected,placement="community_question"),result["thread"][1])
+        self.assertNotIn("utm_",result["thread"][0])
+        self.assertIsNone(candidate({"entries":{}},now,live_checker=lambda url:False))
+        state={"entries":{item["key"]:{
+            "url":item["url"],"reserved_utc":now.isoformat(),
+            "status":"sent","tip_id":item["tip_id"]}}}
+        self.assertIsNone(candidate(state,now+timedelta(minutes=30),
+                                    live_checker=lambda url:True))
+
     def test_dedup_same_guide_even_if_previous_workflow(self):
         now=datetime(2026,11,21,14,0,tzinfo=timezone.utc)
         initial=candidate({'entries':{}},now,live_checker=lambda url:True)
