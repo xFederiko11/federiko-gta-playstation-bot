@@ -37,7 +37,9 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertIsNotNone(item)
         self.assertEqual(item["source"],SOURCE)
         self.assertIn("/hdr-oled/",item["url"])
-        self.assertEqual(len(calls),1)
+        expected = ["https://xfederiko11.github.io/gta-6" + x["path"] for x in CONTENT]
+        first_live = expected.index(item["url"])
+        self.assertEqual(calls,expected[:first_live+1])
         self.assertIsNone(item.get("media_url"))
         self.assertIn("non è un preset universale",item["text"])
         self.assertEqual(len(item["key"]),24)

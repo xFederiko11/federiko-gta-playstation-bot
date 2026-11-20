@@ -117,17 +117,26 @@ class EditorialV137Tests(unittest.TestCase):
 
     def test_powerpyx_spotlights_verified_links_and_italian_format(self):
         now = datetime(2026, 11, 18, 20, 0, tzinfo=timezone.utc)
-        self.assertEqual(len(bot.POWERPYX_SPOTLIGHTS), 4)
+        from urllib.parse import urlsplit
+        self.assertGreaterEqual(len(bot.POWERPYX_SPOTLIGHTS), 5)
+        self.assertEqual(len({r["url"] for r in bot.POWERPYX_SPOTLIGHTS}), len(bot.POWERPYX_SPOTLIGHTS))
         for record in bot.POWERPYX_SPOTLIGHTS:
-            self.assertTrue(record['url'].startswith('https://www.powerpyx.com/'))
+            parsed = urlsplit(record['url'])
+            self.assertEqual(parsed.scheme, 'https')
+            self.assertIn(parsed.hostname, ('www.powerpyx.com', 'insider-gaming.com'))
+            self.assertIsNone(parsed.username)
+            self.assertIsNone(parsed.password)
+            source = 'Insider Gaming' if parsed.hostname == 'insider-gaming.com' else 'PowerPyx'
             self.assertLessEqual(bot.weight_x(record['text']), 280)
-            self.assertIn('PowerPyx', record['text'])
+            self.assertIn(source, record['text'])
             self.assertGreaterEqual(record['text'].count(chr(10) + chr(10)), 2)
             self.assertIn('#GTAVI', record['text'])
         first = bot.powerpyx_spotlight(self.state, now)
-        self.assertEqual(first['source'], 'PowerPyx')
+        expected_source = 'Insider Gaming' if urlsplit(first['url']).hostname == 'insider-gaming.com' else 'PowerPyx'
+        self.assertEqual(first['source'], expected_source)
         self.assertEqual(first['key'], bot.identity(first['url']))
-        self.assertIn('🏆', first['text'])
+        self.assertIn('GTA VI', first['text'])
+        self.assertIn(expected_source, first['text'])
         self.assertIsNone(bot.powerpyx_spotlight(self.state,
                          datetime(2026, 11, 24, tzinfo=timezone.utc)))
 
