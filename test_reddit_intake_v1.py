@@ -2,7 +2,7 @@
 from __future__ import annotations
 import unittest
 from datetime import datetime,timezone
-from reddit_intake_v1 import canonical_url,parse_issue,select,markdown
+from reddit_intake_v1 import canonical_url,parse_issue,select,markdown,expand_short_links
 
 NOW=datetime(2026,11,20,14,0,tzinfo=timezone.utc)
 URL="https://www.reddit.com/r/GTA6/comments/abc123/"
@@ -39,6 +39,33 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertIn("non pubblica",report.lower())
         self.assertNotIn("1000 follower",report)
         self.assertIn("senza link promozionali",report)
+    def test_ifttt_short_link_only_expands_from_owner_issue_to_verified_reddit_url(self):
+        shortened=issue(body="Reddit source: https://ift.tt/bMAG9Kx")
+        clean=expand_short_links([shortened],resolve=lambda value:
+            "https://www.reddit.com/r/GTA6/comments/abc123/garage_location/")
+        self.assertEqual(select(clean,NOW)[0]["reddit_url"],URL)
+        self.assertIn("Eventi Reddit ricevuti: 1",markdown(clean,NOW))
+        self.assertIn("pertinenti e con URL verificato: 1",markdown(clean,NOW))
+        spoof=issue(author={"login":"other"},body=shortened["body"])
+        called=[]
+        def dangerous(_):
+            called.append(1)
+            return "https://www.reddit.com/r/GTA6/comments/abc123/"
+        self.assertEqual(expand_short_links([spoof],resolve=dangerous)[0]["body"],spoof["body"])
+        self.assertEqual(called,[])
+        other=expand_short_links([shortened],resolve=lambda value:"https://intranet.example/secret")
+        self.assertEqual(select(other,NOW),[])
+        self.assertEqual(len(select(expand_short_links([shortened],resolve=lambda value:None),NOW)),0)
+        report=markdown([shortened],NOW)
+        self.assertIn("Eventi Reddit ricevuti: 1",report)
+        self.assertIn("link IFTTT non ancora risolti: 1",report)
+    def test_real_ift_url_does_not_mean_relevant_gta_tip(self):
+        irrelevant=issue(title="[REDDIT-LEAD] I feel sorry for streamers without any music",
+                         body="Reddit source: https://ift.tt/bMAG9Kx")
+        clean=expand_short_links([irrelevant],resolve=lambda value:
+            "https://www.reddit.com/r/GTA6/comments/abc123/streaming_music/")
+        self.assertEqual(select(clean,NOW),[])
+        self.assertIn("Eventi Reddit ricevuti: 1",markdown(clean,NOW))
     def test_untrusted_markdown_not_rendered_as_unsafe_links(self):
         candidate=issue(title="[REDDIT-LEAD] GTA VI PS5 garage [click](https://evil.test) help")
         report=markdown([candidate],NOW)
