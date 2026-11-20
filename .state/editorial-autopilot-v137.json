@@ -109,11 +109,14 @@
       "url": "https://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity"
     },
     "4114d48c2ead8758ea05d75e": {
+      "attempted_utc": "2026-11-20T01:26:58.442646+00:00",
+      "buffer_id": "6affa1e27b0a126ceb99ab72",
+      "completed_utc": "2026-11-20T01:26:59.663662+00:00",
       "media_url": null,
       "reserved_utc": "2026-11-20T01:26:56.777877+00:00",
       "run_id": "44653659495",
       "source": "Insider Gaming",
-      "status": "reserved",
+      "status": "sent",
       "text": "💰 GTA VI | SOLDI SUBITO\n\nQuattro luoghi da esplorare nel Capitolo 1 per trovare denaro e oggetti utili. ⚠️ Posizioni con spoiler nella guida.\n\n🔗 Fonte: Insider Gaming\nhttps://insider-gaming.com/gta-6-early-game-locations-make-money/\n\n#GTA6 #GTAVI",
       "thread": null,
       "tip_id": null,
