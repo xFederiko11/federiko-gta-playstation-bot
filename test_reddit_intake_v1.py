@@ -5,7 +5,7 @@ from datetime import datetime,timezone
 from unittest.mock import Mock,patch
 from urllib.error import HTTPError
 from reddit_intake_v1 import expand_ift_link
-from reddit_intake_v1 import canonical_url,parse_issue,select,markdown,expand_short_links
+from reddit_intake_v1 import canonical_url,parse_issue,select,select_visual,markdown,expand_short_links
 
 NOW=datetime(2026,11,20,14,0,tzinfo=timezone.utc)
 URL="https://www.reddit.com/r/GTA6/comments/abc123/"
@@ -218,6 +218,42 @@ class RedditIntakeTests(unittest.TestCase):
                     author={"login":"not-owner"})
         self.assertNotIn("xyz9876",markdown(expand_short_links(
             [spoof],resolve=lambda _:fake_url),NOW))
+
+    def test_visual_shortlist_is_not_buried_by_high_scoring_news(self):
+        news=[issue(title="[REDDIT-LEAD] GTA VI money garage car trophy map "+str(i),
+                    body="Reddit source: https://www.reddit.com/r/GTA6/comments/n"+
+                         str(i).zfill(5)+"/")
+              for i in range(20)]
+        photo=issue(title="[REDDIT-LEAD] Screenshot showing GTA6 waterfront on PS5",
+                    body="Reddit source: https://www.reddit.com/r/GTA6/comments/pho123/")
+        # General top 18 can be full, but the visual proof queue remains separate.
+        self.assertNotIn("https://www.reddit.com/r/GTA6/comments/pho123/",
+                         [e["reddit_url"] for e in select(news+[photo],NOW)])
+        selected=select_visual(news+[photo],NOW)
+        self.assertEqual(len(selected),1)
+        self.assertTrue(selected[0]["photo_candidate"])
+        report=markdown(news+[photo],NOW)
+        self.assertIn("possibili foto/clip dal solo titolo: 1",report)
+        self.assertIn("https://www.reddit.com/r/GTA6/comments/pho123/",report)
+        self.assertIn("Non esaminato",report)
+
+    def test_visual_shortlist_deduplicates_and_prioritizes_car_cash(self):
+        generic=issue(title="[REDDIT-LEAD] Screenshot of the GTA 6 skyline",
+                      body="Reddit source: https://www.reddit.com/r/GTA6/comments/sky123/")
+        cash=issue(title="[REDDIT-LEAD] GTA 6 money stash screenshot map",
+                   body="Reddit source: https://www.reddit.com/r/GTA6/comments/mny123/")
+        car=issue(title="[REDDIT-LEAD] GTA 6 rare car photo at dealership",
+                  body="Reddit source: https://www.reddit.com/r/GTA6/comments/car123/")
+        results=select_visual([generic,car,cash,cash],NOW)
+        self.assertEqual(len(results),3)
+        self.assertEqual(results[0]["reddit_url"],
+                         "https://www.reddit.com/r/GTA6/comments/mny123/")
+        self.assertEqual(results[1]["reddit_url"],
+                         "https://www.reddit.com/r/GTA6/comments/car123/")
+        self.assertEqual(results[2]["reddit_url"],
+                         "https://www.reddit.com/r/GTA6/comments/sky123/")
+        self.assertEqual(select_visual([],NOW),[])
+        self.assertEqual(select_visual(None,NOW),[])
 
     def test_untrusted_markdown_not_rendered_as_unsafe_links(self):
         candidate=issue(title="[REDDIT-LEAD] GTA VI PS5 garage [click](https://evil.test) help")
