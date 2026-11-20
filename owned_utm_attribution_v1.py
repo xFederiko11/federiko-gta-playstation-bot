@@ -17,13 +17,20 @@ CAMPAIGN = "gta_vi_italia_organic_2026"
 PLACEMENTS = frozenset(("guide_reply", "community_question", "trophy_reply", "quick_tip"))
 
 
+
+def is_owned_site_url(value: str) -> bool:
+    """True only for our new /gta-6/ Pages, not the old bot repository."""
+    return isinstance(value, str) and OWNED.fullmatch(value) is not None
+
+
+
 def tagged_site_url(canonical: str, *, placement: str) -> str:
     """Tag only an exact canonical owned landing page; never tag sources.
 
     The caller retains `canonical` for deduplication and permalink receipts;
     this is solely the user-facing URL in the reply to our own X post.
     """
-    if not isinstance(canonical, str) or not OWNED.fullmatch(canonical):
+    if not is_owned_site_url(canonical):
         raise ValueError("UTM target must be an exact canonical GTA VI Italia URL")
     if placement not in PLACEMENTS:
         raise ValueError("Unknown editorial UTM placement")
