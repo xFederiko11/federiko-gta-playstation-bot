@@ -135,7 +135,7 @@ def render(result):
               "| --- | --- | --- | --- | --- |"]
     for row in result["rows"]:
         title = escape(re.sub(r"[\x00-\x1f\x7f]", " ", row["title"]), quote=True)
-        title = title.replace("|", r"\|").replace("\\", r"\\")
+        title = title.replace("\\", r"\\").replace("|", r"\|")
         lines.append("| "+row["due_at"]+" | "+title+" | "+row["ledger"]+" | "+
                      (row["buffer"] or "non trovato") + " | "+LABELS[row["verdict"]]+" |")
     lines += ["",
@@ -153,8 +153,8 @@ def render(result):
 
 def from_ledger(sample, now, path=LEDGER):
     if not path.is_file():
-        return "## 🔎 Riconciliazione slot GitHub ↔ Buffer\n\n"
-        "Registro GitHub non trovato: verifica non disponibile, non equivale a zero post.\n"
+        return ("## 🔎 Riconciliazione slot GitHub ↔ Buffer\n\n"
+                "Registro GitHub non trovato: verifica non disponibile, non equivale a zero post.\n")
     try:
         ledger = json.loads(path.read_text(encoding="utf-8"))
         return render(compare(sample, ledger, now))
