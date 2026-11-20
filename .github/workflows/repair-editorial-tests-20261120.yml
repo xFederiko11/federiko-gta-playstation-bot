@@ -1,4 +1,4 @@
-name: Finish verified publishing recovery 20261120
+name: Verify repaired public guides 20261120
 
 on:
   push:
@@ -7,82 +7,31 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: write
-
-concurrency:
-  group: gta-v142-publication-global
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  repair:
+  verify:
     if: github.repository == 'xFederiko11/federiko-gta-playstation-bot' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 3
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          ref: main
-          fetch-depth: 0
-          persist-credentials: true
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.12'
-      - name: Install existing requirements
-        run: python -m pip install -r requirements-free.txt
-      - name: Record reviewed post-refresh receipt and enable only fresh tips
+      - name: Check deployed content rather than build status alone
         run: |
           python - <<'PY'
-          from pathlib import Path
-          p=Path('.github/workflows/gta6-editorial-autopilot-v137.yml')
-          text=p.read_text(encoding='utf-8')
-          old="TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'false' }}"
-          new="TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}"
-          if text.count(old)!=1:
-              raise RuntimeError('Unexpected quick-tip recovery gate')
-          text=text.replace(old,new,1)
-          needle='        run: python buffer_status_summary_v151.py'
-          if text.count(needle)!=1:
-              raise RuntimeError('Unexpected preflight step')
-          text=text.replace(needle,'        env:\n          '+new+'\n'+needle,1)
-          text=text.replace('      - name: Reserve one fresh item before any Buffer mutation',
-              '      # Recovery reviewed: Buffer sent 6affa1e27b0a126ceb99ab72 at 2026-11-20T01:26:58.878Z.\n'
-              '      # X receipt: https://twitter.com/xFederiko11/status/2123588882885186002\n'
-              '      # Explicit repository variable false still overrides this reviewed default.\n'
-              '      - name: Reserve one fresh item before any Buffer mutation',1)
-          p.write_text(text,encoding='utf-8')
-          PY
-      - name: Verify all editorial guards after paused-queue fix
-        run: |
-          python x_automation_safety_v1.py
-          python -m unittest -q test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
-      - name: Verify both new public guides return live content
-        run: |
-          python - <<'PY'
-          import requests
+          from urllib.request import Request, urlopen
           from urllib.parse import urlsplit
           base='https://xfederiko11.github.io/gta-6/guide-e-tutorial/'
           for slug in ('soldi-facili-capitolo-1','soldi-2500-three-sheets-liquor'):
               url=base+slug+'/'
-              r=requests.get(url,timeout=(5,20))
-              r.raise_for_status()
-              assert r.status_code==200
-              assert urlsplit(r.url).hostname=='xfederiko11.github.io'
-              assert 'Insider Gaming' in r.text
-              assert 'data-guide-steps="'+slug+'"' in r.text
-              assert 'rel="canonical" href="'+url+'"' in r.text
+              with urlopen(Request(url,headers={'User-Agent':'GTA6-Site-Health/1.0'}),timeout=20) as r:
+                  assert r.status==200
+                  assert urlsplit(r.url).hostname=='xfederiko11.github.io'
+                  body=r.read(2000000).decode('utf-8')
+              assert 'Insider Gaming' in body
+              assert 'data-guide-steps="'+slug+'"' in body
+              assert 'rel="canonical" href="'+url+'"' in body
               print('LIVE_GUIDE_OK HTTP=200 canonical_and_steps_verified '+url)
           PY
-      - name: Commit reviewed recovery configuration only
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add .github/workflows/gta6-editorial-autopilot-v137.yml
-          git commit -m 'Resume fresh quick tips after verified post-refresh delivery receipt'
-          git pull --rebase origin main
-          git push origin HEAD:main
-      - name: Recheck existing editorial workflow with original pacing
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: gh workflow run gta6-editorial-autopilot-v137.yml --ref main -f action=run
