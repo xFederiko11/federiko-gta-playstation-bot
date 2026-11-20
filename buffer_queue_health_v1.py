@@ -6,6 +6,7 @@ from urllib.parse import urlsplit
 import re
 import argparse
 from buffer_publisher import BufferClient, BufferAPIError, BufferConfigurationError, ORGANIZATIONS_QUERY
+from buffer_slot_reconcile_v1 import from_ledger
 
 POST_QUERY = """query BufferHealth($orgId:OrganizationId!,$channelId:ChannelId!) {
   sent:posts(first:15,input:{organizationId:$orgId,
@@ -130,8 +131,11 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     args=p.parse_args()
     result=snapshot()
+    now=datetime.now(timezone.utc)
+    report=render(result,now)
+    report+='\n'+from_ledger(result,now)
     args.output.parent.mkdir(parents=True,exist_ok=True)
-    args.output.write_text(render(result,datetime.now(timezone.utc)),encoding="utf-8")
+    args.output.write_text(report,encoding="utf-8")
     print("BUFFER_QUEUE_HEALTH",result["status"],"sent",len(result["sent"]),
           "scheduled",len(result["scheduled"]),"errors",len(result["error"]))
 
