@@ -12,6 +12,7 @@ import json
 import re
 from urllib.parse import urlsplit
 from editorial_seo_v135 import x_weight
+from launch_cadence_v1 import active as launch_active, local as launch_local, TARGET_MAX as LAUNCH_DAILY_CAP
 
 # The original Rockstar screenshots are illustrative, not screenshots of the
 # WAiNK controls, animal studies or shooting-range results.
@@ -57,7 +58,7 @@ TIPS=[
         "title":"GTA VI PS5: sblocca il viaggio rapido con il taxi",
         "source_url":"https://www.powerpyx.com/gta-6-how-to-fast-travel/",
         "media_url":IMAGES["taxi"],
-        "main":"🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Dopo la prima missione, chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Costa 100 $ e ti porta subito a destinazione!\n\n#GTAVI #GTA6",
+        "main":"🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
     },
     {
         "id":"shooting ranges",
@@ -115,7 +116,9 @@ def candidate(state,now):
     entries=state["entries"]
     stamps=[_reserved_time(e.get("reserved_utc")) for e in entries.values() if e.get("reserved_utc")]
     stamps=[dt for dt in stamps if dt is not None]
-    if sum(dt.date()==now.date() for dt in stamps)>=MAX_POSTS_DAY:return None
+    if launch_active(now):
+        if sum(launch_local(dt).date()==launch_local(now).date() for dt in stamps)>=LAUNCH_DAILY_CAP:return None
+    elif sum(dt.date()==now.date() for dt in stamps)>=MAX_POSTS_DAY:return None
     if stamps and now-max(stamps)<timedelta(minutes=MIN_SPACING_MIN):return None
     tip_entries=[e for e in entries.values() if e.get("source")=="PowerPyx Tips"]
     # The first WAiNK thread was rejected by Buffer because the X channel

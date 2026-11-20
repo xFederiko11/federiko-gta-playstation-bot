@@ -155,27 +155,29 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertIsNone(bot.powerpyx_spotlight(self.state,
                           now + timedelta(minutes=123)))
 
-    def test_five_fresh_editorial_slots_during_recovery_only(self):
-        from editorial_director_v142 import RECOVERY_START,RECOVERY_END
-        now=RECOVERY_START+timedelta(hours=1)
-        old={str(i):{"reserved_utc":(RECOVERY_START-timedelta(hours=7,minutes=i)).isoformat(),
-                     "status":"sent"} for i in range(16)}
-        taken,limit=bot.editorial_day_slots(old,now)
-        self.assertEqual((taken,limit),(0,5))
+    def test_launch_editorial_slots_use_local_date_and_quality_cap(self):
+        now=datetime(2026,11,20,10,0,tzinfo=timezone.utc)
+        old={str(i):{'reserved_utc':(now-timedelta(days=1,minutes=i)).isoformat(),
+                     'status':'sent'} for i in range(16)}
+        self.assertEqual(bot.editorial_day_slots(old,now),(0,16))
         self.assertEqual(bot.select([article(date=now-timedelta(minutes=10))],
-                                    {'entries':old,'signatures':{}},now)[0]['source'],'VGC')
-        for i in range(5):
-            old["new-"+str(i)]={"reserved_utc":(now-timedelta(minutes=50+i)).isoformat(),
-                               "status":"reserved"}
-        self.assertEqual(bot.editorial_day_slots(old,now),(5,5))
+                         {'entries':old,'signatures':{}},now)[0]['source'],'VGC')
+        for i in range(16):
+            old['new-'+str(i)]={'reserved_utc':(now-timedelta(hours=2,minutes=i)).isoformat(),
+                               'status':'reserved'}
+        self.assertEqual(bot.editorial_day_slots(old,now),(16,16))
         self.assertEqual(bot.select([article(date=now-timedelta(minutes=10))],
-                                    {'entries':old,'signatures':{}},now),[])
-        steady=RECOVERY_END+timedelta(minutes=1)
+                         {'entries':old,'signatures':{}},now),[])
+        steady=datetime(2026,12,3,10,tzinfo=timezone.utc)
         self.assertEqual(bot.editorial_day_slots(old,steady)[1],bot.MAX_POSTS_DAY)
 
     def test_reservation_and_repeated_delivery_never_double_posts(self):
-        now = datetime.now(timezone.utc)
-        with tempfile.TemporaryDirectory() as temp, patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
+        now = datetime(2026, 11, 20, 10, 0, tzinfo=timezone.utc)
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now if tz is None else now.astimezone(tz)
+        with tempfile.TemporaryDirectory() as temp, patch.object(bot, 'datetime', Clock), patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
              patch.object(bot, 'read_feeds', return_value=([article(date=now)], [])), \
              patch.object(bot, 'load_sources', return_value=[]), \
              patch('quick_tips_v146.candidate', return_value=None), \
@@ -197,6 +199,10 @@ class EditorialV137Tests(unittest.TestCase):
                 def publish(self, text):
                     self.__class__.count += 1
                     return 'buffer-test-1'
+                def publish_thread(self, parts, *, media_url=None):
+                    assert len(parts)==2
+                    self.__class__.count += 1
+                    return 'buffer-test-thread-1'
             fake.BufferClient = Client
             with patch.dict(sys.modules, {'buffer_publisher': fake}):
                 bot.deliver()
