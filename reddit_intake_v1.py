@@ -22,7 +22,8 @@ MAX_ITEMS=18
 PHOTO_MAX_ITEMS=8
 LINK=re.compile(r"https://(?:www\.)?reddit\.com/r/[A-Za-z0-9_]+/comments/[A-Za-z0-9]+(?:/[A-Za-z0-9_%-]+)?/?",re.I)
 SCORE=(
-  ("soldi",r"\b(?:money|cash|soldi|farming|guadagn|heist|rapin|glitch|duplicate|duplicazion)\w*\b"),
+  ("soldi",r"\b(?:money|cash|soldi|farming|guadagn|heist|rapin)\w*\b"),
+  ("glitch",r"\b(?:glitch(?:es)?|exploit(?:s)?|bugs?|duplicat(?:e|ion|ions?)|duplicazion\w*)\b"),
   ("auto",r"\b(?:cars?|auto|veicol|vehicle|garage|save car|salvare|randy|rare car)\w*\b"),
   ("platino",r"\b(?:trophy|trophies|trofe|platino|platinum|100%|achievement|missable)\w*\b"),
   ("guida",r"\b(?:mission|missioni|location|posizion|map|mappa|how to|guide|guida|ps5|help|aiuto)\w*\b"),
@@ -283,6 +284,9 @@ def markdown(rows,now):
           "- [Leggi il post originale]("+item["reddit_url"]+") · [Segnalazione importata]("+item["issue_url"]+")",
           ("- ⚠️ Titolo generico, **non è una scoperta GTA VI verificata**: leggi il contenuto reale prima di intervenire."
            if item.get("generic_question") else "- Argomento specifico: resta comunque da verificare il post completo."),
+          ("- ⚠️ Glitch: controlla **patch PS5**, stato **trofei/platino**, "
+           "rischi del salvataggio e due riscontri prima di proporre una procedura."
+           if "glitch" in item["topics"] else ""),
           "- Se puoi aiutare: prepara una risposta concreta **senza link promozionali**. "
           "Leggi prima le regole del subreddit e invia manualmente solo se appropriato.",
           "- Non affermare che un glitch funziona, che i trofei sono al sicuro o che il "

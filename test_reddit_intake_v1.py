@@ -63,6 +63,30 @@ class RedditIntakeTests(unittest.TestCase):
         report=markdown([shortened],NOW)
         self.assertIn("Eventi Reddit ricevuti: 1",report)
         self.assertIn("link IFTTT da risolvere: 1",report)
+    def test_first_person_glitch_not_mislabeled_as_money(self):
+        row=issue(title="[REDDIT-LEAD] First Person glitch is solid!",
+                  body="Reddit source: https://www.reddit.com/r/GTA6/comments/fps123/")
+        item=parse_issue(row,NOW)
+        self.assertIsNotNone(item)
+        self.assertEqual(item["topics"],["glitch"])
+        self.assertFalse(item["photo_candidate"])
+        report=markdown([row],NOW)
+        self.assertIn("temi: glitch",report)
+        self.assertNotIn("temi: soldi",report)
+        self.assertIn("patch PS5",report)
+        self.assertIn("trofei/platino",report)
+        self.assertIn("due riscontri",report)
+        self.assertNotIn("Trophy Safe",report)
+
+    def test_money_and_vehicle_duplication_are_distinct_review_topics(self):
+        cash=issue(title="[REDDIT-LEAD] GTA VI money duplication glitch",
+                   body="Reddit source: https://www.reddit.com/r/GTA6/comments/dup123/")
+        self.assertEqual(set(parse_issue(cash,NOW)["topics"]),{"soldi","glitch"})
+        vehicle=issue(title="[REDDIT-LEAD] GTA VI garage car duplication",
+                      body="Reddit source: https://www.reddit.com/r/GTA6/comments/dup234/")
+        self.assertEqual(set(parse_issue(vehicle,NOW)["topics"]),{"auto","glitch"})
+        self.assertNotIn("soldi",parse_issue(vehicle,NOW)["topics"])
+
     def test_real_ift_url_does_not_mean_relevant_gta_tip(self):
         irrelevant=issue(title="[REDDIT-LEAD] I feel sorry for streamers without any music",
                          body="Reddit source: https://ift.tt/bMAG9Kx")
@@ -125,7 +149,7 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertIn("non pertinenti dal titolo: 1",markdown(rows,NOW))
 
     def test_newest_relevant_issue_wins_tie(self):
-        first=issue(title="[REDDIT-LEAD] GTA VI money farming glitch",
+        first=issue(title="[REDDIT-LEAD] GTA VI money farming route",
                     body="Reddit source: https://www.reddit.com/r/GTA6/comments/abc123/",
                     createdAt="2026-11-20T10:00:00Z")
         second=issue(title="[REDDIT-LEAD] GTA VI save car garage advice",
@@ -194,7 +218,7 @@ class RedditIntakeTests(unittest.TestCase):
         row=issue(title="[REDDIT-LEAD] GTA 6 money glitch screenshot map PS5",
                   body="Reddit source: https://www.reddit.com/r/GTA6/comments/map1234/")
         result=parse_issue(row,NOW)
-        self.assertEqual(set(result["topics"]),{"soldi","guida","foto"})
+        self.assertEqual(set(result["topics"]),{"soldi","glitch","guida","foto"})
         self.assertTrue(result["photo_candidate"])
         report=markdown([row],NOW)
         self.assertIn("Non esaminato",report)
