@@ -135,6 +135,7 @@ jobs:
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
           GTA6_PORTAL_LINKS_ENABLED: 'true'
+          COMMUNITY_COMMENT_X_ENABLED: 'true'
           TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}
         if: >-
           github.event_name == 'schedule' ||
