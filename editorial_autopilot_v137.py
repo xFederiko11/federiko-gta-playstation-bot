@@ -178,6 +178,18 @@ def post_text(item: dict) -> str:
 # NOT an invented precise time when PowerPyx published the guides.
 POWERPYX_SPOTLIGHTS = [
     {
+        'title': 'GTA VI: quattro luoghi per fare soldi subito',
+        'url': 'https://insider-gaming.com/gta-6-early-game-locations-make-money/',
+        'text': (
+            '💰 GTA VI | SOLDI SUBITO\n\n'
+            'Quattro luoghi da esplorare nel Capitolo 1 per trovare denaro e oggetti utili. '
+            '⚠️ Posizioni con spoiler nella guida.\n\n'
+            '🔗 Fonte: Insider Gaming\n'
+            'https://insider-gaming.com/gta-6-early-game-locations-make-money/\n\n'
+            '#GTA6 #GTAVI'
+        ),
+    },
+    {
         'title': 'GTA VI: roadmap del platino PowerPyx',
         'url': 'https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/',
         'text': (
@@ -272,18 +284,20 @@ def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
         return None
     for item in POWERPYX_SPOTLIGHTS:
         url = canonical(item['url'])
-        if urlsplit(url).hostname != 'powerpyx.com':
-            raise ValueError('PowerPyx spotlight uses non-PowerPyx URL')
+        host = urlsplit(url).hostname
+        if host not in ('powerpyx.com', 'insider-gaming.com'):
+            raise ValueError('Curated spotlight uses unapproved source')
         key = identity(url)
         sig = similarity_key(item['title'])
         if key in entries:
             continue
         if weight_x(item['text']) > 280:
             raise ValueError('PowerPyx post exceeds X character budget')
-        if item['text'].count('\n\n') < 2 or 'PowerPyx' not in item['text']:
-            raise ValueError('PowerPyx attribution or editorial layout missing')
+        source = 'Insider Gaming' if host == 'insider-gaming.com' else 'PowerPyx'
+        if item['text'].count('\n\n') < 2 or source not in item['text']:
+            raise ValueError('Curated source attribution or editorial layout missing')
         return {'key': key, 'sig': sig, 'url': url, 'title': item['title'],
-                'text': item['text'], 'source': 'PowerPyx'}
+                'text': item['text'], 'source': source}
     return None
 
 
