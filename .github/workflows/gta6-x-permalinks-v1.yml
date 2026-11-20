@@ -2,9 +2,12 @@ name: GTA VI - Buffer X permalink bridge (read only)
 on:
   workflow_dispatch:
   schedule:
-    # 4 controlled scans per day to preserve the shared Buffer API quota.
-    # 08:20, 12:20, 16:20, 20:20 Europe/Berlin in winter.
-    - cron: '20 7,11,15,19 * * *'
+    # Still four scans/day: maintain Buffer API budget while moving the
+    # last check AFTER the 20:35 possible launch slot (Rome CET).
+    # 08:20, 12:20, 16:20 and 20:50 Europe/Rome in winter.
+    # GitHub Actions cron is best-effort, NOT guaranteed exact wall clock.
+    - cron: '20 7,11,15 * * *'
+    - cron: '50 19 * * *'
   pull_request:
     branches: [main]
     paths:
