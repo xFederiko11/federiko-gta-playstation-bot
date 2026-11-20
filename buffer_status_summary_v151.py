@@ -85,7 +85,9 @@ def check(*, client=None, ledger_path: Path | None = None,
         "BUFFER_PREFLIGHT_OK account=@xFederiko11; read-only; no posts created",
     ]
     if destination.get("isQueuePaused"):
-        messages.append("⚠️ Buffer indica una coda in pausa: controlla la dashboard prima di programmare.")
+        messages.append("BUFFER_QUEUE_PAUSED: Buffer indica una coda in pausa; nessuna nuova prenotazione consentita.")
+        _report(messages, summary_path)
+        return 3
     if gate == "paused":
         messages += [
             "QUICK_TIPS_PAUSED: le guide rapide restano sospese dopo un precedente errore.",
