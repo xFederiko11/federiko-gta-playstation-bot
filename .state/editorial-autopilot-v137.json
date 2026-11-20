@@ -1,5 +1,20 @@
 {
   "entries": {
+    "0e1b6c71114e27201aec02e8": {
+      "attempted_utc": "2026-11-20T08:53:24.355239+00:00",
+      "due_at": "2026-11-20T16:35:00+00:00",
+      "reserved_utc": "2026-11-20T16:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "💎 GTA VI | Stai puntando al platino? Non dare per scontato che un trucco o un exploit lasci intatti i trofei e i salvataggi. Controlla prima gli avvisi.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trucchi/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-cheats-safety",
+      "title": "Trucchi e trofei PS5",
+      "url": "https://xfederiko11.github.io/gta-6/trucchi/"
+    },
     "0ed4e0d113e0fbc30bd97875": {
       "attempted_utc": "2026-11-18T18:10:12.872063+00:00",
       "buffer_id": "6afdea05c71477154fa873fd",
@@ -43,6 +58,21 @@
       "title": "GTA 6 All Collectible Card Sets Locations",
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
+    },
+    "16c473477c74404c7eb56608": {
+      "attempted_utc": "2026-11-20T08:53:24.355211+00:00",
+      "due_at": "2026-11-20T13:35:00+00:00",
+      "reserved_utc": "2026-11-20T13:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🚕 GTA VI | Vuoi risparmiare tempo tra due missioni? Il taxi consente di saltare il tragitto con un supplemento di 100 GTA$, oltre alla tariffa della corsa.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-taxi-fast",
+      "title": "Taxi e viaggio rapido",
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/"
     },
     "2058044becfae40b204de3e9": {
       "attempted_utc": "2026-11-19T04:36:15.996538+00:00",
@@ -107,6 +137,21 @@
       "title": "GTA 6 Launch Causes Massive Spike in Traffic for Internet Provider Xfinity",
       "trophy_number": null,
       "url": "https://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity"
+    },
+    "3640e1f7463bb96f21375a7b": {
+      "attempted_utc": "2026-11-20T08:53:24.355221+00:00",
+      "due_at": "2026-11-20T14:35:00+00:00",
+      "reserved_utc": "2026-11-20T14:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🎯 GTA VI | Poligoni: medaglia Oro e potenziamento Concentrazione non sono la stessa cosa. Prima di ripetere le prove, controlla il requisito che ti serve.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-shooting-focus",
+      "title": "Poligoni e Concentrazione",
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/"
     },
     "4114d48c2ead8758ea05d75e": {
       "attempted_utc": "2026-11-20T01:26:58.442646+00:00",
@@ -226,6 +271,21 @@
       "text": "📰 GTA VI | GameSpot pubblica: GTA 6 Finally Changed The Default Rockstar-Game Controls\n#GTAVI #GTA6\nFonte: https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls",
       "title": "GTA 6 Finally Changed The Default Rockstar-Game Controls",
       "url": "https://gamespot.com/articles/gta-6-finally-changed-the-default-rockstar-game-controls"
+    },
+    "580240c0a6d9fa386655064b": {
+      "attempted_utc": "2026-11-20T08:53:24.355246+00:00",
+      "due_at": "2026-11-20T17:35:00+00:00",
+      "reserved_utc": "2026-11-20T17:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🏆 GTA VI | La checklist del platino separa missioni, attività, requisiti e rischi perdibili. Meglio controllarla prima di investire ore su un obiettivo sbagliato.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/trofei/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-trophies-tracker",
+      "title": "Checklist trofei",
+      "url": "https://xfederiko11.github.io/gta-6/trofei/"
     },
     "590290210b2200c5d7053bec": {
       "attempted_utc": "2026-11-18T22:00:23.881934+00:00",
@@ -470,6 +530,51 @@
       "title": "GTA 6 Collectible Guide – Progress Database",
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-collectible-guide-progress-database"
+    },
+    "aeb11e2c9144773a4bcb5030": {
+      "attempted_utc": "2026-11-20T08:53:24.355232+00:00",
+      "due_at": "2026-11-20T15:35:00+00:00",
+      "reserved_utc": "2026-11-20T15:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "⚠️ GTA VI | Prima di lasciare il Capitolo 1, controlla le attività opzionali potenzialmente perdibili. Nella guida separiamo i fatti dagli effetti sui trofei ancora incerti.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-chapter-one-warning",
+      "title": "Capitolo 1: attività da controllare",
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/"
+    },
+    "af3afe0afe07b402f0b11cc3": {
+      "attempted_utc": "2026-11-20T08:53:24.355191+00:00",
+      "due_at": "2026-11-20T12:35:00+00:00",
+      "reserved_utc": "2026-11-20T12:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🏆 GTA VI | Per il 100% sono richieste 70 sfide su 80, secondo la guida PowerPyx. Scegli prima quelle più rapide ed evita di perdere tempo sulle altre.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-seventy-challenges",
+      "title": "70 sfide per il 100%",
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/"
+    },
+    "ba15df13426271859b24bc58": {
+      "attempted_utc": "2026-11-20T08:53:24.355252+00:00",
+      "due_at": "2026-11-20T18:35:00+00:00",
+      "reserved_utc": "2026-11-20T18:35:00+00:00",
+      "run_id": "44706096001",
+      "source": "Guide GTA VI Italia",
+      "status": "attempted",
+      "thread": [
+        "🚙 GTA VI | Per il completamento conta anche la scoperta dei veicoli. Una buona routine: scansiona ciò che incontri, verifica il tracker e registra solo i mezzi da tenere.",
+        "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/auto-speciali/\n\n#GTAVI"
+      ],
+      "tip_id": "catchup-vehicle-completion",
+      "title": "Veicoli per il 100%",
+      "url": "https://xfederiko11.github.io/gta-6/auto-speciali/"
     },
     "bce83f32e0f01951b37b76c5": {
       "attempted_utc": "2026-11-18T18:24:14.029790+00:00",

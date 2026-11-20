@@ -2,7 +2,7 @@
   "schema": "gta6-buffer-catchup-v1",
   "date": "2026-11-20",
   "timezone": "Europe/Rome",
-  "state": "planned_not_yet_accepted_by_buffer",
+  "state": "batch_attempted_before_buffer",
   "note": "10 original two-message threads to fill the remaining 12-thread daily target. Scheduled status only after Buffer confirms each post. No automatic retries after unknown delivery.",
   "source": "Guide GTA VI Italia — pages link original references",
   "slots": [
@@ -42,7 +42,8 @@
       "title": "70 sfide per il 100%",
       "main": "🏆 GTA VI | Per il 100% sono richieste 70 sfide su 80, secondo la guida PowerPyx. Scegli prima quelle più rapide ed evita di perdere tempo sulle altre.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T13:35:00+01:00"
     },
     {
       "id": "taxi-fast",
@@ -50,7 +51,8 @@
       "title": "Taxi e viaggio rapido",
       "main": "🚕 GTA VI | Vuoi risparmiare tempo tra due missioni? Il taxi consente di saltare il tragitto con un supplemento di 100 GTA$, oltre alla tariffa della corsa.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T14:35:00+01:00"
     },
     {
       "id": "shooting-focus",
@@ -58,7 +60,8 @@
       "title": "Poligoni e Concentrazione",
       "main": "🎯 GTA VI | Poligoni: medaglia Oro e potenziamento Concentrazione non sono la stessa cosa. Prima di ripetere le prove, controlla il requisito che ti serve.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T15:35:00+01:00"
     },
     {
       "id": "chapter-one-warning",
@@ -66,7 +69,8 @@
       "title": "Capitolo 1: attività da controllare",
       "main": "⚠️ GTA VI | Prima di lasciare il Capitolo 1, controlla le attività opzionali potenzialmente perdibili. Nella guida separiamo i fatti dagli effetti sui trofei ancora incerti.",
       "link": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T16:35:00+01:00"
     },
     {
       "id": "cheats-safety",
@@ -74,7 +78,8 @@
       "title": "Trucchi e trofei PS5",
       "main": "💎 GTA VI | Stai puntando al platino? Non dare per scontato che un trucco o un exploit lasci intatti i trofei e i salvataggi. Controlla prima gli avvisi.",
       "link": "https://xfederiko11.github.io/gta-6/trucchi/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T17:35:00+01:00"
     },
     {
       "id": "trophies-tracker",
@@ -82,7 +87,8 @@
       "title": "Checklist trofei",
       "main": "🏆 GTA VI | La checklist del platino separa missioni, attività, requisiti e rischi perdibili. Meglio controllarla prima di investire ore su un obiettivo sbagliato.",
       "link": "https://xfederiko11.github.io/gta-6/trofei/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T18:35:00+01:00"
     },
     {
       "id": "vehicle-completion",
@@ -90,7 +96,8 @@
       "title": "Veicoli per il 100%",
       "main": "🚙 GTA VI | Per il completamento conta anche la scoperta dei veicoli. Una buona routine: scansiona ciò che incontri, verifica il tracker e registra solo i mezzi da tenere.",
       "link": "https://xfederiko11.github.io/gta-6/auto-speciali/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T19:35:00+01:00"
     }
   ]
 }
