@@ -47,6 +47,10 @@ def reconcile(ledger,feed):
     count=0
     for entry in out["entries"].values():
         if not isinstance(entry,dict) or entry.get("status")!="scheduled":continue
+        # A Buffer id alone cannot prove this was a genuine scheduled editorial thread.
+        # Require a real reservation and first message, as present in our ledger.
+        if not isinstance(entry.get("reserved_utc"),str) or not isinstance(entry.get("thread"),list) or not entry["thread"]:
+            continue
         receipt=found.get(entry.get("buffer_id"))
         if not receipt or entry.get("url")!=receipt[0]:continue
         article,xurl,sent=receipt
