@@ -11,8 +11,7 @@ on:
   workflow_run:
     workflows: ["GTA Monitor gratuito"]
     types: [completed]
-  # Permanent fallback: scanning frequency is NOT the publication frequency.
-  # The existing global director still enforces spacing, budget and dedupe.
+  # Scanning frequency is not publication frequency: global pacing stays active.
   schedule:
     - cron: '7,37 * * * *'
   push:
@@ -59,7 +58,7 @@ jobs:
         run: |
           python x_automation_safety_v1.py
           python -m py_compile buffer_delivery_receipts_v1.py buffer_status_summary_v151.py portal_links_v148.py editorial_director_v142.py trophy_posts_v142.py build_trophy_site_v142.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py online.py video_cards_v12.py quick_tips_v146.py
-          python -m unittest discover -q
+          env -u GITHUB_STEP_SUMMARY python -m unittest discover -q
 
   editorial:
     permissions:
@@ -100,7 +99,7 @@ jobs:
         run: |
           python x_automation_safety_v1.py
           python -m py_compile buffer_delivery_receipts_v1.py buffer_status_summary_v151.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
-          python -m unittest -q test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
+          env -u GITHUB_STEP_SUMMARY python -m unittest -q test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151
       - name: Inspect last rejected Buffer thread (read-only)
         if: github.event_name == 'push'
         run: python buffer_failed_diagnostics_v147.py
@@ -113,13 +112,18 @@ jobs:
           (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
           github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
+        env:
+          TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}
         run: python buffer_status_summary_v151.py
+      # Reviewed receipt: Buffer 6affa1e27b0a126ceb99ab72 sent at 2026-11-20T01:26:58.878Z.
+      # https://twitter.com/xFederiko11/status/2123588882885186002
+      # An explicit repository variable false still overrides this reviewed default.
       - name: Reserve one fresh item before any Buffer mutation
         id: reserve
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
           GTA6_PORTAL_LINKS_ENABLED: 'true'
-          TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'false' }}
+          TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}
         if: >-
           github.event_name == 'schedule' ||
           (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
