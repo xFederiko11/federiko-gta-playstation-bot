@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 from editorial_director_v142 import allowed,priority,read_reservations,MIN_GAP,MAX_AUTOMATED_DELIVERIES_24H,current_limits,BOOST_UNTIL,RECOVERY_START,RECOVERY_END,RECOVERY_MAX_AUTOMATED_DELIVERIES
 
-NOW=datetime(2026,11,18,20,0,tzinfo=timezone.utc)
+NOW=datetime(2026,11,17,20,0,tzinfo=timezone.utc)
 class EditorDirectorTests(unittest.TestCase):
     def test_reject_offtopic_parodies_and_gossip(self):
         self.assertLess(priority('Volvy parodia di GTA 6','Everyeye'),0)
