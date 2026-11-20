@@ -81,12 +81,14 @@ def select(rows,now):
 def markdown(rows,now):
     selected=select(rows,now)
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
+      "**IFTTT Reddit → GitHub: Applet collegata secondo lo screenshot utente del 20 novembre 2026.** "
+      "Questa dashboard misura soltanto gli eventi effettivamente ricevuti da GitHub, non lo stato live di IFTTT.",
       "**Questa coda non pubblica post, commenti, voti, follow o messaggi.**",
       "I titoli sono segnalazioni ricevute tramite IFTTT/GitHub, non fatti verificati. "
       "Apri il permalink e controlla regole del subreddit, contenuto e data prima di intervenire.","",
       f"Controllo UTC: {now.astimezone(timezone.utc).isoformat()} · "
       f"Segnalazioni valide: {len(selected)} · nessuna metrica X o Reddit disponibile.",""]
-    if not selected:lines+=["Nessuna segnalazione verificabile nel periodo. Controlla la connessione IFTTT o i filtri.",""]
+    if not selected:lines+=["Nessuna segnalazione Reddit valida ancora ricevuta: il collegamento IFTTT è visibile nello screenshot, ma il passaggio end-to-end non è ancora confermato. Verifica View activity se il trigger ha già trovato nuovi post.",""]
     for i,item in enumerate(selected,1):
         title=escape(re.sub(r"[\x00-\x1f\x7f]", " ", item["title"]))
         # No user-provided Markdown, links or instructions injected as link destinations.
@@ -99,7 +101,7 @@ def markdown(rows,now):
           "- Non affermare che un glitch funziona, che i trofei sono al sicuro o che il "
           "post è confermato sulla base del titolo.",""])
     lines+=["## Attivazione","",
-      "Autorizza IFTTT solo se desideri che il monitor riceva gli eventi Reddit.",
+      "Account Reddit e GitHub già collegati in IFTTT secondo lo screenshot del 20 novembre; non ripetere la configurazione. In assenza di segnalazioni controlla l'Activity dell'Applet.",
       "Applet: Reddit (nuovo post pertinente in r/GTA6/r/GTAVI/r/italygames, "
       "secondo i trigger disponibili) → GitHub Create Issue nel repo del bot.",
       "Prefisso titolo: \`[REDDIT-LEAD]\` seguito dal titolo del post; body con il permalink completo "
