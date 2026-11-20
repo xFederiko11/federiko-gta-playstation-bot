@@ -11,7 +11,7 @@
     "copy_full_text": false,
     "media_reuse": "Only with rights or official authorized media",
     "cheat_trophy_policy": "No GTA VI code labeled trophy-safe without platform-specific evidence",
-    "source_fetching": "Public RSS/Atom feeds only; do not bypass login, robots restrictions or scrape protected community pages",
+    "source_fetching": "Public working RSS/Atom feeds of non-Reddit publishers only; Reddit RSS discontinued. For Reddit use approved integration or manual review. Never bypass login or API restrictions.",
     "review_required": "Community / data-miner claims cannot be auto-published; all scraped claims need corroboration before being turned into news.",
     "existing_official_monitor": "The official Rockstar monitor remains sole owner of Rockstar's news and patches.",
     "mediawiki_metadata": "RecentChanges titles and edit URLs are metadata only; never verified gameplay claims. Experimental endpoint may be inaccessible."
@@ -187,18 +187,13 @@
         "cars and garages",
         "PS5 trophy tips"
       ],
-      "collection": "read_only_feed",
-      "feed": "https://www.reddit.com/r/GTA6/.rss",
-      "feed_domains": [
-        "www.reddit.com",
-        "reddit.com"
-      ],
+      "collection": "manual_review",
       "domains": [
         "www.reddit.com",
         "reddit.com"
       ],
       "language": "en",
-      "collection_note": "Opt-in public subreddit Atom metadata only; skip on 403/rate limits, never scrape login or private messages. All posts remain unverified community leads."
+      "collection_note": "Reddit officially discontinued subreddit RSS in November 2026. Do not fetch .rss or scrape. Reddit research enters via manually reviewed source links or a separately authorized Reddit->IFTTT->GitHub Issue bridge; no Reddit posts/replies/votes are automated."
     }
   ],
   "verification": {
