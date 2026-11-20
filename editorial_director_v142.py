@@ -11,6 +11,9 @@ import os
 from pathlib import Path
 import re
 import hashlib
+from launch_cadence_v1 import (active as launch_active, in_hours as launch_in_hours,
+    TARGET_MAX as LAUNCH_DAILY_CAP, MIN_PACING as LAUNCH_GAP,
+    MAX_BUFFER_X_MESSAGES_24H as LAUNCH_MESSAGE_CAP, local as launch_local)
 
 STATE_DIR=Path(".state")
 # Balanced launch-phase voluntary limits for a new X profile. These are NOT
@@ -86,19 +89,40 @@ def read_reservations(root:Path|None=None):
                 if stamp and entry.get("status") not in ("rejected",):
                     result.append({"at":stamp,"key":key,"workflow":filename,
                                    "status":entry.get("status","reserved"),
-                                   "url":str(entry.get("url") or "")})
+                                   "url":str(entry.get("url") or ""),
+                                   "units":len(entry["thread"]) if isinstance(entry.get("thread"),list)
+                                           and len(entry["thread"])>=2 else 1})
         except (OSError,ValueError):
             # Fail closed: malformed existing ledger must not be bypassed.
             raise RuntimeError("Publication ledger cannot be read: "+filename)
     return result
 
-def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None)->tuple[bool,str]:
+def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None, kind:str|None=None)->tuple[bool,str]:
     if os.getenv("EDITORIAL_DIRECTOR_V142_ENABLED","false").lower()!="true":
         return True,"disabled"
     if now.tzinfo is None:raise ValueError("Timezone-aware time required")
     entries=read_reservations(root)
-    if not entries:return True,"empty"
     clock=now.astimezone(timezone.utc)
+    if launch_active(clock):
+        # First 14 days are exclusively two-message editorial threads, during
+        # reader hours. Legacy campaigns, breaking monitors and standalone
+        # posts cannot quietly fill these slots with singles.
+        if not launch_in_hours(clock):
+            return False,"launch_outside_08_21_rome"
+        if kind!="launch_thread":
+            return False,"launch_double_thread_only"
+        same_day=sum(launch_local(x["at"]).date()==launch_local(clock).date() for x in entries)
+        if same_day>=LAUNCH_DAILY_CAP:
+            return False,"launch_local_day_cap"
+        recent=[x for x in entries if clock-ROLLING_WINDOW<=x["at"]<=clock]
+        if sum(x.get("units",1) for x in recent)+2>LAUNCH_MESSAGE_CAP:
+            return False,"launch_x_rolling_message_budget"
+        if entries:
+            latest=max(x["at"] for x in entries)
+            if clock-latest < max(LAUNCH_GAP,gap or LAUNCH_GAP):
+                return False,"launch_minimum_gap"
+        return True,"launch_thread_ready"
+    if not entries:return True,"empty"
     daily_budget, policy_gap = current_limits(clock)
     effective_gap = policy_gap if gap is None else max(gap,policy_gap)
     # Reservations/uncertain submissions count too: false positives reduce
