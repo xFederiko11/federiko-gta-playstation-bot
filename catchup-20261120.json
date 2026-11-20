@@ -32,7 +32,8 @@
       "title": "Salvare un'auto speciale",
       "main": "🚘 GTA VI | Hai trovato un'auto da conservare? Controlla il tracker, gli slot e la registrazione prima di abbandonarla. Ecco cosa verificare.",
       "link": "https://xfederiko11.github.io/gta-6/salvare-auto/",
-      "status": "planned"
+      "status": "attempted",
+      "scheduled_for_rome": "2026-11-20T12:35:00+01:00"
     },
     {
       "id": "seventy-challenges",
