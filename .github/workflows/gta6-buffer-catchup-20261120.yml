@@ -1,0 +1,93 @@
+name: GTA VI - Real Buffer Scheduled Catchup 20 Nov
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'buffer_catchup_20261120.py'
+      - 'test_buffer_catchup_20261120.py'
+      - 'catchup-20261120.json'
+      - '.github/workflows/gta6-buffer-catchup-20261120.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gta6-buffer-catchup-20261120.yml'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'preview only or schedule remaining verified threads'
+        type: choice
+        options: [preview, schedule]
+        required: true
+        default: preview
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('gta-v142-qa-{0}', github.ref) || 'gta-v142-publication-global' }}
+  cancel-in-progress: false
+
+jobs:
+  qa:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-free.txt
+      - name: Validate schedule without Buffer access
+        run: |
+          python x_automation_safety_v1.py
+          python -m py_compile buffer_catchup_20261120.py
+          python -m unittest -q test_buffer_catchup_20261120 test_buffer_publisher
+          python buffer_catchup_20261120.py --mode preview
+
+  schedule:
+    if: >-
+      github.event.repository.private == false &&
+      (github.event_name == 'push' ||
+       (github.event_name == 'workflow_dispatch' && inputs.action == 'schedule'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      PYTHONUNBUFFERED: '1'
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+      BUFFER_EXPECTED_USERNAME: xFederiko11
+      GTA6_PORTAL_LINKS_ENABLED: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-free.txt
+      - name: Verify offline scheduling and real queue safety
+        run: |
+          python x_automation_safety_v1.py
+          python -m unittest -q test_buffer_catchup_20261120 test_buffer_publisher
+          git pull --rebase origin main
+          python buffer_catchup_20261120.py --mode preview
+      - name: Schedule genuine future Buffer X threads and commit each receipt
+        run: python buffer_catchup_20261120.py --mode schedule
+
+  preview:
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-free.txt
+      - run: python buffer_catchup_20261120.py --mode preview
