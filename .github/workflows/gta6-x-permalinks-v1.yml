@@ -3,6 +3,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '20 7-20 * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'x_permalink_bridge_v1.py'
+      - 'test_x_permalink_bridge_v1.py'
+      - '.github/workflows/gta6-x-permalinks-v1.yml'
   push:
     branches: [main]
     paths:
