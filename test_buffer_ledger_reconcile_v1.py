@@ -34,7 +34,7 @@ class ReceiptReconcileTests(unittest.TestCase):
         self.assertEqual(reconcile(updated,feed())[1],0)
     def test_spoofing_or_mismatch_cannot_change_ledger(self):
         bad=(
-          {"buffer_id":"otherpost1234567890"},
+          {"buffer_id":"unrecognized1234567890"},
           {"article_url":"https://xfederiko11.github.io/gta-6/soldi-facili/"},
           {"x_url":"https://x.com/Other/status/2123741902625218841"},
           {"x_url":"https://x.com.evil.test/xFederiko11/status/2123741902625218841"},
