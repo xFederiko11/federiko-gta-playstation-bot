@@ -19,6 +19,12 @@ SPACING = timedelta(hours=20)
 # Every entry is original editorial copy pointing to an existing public
 # informational landing page; do not claim the third-party source verified it.
 CONTENT = (
+    {"id": "money-early-four", "path": "/guide-e-tutorial/soldi-facili-capitolo-1/",
+     "title": "GTA VI: quattro luoghi per trovare soldi subito",
+     "text": "💰 GTA VI | SOLDI NEL CAPITOLO 1\n\nQuattro posti da controllare per trovare denaro e oggetti di valore. La guida spiega dove andare, cosa cercare e quali rischi evitare. ⚠️ Spoiler sulle posizioni.\n\n📍 Passaggi e fonte:"},
+    {"id": "money-liquor", "path": "/guide-e-tutorial/soldi-2500-three-sheets-liquor/",
+     "title": "GTA VI: denaro nascosto al Three Sheets Liquor",
+     "text": "💵 GTA VI | THREE SHEETS LIQUOR\n\nDurante l'incarico di Shirley, controlla il retro del negozio: secondo Insider Gaming, vicino al generatore c'è un nascondiglio con 1.200 GTA$. ⚠️ Spoiler.\n\n📍 Procedura illustrata e fonte:"},
     {"id": "oled-catalog", "path": "/hdr-oled/",
      "title": "TV OLED: trova il codice preciso",
      "text": "📺 GTA VI su PS5 e PS5 Pro: prima di copiare una calibrazione HDR, cerca il codice completo della TV. Un numero visto su un'altra OLED non è un preset universale.\n\n🔎 Modelli, impostazioni e affidabilità:"},
