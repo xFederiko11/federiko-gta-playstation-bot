@@ -553,18 +553,23 @@
     "aeb11e2c9144773a4bcb5030": {
       "attempted_utc": "2026-11-20T08:53:24.355232+00:00",
       "buffer_id": "6b000a860f5eda1a57d6121e",
+      "buffer_receipt_verified": true,
+      "completed_utc": "2026-11-20T15:35:02.320000Z",
+      "delivery_source": "Buffer sent Post.externalLink",
       "due_at": "2026-11-20T15:35:00+00:00",
       "reserved_utc": "2026-11-20T15:35:00+00:00",
       "run_id": "44706096001",
       "source": "Guide GTA VI Italia",
-      "status": "scheduled",
+      "status": "sent",
       "thread": [
         "⚠️ GTA VI | Prima di lasciare il Capitolo 1, controlla le attività opzionali potenzialmente perdibili. Nella guida separiamo i fatti dagli effetti sui trofei ancora incerti.",
         "📖 Guida italiana passo per passo, con fonti e spoiler a scelta:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/\n\n#GTAVI"
       ],
+      "thread_reply_verified": false,
       "tip_id": "catchup-chapter-one-warning",
       "title": "Capitolo 1: attività da controllare",
-      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/"
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/",
+      "x_permalink": "https://x.com/xFederiko11/status/2123802302163071346"
     },
     "af3afe0afe07b402f0b11cc3": {
       "attempted_utc": "2026-11-20T08:53:24.355191+00:00",
