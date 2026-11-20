@@ -220,7 +220,7 @@ class RedditIntakeTests(unittest.TestCase):
             [spoof],resolve=lambda _:fake_url),NOW))
 
     def test_visual_shortlist_is_not_buried_by_high_scoring_news(self):
-        news=[issue(title="[REDDIT-LEAD] GTA VI money garage car trophy map "+str(i),
+        news=[issue(title="[REDDIT-LEAD] GTA VI money garage car trophy mission "+str(i),
                     body="Reddit source: https://www.reddit.com/r/GTA6/comments/n"+
                          str(i).zfill(5)+"/")
               for i in range(20)]
