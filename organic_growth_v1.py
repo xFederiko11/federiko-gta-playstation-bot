@@ -19,6 +19,7 @@ from growth_metrics_v142 import report as growth_report
 from editorial_director_v142 import read_reservations, current_limits
 from x_community_review_v1 import plan as conversation_plan, markdown as conversation_markdown
 from growth_social_desk_v2 import render_file as render_social_desk
+from growth_funnel_v1 import markdown as verified_own_conversations
 
 PUBLIC = "https://xfederiko11.github.io/gta-6/"
 START_DATE = date(2026, 11, 19)
@@ -256,7 +257,7 @@ def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
     if radar_report is not None:
         now=datetime.fromisoformat(plan["generated_utc"])
         social_lines=render_social_desk(radar_report,now).rstrip().splitlines()
-        lines[6:6]=social_lines+[""]
+        lines[6:6]=social_lines+[""]+verified_own_conversations().rstrip().splitlines()+[""]
     if not plan["drafts"]:
         lines.extend([
             "**Bozze promozionali sospese nella coda di crescita**: volume recente "
