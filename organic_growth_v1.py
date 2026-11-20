@@ -226,7 +226,7 @@ def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
         "**Questa issue non invia post, commenti, menzioni, follow o like.**",
         "Follower e impression non vengono letti direttamente da X.", "",
         "## Profilo: stato osservato dagli screenshot", "",
-        "Stato da screenshot del **"+plan["profile_snapshot"]["observed_date"]+"**, non da un controllo live di X. "
+        "Stato da screenshot del **"+plan["profile_snapshot"]["observed_date"]+"**, non un controllo live di X. "
         "Non mostra follower aggiornati, impression o un risultato di autenticità.",
         "- [x] Sito web visibile nel profilo." if plan["profile_snapshot"]["website_link_visible"]
         else "- [ ] Verificare manualmente il collegamento al sito web.",
@@ -239,8 +239,8 @@ def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
         "una verifica biometrica. Se una verifica autentica appare, seguirne solo il percorso ufficiale."
         if plan["profile_snapshot"]["authenticity_prompt_visible"] else
         "- [ ] Verificare se il profilo ha limitazioni effettive nella ricerca o nei suggerimenti.",
-        "- [ ] Controllare da un altro browser l'anteprima grigia del post fissato: "
-        "potrebbe essere il caricamento di una card, non un media definitivamente rotto.",
+        "- [x] Il nuovo post fissato usa testo nativo. La vecchia anteprima grigia "
+        "non richiede ulteriori interventi sul profilo.",
         "- [ ] Seguire e commentare manualmente soltanto account GTA e PlayStation di vero interesse.",
         "", "### Bio alternativa (archivio, non sostituire quella già aggiornata)", fence+"text", plan["bio_suggestion"], fence,
         "Sito web: " + plan["profile_website"], "",
