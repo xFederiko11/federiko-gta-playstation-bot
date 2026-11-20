@@ -717,6 +717,22 @@
       "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/",
       "x_permalink": "https://x.com/xFederiko11/status/2123726811414618465"
     },
+    "d3f0f33b6b7ac7530a0de8dc": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_03.0nqz~lrqdmlze.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-20T19:34:41.275730+00:00",
+      "run_id": "44803336005",
+      "source": "PowerPyx Tips",
+      "status": "reserved",
+      "text": "🎯 GTA VI | RISPARMIA TEMPO SUL 100%\n\n1️⃣ Vai su Progressi → Sfide.\n2️⃣ Controlla quelle già completate.\n3️⃣ Scegli le più semplici.\n\n✅ Bastano 70 sfide su 80: puoi saltarne 10!\n\n#GTAVI #Platino",
+      "thread": [
+        "🎯 GTA VI | RISPARMIA TEMPO SUL 100%\n\n1️⃣ Vai su Progressi → Sfide.\n2️⃣ Controlla quelle già completate.\n3️⃣ Scegli le più semplici.\n\n✅ Bastano 70 sfide su 80: puoi saltarne 10!\n\n#GTAVI #Platino",
+        "📖 Guida completa in italiano:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina."
+      ],
+      "tip_id": "70 challenges",
+      "title": "GTA VI PS5: come evitare 10 sfide difficili per il 100%",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/"
+    },
     "d6b995b0794bd4529f4cb38d": {
       "attempted_utc": "2026-11-19T07:47:58.463839+00:00",
       "buffer_id": "6afea9ae9af0a73f7124d9d4",
@@ -1031,6 +1047,13 @@
       "feeds_relevant": 108,
       "reserved": 1,
       "run": "44704607855"
+    },
+    {
+      "at": "2026-11-20T19:34:41.275730+00:00",
+      "errors": [],
+      "feeds_relevant": 119,
+      "reserved": 1,
+      "run": "44803336005"
     }
   ],
   "schema": "v13.7",
@@ -1040,6 +1063,7 @@
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
+    "come evitare sfide difficili per 100": "d3f0f33b6b7ac7530a0de8dc",
     "discharge time mission walkthrough": "761d516f9962451f807f2271",
     "distrugge ogni record con oltre milioni spettatori diretta prima del lancio": "5e6c87ebccb5a16d21e76073",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
