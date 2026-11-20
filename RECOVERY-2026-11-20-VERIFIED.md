@@ -2,7 +2,7 @@
 
 ## Actual publication evidence
 
-- Editorial run: https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/44653659495
+- Editorial publication run: https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/44653659495
 - Job: 136014487622; 77 offline regression tests passed, destination preflight passed, one fresh item reserved and persisted before delivery.
 - Title: GTA VI: quattro luoghi per fare soldi subito.
 - Buffer post ID: `6affa1e27b0a126ceb99ab72`.
@@ -18,6 +18,20 @@
 3. A caught Buffer delivery error could leave the workflow green. New `buffer_delivery_receipts_v1.py` independently re-reads one current post after persistence; missing/failed/pending current receipts do not count as successful publication. It never creates, retries or edits posts and never changes the deduplication ledger.
 4. Publication checks now have a permanent `7,37 * * * *` fallback schedule and relevant content-change triggers. This is check cadence, not a promise to post every 30 minutes. Existing global and local publication limits remain enforced.
 5. PR #53 merged: a paused Buffer queue stops new reservations instead of merely showing a warning.
+6. A push-only lookup of an old rejected Buffer thread raised a GraphQL error and prevented the mandatory live preflight from running. Historical diagnostics now report unavailability without retrying, exposing response details, changing history or claiming current health. Current destination preflight and new-publication receipt checks remain mandatory. Fix: `2087414d022db52550013b932bc03f34e63180ae`; six added regression cases: `68002bd901d5a1bcd6a77ff2ac9796f051cdc867`.
+
+## Final production verification
+
+- Final push-triggered run: https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/44654529939
+- Job 136017384012 completed successfully; logs end at 2026-11-20T01:34:08Z.
+- 83 offline regression tests passed; X safety audit passed.
+- The unavailable old rejected-thread lookup was handled as advisory with no mutation.
+- Real live preflight: `BUFFER_PREFLIGHT_OK account=@xFederiko11`.
+- Real tip state: `QUICK_TIPS_READY`, `TIPS_REAUTH_CONFIRMED_V149=true`; history and deduplication unchanged.
+- Eight feeds succeeded: 110 qualifying items, zero feed errors.
+- The director correctly held another publication for `editorial_local_spacing`; no second post was attempted seven minutes after the first.
+- A separate read-only check at 01:34:07Z reconfirmed the same Buffer post as sent with the original sentAt. Buffer then returned https://x.com/2122776704191995904/status/2123588882885186002 for the same post ID and verified channel.
+- `current_run_attempted=false` correctly distinguished this verification-only run from the earlier actual publication.
 
 ## Website verification
 
@@ -30,7 +44,7 @@
 
 ## Recovery boundaries
 
-- Fresh quick-tip recovery defaults were reviewed after the above real post-refresh receipt (`ede71172edf8a478c6ce4007617237cb98605c19`). An explicit repository variable `TIPS_REAUTH_CONFIRMED_V149=false` still wins. The old rejected WAiNK thread remains deduplicated; no fresh image-thread delivery is claimed by this note.
+- Fresh quick-tip recovery defaults were reviewed after the real post-refresh receipt (`ede71172edf8a478c6ce4007617237cb98605c19`) and their readiness was observed in the final run. An explicit repository variable `TIPS_REAUTH_CONFIRMED_V149=false` still wins. The old rejected WAiNK thread remains deduplicated; no fresh image-thread delivery is claimed by this note.
 - Unit-test diagnostic output is excluded from the real GitHub Step Summary so simulated errors are not shown as production health.
 - Temporary repair workflows were removed from both repositories after use; no public administrative publishing page or secret-bearing browser interface was added.
 - No password, API key, Buffer subscription, account permission or historical reservation was reset or removed.
