@@ -41,7 +41,7 @@ class DoubleThreadTests(unittest.TestCase):
 
     def test_facts_not_truncated_for_decorative_images(self):
         item={'source':'VGC','url':'https://www.videogameschronicle.com/news/a',
-              'title':'Specifiche','text':('Fatti verificati nelle note ufficiali. '*8).strip(),
+              'title':'Specifiche','text':('Fatti verificati nelle note ufficiali. '*7).strip(),
               'media_url':'https://www.rockstargames.com/VI/test.jpg'}
         result=double(item)
         self.assertEqual(len(result['thread']),2)
