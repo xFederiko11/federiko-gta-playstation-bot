@@ -18,6 +18,7 @@ from editorial_autopilot_v137 import weight_x
 from growth_metrics_v142 import report as growth_report
 from editorial_director_v142 import read_reservations, current_limits
 from x_community_review_v1 import plan as conversation_plan, markdown as conversation_markdown
+from growth_social_desk_v2 import render_file as render_social_desk
 
 PUBLIC = "https://xfederiko11.github.io/gta-6/"
 START_DATE = date(2026, 11, 19)
@@ -215,7 +216,7 @@ def make_plan(*, now: datetime | None = None, ledger_root=Path(".state"),
     }
 
 
-def markdown(plan: dict) -> str:
+def markdown(plan: dict, *, radar_report: Path | str | None = None) -> str:
     if plan.get("schema") != SCHEMA:
         raise ValueError("Unexpected organic growth plan schema")
     fence = "~" * 3
@@ -225,22 +226,23 @@ def markdown(plan: dict) -> str:
         "**Questa issue non invia post, commenti, menzioni, follow o like.**",
         "Follower e impression non vengono letti direttamente da X.", "",
         "## Profilo: stato osservato dagli screenshot", "",
-        "Questo stato riflette **solo le schermate del 19 novembre 2026**, non un controllo live di X. "
+        "Stato da screenshot del **"+plan["profile_snapshot"]["observed_date"]+"**, non un controllo live di X. "
         "Non mostra follower aggiornati, impression o un risultato di autenticità.",
         "- [x] Sito web visibile nel profilo." if plan["profile_snapshot"]["website_link_visible"]
         else "- [ ] Verificare manualmente il collegamento al sito web.",
         "- [x] Post di presentazione fissato in alto." if plan["profile_snapshot"]["pinned_welcome_post_visible"]
         else "- [ ] Pubblicare e fissare un post di presentazione originale.",
-        "- [ ] Controllare che la bio spieghi cosa riceve chi segue il canale.",
+        "- [x] Bio GTA VI/soldi/auto/mappe/platino aggiornata nello screenshot del 20/11." if plan["profile_snapshot"].get("bio_updated_visible")
+        else "- [ ] Verificare che la bio spieghi cosa riceve chi segue il canale.",
         "- [ ] Esaminare personalmente l'avviso «Sblocca di più su X» nell'app ufficiale; "
         "non significa automaticamente shadowban, né prova che X abbia richiesto "
         "una verifica biometrica. Se una verifica autentica appare, seguirne solo il percorso ufficiale."
         if plan["profile_snapshot"]["authenticity_prompt_visible"] else
         "- [ ] Verificare se il profilo ha limitazioni effettive nella ricerca o nei suggerimenti.",
-        "- [ ] Controllare da un altro browser l'anteprima grigia del post fissato: "
-        "potrebbe essere il caricamento di una card, non un media definitivamente rotto.",
+        "- [x] Il nuovo post fissato usa testo nativo. La vecchia anteprima grigia "
+        "non richiede ulteriori interventi sul profilo.",
         "- [ ] Seguire e commentare manualmente soltanto account GTA e PlayStation di vero interesse.",
-        "", "### Bio suggerita", fence+"text", plan["bio_suggestion"], fence,
+        "", "### Bio alternativa (archivio, non sostituire quella già aggiornata)", fence+"text", plan["bio_suggestion"], fence,
         "Sito web: " + plan["profile_website"], "",
         "### Post da fissare - archivio (già visibile nel profilo)" if plan["profile_snapshot"]["pinned_welcome_post_visible"]
         else "### Post da fissare - non pubblicato", fence+"text",
@@ -262,6 +264,13 @@ def markdown(plan: dict) -> str:
             "Caratteri stimati X: " + str(weight_x(d["text"])) + "/280. "
             "**Stato: revisione e pubblicazione manuale**.", "",
         ])
+    # The real-tweet social desk appears first for a fast mobile workflow.
+    # The source is a read-only, persistent GitHub Issue 48 snapshot; absence
+    # never becomes invented X posts. Reply links open X but do not send.
+    now=datetime.fromisoformat(plan["generated_utc"])
+    if radar_report is not None:
+        lines.extend(render_social_desk(radar_report,now).rstrip().splitlines())
+        lines.append("")
     lines.extend(conversation_markdown(plan["community_queue"]).rstrip().splitlines())
     lines.append("")
     states = plan["delivery_status"]
@@ -336,10 +345,11 @@ def markdown(plan: dict) -> str:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--radar-report", type=Path, default=Path(".runtime/verified-social-radar-issue.md"))
     args = parser.parse_args()
     plan = make_plan()
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(markdown(plan), encoding="utf-8")
+    args.output.write_text(markdown(plan,radar_report=args.radar_report), encoding="utf-8")
     print("ORGANIC_GROWTH", len(plan["drafts"]),
           "manual_only=true x_metrics_available="+str(plan["actual_x_metrics_available"]))
 

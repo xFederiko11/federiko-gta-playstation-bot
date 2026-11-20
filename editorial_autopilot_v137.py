@@ -494,19 +494,27 @@ def reserve():
         # One factual, original guide-page excerpt daily provides ongoing
         # value from our existing site without resending headline-only news.
         # The exact canonical URL must return 200; unavailable pages stay on hold.
+        # One *original question on our own X account* can replace a normal
+        # post during the launch, never append an extra publication. It is
+        # paired with a relevant, publicly verified Italian guide in reply.
+        growth_question = None
+        if launch_active(now):
+            from growth_conversion_v1 import candidate as growth_candidate
+            growth_question = growth_candidate(state, now)
         owned_guide = None
-        if not (spotlight or quick_tip):
+        if not (spotlight or quick_tip or growth_question):
             from site_evergreen_posts_v1 import candidate as owned_candidate
             owned_guide = owned_candidate(state, now)
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
         trophy_item = None
-        if not (spotlight or quick_tip or owned_guide):
+        if not (spotlight or quick_tip or growth_question or owned_guide):
             from trophy_posts_v142 import candidate, landing_live
             draft_trophy = candidate(state, now)
             if draft_trophy and landing_live():
                 trophy_item = draft_trophy
-        selected = ([quick_tip] if quick_tip else [spotlight] if spotlight
+        selected = ([growth_question] if growth_question
+                    else [quick_tip] if quick_tip else [spotlight] if spotlight
                     else [owned_guide] if owned_guide
                     else [trophy_item] if trophy_item else select(items, state, now))
         if launch_active(now):

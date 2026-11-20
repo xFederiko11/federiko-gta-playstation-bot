@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'x_verified_social_radar_v1.py'
+      - 'growth_social_desk_v2.py'
       - 'test_x_verified_social_radar_v1.py'
       - 'x_free_public_embed_scout_v1.py'
       - 'test_x_free_public_embed_scout_v1.py'
@@ -17,8 +18,10 @@ on:
       - '.github/workflows/gta6-x-verified-social-radar-v1.yml'
       - 'x_free_public_embed_scout_v1.py'
   schedule:
-    # One daily query window, at 07:17 UTC; no paid API without opt-in.
+    # Morning official API only with explicit user opt-in; no paid calls in later runs.
     - cron: '17 7 * * *'
+    # Extra public RSS + official oEmbed sweeps, read-only and free.
+    - cron: '17 12,17 * * *'
   workflow_dispatch:
     inputs:
       action:
@@ -67,7 +70,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           # Require both active billing opt-in AND a scheduled/manual run.
-          X_SOCIAL_RADAR_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && vars.X_SOCIAL_RADAR_ENABLED || 'false' }}
+          X_SOCIAL_RADAR_ENABLED: ${{ ((github.event_name == 'schedule' && github.event.schedule == '17 7 * * *') || (github.event_name == 'workflow_dispatch' && inputs.action == 'run')) && vars.X_SOCIAL_RADAR_ENABLED || 'false' }}
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: |
           python x_verified_social_radar_v1.py --output previews/verified-x-social-radar-v1.md --previous-report .runtime/previous-social-radar.md
