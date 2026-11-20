@@ -38,9 +38,10 @@ class BufferStatusSummaryTests(unittest.TestCase):
             code = check(client=client, ledger_path=Path(tmp) / "missing.json",
                          opt_in=False, summary_path=summary)
             result = Path(summary).read_text(encoding="utf-8")
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 3)
+        self.assertIn("BUFFER_QUEUE_PAUSED", result)
         self.assertIn("BUFFER_PREFLIGHT_OK", result)
-        self.assertIn("QUICK_TIPS_STATUS_UNKNOWN", result)
+        self.assertNotIn("QUICK_TIPS_STATUS_UNKNOWN", result)
         self.assertIn("coda in pausa", result)
         client.verify_destination.assert_called_once_with()
         self.assertEqual(client.method_calls[0][0], "verify_destination")
