@@ -138,6 +138,12 @@ def select(rows,now):
 
 def markdown(rows,now):
     selected=select(rows,now)
+    received=sum(1 for item in (rows if isinstance(rows,list) else [])
+        if isinstance(item,dict)
+        and str((item.get("author") or {}).get("login","")).lower()==OWNER
+        and str(item.get("title") or "").startswith(PREFIX+" "))
+    shortened=sum(1 for item in (rows if isinstance(rows,list) else [])
+        if isinstance(item,dict) and "https://ift.tt/" in str(item.get("body") or ""))
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
       "**IFTTT Reddit → GitHub: Applet collegata secondo lo screenshot utente del 20 novembre 2026.** "
       "Questa dashboard misura soltanto gli eventi effettivamente ricevuti da GitHub, non lo stato live di IFTTT.",
@@ -145,8 +151,14 @@ def markdown(rows,now):
       "I titoli sono segnalazioni ricevute tramite IFTTT/GitHub, non fatti verificati. "
       "Apri il permalink e controlla regole del subreddit, contenuto e data prima di intervenire.","",
       f"Controllo UTC: {now.astimezone(timezone.utc).isoformat()} · "
-      f"Segnalazioni valide: {len(selected)} · nessuna metrica X o Reddit disponibile.",""]
-    if not selected:lines+=["Nessuna segnalazione Reddit valida ancora ricevuta: il collegamento IFTTT è visibile nello screenshot, ma il passaggio end-to-end non è ancora confermato. Verifica View activity se il trigger ha già trovato nuovi post.",""]
+      f"Eventi Reddit ricevuti: {received} · pertinenti e con URL verificato: {len(selected)} · "
+      f"link IFTTT non ancora risolti: {shortened} · nessuna metrica X o Reddit disponibile.",""]
+    if not selected:
+        reason=("La connessione IFTTT → GitHub è verificata: sono arrivati eventi, ma "
+                "nessuno supera per ora i controlli di pertinenza e permalink."
+                if received else
+                "Nessun evento Reddit ancora ricevuto. Controlla l'Activity dell'Applet.")
+        lines.extend([reason,""])
     for i,item in enumerate(selected,1):
         title=escape(re.sub(r"[\x00-\x1f\x7f]", " ", item["title"]))
         # No user-provided Markdown, links or instructions injected as link destinations.
