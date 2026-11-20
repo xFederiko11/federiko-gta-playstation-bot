@@ -118,6 +118,40 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertEqual(len(calls),2)
         # It never accesses the address inside the Location header.
 
+    def test_prioritize_recent_and_relevant_without_resolving_irrelevant_shorteners(self):
+        irrelevant=issue(title="[REDDIT-LEAD] I feel sorry for streamers without music",
+                         body="Reddit source: https://ift.tt/bMAG9Kx")
+        earlier=issue(title="[REDDIT-LEAD] GTA 6 PS5 garage vehicle location guide",
+            body="Reddit source: https://www.reddit.com/r/GTA6/comments/abc123/",
+            createdAt="2026-11-19T12:00:00Z")
+        later=issue(title="[REDDIT-LEAD] GTA 6 PS5 garage vehicle location guide",
+            body="Reddit source: https://www.reddit.com/r/GTA6/comments/abc124/",
+            createdAt="2026-11-20T13:20:00Z")
+        called=[]
+        def fake(link):
+            called.append(link)
+            return None
+        cleaned=expand_short_links([irrelevant,earlier,later],resolve=fake)
+        self.assertEqual(called,[])
+        self.assertEqual(select(cleaned,NOW)[0]["reddit_url"],
+                         "https://www.reddit.com/r/GTA6/comments/abc124/")
+        report=markdown(cleaned,NOW)
+        self.assertIn("non pertinenti dal titolo: 1",report)
+        self.assertIn("link IFTTT pertinenti ancora da risolvere: 0",report)
+
+    def test_ift_ttl_cache_and_max_lookups(self):
+        a=issue(title="[REDDIT-LEAD] GTA VI PS5 car garage location guide",
+                body="Reddit source: https://ift.tt/ABCD1234")
+        b=issue(title="[REDDIT-LEAD] GTA VI PS5 car garage location guide",
+                body="Reddit source: https://ift.tt/ABCD1234",
+                url="https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/998")
+        called=[]
+        resolved=expand_short_links([a,b],resolve=lambda link:(called.append(link) or URL))
+        self.assertEqual(len(called),1)
+        self.assertEqual(len(select(resolved,NOW)),1)
+        no=expand_short_links([a],resolve=lambda link:URL,max_lookups=0)
+        self.assertEqual(no[0]["body"],a["body"])
+
     def test_untrusted_markdown_not_rendered_as_unsafe_links(self):
         candidate=issue(title="[REDDIT-LEAD] GTA VI PS5 garage [click](https://evil.test) help")
         report=markdown([candidate],NOW)
