@@ -243,7 +243,7 @@ POWERPYX_SPOTLIGHTS = [
 
 
 def editorial_day_slots(existing: dict, now: datetime) -> tuple[int,int]:
-    """Local editorial slots; launch recovery has a separate three-post budget.
+    """Local editorial slots; launch recovery has a separate five-post budget.
 
     Old launch posts remain permanently deduplicated, but do not stop all
     editorial coverage during the one-off global director recovery.
@@ -253,7 +253,7 @@ def editorial_day_slots(existing: dict, now: datetime) -> tuple[int,int]:
     if RECOVERY_START<=clock<RECOVERY_END:
         recent=[published(e.get('reserved_utc')) for e in existing.values()
                 if e.get('reserved_utc')]
-        return sum(stamp is not None and RECOVERY_START<=stamp<=clock for stamp in recent),3
+        return sum(stamp is not None and RECOVERY_START<=stamp<=clock for stamp in recent),5
     return sum(1 for e in existing.values()
                if e.get('reserved_utc','')[:10]==clock.date().isoformat()),MAX_POSTS_DAY
 
