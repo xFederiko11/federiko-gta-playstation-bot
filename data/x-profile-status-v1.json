@@ -1,12 +1,13 @@
 {
   "schema": "gta6-x-profile-status-v1",
-  "observed_date": "2026-11-19",
+  "observed_date": "2026-11-20",
   "evidence": "user_provided_screenshots_not_live_x_api",
   "website_link_visible": true,
   "pinned_welcome_post_visible": true,
   "authenticity_prompt_visible": true,
   "authenticity_verified": null,
-  "preview_card_status": "uncertain_grey_placeholder",
+  "preview_card_status": "unknown",
   "followers_live": null,
-  "notes": "Manual screenshot observation. Website and pinned welcome are already done. X message 'Sblocca di più' is not proof of a ban or proof that a liveness check was completed. Never infer live follower metrics or authorize engagement automation."
+  "notes": "User screenshot 20 Nov shows new gaming bio, website and native pinned welcome post already done, 7 following and zero followers in that screenshot. Not a live X API metric. The earlier authenticity prompt is historical and is not proof of any current restriction.",
+  "bio_updated_visible": true
 }
