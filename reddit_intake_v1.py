@@ -27,6 +27,11 @@ SCORE=(
   ("guida",r"\b(?:mission|missioni|location|posizion|map|mappa|how to|guide|guida|ps5|help|aiuto)\w*\b"),
 )
 
+def title_topics(title):
+    """Use only headline terms for triage; do not infer claims from link text."""
+    if not isinstance(title,str):return []
+    return [label for label,pattern in SCORE if re.search(pattern,title,re.I)]
+
 def canonical_url(text):
     if not isinstance(text,str) or len(text)>350 or any(ord(c)<33 for c in text):return None
     try:u=urlsplit(text)
@@ -52,15 +57,30 @@ class NoRedirect(HTTPRedirectHandler):
 def expand_ift_link(link):
     if not isinstance(link,str) or not SHORT_URL.fullmatch(link):return None
     req=Request(link,method="HEAD",headers={"User-Agent":"GTA6-Italia-Reddit-Review/1.0"})
-    try:
-        response=build_opener(NoRedirect()).open(req,timeout=6)
-        response.close()
-        return None
-    except HTTPError as err:
-        if err.code not in (301,302,303,307,308):return None
-        location=err.headers.get("Location","")
-    except (URLError,TimeoutError,OSError,ValueError):
-        return None
+    # Some shorteners reject HEAD but return a direct Location on GET.
+    # Both requests are to the SAME strictly validated ift.tt URL. The
+    # no-redirect opener MUST NOT contact the Location destination.
+    opener=build_opener(NoRedirect())
+    location=None
+    for method in ("HEAD","GET"):
+        if method=="GET":
+            req=Request(link,method="GET",headers={
+                "User-Agent":"GTA6-Italia-Reddit-Review/1.0",
+                "Range":"bytes=0-0"})
+        try:
+            response=opener.open(req,timeout=6)
+            response.close()
+            return None
+        except HTTPError as err:
+            if err.code in (301,302,303,307,308):
+                location=err.headers.get("Location","")
+                break
+            if method=="HEAD" and err.code in (403,405,501):
+                continue
+            return None
+        except (URLError,TimeoutError,OSError,ValueError):
+            return None
+    if not location:return None
     try:
         final=urlsplit(location)
         if final.scheme!="https" or final.hostname not in ("reddit.com","www.reddit.com"):
@@ -82,6 +102,7 @@ def expand_short_links(rows,resolve=expand_ift_link,max_lookups=20):
         item=dict(original)
         if (str((item.get("author") or {}).get("login","")).lower()==OWNER
             and str(item.get("title") or "").startswith(PREFIX+" ")
+            and title_topics(str(item.get("title") or "")[len(PREFIX):])
             and re.fullmatch(r"https://github\.com/xFederiko11/federiko-gta-playstation-bot/issues/[0-9]+",str(item.get("url") or ""))):
             body=str(item.get("body") or "")
             match=SHORT_BODY.search(body)
@@ -117,8 +138,7 @@ def parse_issue(row,now):
     if not timedelta(0)<=now.astimezone(timezone.utc)-when.astimezone(timezone.utc)<=MAX_AGE:return None
     candidate=title[len(PREFIX):].strip()
     if len(candidate)<12 or len(candidate)>180:return None
-    lowered=candidate.lower()
-    topics=[label for label,pattern in SCORE if re.search(pattern,lowered,re.I)]
+    topics=title_topics(candidate)
     if not topics:return None
     # No inferred content: subject only, user must inspect the actual Reddit post.
     url=next(iter(urls))
@@ -134,7 +154,8 @@ def select(rows,now):
         if value:
             key=value["reddit_url"]
             if key not in unique or value["created_at"]>unique[key]["created_at"]:unique[key]=value
-    return sorted(unique.values(),key=lambda e:(-e["rank"],e["created_at"]),reverse=False)[:MAX_ITEMS]
+    # Greatest relevance score first, then NEWEST issues first (previously oldest first).
+    return sorted(unique.values(),key=lambda e:(e["rank"],e["created_at"]),reverse=True)[:MAX_ITEMS]
 
 def markdown(rows,now):
     selected=select(rows,now)
@@ -143,16 +164,27 @@ def markdown(rows,now):
         and str((item.get("author") or {}).get("login","")).lower()==OWNER
         and str(item.get("title") or "").startswith(PREFIX+" "))
     shortened=sum(1 for item in (rows if isinstance(rows,list) else [])
-        if isinstance(item,dict) and "https://ift.tt/" in str(item.get("body") or ""))
+        if isinstance(item,dict)
+        and str((item.get("author") or {}).get("login","")).lower()==OWNER
+        and str(item.get("title") or "").startswith(PREFIX+" ")
+        and title_topics(str(item.get("title") or "")[len(PREFIX):])
+        and "https://ift.tt/" in str(item.get("body") or ""))
+    irrelevant=sum(1 for item in (rows if isinstance(rows,list) else [])
+        if isinstance(item,dict)
+        and str((item.get("author") or {}).get("login","")).lower()==OWNER
+        and str(item.get("title") or "").startswith(PREFIX+" ")
+        and not title_topics(str(item.get("title") or "")[len(PREFIX):]))
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
-      "**IFTTT Reddit → GitHub: Applet collegata secondo lo screenshot utente del 20 novembre 2026.** "
-      "Questa dashboard misura soltanto gli eventi effettivamente ricevuti da GitHub, non lo stato live di IFTTT.",
+      "**Reddit → IFTTT → GitHub: ricezione confermata dall'Issue #69 del 20 novembre 2026.** "
+      "Questa dashboard misura gli eventi effettivamente ricevuti, non lo stato live di IFTTT.",
       "**Questa coda non pubblica post, commenti, voti, follow o messaggi.**",
       "I titoli sono segnalazioni ricevute tramite IFTTT/GitHub, non fatti verificati. "
       "Apri il permalink e controlla regole del subreddit, contenuto e data prima di intervenire.","",
       f"Controllo UTC: {now.astimezone(timezone.utc).isoformat()} · "
-      f"Eventi Reddit ricevuti: {received} · pertinenti e con URL verificato: {len(selected)} · "
-      f"link IFTTT non ancora risolti: {shortened} · nessuna metrica X o Reddit disponibile.",""]
+      f"Eventi Reddit ricevuti: {received} · non pertinenti dal titolo: {irrelevant} · "
+      f"pertinenti e con URL verificato: {len(selected)} · "
+      f"link IFTTT pertinenti ancora da risolvere: {shortened} · "
+      "nessuna metrica X o Reddit disponibile.",""]
     if not selected:
         reason=("La connessione IFTTT → GitHub è verificata: sono arrivati eventi, ma "
                 "nessuno supera per ora i controlli di pertinenza e permalink."
