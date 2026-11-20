@@ -156,6 +156,69 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertEqual(len(calls),2)
         # It never accesses the address inside the Location header.
 
+    def test_gta6_photo_only_leads_are_review_only_and_not_downloaded(self):
+        photo=issue(title="[REDDIT-LEAD] First PS5 screenshot of the GTA 6 garage",
+                    body="Reddit source: https://www.reddit.com/r/GTA6/comments/photo1/")
+        found=parse_issue(photo,NOW)
+        self.assertIsNotNone(found)
+        self.assertIn("foto",found["topics"])
+        self.assertTrue(found["photo_candidate"])
+        self.assertFalse(found["photo_reviewed"])
+        self.assertFalse(found["reuse_authorized"])
+        report=markdown([photo],NOW)
+        self.assertIn("Possibili prove visive",report)
+        self.assertIn("possibili foto/clip dal solo titolo: 1",report)
+        self.assertIn("https://www.reddit.com/r/GTA6/comments/photo1/",report)
+        self.assertIn("https://xfederiko11.github.io/gta-6/screenshot-ps5/",report)
+        self.assertIn("consenso esplicito",report)
+        self.assertIn("non screenshot verificati",report)
+        self.assertNotIn("licenza concessa",report)
+        self.assertNotIn("post pubblicato",report)
+
+    def test_photo_only_unrelated_italygames_does_not_enter_visual_review(self):
+        unrelated=issue(title="[REDDIT-LEAD] New Elden Ring photo mode screenshots",
+                        body="Reddit source: https://www.reddit.com/r/italygames/comments/er12345/")
+        self.assertIsNone(parse_issue(unrelated,NOW))
+        self.assertEqual(select([unrelated],NOW),[])
+        related=issue(title="[REDDIT-LEAD] GTA VI PS5 gameplay screenshots of the city",
+                      body="Reddit source: https://www.reddit.com/r/italygames/comments/gta1234/")
+        found=parse_issue(related,NOW)
+        self.assertIsNotNone(found)
+        self.assertTrue(found["photo_candidate"])
+        review=markdown([related],NOW)
+        self.assertIn("Possibili prove visive",review)
+        self.assertIn("r/italygames",review)
+        self.assertIn("non screenshot verificati",review)
+
+    def test_image_headline_stays_a_lead_not_a_verified_gameplay_step(self):
+        row=issue(title="[REDDIT-LEAD] GTA 6 money glitch screenshot map PS5",
+                  body="Reddit source: https://www.reddit.com/r/GTA6/comments/map1234/")
+        result=parse_issue(row,NOW)
+        self.assertEqual(set(result["topics"]),{"soldi","guida","foto"})
+        self.assertTrue(result["photo_candidate"])
+        report=markdown([row],NOW)
+        self.assertIn("Non esaminato",report)
+        self.assertIn("piattaforma/patch",report)
+        self.assertIn("Non affermare che un glitch funziona",report)
+        self.assertNotIn("foto verificata automaticamente",report)
+        untrusted=issue(title=row["title"],author={"login":"other-account"})
+        self.assertIsNone(parse_issue(untrusted,NOW))
+        self.assertNotIn("map1234",markdown([untrusted],NOW))
+
+    def test_ift_tt_photo_lead_expansion_is_owner_only(self):
+        short=issue(title="[REDDIT-LEAD] GTA 6 screenshot map of a rare car",
+                    body="Reddit source: https://ift.tt/Zz123ab")
+        fake_url="https://www.reddit.com/r/GTAVI/comments/xyz9876/verified-map/"
+        rows=expand_short_links([short],resolve=lambda link:fake_url,max_lookups=1)
+        self.assertEqual(len(select(rows,NOW)),1)
+        self.assertTrue(select(rows,NOW)[0]["photo_candidate"])
+        self.assertIn("r/GTAVI",markdown(rows,NOW))
+        self.assertNotIn("xyz9876",markdown([short],NOW))
+        spoof=issue(title=short["title"],body=short["body"],
+                    author={"login":"not-owner"})
+        self.assertNotIn("xyz9876",markdown(expand_short_links(
+            [spoof],resolve=lambda _:fake_url),NOW))
+
     def test_untrusted_markdown_not_rendered_as_unsafe_links(self):
         candidate=issue(title="[REDDIT-LEAD] GTA VI PS5 garage [click](https://evil.test) help")
         report=markdown([candidate],NOW)
