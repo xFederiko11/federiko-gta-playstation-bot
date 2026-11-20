@@ -12,6 +12,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/gta6-buffer-catchup-20261120.yml'
+      - 'buffer_catchup_20261120.py'
   workflow_dispatch:
     inputs:
       action:
