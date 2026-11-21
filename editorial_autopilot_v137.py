@@ -504,36 +504,40 @@ def reserve():
             from growth_conversion_v1 import candidate as growth_candidate
             growth_question = growth_candidate(state, now)
         owned_guide = None
-        if not (spotlight or quick_tip or growth_question):
+        if not (quick_tip or growth_question):
             from site_evergreen_posts_v1 import candidate as owned_candidate
             owned_guide = owned_candidate(state, now)
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
         trophy_item = None
-        if not (spotlight or quick_tip or growth_question or owned_guide):
+        if not (quick_tip or growth_question or owned_guide):
             from trophy_posts_v142 import candidate, landing_live
             draft_trophy = candidate(state, now)
             if draft_trophy and landing_live():
                 trophy_item = draft_trophy
+        # Prefer original site articles with their own unique preview over
+        # source spotlights without a verifiable media asset.
         selected = ([growth_question] if growth_question
-                    else [quick_tip] if quick_tip else [spotlight] if spotlight
-                    else [owned_guide] if owned_guide
-                    else [trophy_item] if trophy_item else select(items, state, now))
-        if launch_active(now):
-            converted=[]
-            for item in selected:
-                try:
-                    converted.append(launch_double(item))
-                except (KeyError,ValueError,TypeError) as exc:
-                    print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
-            if not converted:
-                for alternative in select(items,state,now,max_posts=5):
-                    try:
-                        converted=[launch_double(alternative)]
-                        break
-                    except (KeyError,ValueError,TypeError):
-                        continue
-            selected=converted[:1]
+                    else [quick_tip] if quick_tip else [owned_guide] if owned_guide
+                    else [trophy_item] if trophy_item else [spotlight] if spotlight
+                    else select(items, state, now))
+        from social_media_gate_v2 import prepare as prepare_media
+        converted=[]
+        for item in selected:
+            try:
+                ready=launch_double(item) if launch_active(now) else item
+                image_backed=prepare_media(ready,state)
+                if image_backed is None:
+                    print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
+                          str(item.get('url',''))[:100])
+                    continue
+                if image_backed.get('thread') and len(image_backed['thread'])!=2:
+                    raise ValueError('Invalid thread after media gate')
+                converted.append(image_backed)
+            except (KeyError,ValueError,TypeError) as exc:
+                print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
+        # No retry to a text-only post; explicit media is mandatory.
+        selected=converted[:1] if launch_active(now) else converted[:RUN_LIMIT]
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
@@ -573,8 +577,16 @@ def deliver():
         raise RuntimeError('Too many reservations')
     client = BufferClient(expected_username='xFederiko11')
     client.verify_destination()
+    from social_media_gate_v2 import probe_image
     for entry in mine:
         clock=datetime.now(timezone.utc)
+        # Fail closed BEFORE marking as attempted or invoking Buffer.
+        # Unknown/missing media does not create a text-only post.
+        if not entry.get('media_url') or not probe_image(entry['media_url']):
+            entry['status']='held_missing_verified_image'
+            save_state(state)
+            print('BUFFER_IMAGE_HOLD',str(entry.get('url',''))[:100])
+            continue
         if launch_active(clock) and (not launch_in_hours(clock) or
                                      not isinstance(entry.get('thread'),list) or
                                      len(entry['thread'])!=2):
