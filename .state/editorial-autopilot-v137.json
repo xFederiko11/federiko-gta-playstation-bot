@@ -862,6 +862,22 @@
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-challenges-guide"
     },
+    "db23fd5b07c09c5d77e2cabe": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/e4bb28c3357af17d.jpg",
+      "reserved_utc": "2026-11-21T12:12:49.253969+00:00",
+      "run_id": "44902743366",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥉 GTA VI | BRONZO: Quattro(cento) ruote\n\n🎯 Scopri 100 veicoli.\n\n💡 Secondo PowerPyx puoi registrarli con l'app WAiNK, senza necessariamente guidarli.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/\n\n#GTAVI #Platino",
+      "thread": [
+        "🥉 GTA VI | BRONZO: Quattro(cento) ruote\n\n🎯 Scopri 100 veicoli.\n\n💡 Secondo PowerPyx puoi registrarli con l'app WAiNK, senza necessariamente guidarli.\n\n#GTAVI",
+        "🏆 Requisiti, consigli e avvisi sul platino nella checklist:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=trophy_reply"
+      ],
+      "tip_id": null,
+      "title": "Quattro(cento) ruote",
+      "trophy_number": 35,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/"
+    },
     "f1d01c920af8776baed7b2d7": {
       "attempted_utc": "2026-11-19T11:35:47.555149+00:00",
       "buffer_id": "6afedf1356a8bceaa9081474",
@@ -1186,6 +1202,13 @@
       "feeds_relevant": 120,
       "reserved": 1,
       "run": "44898447895"
+    },
+    {
+      "at": "2026-11-21T12:12:49.253969+00:00",
+      "errors": [],
+      "feeds_relevant": 120,
+      "reserved": 1,
+      "run": "44902743366"
     }
   ],
   "schema": "v13.7",
@@ -1219,6 +1242,7 @@
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
     "quali sono bonus esclusivi per chi abbonato": "4a6b3746800881b206df1617",
     "quante ore servono per sbloccare trofeo platino": "d33768ef41ab6a294934a5c1",
+    "quattro cento ruote": "db23fd5b07c09c5d77e2cabe",
     "quattro luoghi per fare soldi subito": "4114d48c2ead8758ea05d75e",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
