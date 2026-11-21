@@ -73,6 +73,23 @@ class GrowthConversionTests(unittest.TestCase):
         self.assertIsNone(candidate(state,now+timedelta(minutes=30),
                                     live_checker=lambda url:True))
 
+    def test_real_world_ledger_with_null_tip_id_does_not_crash_reservation(self):
+        # Production 21 Nov 2026: None was persisted for a non-growth entry.
+        now=datetime(2026,11,21,13,0,tzinfo=timezone.utc)
+        state={"entries":{
+            "previous-guide":{"tip_id":None,"url":None,"reserved_utc":now.isoformat(),
+                              "status":"sent","source":"Guide GTA VI Italia"},
+            "previous-news":{"tip_id":None,"url":"https://example.org/news/",
+                             "reserved_utc":(now-timedelta(days=2)).isoformat(),
+                             "status":"sent"}
+        }}
+        row=candidate(state,now,live_checker=lambda _:True)
+        self.assertIsNotNone(row)
+        self.assertTrue(row["tip_id"].startswith("growth-question-"))
+        state["entries"]["past"]={"tip_id":row["tip_id"],"url":row["url"],
+                                   "reserved_utc":now.isoformat(),"status":"sent"}
+        self.assertIsNone(candidate(state,now,live_checker=lambda _:True))
+
     def test_dedup_same_guide_even_if_previous_workflow(self):
         now=datetime(2026,11,21,14,0,tzinfo=timezone.utc)
         initial=candidate({'entries':{}},now,live_checker=lambda url:True)
