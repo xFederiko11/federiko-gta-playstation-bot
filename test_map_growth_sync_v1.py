@@ -14,6 +14,12 @@ def example():
             "articles_with_map":66,"pages_with_interactive_map":68,
             "guide_location_descriptions":18,"collectible_descriptions":123,
             "exact_gameplay_coordinate_pairs_verified":0,
+            "external_map_references_reviewed":4,
+            "external_community_building_markers":1,
+            "external_community_region_links":1,
+            "external_location_detail_links":2,
+            "individual_collectible_pins_verified":0,
+            "external_link_verification":"indexed_public_source_not_in_game_or_live_api",
             "external_maps_loaded_automatically":False,
             "named_place_search_is_exact_pin":False,
             "providers":[{"embed":"https://vice-map.com/embed/map"},
@@ -34,16 +40,27 @@ class MapGrowthTests(unittest.TestCase):
         self.assertIn("non disponibili, non zero",message)
         self.assertIn("game-map-load-intent",message)
         self.assertIn("game-map-follow-intent",message)
+        self.assertIn("game-map-curated-link-open-intent",message)
+        self.assertIn("Zero pin del singolo oggetto",message)
+        self.assertIn("casa di Jason",message)
+        self.assertIn("primi follower",message)
+        self.assertIn("meditazione-capitolo-1",rows[2]["url"])
+        self.assertTrue(all("marker preciso" not in r["text"] for r in rows))
         self.assertNotIn("follower ottenuti",message.lower())
 
     def test_fail_closed_if_public_page_claims_automated_embed_or_fake_exact_coordinates(self):
         for key,value in (("articles_with_map",65),("pages_with_interactive_map",0),
                           ("exact_gameplay_coordinate_pairs_verified",7),
+                          ("external_map_references_reviewed",3),
+                          ("external_community_building_markers",2),
+                          ("individual_collectible_pins_verified",9),
                           ("external_maps_loaded_automatically",True),
                           ("named_place_search_is_exact_pin",True)):
             fake={**example(),key:value}
             with self.subTest(key=key),self.assertRaises(ValueError):
                 validate(fake)
+        fake=example();fake["external_link_verification"]="coordinates_100_percent_confirmed"
+        with self.assertRaises(ValueError):validate(fake)
         fake=example();fake["providers"]=[{"embed":"https://bad.example/map"}]
         with self.assertRaises(ValueError):validate(fake)
         self.assertIn("non verificabile",markdown(False,None))

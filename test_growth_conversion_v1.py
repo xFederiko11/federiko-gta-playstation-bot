@@ -110,7 +110,7 @@ class GrowthConversionTests(unittest.TestCase):
         thread=double(item)
         self.assertLessEqual(x_weight(thread['thread'][0]),235)
         self.assertIn('mappe-guide/',thread['thread'][1])
-        self.assertIn('non sempre',thread['thread'][0])
+        self.assertIn('Non è il pin esatto',thread['thread'][0])
         self.assertEqual(len(thread['thread']),2)
 
     def test_dedup_same_guide_even_if_previous_workflow(self):
