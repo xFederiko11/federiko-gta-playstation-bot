@@ -99,6 +99,20 @@ class GrowthConversionTests(unittest.TestCase):
                                    "reserved_utc":now.isoformat(),"status":"sent"}
         self.assertIsNone(candidate(state,now,live_checker=lambda _:True))
 
+    def test_map_widget_campaign_uses_existing_editorial_slot_on_november_23(self):
+        from editorial_double_threads_v1 import double
+        from editorial_seo_v135 import x_weight
+        now=datetime(2026,11,23,13,0,tzinfo=timezone.utc)
+        item=candidate({'entries':{}},now,live_checker=lambda url:True)
+        self.assertIsNotNone(item)
+        self.assertEqual(item['tip_id'],'growth-question-mappe-interattive-ps5')
+        self.assertEqual(item['url'],'https://xfederiko11.github.io/gta-6/mappe-guide/')
+        thread=double(item)
+        self.assertLessEqual(x_weight(thread['thread'][0]),235)
+        self.assertIn('mappe-guide/',thread['thread'][1])
+        self.assertIn('non sempre',thread['thread'][0])
+        self.assertEqual(len(thread['thread']),2)
+
     def test_dedup_same_guide_even_if_previous_workflow(self):
         now=datetime(2026,11,21,14,0,tzinfo=timezone.utc)
         initial=candidate({'entries':{}},now,live_checker=lambda url:True)
