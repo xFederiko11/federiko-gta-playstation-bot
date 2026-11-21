@@ -24,9 +24,9 @@ CATEGORY="community-question"
 # Dates are mapped to specific useful guides. Each copy is written and reviewed
 # here, not inferred from unverified headlines or scraped conversations.
 PROMPTS=(
-    {"id":"chapter-1-money","path":"/guide-e-tutorial/soldi-facili-capitolo-1/",
-     "title":"Quattro luoghi utili nel Capitolo 1",
-     "text":"💰 GTA VI | Nelle prime ore non devi vagare senza meta: la guida raccoglie quattro luoghi da esplorare per denaro e oggetti utili. Le posizioni sono sotto spoiler.\n\nQuale tipo di bottino ti interessa di più?"},
+    {"id":"limited-magazines-1-3","path":"/collezionabili/percorsi/",
+     "title":"9 copie di riviste legate ai Capitoli 1–3",
+     "text":"📚 GTA VI | 9 copie di riviste diventano inaccessibili dopo i Capitoli 1–3: casa di Jason, Starlet Motel, Bayside. I titoli sono reperibili altrove, quindi non perdi automaticamente il Platino.\n\nVuoi una checklist delle posizioni in ordine di storia?"},
     {"id":"ps5-original-screenshots","path":"/screenshot-ps5/",
      "title":"Aiutaci a documentare GTA VI con schermate PS5 vere",
      "text":"📸 GTA VI PS5 | Le nostre guide hanno bisogno di mappe, menu e risultati autentici: niente schermate inventate. Abbiamo organizzato 55 richieste fotografiche, con procedure e consenso al riuso.\n\nQuale screenshot ti aiuterebbe di più?"},
@@ -90,7 +90,7 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live)->dict | None:
     if not FIRST_DAY<=clock.date()<=LAST_DAY or not 12<=clock.hour<=20:
         return None
     entries=state["entries"]
-    if any(e.get("tip_id","").startswith("growth-question-")
+    if any(str(e.get("tip_id") or "").startswith("growth-question-")
            and (ts:=e.get("reserved_utc")) and
            (parsed:=_parse_time(ts)) is not None and
            local(parsed).date()==clock.date()
@@ -109,7 +109,7 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live)->dict | None:
     for e in entries.values():
         when=_parse_time(e.get("reserved_utc"))
         if (when is not None and timedelta(0)<=now.astimezone(timezone.utc)-when<timedelta(hours=18)
-            and e.get("url","").rstrip("/")==url.rstrip("/")):
+            and str(e.get("url") or "").rstrip("/")==url.rstrip("/")):
             return None
     if not live_checker(url):
         return None
