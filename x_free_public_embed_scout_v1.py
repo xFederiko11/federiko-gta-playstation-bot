@@ -266,7 +266,16 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
                 seen.add(entry["post_id"])
         except (requests.RequestException,ValueError,TypeError,OSError):
             continue
-    posts.sort(key=lambda p:(p["intent"]!="question",p["created_utc"]),reverse=False)
+    posts.sort(key=lambda p:p["created_utc"],reverse=True)
+    posts.sort(key=lambda p:p["intent"]!="question")
+    # Do not flood the review inbox with near-duplicate posts by one author.
+    unique=[];authors=set()
+    for entry in posts:
+        author=entry["author"].casefold()
+        if author not in authors:
+            authors.add(author)
+            unique.append(entry)
+    posts=unique
     return {"status":"ok" if posts else "no_source_verified_tweets",
             "posts":posts,"feed_errors":errors,"oembed_checks":checks,
             "eligible_recent_links":len(eligible),
