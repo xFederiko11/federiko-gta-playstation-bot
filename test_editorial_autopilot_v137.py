@@ -171,6 +171,18 @@ class EditorialV137Tests(unittest.TestCase):
         steady=datetime(2026,12,3,10,tzinfo=timezone.utc)
         self.assertEqual(bot.editorial_day_slots(old,steady)[1],bot.MAX_POSTS_DAY)
 
+    def test_photo_media_budget_matches_buffer_gate_before_mutation(self):
+        from editorial_seo_v135 import x_weight
+        long="GTA VI | "+"Dettagli importanti per il pubblico. "*8+"\n\n#GTAVI"
+        self.assertGreater(x_weight(long),235)
+        base={'thread':[long,"📖 Guida e fonte:\nhttps://xfederiko11.github.io/gta-6/collezionabili/percorsi/"],
+              'media_url':"https://xfederiko11.github.io/gta-6/assets/social-cards/b445047940facf4b.jpg"}
+        self.assertFalse(bot.media_thread_preflight(base))
+        self.assertTrue(bot.media_thread_preflight({**base,"thread":["📚 GTA VI | Guida e copertina unica\n\n#GTAVI",base["thread"][1]]}))
+        self.assertFalse(bot.media_thread_preflight({**base,'thread':[long]}))
+        self.assertFalse(bot.media_thread_preflight({**base,'thread':[None,base['thread'][1]]}))
+        self.assertFalse(bot.media_thread_preflight({**base,'thread':[long]*3}))
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime(2026, 11, 20, 10, 0, tzinfo=timezone.utc)
         class Clock(datetime):

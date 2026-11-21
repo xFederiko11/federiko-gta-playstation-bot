@@ -16,6 +16,15 @@ class GrowthConversionTests(unittest.TestCase):
         self.assertEqual(len(PROMPTS),12)
         self.assertEqual(len({p['path'] for p in PROMPTS}),12)
         self.assertTrue(all(p['text'].count('?')==1 for p in PROMPTS))
+        from editorial_double_threads_v1 import double
+        from editorial_seo_v135 import x_weight
+        from editorial_autopilot_v137 import media_thread_preflight
+        first=candidate({'entries':{}},datetime(2026,11,21,13,tzinfo=timezone.utc),
+                        live_checker=lambda _:True)
+        packaged=double(first)
+        photo={**packaged,'media_url':'https://xfederiko11.github.io/gta-6/assets/social-cards/b445047940facf4b.jpg'}
+        self.assertLessEqual(x_weight(photo['thread'][0]),235)
+        self.assertTrue(media_thread_preflight(photo))
 
     def test_one_original_question_in_existing_launch_slots(self):
         now=datetime(2026,11,21,13,0,tzinfo=timezone.utc)

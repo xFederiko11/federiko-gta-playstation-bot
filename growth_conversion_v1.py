@@ -26,7 +26,7 @@ CATEGORY="community-question"
 PROMPTS=(
     {"id":"limited-magazines-1-3","path":"/collezionabili/percorsi/",
      "title":"9 copie di riviste legate ai Capitoli 1–3",
-     "text":"📚 GTA VI | 9 copie di riviste diventano inaccessibili dopo i Capitoli 1–3: casa di Jason, Starlet Motel, Bayside. I titoli sono reperibili altrove, quindi non perdi automaticamente il Platino.\n\nVuoi una checklist delle posizioni in ordine di storia?"},
+     "text":"📚 GTA VI | 9 copie di riviste si trovano in luoghi chiusi dopo i Capitoli 1–3: casa di Jason, Starlet Motel, Bayside. PowerPyx segnala copie alternative: il Platino non è automaticamente perso.\n\nVuoi la checklist?"},
     {"id":"ps5-original-screenshots","path":"/screenshot-ps5/",
      "title":"Aiutaci a documentare GTA VI con schermate PS5 vere",
      "text":"📸 GTA VI PS5 | Le nostre guide hanno bisogno di mappe, menu e risultati autentici: niente schermate inventate. Abbiamo organizzato 55 richieste fotografiche, con procedure e consenso al riuso.\n\nQuale screenshot ti aiuterebbe di più?"},
