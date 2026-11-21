@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
-    paths: ['publishing_health_v1.py', 'test_publishing_health_launch_v1.py', '.github/workflows/publication-health-v1.yml']
+    paths: ['publishing_health_v1.py', 'test_publishing_health_launch_v1.py', 'launch_delivery_audit_v1.py', '.github/workflows/publication-health-v1.yml']
   schedule:
     - cron: '17 */6 * * *'
     # Rome = UTC+1 during the GTA VI launch. Actual dates guarded in Python.
@@ -30,6 +30,16 @@ jobs:
           import json,os
           data=json.load(open('publication-health-report.json',encoding='utf-8'))
           launch=data.get('launch_campaign',{})
+          receipt=data.get('delivery_receipts',{})
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as file:
+              file.write('## GTA VI — ricevute Buffer verificate (primo post)\n\n')
+              file.write(f"Stato: {receipt.get('status','unknown')} · "
+                         f"Ultimo Sent verificato: {receipt.get('last_verified_sent_at') or 'non disponibile'} · "
+                         f"Età (ore): {receipt.get('age_hours') if receipt.get('age_hours') is not None else 'n/d'} · "
+                         f"Prenotazioni recenti irrisolte: {receipt.get('unresolved_recent_attempts',0)}.\n\n")
+              file.write('Non dimostra la risposta numero due dei thread, impression o follower su X.\n\n')
+          if receipt.get('alert'):
+              print('::warning::Last verified Buffer Sent is older than 24h and unresolved attempts exist; inspect Buffer manually, NEVER retry uncertain posts.')
           if launch.get('active'):
               sent=launch.get('sent_double_threads',0)
               print(f"LAUNCH_DAILY_THREAD_PROGRESS sent={sent} goal=12 min=10 cap=16 queued_not_counted")
