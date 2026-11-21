@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-21T12:00:19.758378Z",
+  "checked_utc": "2026-11-21T16:02:25.389694Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/",
+      "x_url": "https://x.com/xFederiko11/status/2124113814308204657",
+      "buffer_id": "6b018ac3d5eabfb8cc2b16c9",
+      "sent_at": "2026-11-21T12:12:52.690000Z",
+      "excerpt": "🥉 GTA VI | BRONZO: Quattro(cento) ruote\n\n🎯 Scopri 100 veicoli.\n\n💡 Secondo PowerPyx puoi registrarli con l'app WAiNK, senza necessariamente guidarli.\n\n#GTAVI",
+      "title": "Quattro(cento) ruote",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/",
       "x_url": "https://x.com/xFederiko11/status/2124083036509610148",
@@ -174,6 +183,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 19,
+  "matched_this_run": 20,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
