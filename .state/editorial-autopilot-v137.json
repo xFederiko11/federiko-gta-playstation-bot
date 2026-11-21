@@ -506,6 +506,22 @@
       "trophy_number": null,
       "url": "https://youtube.com/watch?v=Sv1_DptbiYE"
     },
+    "92416cbfcd4c226f0844b19f": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Lucia_Caminos_02.16n.5umvlu_48.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-21T07:49:32.880932+00:00",
+      "run_id": "44881989131",
+      "source": "PowerPyx Tips",
+      "status": "reserved",
+      "text": "⚠️ GTA VI | MEDITAZIONE PERDIBILE\n\n1️⃣ Capitolo 1: segui Lucia sul balcone.\n2️⃣ Inquadrala con L2.\n3️⃣ Seleziona «Accetta».\n\n💾 Salva prima: il suo impatto sul trofeo è ancora incerto!\n\n#GTAVI #Platino",
+      "thread": [
+        "⚠️ GTA VI | MEDITAZIONE PERDIBILE\n\n1️⃣ Capitolo 1: segui Lucia sul balcone.\n2️⃣ Inquadrala con L2.\n3️⃣ Seleziona «Accetta».\n\n💾 Salva prima: il suo impatto sul trofeo è ancora incerto!\n\n#GTAVI #Platino",
+        "📖 Guida completa in italiano:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=quick_tip\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina."
+      ],
+      "tip_id": "chapter one meditation",
+      "title": "GTA VI PS5: meditazione perdibile Capitolo 1",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/"
+    },
     "a5f8e56c731dafd20c4868e7": {
       "attempted_utc": "2026-11-19T02:39:06.720898+00:00",
       "buffer_id": "6afe614a46636f319e801f18",
@@ -1057,6 +1073,13 @@
       "feeds_relevant": 119,
       "reserved": 1,
       "run": "44803336005"
+    },
+    {
+      "at": "2026-11-21T07:49:32.880932+00:00",
+      "errors": [],
+      "feeds_relevant": 119,
+      "reserved": 1,
+      "run": "44881989131"
     }
   ],
   "schema": "v13.7",
@@ -1080,6 +1103,7 @@
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
     "making gainz walkthrough": "528b4fcb1f54e6b5b4c77d2c",
+    "meditazione perdibile capitolo": "92416cbfcd4c226f0844b19f",
     "mentalita positiva": "43d67ac8133ea12010282a67",
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
