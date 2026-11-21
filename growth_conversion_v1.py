@@ -32,7 +32,7 @@ PROMPTS=(
      "text":"📸 GTA VI PS5 | Le nostre guide hanno bisogno di mappe, menu e risultati autentici: niente schermate inventate. Abbiamo organizzato 55 richieste fotografiche, con procedure e consenso al riuso.\n\nQuale screenshot ti aiuterebbe di più?"},
     {"id":"mappe-interattive-ps5","path":"/mappe-guide/",
      "title":"Mappe interattive GTA VI nelle guide PS5",
-     "text":"🗺️ GTA VI | Cercavi la casa di Jason a Key Lento? Nella guida trovi il link al marker dell'edificio e la mappa zoomabile. Non è il pin esatto di una meditazione o di una rivista.\n\nQuale luogo cerchi?"},
+     "text":"🗺️ GTA VI | Casa di Jason a Key Lento: nella guida trovi il link al marker dell'edificio e la mappa zoomabile. Non è il pin esatto di una meditazione o di una rivista.\n\nQuale luogo cerchi?"},
     {"id":"platino-sicuro","path":"/trofei/",
      "title":"Pianificare il platino prima di giocare",
      "text":"🏆 GTA VI PS5 | Se punti al platino, segna le attività progressivamente e verifica i possibili trofei mancabili prima di avanzare. La checklist è consultabile per obiettivo.\n\nQuale requisito vuoi approfondire per primo?"},
