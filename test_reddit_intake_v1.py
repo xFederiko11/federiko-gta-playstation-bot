@@ -148,6 +148,42 @@ class RedditIntakeTests(unittest.TestCase):
         self.assertEqual(select(rows,NOW),[])
         self.assertIn("non pertinenti dal titolo: 1",markdown(rows,NOW))
 
+    def test_ps5_glitch_prioritized_before_newer_ordinary_car_and_generic_questions(self):
+        newer=issue(title="[REDDIT-LEAD] GTA VI rare car garage location",
+                    body="Reddit source: https://www.reddit.com/r/GTA6/comments/car123/",
+                    createdAt="2026-11-20T13:40:00Z")
+        older=issue(title="[REDDIT-LEAD] GTA VI first person glitch PS5",
+                    body="Reddit source: https://www.reddit.com/r/GTA6/comments/glitch123/",
+                    createdAt="2026-11-20T11:20:00Z")
+        generic=issue(title="[REDDIT-LEAD] How do I reach this item?",
+                      body="Reddit source: https://www.reddit.com/r/GTA6/comments/item123/",
+                      createdAt="2026-11-20T13:50:00Z")
+        selected=select([newer,generic,older],NOW)
+        self.assertEqual([x["review_priority"] for x in selected],[1,2,4])
+        self.assertEqual(selected[0]["topics"],["glitch","guida"])
+        self.assertIn("PS5",selected[0]["review_hint"])
+        self.assertNotIn("confermato",selected[0]["review_label"])
+        digest=markdown([generic,newer,older],NOW)
+        self.assertIn("priorità revisione P1/P2/P3/P4: 1/1/0/1",digest)
+        self.assertIn("Priorità editoriale",digest)
+        self.assertIn("NON contenuto verificato",digest)
+        self.assertIn("due riscontri indipendenti",digest)
+        self.assertNotIn("Trophy Safe — documentato",digest)
+        self.assertNotIn("pubblica automaticamente",digest)
+
+    def test_priority_does_not_implicitly_grant_media_reuse_or_trophy_safe_status(self):
+        lead=issue(title="[REDDIT-LEAD] GTA 6 money glitch screenshot location",
+                   body="Reddit source: https://www.reddit.com/r/GTA6/comments/money123/")
+        rec=parse_issue(lead,NOW)
+        self.assertEqual(rec["review_priority"],1)
+        self.assertTrue(rec["photo_candidate"])
+        self.assertFalse(rec["photo_reviewed"])
+        self.assertFalse(rec["reuse_authorized"])
+        review=markdown([lead],NOW)
+        self.assertIn("consenso esplicito",review)
+        self.assertIn("patch PS5",review)
+        self.assertNotIn("glitch confermato",review)
+
     def test_newest_relevant_issue_wins_tie(self):
         first=issue(title="[REDDIT-LEAD] GTA VI money farming route",
                     body="Reddit source: https://www.reddit.com/r/GTA6/comments/abc123/",
