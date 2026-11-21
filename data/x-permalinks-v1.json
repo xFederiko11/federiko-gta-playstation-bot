@@ -1,7 +1,25 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-21T08:22:57.472780Z",
+  "checked_utc": "2026-11-21T12:00:19.758378Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/",
+      "x_url": "https://x.com/xFederiko11/status/2124083036509610148",
+      "buffer_id": "6b016e199ffbc8503c177f90",
+      "sent_at": "2026-11-21T10:10:34.573000Z",
+      "excerpt": "🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
+      "title": "GTA VI PS5: sblocca il viaggio rapido con il taxi",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-15-stunt-da-capogiro/",
+      "x_url": "https://x.com/xFederiko11/status/2124059505558176205",
+      "buffer_id": "6b01582e9ffbc8503c0de0ea",
+      "sent_at": "2026-11-21T08:37:04.734000Z",
+      "excerpt": "🥈 GTA VI | ARGENTO: Stunt da capogiro\n\n🎯 Completa almeno 250 acrobazie.\n\n💡 Per la checklist al 100% PowerPyx indica 300 acrobazie, quindi conviene continuare oltre il trofeo.\n\n#GTAVI",
+      "title": "Stunt da capogiro",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/",
       "x_url": "https://x.com/xFederiko11/status/2124047566350299376",
@@ -156,6 +174,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 17,
+  "matched_this_run": 19,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
