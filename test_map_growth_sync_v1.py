@@ -14,10 +14,10 @@ def example():
             "articles_with_map":66,"pages_with_interactive_map":68,
             "guide_location_descriptions":18,"collectible_descriptions":123,
             "exact_gameplay_coordinate_pairs_verified":0,
-            "external_map_references_reviewed":4,
+            "external_map_references_reviewed":7,
             "external_community_building_markers":1,
-            "external_community_region_links":1,
-            "external_location_detail_links":2,
+            "external_community_region_links":3,
+            "external_location_detail_links":3,
             "individual_collectible_pins_verified":0,
             "external_link_verification":"indexed_public_source_not_in_game_or_live_api",
             "external_maps_loaded_automatically":False,
@@ -44,6 +44,12 @@ class MapGrowthTests(unittest.TestCase):
         self.assertIn("Zero pin del singolo oggetto",message)
         self.assertIn("casa di Jason",message)
         self.assertIn("primi follower",message)
+        self.assertIn("Sette riferimenti esterni",message)
+        self.assertIn("Hamlet",message)
+        self.assertIn("Belpoint",message)
+        self.assertIn("Mitchel Auto Center",message)
+        self.assertIn("10 collegamenti",rows[1]["text"])
+
         self.assertIn("meditazione-capitolo-1",rows[2]["url"])
         self.assertTrue(all("marker preciso" not in r["text"] for r in rows))
         self.assertNotIn("follower ottenuti",message.lower())
@@ -51,7 +57,7 @@ class MapGrowthTests(unittest.TestCase):
     def test_fail_closed_if_public_page_claims_automated_embed_or_fake_exact_coordinates(self):
         for key,value in (("articles_with_map",65),("pages_with_interactive_map",0),
                           ("exact_gameplay_coordinate_pairs_verified",7),
-                          ("external_map_references_reviewed",3),
+                          ("external_map_references_reviewed",6),
                           ("external_community_building_markers",2),
                           ("individual_collectible_pins_verified",9),
                           ("external_maps_loaded_automatically",True),
