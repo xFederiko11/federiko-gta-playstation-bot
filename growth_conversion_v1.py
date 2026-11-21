@@ -90,7 +90,7 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live)->dict | None:
     if not FIRST_DAY<=clock.date()<=LAST_DAY or not 12<=clock.hour<=20:
         return None
     entries=state["entries"]
-    if any(e.get("tip_id","").startswith("growth-question-")
+    if any(str(e.get("tip_id") or "").startswith("growth-question-")
            and (ts:=e.get("reserved_utc")) and
            (parsed:=_parse_time(ts)) is not None and
            local(parsed).date()==clock.date()
@@ -109,7 +109,7 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live)->dict | None:
     for e in entries.values():
         when=_parse_time(e.get("reserved_utc"))
         if (when is not None and timedelta(0)<=now.astimezone(timezone.utc)-when<timedelta(hours=18)
-            and e.get("url","").rstrip("/")==url.rstrip("/")):
+            and str(e.get("url") or "").rstrip("/")==url.rstrip("/")):
             return None
     if not live_checker(url):
         return None
