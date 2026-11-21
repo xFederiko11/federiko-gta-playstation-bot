@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-20T20:29:19.991375Z",
+  "checked_utc": "2026-11-21T08:22:57.472780Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/",
+      "x_url": "https://x.com/xFederiko11/status/2124047566350299376",
+      "buffer_id": "6b014d0f5e993799d85ef171",
+      "sent_at": "2026-11-21T07:49:38.268000Z",
+      "excerpt": "⚠️ GTA VI | MEDITAZIONE PERDIBILE\n\n1️⃣ Capitolo 1: segui Lucia sul balcone.\n2️⃣ Inquadrala con L2.\n3️⃣ Seleziona «Accetta».\n\n💾 Salva prima: il suo impatto sul trofeo è ancora incerto!\n\n#GTAVI #Platino",
+      "title": "GTA VI PS5: meditazione perdibile Capitolo 1",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/70-sfide-100-percento/",
       "x_url": "https://x.com/xFederiko11/status/2123862633799393349",
@@ -147,6 +156,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 16,
+  "matched_this_run": 17,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
