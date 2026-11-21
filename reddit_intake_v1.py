@@ -131,6 +131,31 @@ def expand_short_links(rows,resolve=expand_ift_link,max_lookups=20):
         result.append(item)
     return result
 
+def editorial_priority(topics, *, generic=False):
+    """Ranking of REVIEW effort, never a claim about game mechanics.
+
+    Prioritize risk-sensitive glitches and missable platinum paths, then
+    gameplay/farming, then help requests and general guide mentions.
+    Only title keywords are available: all claims remain unverified.
+    """
+    topics=set(topics)
+    if generic:
+        return (4,"P4 · Contesto da chiarire","Aprire il post: dal titolo non sappiamo cosa mostri.")
+    if "glitch" in topics:
+        return (1,"P1 · Glitch da verificare",
+                "Verificare versione/patch PS5, due riscontri indipendenti, rischi salvataggio e trofei.")
+    if "platino" in topics:
+        return (2,"P2 · Trofei/platino da verificare",
+                "Verificare requisito, stato mancabile, difficoltà e fonte prima di scrivere.")
+    if "soldi" in topics or "auto" in topics:
+        return (2,"P2 · Vantaggio di gioco da verificare",
+                "Verificare momento della storia, posizione, prova PS5 e rischi prima di suggerire.")
+    if "foto" in topics:
+        return (3,"P3 · Prova visiva da esaminare",
+                "Controllare foto reale, piattaforma, patch, spoiler e permesso esplicito per il riuso.")
+    return (3,"P3 · Guida da esaminare",
+            "Leggere il post originale e verificare fonte, patch e pertinenza.")
+
 def parse_issue(row,now):
     if not isinstance(row,dict):return None
     author=row.get("author") or {}
@@ -172,8 +197,10 @@ def parse_issue(row,now):
     photo_candidate=("foto" in topics and
                      (subreddit.lower() in ("gta6","gtavi") or
                       GTA_TITLE.search(candidate) is not None))
+    priority,label,review_hint=editorial_priority(topics,generic=generic)
     return {"title":candidate,"reddit_url":url,"issue_url":issue_url,
             "subreddit":subreddit,"topics":topics,"generic_question":generic,
+            "review_priority":priority,"review_label":label,"review_hint":review_hint,
             "photo_candidate":bool(photo_candidate),
             "photo_reviewed":False,"reuse_authorized":False,
             "created_at":when.astimezone(timezone.utc).isoformat(),"rank":0 if generic else len(topics)}
@@ -186,8 +213,11 @@ def select(rows,now):
         if value:
             key=value["reddit_url"]
             if key not in unique or value["created_at"]>unique[key]["created_at"]:unique[key]=value
-    # Greatest relevance score first, then NEWEST issues first (previously oldest first).
-    return sorted(unique.values(),key=lambda e:(e["rank"],e["created_at"]),reverse=True)[:MAX_ITEMS]
+    # Actionability first (glitch and trophy safety), newest first on ties.
+    # No prioritization constitutes validation of a title or gameplay claim.
+    return sorted(unique.values(),key=lambda e:(
+        e["review_priority"],-datetime.fromisoformat(e["created_at"]).timestamp(),
+        -e["rank"]))[:MAX_ITEMS]
 
 def select_visual(rows,now):
     """Independent, bounded photo queue so generic news cannot hide imagery.
@@ -232,6 +262,7 @@ def markdown(rows,now):
     generic_count=sum(1 for item in selected if item.get("generic_question"))
     relevant_count=len(selected)-generic_count
     photo_candidates=select_visual(rows,now)
+    priorities={i:sum(1 for x in selected if x["review_priority"]==i) for i in (1,2,3,4)}
     lines=["<!-- gta6-reddit-intake-v1 -->","# GTA VI - Opportunità Reddit (revisione necessaria)","",
       "**Reddit → IFTTT → GitHub: ricezione confermata dall'Issue #69 del 20 novembre 2026.** "
       "Questa dashboard misura gli eventi effettivamente ricevuti, non lo stato live di IFTTT.",
@@ -243,6 +274,7 @@ def markdown(rows,now):
       f"pertinenti e con URL verificato: {relevant_count} · "
       f"domande generiche da rivedere: {generic_count} · "
       f"possibili foto/clip dal solo titolo: {len(photo_candidates)} · "
+      f"priorità revisione P1/P2/P3/P4: {priorities[1]}/{priorities[2]}/{priorities[3]}/{priorities[4]} · "
       f"link IFTTT da risolvere: {shortened} · "
       "nessuna metrica X o Reddit disponibile.",""]
     # A standalone, proof-only opportunity list uses previously trusted
@@ -280,6 +312,8 @@ def markdown(rows,now):
         # No user-provided Markdown, links or instructions injected as link destinations.
         title=re.sub(r"([\\\x60*_{}\[\]()#+.!>|])",r"\\\1",title)
         lines.extend([f"### {i}. {title}",
+          "- **Priorità editoriale:** "+item["review_label"]+" (solo revisione, NON contenuto verificato).",
+          "- **Primo passo:** "+item["review_hint"],
           "- Subreddit: r/"+item["subreddit"]+" · temi: "+", ".join(item["topics"]),
           "- [Leggi il post originale]("+item["reddit_url"]+") · [Segnalazione importata]("+item["issue_url"]+")",
           ("- ⚠️ Titolo generico, **non è una scoperta GTA VI verificata**: leggi il contenuto reale prima di intervenire."
