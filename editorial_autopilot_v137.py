@@ -456,6 +456,25 @@ def preview():
         print(item['text'])
     print('PREVIEW ONLY: no Buffer calls, no Git writes')
 
+def media_thread_preflight(item:dict) -> bool:
+    """Match Buffer photo-thread checks BEFORE reserving or marking attempted.
+
+    A first-party social card is attached *after* launch_double(), so even
+    a media-less 280-character thread can become ineligible for a photo.
+    Fail closed rather than dropping a photo or mutating Buffer on a bad post.
+    """
+    from editorial_seo_v135 import x_weight
+    thread=item.get('thread')
+    if thread is None:
+        text=item.get('text')
+        return isinstance(text,str) and bool(text.strip()) and x_weight(text)<=235 if item.get('media_url') else isinstance(text,str) and bool(text.strip()) and x_weight(text)<=280
+    if not isinstance(thread,list) or len(thread)!=2:
+        return False
+    if any(not isinstance(part,str) or not part.strip() or x_weight(part)>280 for part in thread):
+        return False
+    return not (item.get('media_url') and x_weight(thread[0])>235)
+
+
 def reserve():
     run = os.getenv('GITHUB_RUN_ID')
     if not run:
@@ -531,8 +550,10 @@ def reserve():
                     print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
                           str(item.get('url',''))[:100])
                     continue
-                if image_backed.get('thread') and len(image_backed['thread'])!=2:
-                    raise ValueError('Invalid thread after media gate')
+                if not media_thread_preflight(image_backed):
+                    print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown')),
+                          str(item.get('url',''))[:100])
+                    continue
                 converted.append(image_backed)
             except (KeyError,ValueError,TypeError) as exc:
                 print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
@@ -593,6 +614,13 @@ def deliver():
             entry['status']='held_launch_format_or_window'
             save_state(state)
             print('LAUNCH_DELIVERY_HOLD: outside hours or not exactly two messages')
+            continue
+        # A second preflight catches old reserved jobs and code changes.
+        # Check before marking attempted: Buffer has NOT been mutated yet.
+        if not media_thread_preflight(entry):
+            entry['status']='held_invalid_photo_text_budget'
+            save_state(state)
+            print('BUFFER_COPY_PRECHECK_HOLD',str(entry.get('url',''))[:100])
             continue
         # No retry after attempted mutation: avoid duplicate Buffer posts.
         entry['status'] = 'attempted'
