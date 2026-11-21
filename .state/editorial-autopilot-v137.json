@@ -65,6 +65,22 @@
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-collectible-card-sets-locations"
     },
+    "14c5b2faa5a7551c8e33bdc3": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/5fbd0f0f90420785.jpg",
+      "reserved_utc": "2026-11-21T10:10:31.106232+00:00",
+      "run_id": "44893032794",
+      "source": "PowerPyx Tips",
+      "status": "reserved",
+      "text": "🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
+      "thread": [
+        "🚕 GTA VI | VIAGGIO RAPIDO SU PS5\n\n1️⃣ Chiama Paradise Taxi dai Contatti.\n2️⃣ Segna una meta e sali a bordo.\n3️⃣ Tieni L2 e premi △.\n\n💵 Saltare la corsa costa 100 GTA$ in più della tariffa taxi.\n\n#GTAVI #GTA6",
+        "📖 Guida completa in italiano:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=quick_tip\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina."
+      ],
+      "tip_id": "fast travel taxi",
+      "title": "GTA VI PS5: sblocca il viaggio rapido con il taxi",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/"
+    },
     "16c473477c74404c7eb56608": {
       "attempted_utc": "2026-11-20T08:53:24.355211+00:00",
       "buffer_id": "6b000a85738ce4635f9e0ffd",
@@ -1135,6 +1151,13 @@
       "feeds_relevant": 120,
       "reserved": 1,
       "run": "44889451207"
+    },
+    {
+      "at": "2026-11-21T10:10:31.106232+00:00",
+      "errors": [],
+      "feeds_relevant": 119,
+      "reserved": 1,
+      "run": "44893032794"
     }
   ],
   "schema": "v13.7",
@@ -1170,6 +1193,7 @@
     "quattro luoghi per fare soldi subito": "4114d48c2ead8758ea05d75e",
     "roadmap del platino powerpyx": "88f9cbde4c19d0e059000e49",
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
+    "sblocca viaggio rapido con taxi": "14c5b2faa5a7551c8e33bdc3",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "studia gli animali senza cacciare": "751948baec674d204eabde64",
