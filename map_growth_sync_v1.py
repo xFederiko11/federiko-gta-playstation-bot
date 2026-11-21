@@ -5,7 +5,7 @@ link clicks, or announce map embeds unless the live Pages audit is verified.
 """
 from __future__ import annotations
 import argparse,csv,json,re
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 from pathlib import Path
 from urllib.parse import urlsplit,quote
 from urllib.request import Request,HTTPRedirectHandler,build_opener
@@ -93,6 +93,38 @@ def metric_row(path=MANUAL):
     return sorted(values,key=lambda x:x["date"])[-1] if values else None
 
 
+def buffer_observation(path,*,now=None):
+    """Read verified issue #72 snapshot, not X analytics or follower attribution.
+
+    The Issue is written by our independently authorized Buffer read-only
+    workflow; a sample is not the account's historical complete reach.
+    """
+    if path is None or not Path(path).is_file():
+        return {"status":"not_available","impressions":None,"checked_utc":None}
+    body=Path(path).read_text(encoding="utf-8",errors="replace")
+    if len(body)>40000 or "## 📈 Buffer: diagnosi sperimentale delle performance X" not in body:
+        raise ValueError("Unrecognized Buffer experimental metrics issue")
+    match=re.search(r"Controllo UTC:\s*(\d{4}-\d{2}-\d{2}T[^\s]+)",body)
+    if match is None:
+        raise ValueError("Buffer issue has no observation time")
+    try:
+        checked=datetime.fromisoformat(match.group(1).replace("Z","+00:00"))
+    except ValueError:
+        raise ValueError("Malformed Buffer observation timestamp") from None
+    clock=now or datetime.now(timezone.utc)
+    if checked.tzinfo is None or clock.tzinfo is None or checked>clock+timedelta(minutes=10):
+        raise ValueError("Invalid Buffer clock")
+    if clock-checked>timedelta(days=2):
+        return {"status":"stale","impressions":None,"checked_utc":checked.isoformat()}
+    if "Metriche X da Buffer: **non disponibili**" in body:
+        return {"status":"unavailable","impressions":None,"checked_utc":checked.isoformat()}
+    count=re.search(r"(?m)^- Impression \(Buffer\): (0|[1-9][0-9]{0,8})\s*$",body)
+    if count and "Totali **solo sulle voci effettivamente ricevute nel campione**" in body:
+        return {"status":"reported_buffer_subset","impressions":int(count.group(1)),
+                "checked_utc":checked.isoformat()}
+    return {"status":"not_reported","impressions":None,"checked_utc":checked.isoformat()}
+
+
 def drafts():
     from editorial_seo_v135 import x_weight
     posts=[]
@@ -108,7 +140,7 @@ def drafts():
     return posts
 
 
-def markdown(verified,metrics):
+def markdown(verified,metrics,buffer=None):
     out=["## 🗺️ Mappe interattive: campagna X e verifica della conversione","",
          "Tutti i contenuti sono manuali o utilizzano slot editoriali già previsti: "
          "niente post extra, follower acquistati, reply automatiche o API X a consumo.",""]
@@ -132,6 +164,24 @@ def markdown(verified,metrics):
         out+=["**Mappa live non verificabile al momento del controllo:** nessuna bozza viene "
               "spacciata per un annuncio già pubblicabile.",
               "[Apri il sito per un controllo manuale]("+BASE+"mappe-guide/)",""]
+    observation=buffer or {"status":"not_available","impressions":None,"checked_utc":None}
+    status=observation.get("status")
+    if status=="reported_buffer_subset":
+        out+=["**Impression da Buffer (SOLO un campione parziale di post Sent):** "+
+              str(observation["impressions"])+
+              " · timestamp "+str(observation["checked_utc"])+
+              ". Non sono impression X complete, né follower, né conversioni attribuite.",""]
+    elif status=="unavailable":
+        out+=["**Impression Buffer:** non disponibili nell'ultima lettura riuscita del probe. "
+              "Questo NON significa zero impression. Timestamp: "+
+              str(observation["checked_utc"])+".",""]
+    elif status=="stale":
+        out+=["**Impression Buffer:** lettura troppo vecchia (>48h), nessun numero corrente pubblicato.",""]
+    else:
+        out+=["**Impression Buffer:** non misurate o non disponibili. "
+              "Solo un eventuale report con timestamp e campione può mostrare valori.",""]
+    out+=["**Visite profilo X e follower effettivi:** dati manuali X soltanto; "
+          "senza osservazione disponibile restano *non disponibili*, non zero.",""]
     out+=["### Piano leggero per i primi follower (solo contributi utili)","",
           "1. **Scegli una domanda reale su GTA VI** dalla coda verificata X #48 oppure",
           " da ricerca X manuale. Non dichiarare un tweet verificato senza permalink.",
@@ -170,6 +220,8 @@ def main():
     parser.add_argument("--output",default="previews/gta6-map-growth-v1.md")
     parser.add_argument("--insert-into")
     parser.add_argument("--metrics",default=str(MANUAL))
+    parser.add_argument("--buffer-status",type=Path,default=None,
+                        help="Optional read-only body of existing Buffer Issue #72")
     args=parser.parse_args()
     try:
         fetch_public()
@@ -177,7 +229,7 @@ def main():
     except (HTTPError,URLError,OSError,ValueError,TypeError,json.JSONDecodeError,TimeoutError):
         live=False
     values=metric_row(Path(args.metrics))
-    body=markdown(live,values)
+    body=markdown(live,values,buffer_observation(args.buffer_status))
     destination=Path(args.output)
     destination.parent.mkdir(parents=True,exist_ok=True)
     destination.write_text(body+"\n",encoding="utf-8")
