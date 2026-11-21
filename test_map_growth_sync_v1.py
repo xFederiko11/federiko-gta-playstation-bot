@@ -44,7 +44,7 @@ class MapGrowthTests(unittest.TestCase):
         self.assertIn("Zero pin del singolo oggetto",message)
         self.assertIn("casa di Jason",message)
         self.assertIn("primi follower",message)
-        self.assertIn("meditazioni",rows[2]["url"])
+        self.assertIn("meditazione-capitolo-1",rows[2]["url"])
         self.assertTrue(all("marker preciso" not in r["text"] for r in rows))
         self.assertNotIn("follower ottenuti",message.lower())
 
