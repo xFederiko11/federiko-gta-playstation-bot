@@ -99,7 +99,7 @@ def buffer_observation(path,*,now=None):
     The Issue is written by our independently authorized Buffer read-only
     workflow; a sample is not the account's historical complete reach.
     """
-    if path is None or not Path(path).is_file():
+    if path is None or not Path(path).is_file() or Path(path).stat().st_size==0:
         return {"status":"not_available","impressions":None,"checked_utc":None}
     body=Path(path).read_text(encoding="utf-8",errors="replace")
     if len(body)>40000 or "## 📈 Buffer: diagnosi sperimentale delle performance X" not in body:
