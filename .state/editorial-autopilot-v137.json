@@ -666,6 +666,22 @@
       "title": "Guide: GTA 6: Who Is the Real Actress Lucia Is Based On?",
       "url": "https://pushsquare.com/guides/gta-6-who-is-the-real-actress-lucia-is-based-on"
     },
+    "c9b715e2dcea074a8091975e": {
+      "media_url": "https://www.rockstargames.com/VI/_next/static/media/Leonida_Keys_01.0zgz7tveur6y8.jpg?akim=1&imdensity=1&imwidth=3840",
+      "reserved_utc": "2026-11-21T08:37:00.343377+00:00",
+      "run_id": "44885695280",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥈 GTA VI | ARGENTO: Stunt da capogiro\n\n🎯 Completa almeno 250 acrobazie.\n\n💡 Per la checklist al 100% PowerPyx indica 300 acrobazie, quindi conviene continuare oltre il trofeo.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-15-stunt-da-capogiro/\n\n#GTAVI #Platino",
+      "thread": [
+        "🥈 GTA VI | ARGENTO: Stunt da capogiro\n\n🎯 Completa almeno 250 acrobazie.\n\n💡 Per la checklist al 100% PowerPyx indica 300 acrobazie, quindi conviene continuare oltre il trofeo.\n\n#GTAVI",
+        "🏆 Requisiti, consigli e avvisi sul platino nella checklist:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-15-stunt-da-capogiro/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=trophy_reply"
+      ],
+      "tip_id": null,
+      "title": "Stunt da capogiro",
+      "trophy_number": 15,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-15-stunt-da-capogiro/"
+    },
     "cc156e586b4fb343b4264762": {
       "attempted_utc": "2026-11-20T08:50:30.450768+00:00",
       "buffer_id": "6b0009d8d5f8acdd0d856bd9",
@@ -1083,6 +1099,13 @@
       "feeds_relevant": 119,
       "reserved": 1,
       "run": "44881989131"
+    },
+    {
+      "at": "2026-11-21T08:37:00.343377+00:00",
+      "errors": [],
+      "feeds_relevant": 120,
+      "reserved": 1,
+      "run": "44885695280"
     }
   ],
   "schema": "v13.7",
@@ -1121,6 +1144,7 @@
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "studia gli animali senza cacciare": "751948baec674d204eabde64",
+    "stunt capogiro": "c9b715e2dcea074a8091975e",
     "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "vizio prezzo": "5f8a94faab04dc45298a0f02",
