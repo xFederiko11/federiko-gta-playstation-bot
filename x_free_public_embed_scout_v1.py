@@ -21,7 +21,7 @@ FEEDS=Path("editorial-autopilot-v137-sources.json")
 OEMBED="https://publish.x.com/oembed"
 MAX_FEEDS=8
 MAX_BYTES=500_000
-MAX_EMBEDS=6
+MAX_EMBEDS=8
 MAX_DAILY_POSTS=5
 MAX_ARTICLES=4
 ARTICLE_HOSTS=frozenset({
@@ -155,15 +155,22 @@ def embed_to_candidate(post_url,data,now):
         return None
     if re.search(r"(?i)\b(giveaway|airdrop|follow ?back|crypto|leak|spoiler)\b",body):
         return None
+    if handle.casefold()=="xfederiko11":
+        return None
     lang="it" if re.search(r"(?i)\b(?:trofei|platino|missioni|aggiornamento|luminosit[aà]|guida)\b",body) else "en"
     kind=classify(body,lang)
     if not kind:
         return None
     topic,reply=kind
+    # Publishing a news report is not an invitation to a discussion.
+    # A question permits an editable human draft; other posts are source
+    # references only and must NOT be described as reply opportunities.
+    question=bool("?" in body or re.search(r"(?i)\b(?:come|dove|sapete|qualcun[oa]|aiuto|how|anyone|which|where|help)\b",body))
     return {"post_id":pid,"url":post_url,
             "author":"@"+handle,"created_utc":when.isoformat(),
             "excerpt":re.sub(r"\s+"," ",body)[:110],
-            "topic":topic,"language":lang,"reply":reply,
+            "topic":topic,"language":lang,"reply":reply if question else "",
+            "intent":"question" if question else "source_reference",
             "verified_via":"public_x_oembed","human_send_only":True}
 
 def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
@@ -225,14 +232,23 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
             continue
     seen=set(previous_ids or [])
     posts=[]
+    # Prioritize newest independently discovered post IDs. A publisher may
+    # list stale embedded X messages first; chronological sorting avoids
+    # exhausting the eight official oEmbed calls on old article decorations.
+    clock=now.astimezone(timezone.utc)
+    eligible=[]
     for url in dict.fromkeys(urls):
+        match=POST_URL.fullmatch(url)
+        if match and match.group(2) not in seen:
+            timestamp=status_time(match.group(2))
+            if timestamp is not None and timedelta(0)<=clock-timestamp<=MAX_AGE:
+                eligible.append((timestamp,url))
+    eligible.sort(reverse=True)
+    for _,url in eligible:
         if checks>=MAX_EMBEDS or len(posts)>=MAX_DAILY_POSTS:
             break
         match=POST_URL.fullmatch(url)
         if not match or match.group(2) in seen:
-            continue
-        stamp=status_time(match.group(2))
-        if stamp is None or not timedelta(0)<=now.astimezone(timezone.utc)-stamp<=MAX_AGE:
             continue
         checks+=1
         try:
@@ -250,8 +266,12 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
                 seen.add(entry["post_id"])
         except (requests.RequestException,ValueError,TypeError,OSError):
             continue
+    posts.sort(key=lambda p:(p["intent"]!="question",p["created_utc"]),reverse=False)
     return {"status":"ok" if posts else "no_source_verified_tweets",
             "posts":posts,"feed_errors":errors,"oembed_checks":checks,
+            "eligible_recent_links":len(eligible),
+            "verified_questions":sum(p["intent"]=="question" for p in posts),
+            "verified_source_references":sum(p["intent"]=="source_reference" for p in posts),
             "article_checks":article_checks,"article_x_link_discoveries":len(set(urls)),
             "discovered_links":len(set(urls))}
 
@@ -266,17 +286,25 @@ def section(data):
             " (limite "+str(MAX_ARTICLES)+").",
             "Permalink X candidati rintracciati (non tutti verificati): "+
             str(data.get("discovered_links",0))+
-            "; embed originali interrogati: "+str(data.get("oembed_checks",0))+".",""]
+            "; embed originali interrogati: "+str(data.get("oembed_checks",0))+".",
+            "Candidati recenti dall'ID X (NON verificati): "+str(data.get("eligible_recent_links",0))+".",
+            "Domande esterne confermate da oEmbed: "+str(data.get("verified_questions",sum(p.get("intent")=="question" for p in data["posts"])))+
+            "; altri post verificati usabili solo come riferimenti: "+
+            str(data.get("verified_source_references",sum(p.get("intent")=="source_reference" for p in data["posts"])))+".",""]
     if not data["posts"]:
         lines+=["Nessun permalink esterno recente confermato tramite X oEmbed. "
                 "Le ricerche generiche NON sono post verificati.",""]
     for p in data["posts"]:
         lines+=["### "+p["author"]+" · "+p["topic"],
-                "[❤️ Apri il tweet]("+p["url"]+")","",
+                "[Apri il post originale]("+p["url"]+")","",
                 "Pubblicazione stimata dall'ID X: "+p["created_utc"],
-                "Estratto dall'embed: "+p["excerpt"],"",
-                "**Risposta da copiare e adattare dopo la lettura:**", "",
-                "~~~text",p["reply"],"~~~","",
-                "La verifica conferma la presenza di un embed pubblico, non "
+                "Estratto dall'embed: "+p["excerpt"],""]
+        if p.get("intent")=="question" and p.get("reply"):
+            lines+=["**Domanda verificata nell'embed: bozza condizionale da adattare solo dopo la lettura:**","",
+                    "~~~text",p["reply"],"~~~",""]
+        else:
+            lines+=["**Solo fonte verificata, NON una richiesta d'aiuto.** "
+                    "Nessuna bozza automatica: apri il post soltanto se pertinente.",""]
+        lines+=["La verifica conferma la presenza di un embed pubblico, non "
                 "l'accuratezza del tweet né l'appropriatezza della risposta.",""]
     return "\n".join(lines)+"\n"
