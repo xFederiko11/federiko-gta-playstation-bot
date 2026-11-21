@@ -209,7 +209,11 @@ def markdown(verified,metrics,buffer=None):
             value=metrics[key]
             out+=["- "+key+": "+(str(value) if value is not None else "non disponibile")]
         out+=[""]
-    out+=["Dashboard: [Umami](https://cloud.umami.is/) · [X](https://x.com/xFederiko11) · "
+    out+=["Dashboard pubblica: [Crescita X verificabile](https://xfederiko11.github.io/gta-6/crescita-x/) · "
+          "Fonte testuale: [Issue #48](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/48) · "
+          "[Issue #72](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/72) · "
+          "[Issue #42](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/42).",
+          "Dashboard dei servizi: [Umami](https://cloud.umami.is/) · [X](https://x.com/xFederiko11) · "
           "[Buffer](https://publish.buffer.com/) · [Mappe](https://xfederiko11.github.io/gta-6/mappe-guide/).",
           "Fonti embed: [Vice Map](https://vice-map.com/embed) e [GTA6.city](https://gta6.city/embed).",""]
     return "\n".join(out)
