@@ -94,6 +94,8 @@ jobs:
         run: |
           mkdir -p .runtime
           gh issue view 48 --json body --jq '.body' > .runtime/verified-social-radar-issue.md || :
+          # Read only the existing Buffer diagnostics Issue; no X API, no new posts.
+          gh issue view 72 --json body --jq '.body' > .runtime/buffer-insights-status.md || :
       - name: Build original Italian manual-only content pack
         if: github.event_name != 'pull_request'
         run: |
@@ -103,7 +105,7 @@ jobs:
       - name: Add verified map-launch post ideas and conversion metrics to the same Issue
         if: github.event_name != 'pull_request'
         run: |
-          python map_growth_sync_v1.py --output previews/gta6-map-growth-v1.md --insert-into previews/organic-growth-v1.md
+          python map_growth_sync_v1.py --output previews/gta6-map-growth-v1.md --insert-into previews/organic-growth-v1.md --buffer-status .runtime/buffer-insights-status.md
           test -s previews/gta6-map-growth-v1.md
           echo 'GTA VI Maps: fixed verified first-party JSON, no X paid API calls and no Buffer mutations' >> "$GITHUB_STEP_SUMMARY"
       - name: Save reviewed drafts as artifact
