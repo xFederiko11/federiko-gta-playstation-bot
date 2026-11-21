@@ -19,9 +19,9 @@ FIELDS=("date","map_load_intents","map_named_search_intents","map_external_open_
 MANUAL=Path("map-engagement-manual-v1.csv")
 DRAFTS=(
  ("mappa-generale","mappe-guide/",
-  "🗺️ GTA VI | Non basta vedere un nome su una mappa. Abbiamo raccolto un marker della CASA di Jason, una zona e due schede locali, distinguendoli dai pin dei singoli oggetti. Mappe zoomabili con le fonti."),
+  "🗺️ GTA VI | Nelle nostre mappe: 1 pin della casa di Jason, 3 zone e 3 schede cittadine con fonti. Non sono marker di riviste o premi. Scopri Leonida con zoom e fonti senza spoiler inventati."),
  ("collezionabili","collezionabili/percorsi/",
-  "📍 GTA VI PS5 | 123 checkpoint, 9 link utili a edifici o zone e 0 pin certi di oggetti singoli. Usa la mappa per orientarti, poi apri la guida con foto e fonti. Quale punto ti manca?"),
+  "📍 GTA VI PS5 | 123 checkpoint e 10 collegamenti contestuali a edifici o zone. Zero pin certificati di oggetti singoli: usa le mappe per orientarti, poi segui i passaggi della guida. Quale punto ti manca?"),
  ("meditazioni","guide-e-tutorial/meditazione-capitolo-1/",
   "🏆 GTA VI | Meditazione con Lucia nel Capitolo 1: il riferimento è la CASA di Jason a Key Lento. Abbiamo trovato il marker dell'edificio, non la coordinata di ogni interazione. Salva prima di avanzare.")
 )
@@ -35,8 +35,8 @@ def validate(data):
     required={"guide_articles":11,"trophy_articles":55,"articles_with_map":66,
               "pages_with_interactive_map":68,"guide_location_descriptions":18,
               "collectible_descriptions":123,"exact_gameplay_coordinate_pairs_verified":0,
-              "external_map_references_reviewed":4,"external_community_building_markers":1,
-              "external_community_region_links":1,"external_location_detail_links":2,
+              "external_map_references_reviewed":7,"external_community_building_markers":1,
+              "external_community_region_links":3,"external_location_detail_links":3,
               "individual_collectible_pins_verified":0}
     if not isinstance(data,dict) or data.get("schema")!=SCHEMA:
         raise ValueError("Unexpected map status")
@@ -115,8 +115,8 @@ def markdown(verified,metrics):
     if verified:
         out+=["**Copertura live verificata:** 11 guide + 55 schede di trofei + hub + atlante = "
               "**68 pagine con mappa**; 123 checkpoint descritti, nessuna coordinata inventata.",
-              "**Quattro link esterni curati:** un marker di edificio (casa di Jason),",
-              "un collegamento regionale (Permit Keys), due schede località (Starlet Motel, Key Lento).",
+              "**Sette riferimenti esterni curati:** un marker di edificio (casa di Jason),",
+              "tre collegamenti regionali (Permit Keys, Hamlet, Belpoint), tre schede di località (Starlet Motel, Key Lento, Port Gellhorn con Mitchel Auto Center).",
               "**Zero pin del singolo oggetto confermati.** Il link a un edificio non individua",
               "una rivista, una carta o l'esatto requisito di un trofeo.",
               "I permalink sono riferimenti pubblicamente indicizzati, non una verifica GPS in-game.","",
