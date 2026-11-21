@@ -23,6 +23,16 @@ MAX_FEEDS=8
 MAX_BYTES=500_000
 MAX_EMBEDS=6
 MAX_DAILY_POSTS=5
+MAX_ARTICLES=4
+ARTICLE_HOSTS=frozenset({
+    "www.powerpyx.com","powerpyx.com",
+    "www.videogameschronicle.com","videogameschronicle.com",
+    "www.pushsquare.com","pushsquare.com",
+    "www.ign.com","ign.com",
+    "www.gamespot.com","gamespot.com",
+    "www.everyeye.it","everyeye.it",
+    "www.multiplayer.it","multiplayer.it",
+})
 MAX_AGE=timedelta(hours=72)
 POST_URL=re.compile(r"https?://(?:www\.)?(?:x\.com|twitter\.com)/([A-Za-z0-9_]{1,15})/status/([0-9]{8,25})",re.I)
 TWITTER_EPOCH_MS=1288834974657
@@ -65,6 +75,57 @@ def links_from_feed(content):
             if url not in found:
                 found.append(url)
     return found
+
+class _ArticleAnchors(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.posts=[]
+    def handle_starttag(self,tag,attrs):
+        if tag!="a":
+            return
+        for k,v in attrs:
+            if k=="href" and isinstance(v,str):
+                href=unescape(v)
+                if len(href)<400 and POST_URL.fullmatch(href) and href not in self.posts:
+                    self.posts.append(href)
+
+
+def article_links_from_feed(content:bytes):
+    """Extract only GTA VI publisher articles; NEVER synthesize X status URLs."""
+    if len(content)>MAX_BYTES:
+        raise ValueError("Feed too large")
+    root=ET.fromstring(content)
+    links=[]
+    for node in root.iter():
+        if node.tag.rsplit("}",1)[-1].lower() not in ("item","entry"):
+            continue
+        body=" ".join((x.text or "") for x in node.iter()).casefold()
+        if not any(term in body for term in ("gta 6","gta vi","grand theft auto vi","leonida")):
+            continue
+        for child in node:
+            if child.tag.rsplit("}",1)[-1].lower()!="link":
+                continue
+            url=(child.text or child.get("href") or "").strip()
+            try:
+                u=urlsplit(url)
+                if (u.scheme!="https" or u.hostname not in ARTICLE_HOSTS or
+                    u.username or u.password or u.port not in (None,443) or
+                    u.query or u.fragment or not u.path.startswith("/") or len(url)>600):
+                    continue
+            except ValueError:
+                continue
+            if url not in links:links.append(url)
+    return links
+
+
+def links_from_article(content:bytes):
+    """Only direct <a href=X/status/id> links in bounded trusted publisher HTML."""
+    if len(content)>MAX_BYTES:
+        raise ValueError("Publisher article HTML exceeds budget")
+    parser=_ArticleAnchors()
+    parser.feed(content.decode("utf-8","replace"))
+    return parser.posts
+
 
 def embed_to_candidate(post_url,data,now):
     parsed=urlsplit(post_url)
@@ -113,6 +174,8 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
     if config.get("schema")!="v13.7":
         raise ValueError("Unrecognized trusted RSS config")
     urls=[]
+    article_urls=[]
+    article_checks=0
     checks=0
     errors=[]
     for src in config.get("sources",[])[:MAX_FEEDS]:
@@ -133,8 +196,33 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
                     if len(content)>MAX_BYTES:
                         raise ValueError("Oversized RSS")
             urls.extend(links_from_feed(content))
+            article_urls.extend(article_links_from_feed(content))
         except (requests.RequestException,ET.ParseError,ValueError,TypeError,OSError):
             errors.append(src["name"])
+    # A publisher often embeds a real tweet in its HTML while its RSS
+    # description does not include the status URL. Read no more than four
+    # explicitly allowlisted publisher articles and validate every X post
+    # through the official oEmbed endpoint before showing a conversation.
+    for article in dict.fromkeys(article_urls):
+        if article_checks>=MAX_ARTICLES:
+            break
+        article_checks+=1
+        try:
+            with http.get(article,timeout=(4,10),stream=True,allow_redirects=False,
+                          headers={"User-Agent":"FederikoGTAVI-PublisherLinks/1.0"}) as response:
+                if response.status_code!=200:
+                    continue
+                typ=response.headers.get("Content-Type","") if hasattr(response,"headers") else ""
+                if typ and "text/html" not in typ.lower():
+                    continue
+                body=b""
+                for block in response.iter_content(65536):
+                    body+=block
+                    if len(body)>MAX_BYTES:
+                        raise ValueError("Oversized publisher HTML")
+            urls.extend(links_from_article(body))
+        except (requests.RequestException,ValueError,TypeError,OSError):
+            continue
     seen=set(previous_ids or [])
     posts=[]
     for url in dict.fromkeys(urls):
@@ -164,16 +252,24 @@ def collect(now,*,previous_ids=None,session=None,feeds=FEEDS):
             continue
     return {"status":"ok" if posts else "no_source_verified_tweets",
             "posts":posts,"feed_errors":errors,"oembed_checks":checks,
+            "article_checks":article_checks,"article_x_link_discoveries":len(set(urls)),
             "discovered_links":len(set(urls))}
 
 
 def section(data):
     lines=["## 🆓 Tweet trovati senza API X a pagamento", "",
-           "Fonti: permalink in RSS di testate già monitorate, poi verifica dell'embed "
-           "pubblico ufficiale X. **Non è una ricerca completa di X**: se le "
+           "Fonti: permalink diretti nei feed RSS o nei link HTML delle pagine "
+           "delle testate già monitorate, poi verifica dell'embed pubblico ufficiale X. "
+           "**Non è una ricerca completa di X**: se le "
            "fonti non riportano URL a tweet recenti, non vengono inventati risultati.",""]
+    lines+=["Articoli di testate controllati: "+str(data.get("article_checks",0))+
+            " (limite "+str(MAX_ARTICLES)+").",
+            "Permalink X candidati rintracciati (non tutti verificati): "+
+            str(data.get("discovered_links",0))+
+            "; embed originali interrogati: "+str(data.get("oembed_checks",0))+".",""]
     if not data["posts"]:
-        lines+=["Nessun permalink recente verificabile dagli RSS oggi.",""]
+        lines+=["Nessun permalink esterno recente confermato tramite X oEmbed. "
+                "Le ricerche generiche NON sono post verificati.",""]
     for p in data["posts"]:
         lines+=["### "+p["author"]+" · "+p["topic"],
                 "[❤️ Apri il tweet]("+p["url"]+")","",
