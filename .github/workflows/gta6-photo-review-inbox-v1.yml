@@ -6,6 +6,8 @@ on:
     paths:
       - 'photo_review_inbox_v1.py'
       - 'test_photo_review_inbox_v1.py'
+      - 'photo_gap_digest_v1.py'
+      - 'test_photo_gap_digest_v1.py'
       - 'data/photo-intake-known-status-v1.json'
       - '.github/workflows/gta6-photo-review-inbox-v1.yml'
   push:
@@ -13,6 +15,8 @@ on:
     paths:
       - 'photo_review_inbox_v1.py'
       - 'test_photo_review_inbox_v1.py'
+      - 'photo_gap_digest_v1.py'
+      - 'test_photo_gap_digest_v1.py'
       - 'data/photo-intake-known-status-v1.json'
       - '.github/workflows/gta6-photo-review-inbox-v1.yml'
   schedule:
@@ -51,8 +55,8 @@ jobs:
         run: python -m pip install -r requirements-free.txt
       - name: Test X intake and fail-closed rights handling
         run: |
-          python -m py_compile photo_review_inbox_v1.py test_photo_review_inbox_v1.py
-          python -m unittest -q test_photo_review_inbox_v1.py
+          python -m py_compile photo_review_inbox_v1.py test_photo_review_inbox_v1.py photo_gap_digest_v1.py test_photo_gap_digest_v1.py
+          python -m unittest -q test_photo_review_inbox_v1.py test_photo_gap_digest_v1.py
       - name: Build offline or explicitly opted-in photo review digest
         if: github.event_name != 'pull_request'
         env:
@@ -60,6 +64,7 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: |
           python photo_review_inbox_v1.py --output previews/gta6-photo-review-inbox-v1.md
+          python photo_gap_digest_v1.py --output previews/gta6-photo-backlog-v1.md --append previews/gta6-photo-review-inbox-v1.md
           test -s previews/gta6-photo-review-inbox-v1.md
           echo 'PS5 photo review: public X links only; no downloading, approval, auto-post or website modification.' >> "$GITHUB_STEP_SUMMARY"
           if [ "$X_PHOTO_INTAKE_ENABLED" = "true" ]; then
@@ -72,7 +77,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: gta6-photo-review-inbox
-          path: previews/gta6-photo-review-inbox-v1.md
+          path: |
+            previews/gta6-photo-review-inbox-v1.md
+            previews/gta6-photo-backlog-v1.md
           retention-days: 7
       - name: Maintain a single editor GitHub review queue issue
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -86,12 +93,13 @@ jobs:
           name='GTA VI - Screenshot PS5 da verificare (X)'
           existing="$(gh issue list --repo "$GH_REPO" --state open --search 'in:title GTA VI - Screenshot PS5 da verificare' --json number,title --jq '.[] | select(.title == "GTA VI - Screenshot PS5 da verificare (X)") | .number' | head -n 1)"
           manual="$(python -c "import json;print(len(json.load(open('data/photo-intake-known-status-v1.json'))['posts']))")"
+          verified="$(grep -c '<!-- PHOTO_BACKLOG_PUBLIC_VERIFIED -->' previews/gta6-photo-review-inbox-v1.md || true)"
           if [ -z "$existing" ]; then
             gh issue create --repo "$GH_REPO" --title "$name" --body-file previews/gta6-photo-review-inbox-v1.md
             echo "Created a single editor review queue" >> "$GITHUB_STEP_SUMMARY"
-          elif [ "$X_PHOTO_INTAKE_ENABLED" = "true" ] || [ "$manual" -gt 0 ]; then
+          elif [ "$X_PHOTO_INTAKE_ENABLED" = "true" ] || [ "$manual" -gt 0 ] || [ "$verified" -gt 0 ]; then
             gh issue edit "$existing" --repo "$GH_REPO" --body-file previews/gta6-photo-review-inbox-v1.md
             echo "Updated editor review queue issue #$existing" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "No automatic X API opt-in: preserved the existing review queue unchanged." >> "$GITHUB_STEP_SUMMARY"
+            echo "Photo source not freshly verified; preserved existing issue without fabricating new approvals." >> "$GITHUB_STEP_SUMMARY"
           fi
