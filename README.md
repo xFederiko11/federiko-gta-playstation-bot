@@ -415,3 +415,9 @@ L'audit **sola lettura** degli stati reali Buffer (ultimi 15 Sent/Scheduled/Erro
 - I workflow di X diversi dall'Editorial Autopilot rimangono separati: monitorarne i messaggi e gli allegati prima di affermare copertura completa di *tutti* i post. Nessun cambiamento a password, Buffer channel, numero giornaliero massimo, sincronizzazione PSN, licenze o auto-approvazione dei contributi.
 
 Per il monitor ufficiale Rockstar/PlayStation è ora attivo anche il registro persistente `image_registry_v12.py` tramite `V12_UNIQUE_IMAGES: 'true'` nel workflow `gta-monitor.yml`. Quando il logo o la foto è stata già usata, l'evento va in revisione: non viene ripostato con la stessa immagine. Il canale può pubblicare meno aggiornamenti rispetto a prima, ma non spreca slot con lo stesso visual.
+
+### Coda coordinata dei 55 screenshot PS5 del sito (21 novembre 2026)
+
+`photo_gap_digest_v1.py` consulta esclusivamente `https://xfederiko11.github.io/gta-6/photo-backlog-v5.json` (read-only) e verifica che ci siano esattamente 55 richieste, cinque per ognuna delle undici guide, URL HTTPS canonici, priorità e stato di revisione. Aggiunge **le dieci foto più urgenti** all'Issue editoriale X già esistente, senza creare una nuova issue e senza richiedere ai lettori di autenticarsi a GitHub. Se il documento è assente, non valido, troppo grande o risponde con un redirect, non inventa nuove foto e preserva il precedente stato dell'Issue.
+
+La coda NON comporta X API a pagamento, invio automatico di post Buffer, download di media di terzi, trattamento di foto promozionali come screenshot in-game o consenso automatico. I numeri separano 55 ruoli editoriali, 0 nuove foto community approvate e le 10 immagini già attribuite nel sito ma ancora senza autorizzazione specifica documentata. La pagina per chi vuole contribuire è `/gta-6/screenshot-ps5/priorita/`, con moduli X che precompilano guida e passaggio, MA NON le caselle dei diritti.
