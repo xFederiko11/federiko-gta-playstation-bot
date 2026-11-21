@@ -6,7 +6,7 @@ from unittest.mock import patch
 from io import BytesIO
 import json
 import unittest
-from map_growth_sync_v1 import SCHEMA,SOURCE,FIELDS,validate,fetch_public,metric_row,drafts,markdown
+from map_growth_sync_v1 import SCHEMA,SOURCE,FIELDS,validate,fetch_public,metric_row,drafts,markdown,buffer_observation
 
 
 def example():
@@ -108,6 +108,39 @@ class MapGrowthTests(unittest.TestCase):
                 "2026-11-21,12,4,2,5,10,0\n"
                 "2026-11-21,10,4,2,5,10,0\n",encoding="utf-8")
             with self.assertRaises(ValueError):metric_row(p)
+
+    def test_buffer_issue72_readonly_analytics_requires_recent_proven_sample(self):
+        from datetime import datetime,timezone,timedelta
+        now=datetime(2026,11,21,19,0,tzinfo=timezone.utc)
+        with TemporaryDirectory() as folder:
+            p=Path(folder)/"BufferIssue72.md"
+            self.assertEqual(buffer_observation(p,now=now)["status"],"not_available")
+            p.write_text("",encoding="utf-8")
+            self.assertEqual(buffer_observation(p,now=now)["status"],"not_available")
+            unavailable=("## 📈 Buffer: diagnosi sperimentale delle performance X\n\n"
+                         "Controllo UTC: 2026-11-21T18:00:00+00:00\n"
+                         "Metriche X da Buffer: **non disponibili**\n")
+            p.write_text(unavailable,encoding="utf-8")
+            observed=buffer_observation(p,now=now)
+            self.assertEqual(observed["status"],"unavailable")
+            self.assertIsNone(observed["impressions"])
+            self.assertIn("NON significa zero",markdown(True,None,observed))
+            available=("## 📈 Buffer: diagnosi sperimentale delle performance X\n\n"
+                       "Controllo UTC: 2026-11-21T18:00:00+00:00\n"
+                       "Totali **solo sulle voci effettivamente ricevute nel campione**;\n"
+                       "- Impression (Buffer): 23\n")
+            p.write_text(available,encoding="utf-8")
+            sample=buffer_observation(p,now=now)
+            self.assertEqual(sample["status"],"reported_buffer_subset")
+            self.assertEqual(sample["impressions"],23)
+            self.assertIn("23",markdown(True,None,sample))
+            self.assertIn("campione parziale",markdown(True,None,sample))
+            self.assertIn("non disponibili",markdown(True,None,sample))
+            older=available.replace("2026-11-21T18:00:00","2026-11-17T18:00:00")
+            p.write_text(older,encoding="utf-8")
+            self.assertEqual(buffer_observation(p,now=now)["status"],"stale")
+            p.write_text("Error from untrusted source",encoding="utf-8")
+            with self.assertRaises(ValueError):buffer_observation(p,now=now)
 
     def test_existing_issue_can_be_extended_without_broadcasting(self):
         import map_growth_sync_v1 as mod
