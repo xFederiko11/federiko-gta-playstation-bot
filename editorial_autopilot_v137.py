@@ -467,7 +467,9 @@ def media_thread_preflight(item:dict) -> bool:
     thread=item.get('thread')
     if thread is None:
         text=item.get('text')
-        return isinstance(text,str) and bool(text.strip()) and x_weight(text)<=235 if item.get('media_url') else isinstance(text,str) and bool(text.strip()) and x_weight(text)<=280
+        if not isinstance(text,str) or not text.strip():
+            return False
+        return x_weight(text)<=(235 if item.get('media_url') else 280)
     if not isinstance(thread,list) or len(thread)!=2:
         return False
     if any(not isinstance(part,str) or not part.strip() or x_weight(part)>280 for part in thread):
