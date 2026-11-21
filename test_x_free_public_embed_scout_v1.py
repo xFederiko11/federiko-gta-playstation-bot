@@ -131,6 +131,8 @@ class FreeEmbedTests(unittest.TestCase):
             self.assertEqual(report["verified_questions"],1)
             self.assertEqual(report["verified_source_references"],0)
             self.assertEqual(scout.MAX_EMBEDS,8)
+            self.assertIn("Domande esterne confermate da oEmbed: 1",scout.section(report))
+            self.assertIn("Candidati recenti dall'ID X (NON verificati): 2",scout.section(report))
 
     def test_collect_from_real_feed_link_only_with_embedded_original(self):
         with TemporaryDirectory() as directory:
