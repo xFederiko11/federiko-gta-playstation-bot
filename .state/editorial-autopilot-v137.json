@@ -642,6 +642,22 @@
       "url": "https://xfederiko11.github.io/gta-6/auto-speciali/",
       "x_permalink": "https://x.com/xFederiko11/status/2123847614332280833"
     },
+    "bb99a97bd90e7068a727f195": {
+      "media_url": null,
+      "reserved_utc": "2026-11-21T09:24:53.709240+00:00",
+      "run_id": "44889451207",
+      "source": "VGC",
+      "status": "reserved",
+      "text": "📰 GTA VI | Novità\n\nSoluzione di GTA 6 Twist Wrist, Smash, Grab: come rapinare il furgone blindato\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-twist-wrist-smash-grab-walkthrough\n\n#GTAVI #GTA6",
+      "thread": [
+        "📰 GTA VI | Novità\n\nSoluzione di GTA 6 Twist Wrist, Smash, Grab: come rapinare il furgone blindato\n\n#GTAVI",
+        "📰 Dettagli e verifiche nella fonte originale:\nhttps://videogameschronicle.com/guide/gta-6-twist-wrist-smash-grab-walkthrough\n\n🔎 Fonte: VGC"
+      ],
+      "tip_id": null,
+      "title": "GTA 6 Twist Wrist, Smash, Grab walkthrough: How to rob the armoured van",
+      "trophy_number": null,
+      "url": "https://videogameschronicle.com/guide/gta-6-twist-wrist-smash-grab-walkthrough"
+    },
     "bce83f32e0f01951b37b76c5": {
       "attempted_utc": "2026-11-18T18:24:14.029790+00:00",
       "buffer_id": "6afded4e16b41ab07a6f3b51",
@@ -1109,6 +1125,13 @@
       "feeds_relevant": 120,
       "reserved": 1,
       "run": "44885695280"
+    },
+    {
+      "at": "2026-11-21T09:24:53.709240+00:00",
+      "errors": [],
+      "feeds_relevant": 120,
+      "reserved": 1,
+      "run": "44889451207"
     }
   ],
   "schema": "v13.7",
@@ -1149,6 +1172,7 @@
     "studia gli animali senza cacciare": "751948baec674d204eabde64",
     "stunt capogiro": "c9b715e2dcea074a8091975e",
     "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
+    "twist wrist smash grab walkthrough how rob the armoured van": "bb99a97bd90e7068a727f195",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "vizio prezzo": "5f8a94faab04dc45298a0f02",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5",
