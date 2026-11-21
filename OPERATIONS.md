@@ -2,6 +2,19 @@
 
 This is a public production repository. It posts to X through existing Buffer credentials and runs on standard GitHub-hosted runners.
 
+## Situazione verificata — 21 novembre 2026
+
+- **Sito GTA VI Italia:** [GitHub Pages](https://xfederiko11.github.io/gta-6/) e Search Console collegati. Homepage e /guide-e-tutorial/ risultano *indicizzate* dalla URL Inspection OpenSEO; /trofei/ e /hdr-oled/ scansionate ma non ancora indicizzate, /soldi-facili/ ancora sconosciuta. Nessuna impression/clic disponibili nel campione GSC 12–18 novembre. La verifica futura è gestita da un'automazione dedicata, non da questo repository.
+- **Umami:** script pubblico configurato e visita reale osservata in screenshot proprietario. I futuri link alle guide in risposte a thread propri di @xFederiko11 includono UTM per classificare la sorgente; **non** abbiamo prove di follower acquisiti né di eventi `x-follow-intent` già ricevuti.
+- **Campagna X dal 19 novembre al 2 dicembre:** configurazione editorial 10 thread doppi/giorno minimo, 12 obiettivo, 16 massimo; resta subordinata a qualità, deduplica, orari 08:00–21:00 Europe/Rome e fonti adeguate. Non pubblicare filler per raggiungere il minimo. Il monitor di salute è in sola lettura.
+- **Buffer:** il campione dell'[audit #50](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/50) del 20 novembre riportava 15 Sent, 0 Scheduled e 0 Error nel campione di massimo 15 per stato, con 10 slot editoriali verificati per *primo post*. Non certifica tutte le pubblicazioni né le risposte numero due dei thread; l'ultimo record con permalink verificato è 20/11 ore 19:34Z. La diagnosi di staleness avvisa soltanto se ci sono tentativi recenti irrisolti insieme a ricevute Sent più vecchie di 24 ore; mai ripetere una mutazione ambigua.
+- **Reddit:** 12 lead ricevuti via IFTTT/GitHub e dashboard automatica [#68](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/68). Priorità di **revisione** P1 glitch PS5, P2 trofei/soldi/auto, P3 foto/guide, P4 domande ambigue. Da titoli e permalink non possiamo concludere che un glitch funzioni o che una foto sia autorizzata.
+- **Sito fotografico:** [hub screenshot PS5](https://xfederiko11.github.io/gta-6/screenshot-ps5/) con 55 richieste e 11 guide, al momento **0/11** al target di cinque screenshot operativi unici. Le copertine promozionali non contano e ogni eventuale riuso richiede diritti confermati.
+- **X Social Radar:** scanner gratuito parziale e ricerca X API completa **disattivata** per evitare spese non autorizzate. Niente commenti o like automatici.
+- **Dominio:** mantenere l'attuale URL GitHub Pages gratuito mentre Google inizia a indicizzare. La migrazione verso un dominio personale richiederebbe dominio posseduto, reindirizzamenti e monitoraggio SEO; non cambiare URL per motivi puramente estetici nel periodo di lancio.
+
+Le statistiche riportano *fonti, perimetri e limiti diversi*. Non sommare Sent del registro con Sent della coda, né visite e click Umami con follower X.
+
 ## Active workflows
 
 - GTA Monitor gratuito: Rockstar, PlayStation and verified YouTube links.
