@@ -54,6 +54,12 @@ class ImageGateTests(unittest.TestCase):
         self.assertIsNotNone(prepare(event,{"entries":{}}))
         self.assertIsNone(prepare({**event,"media_url":"https://news.example/img.jpg"},{"entries":{}}))
 
+    def test_monitor_deduplication_is_enabled_for_future_official_news(self):
+        from pathlib import Path
+        workflow=Path(".github/workflows/gta-monitor.yml").read_text(encoding="utf-8")
+        self.assertIn("V12_UNIQUE_IMAGES: 'true'",workflow)
+        self.assertIn("archive_images",Path("image_registry_v12.py").read_text(encoding="utf-8"))
+
     def test_public_get_probe_validates_real_bytes_before_buffer(self):
         link=cover_for(BASE+"trofei/")
         class FakeResponse:
