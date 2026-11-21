@@ -67,3 +67,11 @@ Nella schermata il post fissato mostra un riquadro grigio: **non c'è prova che 
 Riferimenti ufficiali: https://help.x.com/it/rules-and-policies/authenticity e https://help.x.com/en/rules-and-policies/x-automation
 
 **Nessun incremento garantito**: attesa legittima per un account avviato da poche ore. Separare le impression vere dalla consegna tramite Buffer.
+
+## Aggiornamento radar e dashboard 21/11/2026
+
+La pagina pubblica `https://xfederiko11.github.io/gta-6/crescita-x/` legge **tre Issues pubbliche del bot** tramite snapshot JSON con origine e data: Social Radar #48, Buffer Insights #72 e piano organico #42. Non possiede credenziali PSN, né legge X in sessione. La pagina distingue **domande autentiche verificate via oEmbed**, semplici link candidati, impression parziali Buffer e follower **non disponibili** finché manca una vera misura X. Un numero zero vale solo quando il report osservato lo documenta.
+
+Lo scanner X gratuito ora prova fino a 8 embed ufficiali per esecuzione, scegliendo prima i permalink recenti (timestamp inferito da ID X) e accettando solo autore e testo verificati dall'embed originale. **Solo un post che presenta una domanda** riceve una bozza di possibile risposta; gli annunci/news sono conservati come sole fonti e non motivano l'invio di commenti. Un solo post per autore nel digest; nessuna interazione avviene in automatico. Il timestamp dedotto dall'ID X non certifica il contenuto, le verifiche aggiornate del gioco o la risposta.
+
+Nessun nuovo pagamento API X, scraping di X, follow/unfollow, DM o reply automatiche. Non usare il numero di link trovati per affermare follower o engagement.
