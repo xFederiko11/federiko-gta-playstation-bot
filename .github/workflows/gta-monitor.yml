@@ -47,7 +47,8 @@ jobs:
       BUFFER_PLAN: essentials
       BUFFER_PAID_THROUGH: '2026-12-15'
       INTELLIGENCE_V12_ENABLED: ${{ vars.INTELLIGENCE_V12_ENABLED || 'false' }}
-      V12_UNIQUE_IMAGES: ${{ vars.V12_UNIQUE_IMAGES || 'false' }}
+      # Owner-requested: prevent repeated official logos/photos across monitor posts.
+      V12_UNIQUE_IMAGES: 'true'
       WEEKLY_RADAR_V12_ENABLED: ${{ vars.WEEKLY_RADAR_V12_ENABLED || 'false' }}
       VIDEO_LINK_CARDS_V12: ${{ vars.VIDEO_LINK_CARDS_V12 || 'false' }}
       # No X API, no new subscription: official Rockstar YouTube share links.

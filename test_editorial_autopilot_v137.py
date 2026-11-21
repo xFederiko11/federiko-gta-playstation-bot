@@ -183,10 +183,20 @@ class EditorialV137Tests(unittest.TestCase):
              patch('quick_tips_v146.candidate', return_value=None), \
              patch.object(bot, 'powerpyx_spotlight', return_value=None), \
              patch('trophy_posts_v142.candidate', return_value=None), \
+             patch('growth_conversion_v1.candidate', return_value=None), \
+             patch('site_evergreen_posts_v1.candidate', return_value={
+                 'key':'owned-sample-key','sig':'owned-sample-sig','source':'Guide GTA VI Italia',
+                 'url':'https://xfederiko11.github.io/gta-6/salvare-auto/',
+                 'title':'Salvare auto',
+                 'text':'🚘 GTA VI: come salvare un auto? Leggi la guida originale, con requisiti e fonti.'
+             }), \
+             patch('social_media_gate_v2.probe_image', return_value=True), \
              patch.dict(os.environ, {'GITHUB_RUN_ID': '123456'}):
             bot.reserve()
             bot.reserve()
             self.assertEqual(len(bot.load_state()['entries']), 1)
+            entry=next(iter(bot.load_state()['entries'].values()))
+            self.assertIn('/assets/social-cards/', entry['media_url'])
             fake = types.ModuleType('buffer_publisher')
             fake.BufferAPIError = type('BufferAPIError', (Exception,), {'outcome_unknown': False, 'post_id': None})
             fake.BufferPending = type('BufferPending', (fake.BufferAPIError,), {})

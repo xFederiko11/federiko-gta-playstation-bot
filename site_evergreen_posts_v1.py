@@ -105,9 +105,11 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live) -> dict | Non
             continue
         if not live_checker(url):
             continue
+        from social_media_gate_v2 import cover_for
         return {"key":key,"sig":similarity_key(item["title"]),
                 "url":url, "title":item["title"],"source":SOURCE,
-                "text":item["text"]+"\n"+url+"\n\n#GTAVI"}
+                "text":item["text"]+"\n"+url+"\n\n#GTAVI",
+                "media_url":cover_for(url)}
     return None
 
 

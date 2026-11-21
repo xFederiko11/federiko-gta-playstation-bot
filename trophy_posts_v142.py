@@ -97,8 +97,9 @@ def candidate(state:dict,now:datetime):
         if key in entries or identity(trophy_url(t)) in entries:continue
         url=trophy_if_live(t) or legacy
         img_index={"city":0,"characters":1,"landscapes":2}.get(t["photo_group"],2)
+        from social_media_gate_v2 import cover_for
         return {"key":key,"sig":similarity_key(t["name_it"]),"url":url,
                 "title":t["name_it"],"text":formatted(t,url),
-                "source":"Trofei GTA VI","media_url":PHOTOS[img_index],
+                "source":"Trofei GTA VI","media_url":cover_for(url),
                 "trophy_number":t["number"],"hidden":t["hidden"]}
     return None
