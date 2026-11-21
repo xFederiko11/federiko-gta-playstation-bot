@@ -77,6 +77,61 @@ class FreeEmbedTests(unittest.TestCase):
         self.assertIn("platinum",got["excerpt"])
         self.assertIn("missable",got["reply"])
 
+    def test_only_direct_questions_receive_editable_outreach_drafts(self):
+        original=scout.embed_to_candidate(URL,fake_oembed(),NOW)
+        self.assertEqual(original["intent"],"question")
+        self.assertTrue(original["reply"])
+        announcement={"author_url":"https://twitter.com/GTAHelper",
+                      "html":("<blockquote><p>GTA VI PS5 platinum mission completion "
+                              "guide and patch details have been published today "
+                              "with sourced walkthrough steps.</p></blockquote>")}
+        verified=scout.embed_to_candidate(URL,announcement,NOW)
+        self.assertEqual(verified["verified_via"],"public_x_oembed")
+        self.assertEqual(verified["intent"],"source_reference")
+        self.assertEqual(verified["reply"],"")
+        summary=scout.section({"posts":[verified],"article_checks":1,
+                               "discovered_links":1,"oembed_checks":1,
+                               "eligible_recent_links":1,"verified_questions":0,
+                               "verified_source_references":1})
+        self.assertIn("Solo fonte verificata",summary)
+        self.assertNotIn("~~~text",summary)
+        self.assertIsNone(scout.embed_to_candidate(
+            "https://x.com/xFederiko11/status/"+POST_ID,
+            {"author_url":"https://twitter.com/xFederiko11","html":fake_oembed()["html"]},NOW))
+
+    def test_recency_priority_and_one_post_per_author(self):
+        oldest=snowflake(NOW-timedelta(hours=60))
+        latest=snowflake(NOW-timedelta(minutes=5))
+        older_url="https://x.com/GTAHelper/status/"+oldest
+        newer_url="https://x.com/GTAHelper/status/"+latest
+        with TemporaryDirectory() as folder:
+            conf=Path(folder)/"sources.json"
+            conf.write_text(json.dumps({"schema":"v13.7","sources":[{
+                "name":"PowerPyx","feed":"https://www.powerpyx.com/feed/",
+                "feed_domains":["www.powerpyx.com"],"enabled":True}]}),encoding="utf-8")
+            feed=('<rss><channel><item><title>GTA VI platinum</title><description>'+
+                  older_url+' '+newer_url+'</description></item></channel></rss>').encode()
+            class SortedSession(Session):
+                def __init__(self):
+                    super().__init__()
+                    self.embedded=[]
+                def get(self,url,**kwargs):
+                    self.calls.append(url)
+                    if url==scout.OEMBED:
+                        self.embedded.append(kwargs.get("params",{})["url"])
+                        return Response(json_data=fake_oembed())
+                    return Response(content=feed)
+            sess=SortedSession()
+            report=scout.collect(NOW,session=sess,feeds=conf)
+            self.assertEqual(report["eligible_recent_links"],2)
+            self.assertEqual(sess.embedded[0],newer_url)
+            self.assertEqual(report["oembed_checks"],2)
+            self.assertEqual(len(report["posts"]),1)
+            self.assertEqual(report["posts"][0]["url"],newer_url)
+            self.assertEqual(report["verified_questions"],1)
+            self.assertEqual(report["verified_source_references"],0)
+            self.assertEqual(scout.MAX_EMBEDS,8)
+
     def test_collect_from_real_feed_link_only_with_embedded_original(self):
         with TemporaryDirectory() as directory:
             feed=Path(directory)/"feeds.json"
