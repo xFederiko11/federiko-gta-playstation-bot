@@ -6,7 +6,7 @@ from unittest.mock import patch
 from io import BytesIO
 import json
 import unittest
-from map_growth_sync_v1 import SCHEMA,SOURCE,FIELDS,validate,fetch_public,metric_row,drafts,markdown
+from map_growth_sync_v1 import SCHEMA,SOURCE,FIELDS,validate,fetch_public,metric_row,drafts,markdown,buffer_observation
 
 
 def example():
@@ -14,10 +14,10 @@ def example():
             "articles_with_map":66,"pages_with_interactive_map":68,
             "guide_location_descriptions":18,"collectible_descriptions":123,
             "exact_gameplay_coordinate_pairs_verified":0,
-            "external_map_references_reviewed":4,
+            "external_map_references_reviewed":7,
             "external_community_building_markers":1,
-            "external_community_region_links":1,
-            "external_location_detail_links":2,
+            "external_community_region_links":3,
+            "external_location_detail_links":3,
             "individual_collectible_pins_verified":0,
             "external_link_verification":"indexed_public_source_not_in_game_or_live_api",
             "external_maps_loaded_automatically":False,
@@ -44,6 +44,12 @@ class MapGrowthTests(unittest.TestCase):
         self.assertIn("Zero pin del singolo oggetto",message)
         self.assertIn("casa di Jason",message)
         self.assertIn("primi follower",message)
+        self.assertIn("Sette riferimenti esterni",message)
+        self.assertIn("Hamlet",message)
+        self.assertIn("Belpoint",message)
+        self.assertIn("Mitchel Auto Center",message)
+        self.assertIn("10 collegamenti",rows[1]["text"])
+
         self.assertIn("meditazione-capitolo-1",rows[2]["url"])
         self.assertTrue(all("marker preciso" not in r["text"] for r in rows))
         self.assertNotIn("follower ottenuti",message.lower())
@@ -51,7 +57,7 @@ class MapGrowthTests(unittest.TestCase):
     def test_fail_closed_if_public_page_claims_automated_embed_or_fake_exact_coordinates(self):
         for key,value in (("articles_with_map",65),("pages_with_interactive_map",0),
                           ("exact_gameplay_coordinate_pairs_verified",7),
-                          ("external_map_references_reviewed",3),
+                          ("external_map_references_reviewed",6),
                           ("external_community_building_markers",2),
                           ("individual_collectible_pins_verified",9),
                           ("external_maps_loaded_automatically",True),
@@ -102,6 +108,39 @@ class MapGrowthTests(unittest.TestCase):
                 "2026-11-21,12,4,2,5,10,0\n"
                 "2026-11-21,10,4,2,5,10,0\n",encoding="utf-8")
             with self.assertRaises(ValueError):metric_row(p)
+
+    def test_buffer_issue72_readonly_analytics_requires_recent_proven_sample(self):
+        from datetime import datetime,timezone,timedelta
+        now=datetime(2026,11,21,19,0,tzinfo=timezone.utc)
+        with TemporaryDirectory() as folder:
+            p=Path(folder)/"BufferIssue72.md"
+            self.assertEqual(buffer_observation(p,now=now)["status"],"not_available")
+            p.write_text("",encoding="utf-8")
+            self.assertEqual(buffer_observation(p,now=now)["status"],"not_available")
+            unavailable=("## 📈 Buffer: diagnosi sperimentale delle performance X\n\n"
+                         "Controllo UTC: 2026-11-21T18:00:00+00:00\n"
+                         "Metriche X da Buffer: **non disponibili**\n")
+            p.write_text(unavailable,encoding="utf-8")
+            observed=buffer_observation(p,now=now)
+            self.assertEqual(observed["status"],"unavailable")
+            self.assertIsNone(observed["impressions"])
+            self.assertIn("NON significa zero",markdown(True,None,observed))
+            available=("## 📈 Buffer: diagnosi sperimentale delle performance X\n\n"
+                       "Controllo UTC: 2026-11-21T18:00:00+00:00\n"
+                       "Totali **solo sulle voci effettivamente ricevute nel campione**;\n"
+                       "- Impression (Buffer): 23\n")
+            p.write_text(available,encoding="utf-8")
+            sample=buffer_observation(p,now=now)
+            self.assertEqual(sample["status"],"reported_buffer_subset")
+            self.assertEqual(sample["impressions"],23)
+            self.assertIn("23",markdown(True,None,sample))
+            self.assertIn("campione parziale",markdown(True,None,sample))
+            self.assertIn("non disponibili",markdown(True,None,sample))
+            older=available.replace("2026-11-21T18:00:00","2026-11-17T18:00:00")
+            p.write_text(older,encoding="utf-8")
+            self.assertEqual(buffer_observation(p,now=now)["status"],"stale")
+            p.write_text("Error from untrusted source",encoding="utf-8")
+            with self.assertRaises(ValueError):buffer_observation(p,now=now)
 
     def test_existing_issue_can_be_extended_without_broadcasting(self):
         import map_growth_sync_v1 as mod

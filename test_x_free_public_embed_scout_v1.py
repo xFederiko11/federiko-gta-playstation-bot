@@ -96,6 +96,53 @@ class FreeEmbedTests(unittest.TestCase):
             self.assertEqual(scout.collect(NOW,session=Session(),
                                            feeds=feed,previous_ids={POST_ID})["posts"],[])
 
+    def test_trusted_publisher_article_yields_real_tweet_after_official_oembed(self):
+        article="https://www.powerpyx.com/gta-6-new-routes/"
+        feed_xml=('<rss><channel><item><title>GTA VI map and platinum</title>'
+                  '<link>'+article+'</link></item></channel></rss>').encode()
+        html=('<html><a href="'+URL+'">Verified original tweet</a>'
+              '<a href="https://x.com/not-a-status">Ignore</a></html>').encode()
+        self.assertEqual(scout.article_links_from_feed(feed_xml),[article])
+        self.assertEqual(scout.links_from_article(html),[URL])
+        self.assertEqual(scout.links_from_feed(feed_xml),[])
+        with TemporaryDirectory() as folder:
+            cfg=Path(folder)/"trusted.json"
+            cfg.write_text(json.dumps({"schema":"v13.7","sources":[{
+                "name":"PowerPyx","feed":"https://www.powerpyx.com/feed/",
+                "feed_domains":["www.powerpyx.com"],"enabled":True}]}),encoding="utf-8")
+            class ArticleSession(Session):
+                def get(self,url,**kwargs):
+                    self.calls.append(url)
+                    if url==scout.OEMBED:return Response(json_data=fake_oembed())
+                    if url==article:return Response(content=html)
+                    return Response(content=feed_xml)
+            sess=ArticleSession()
+            report=scout.collect(NOW,session=sess,feeds=cfg)
+            self.assertEqual(report["status"],"ok")
+            self.assertEqual(report["discovered_links"],1)
+            self.assertEqual(report["article_checks"],1)
+            self.assertEqual(report["oembed_checks"],1)
+            self.assertEqual(len(report["posts"]),1)
+            self.assertEqual(report["posts"][0]["verified_via"],"public_x_oembed")
+            self.assertEqual(sess.calls,["https://www.powerpyx.com/feed/",article,scout.OEMBED])
+            self.assertIn("Articoli di testate controllati: 1",scout.section(report))
+
+    def test_reject_unknown_article_host_redirect_and_non_tweet_anchors(self):
+        evil=('<rss><channel><item><title>GTA VI platinum</title>'
+              '<link>https://www.powerpyx.com.evil.test/fake</link></item>'
+              '<item><title>GTA 6 money</title>'
+              '<link>https://www.powerpyx.com/gta-6-tips/?utm=test</link></item>'
+              '<item><title>Another game</title>'
+              '<link>https://www.powerpyx.com/unrelated/</link></item></channel></rss>').encode()
+        self.assertEqual(scout.article_links_from_feed(evil),[])
+        self.assertEqual(scout.links_from_article(
+            b'<script>var tweet="https://x.com/GTAHelper/status/12345678"</script>'),[])
+        self.assertEqual(scout.links_from_article(
+            b'<a href="https://x.com.evil.test/GTAHelper/status/12345678">bad</a>'),[])
+        with self.assertRaises(ValueError):
+            scout.links_from_article(b"q"*(scout.MAX_BYTES+1))
+        self.assertEqual(scout.MAX_ARTICLES,4)
+
     def test_feed_with_no_status_links_has_no_fabricated_posts(self):
         with TemporaryDirectory() as directory:
             feed=Path(directory)/"feeds.json"
