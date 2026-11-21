@@ -19,11 +19,11 @@ FIELDS=("date","map_load_intents","map_named_search_intents","map_external_open_
 MANUAL=Path("map-engagement-manual-v1.csv")
 DRAFTS=(
  ("mappa-generale","mappe-guide/",
-  "🗺️ GTA VI Italia | Mappe zoomabili direttamente nelle nostre guide PS5, con luoghi descritti dalle fonti e due mappe tra cui scegliere. Ricerca per nome, ma senza promettere pin esatti."),
+  "🗺️ GTA VI | Non basta vedere un nome su una mappa. Abbiamo raccolto un marker della CASA di Jason, una zona e due schede locali, distinguendoli dai pin dei singoli oggetti. Mappe zoomabili con le fonti."),
  ("collezionabili","collezionabili/percorsi/",
-  "📍 GTA VI PS5 | 123 checkpoint in 7 aree con fonti e mappa interattiva. I due siti dei tesori Kenton non contano tra le 33 scoperte subacquee: niente falsi progressi."),
- ("trofei","trofei/roadmap-platino/",
-  "🏆 GTA VI | Le 55 schede dei trofei hanno una mappa di Leonida per orientarsi, ma non spacciamo indicazioni approssimative per coordinate esatte. La roadmap è consultabile per obiettivo.")
+  "📍 GTA VI PS5 | 123 checkpoint, 9 link utili a edifici o zone e 0 pin certi di oggetti singoli. Usa la mappa per orientarti, poi apri la guida con foto e fonti. Quale punto ti manca?"),
+ ("meditazioni","guide-e-tutorial/meditazione-capitolo-1/",
+  "🏆 GTA VI | Meditazione con Lucia nel Capitolo 1: il riferimento è la CASA di Jason a Key Lento. Abbiamo trovato il marker dell'edificio, non la coordinata di ogni interazione. Salva prima di avanzare.")
 )
 
 
@@ -34,13 +34,18 @@ class NoRedirect(HTTPRedirectHandler):
 def validate(data):
     required={"guide_articles":11,"trophy_articles":55,"articles_with_map":66,
               "pages_with_interactive_map":68,"guide_location_descriptions":18,
-              "collectible_descriptions":123,"exact_gameplay_coordinate_pairs_verified":0}
+              "collectible_descriptions":123,"exact_gameplay_coordinate_pairs_verified":0,
+              "external_map_references_reviewed":4,"external_community_building_markers":1,
+              "external_community_region_links":1,"external_location_detail_links":2,
+              "individual_collectible_pins_verified":0}
     if not isinstance(data,dict) or data.get("schema")!=SCHEMA:
         raise ValueError("Unexpected map status")
     if any(type(data.get(k)) is not int or data[k]!=v for k,v in required.items()):
         raise ValueError("Map rollout not verified")
     if data.get("external_maps_loaded_automatically") is not False or data.get("named_place_search_is_exact_pin") is not False:
         raise ValueError("Privacy / map accuracy claim invalid")
+    if data.get("external_link_verification")!="indexed_public_source_not_in_game_or_live_api":
+        raise ValueError("No proof that the community marker corresponds to in-game GPS")
     providers=data.get("providers")
     if not isinstance(providers,list) or [x.get("embed") for x in providers if isinstance(x,dict)]!=[
         "https://vice-map.com/embed/map","https://gta6.city/embed/map"]:
@@ -109,8 +114,12 @@ def markdown(verified,metrics):
          "niente post extra, follower acquistati, reply automatiche o API X a consumo.",""]
     if verified:
         out+=["**Copertura live verificata:** 11 guide + 55 schede di trofei + hub + atlante = "
-              "**68 pagine con mappa**; 123 checkpoint descritti e nessuna coordinata inventata.",
-              "Una ricerca per nome non garantisce che il provider abbia quel marker.","",
+              "**68 pagine con mappa**; 123 checkpoint descritti, nessuna coordinata inventata.",
+              "**Quattro link esterni curati:** un marker di edificio (casa di Jason),",
+              "un collegamento regionale (Permit Keys), due schede località (Starlet Motel, Key Lento).",
+              "**Zero pin del singolo oggetto confermati.** Il link a un edificio non individua",
+              "una rivista, una carta o l'esatto requisito di un trofeo.",
+              "I permalink sono riferimenti pubblicamente indicizzati, non una verifica GPS in-game.","",
               "### Tre bozze originali per far scoprire le mappe",""]
         for row in drafts():
             out+=["**"+row["id"]+"** · [Bozza X]("+row["compose"]+") · [Articolo]("+row["url"]+")",
@@ -123,9 +132,22 @@ def markdown(verified,metrics):
         out+=["**Mappa live non verificabile al momento del controllo:** nessuna bozza viene "
               "spacciata per un annuncio già pubblicabile.",
               "[Apri il sito per un controllo manuale]("+BASE+"mappe-guide/)",""]
-    out+=["### Misure distinte: Umami non è X","",
+    out+=["### Piano leggero per i primi follower (solo contributi utili)","",
+          "1. **Scegli una domanda reale su GTA VI** dalla coda verificata X #48 oppure",
+          " da ricerca X manuale. Non dichiarare un tweet verificato senza permalink.",
+          "2. **Rispondi con una soluzione concreta**: indica dove aprire il marker",
+          " della casa di Jason o la scheda dello Starlet Motel solo se è pertinente",
+          " alla domanda, specificando che non è il pin preciso di un collezionabile.",
+          "3. **Pubblica al massimo una bozza originale** tra quelle sopra nel",
+          " normale piano editoriale; usa una copertina diversa dalla precedente",
+          " e rispetta il limite di 235 caratteri per un post con foto.",
+          "4. **Osserva le metriche per sette giorni**: impression solo da X/Buffer",
+          " quando davvero disponibili, aperture di mappe/CTA solo da Umami,",
+          " follower solo dal profilo X. Non sono la stessa metrica e non",
+          " si possono attribuire automaticamente l'una all'altra.", "",
+          "### Misure distinte: Umami non è X","",
           "Umami: game-map-load-intent, game-map-named-search-intent, "
-          "game-map-external-open, game-map-follow-intent. "
+          "game-map-curated-link-open-intent, game-map-external-open, game-map-follow-intent. "
           "Un'intenzione non dimostra caricamento dell'iframe, un pin trovato o un follower.",
           "X: visite profilo e follower nuovi si registrano solo quando osservati realmente su X.",""]
     if metrics is None:
