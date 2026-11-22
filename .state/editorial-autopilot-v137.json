@@ -862,6 +862,22 @@
       "trophy_number": null,
       "url": "https://powerpyx.com/gta-6-all-challenges-guide"
     },
+    "d7d51112489fc2b2db8efacb": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/4b60e1ff27d79f3c.jpg",
+      "reserved_utc": "2026-11-22T07:50:51.900461+00:00",
+      "run_id": "45000046595",
+      "source": "PowerPyx Tips",
+      "status": "reserved",
+      "text": "🎯 GTA VI | FARMING CONCENTRAZIONE\n\n1️⃣ Vai a un poligono di tiro.\n2️⃣ Avvia una sfida e completala o esci.\n3️⃣ Ripeti per aumentare Concentrazione.\n\n🥇 Per il platino servono 42 medaglie Oro.\n\n#GTAVI #Platino",
+      "thread": [
+        "🎯 GTA VI | FARMING CONCENTRAZIONE\n\n1️⃣ Vai a un poligono di tiro.\n2️⃣ Avvia una sfida e completala o esci.\n3️⃣ Ripeti per aumentare Concentrazione.\n\n🥇 Per il platino servono 42 medaglie Oro.\n\n#GTAVI #Platino",
+        "📖 Guida completa in italiano:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=quick_tip\n\n🔎 Fonte PowerPyx e crediti immagini nella pagina."
+      ],
+      "tip_id": "shooting ranges",
+      "title": "GTA VI PS5: come potenziare Concentrazione nei poligoni",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/"
+    },
     "db23fd5b07c09c5d77e2cabe": {
       "attempted_utc": "2026-11-21T12:12:51.104460+00:00",
       "buffer_id": "6b018ac3d5eabfb8cc2b16c9",
@@ -1212,6 +1228,13 @@
       "feeds_relevant": 120,
       "reserved": 1,
       "run": "44902743366"
+    },
+    {
+      "at": "2026-11-22T07:50:51.900461+00:00",
+      "errors": [],
+      "feeds_relevant": 122,
+      "reserved": 1,
+      "run": "45000046595"
     }
   ],
   "schema": "v13.7",
@@ -1222,6 +1245,7 @@
     "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
     "come evitare sfide difficili per 100": "d3f0f33b6b7ac7530a0de8dc",
+    "come potenziare concentrazione nei poligoni": "d7d51112489fc2b2db8efacb",
     "discharge time mission walkthrough": "761d516f9962451f807f2271",
     "distrugge ogni record con oltre milioni spettatori diretta prima del lancio": "5e6c87ebccb5a16d21e76073",
     "down earth mission walkthrough": "0ed4e0d113e0fbc30bd97875",
