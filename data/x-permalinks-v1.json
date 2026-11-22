@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-21T20:25:00.819725Z",
+  "checked_utc": "2026-11-22T08:22:47.946709Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/",
+      "x_url": "https://x.com/xFederiko11/status/2124410279677026731",
+      "buffer_id": "6b029eded5eabfb8cc8fc89a",
+      "sent_at": "2026-11-22T07:50:55.421000Z",
+      "excerpt": "🎯 GTA VI | FARMING CONCENTRAZIONE\n\n1️⃣ Vai a un poligono di tiro.\n2️⃣ Avvia una sfida e completala o esci.\n3️⃣ Ripeti per aumentare Concentrazione.\n\n🥇 Per il platino servono 42 medaglie Oro.\n\n#GTAVI #Platino",
+      "title": "GTA VI PS5: come potenziare Concentrazione nei poligoni",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/",
       "x_url": "https://x.com/xFederiko11/status/2124113814308204657",
@@ -183,6 +192,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 20,
+  "matched_this_run": 21,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
