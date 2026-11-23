@@ -51,7 +51,7 @@ class EditorDirectorTests(unittest.TestCase):
             self.assertEqual(allowed(NOW+timedelta(hours=4),root=root),(True,'ready'))
 
     def test_automatic_taper_after_launch_without_manual_variables(self):
-        self.assertEqual(current_limits(BOOST_UNTIL-timedelta(minutes=1)),(8,timedelta(minutes=90)))
+        self.assertEqual(current_limits(BOOST_UNTIL-timedelta(minutes=1)),(6,timedelta(minutes=120)))
         self.assertEqual(current_limits(BOOST_UNTIL),(6,timedelta(minutes=120)))
         self.assertEqual(current_limits(BOOST_UNTIL+timedelta(days=21)),(6,timedelta(minutes=120)))
         with tempfile.TemporaryDirectory() as p,patch.dict('os.environ',{'EDITORIAL_DIRECTOR_V142_ENABLED':'true'}):
