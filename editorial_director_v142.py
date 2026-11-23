@@ -15,7 +15,7 @@ from launch_cadence_v1 import (active as launch_active, in_hours as launch_in_ho
     TARGET_MAX as LAUNCH_DAILY_CAP, MIN_PACING as LAUNCH_GAP,
     MAX_BUFFER_X_MESSAGES_24H as LAUNCH_MESSAGE_CAP, local as launch_local)
 from quality_publish_policy_v1 import (
-    START as QUALITY_START, ORDINARY_LIMIT_MESSAGES_24H,
+    START as QUALITY_START, ORDINARY_LIMIT_POSTS_24H, ORDINARY_LIMIT_MESSAGES_24H,
     ORDINARY_MIN_GAP, URGENT_LIMIT_24H, URGENT_MIN_GAP,
     ordinary_hours, verified_urgent, local as quality_local)
 
@@ -126,8 +126,12 @@ def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None,
         if not ordinary_hours(clock):
             return False,"outside_ordinary_07_23_rome"
         ordinary=[x for x in recent if x.get("kind")!="official_breaking"]
+        # Users count original posts (one thread = one post); retain an
+        # independent hard ceiling on X messages to avoid noisy threads.
+        if len(ordinary)+1>ORDINARY_LIMIT_POSTS_24H:
+            return False,"ordinary_six_post_cap"
         if sum(x.get("units",1) for x in ordinary)+units>ORDINARY_LIMIT_MESSAGES_24H:
-            return False,"ordinary_six_message_cap"
+            return False,"ordinary_twelve_message_safety_cap"
         latest=max((x["at"] for x in ordinary),default=None)
         if latest and clock-latest<max(ORDINARY_MIN_GAP,gap or ORDINARY_MIN_GAP):
             return False,"ordinary_minimum_gap"
