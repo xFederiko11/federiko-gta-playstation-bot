@@ -178,7 +178,7 @@ def markdown(report):
         "",
         f"Obiettivo STORICO ({START}–{LAST}): **{TARGET_MIN} minimo / {TARGET} riferimento / "
         f"{TARGET_MAX} tetto**, subordinati alle fonti e alla qualità. Questi valori NON sono più attivi.",
-        f"**Dal {QUALITY_START}: politica X attuale = {DAILY_GOAL_MIN}–{DAILY_GOAL_MAX} post originali al giorno, "
+        f"**Politica X dal {QUALITY_START}:** {DAILY_GOAL_MIN}–{DAILY_GOAL_MAX} post originali al giorno, "
         f"fascia {HOUR_START.strftime('%H:%M')}–{HOUR_END.strftime('%H:%M')} Europe/Rome, "
         "più soltanto notizie urgenti verificate. Nessun post riempitivo, "
         "nessuna risposta automatica ad altri utenti. Questa tabella resta "
