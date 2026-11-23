@@ -106,11 +106,14 @@
       "x_permalink": "https://x.com/xFederiko11/status/2123772116491231442"
     },
     "1d2ec123de4035096b9d40ad": {
+      "attempted_utc": "2026-11-23T15:08:40.876109+00:00",
+      "buffer_id": "6b0456f9d39fa532884c7e1f",
+      "completed_utc": "2026-11-23T15:08:43.186748+00:00",
       "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/7db1672a7a4c93c1.jpg",
       "reserved_utc": "2026-11-23T15:08:38.743705+00:00",
       "run_id": "45201820804",
       "source": "Trofei GTA VI",
-      "status": "reserved",
+      "status": "sent",
       "text": "🥉 GTA VI | BRONZO: Tuttofare\n\n🎯 Prova almeno una volta ogni categoria di attività.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/\n\n#GTAVI #Platino",
       "thread": [
         "🥉 GTA VI | BRONZO: Tuttofare\n\n🎯 Prova almeno una volta ogni categoria di attività.\n\n#GTAVI",
