@@ -70,7 +70,16 @@ class QualityFirstPolicyTests(unittest.TestCase):
             entries.pop("2")
             (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
             self.assertEqual(allowed(stamp(10,20),root=directory),(False,"ordinary_minimum_gap"))
-            self.assertEqual(allowed(now,root=directory,units=11),(False,"ordinary_twelve_message_safety_cap"))
+            # Valid X threads are limited to four messages each. A five-thread
+            # history (ten messages) must reject a new four-message thread.
+            for k,hr in enumerate((3,5,7),start=3):
+                entries[str(k)]={"reserved_utc":stamp(hr).isoformat(),
+                                 "thread":["Main post","Useful cited reply"],"status":"sent"}
+            (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
+            self.assertEqual(allowed(now,root=directory,units=4),(False,"ordinary_twelve_message_safety_cap"))
+            for k in ("3","4","5"):
+                entries.pop(k)
+            (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
             self.assertEqual(allowed(now,root=directory,units=2),(True,"quality_ordinary_ready"))
 
     def test_official_breaking_extra_but_limited_and_not_spam_bypass(self):
