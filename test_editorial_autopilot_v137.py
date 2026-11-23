@@ -190,8 +190,8 @@ class EditorialV137Tests(unittest.TestCase):
             def now(cls, tz=None):
                 return now if tz is None else now.astimezone(tz)
         stories=[
-            article(url='https://www.videogameschronicle.com/news/fallback-a/', date=now),
-            article(url='https://www.videogameschronicle.com/news/fallback-b/', date=now)
+            article(title='GTA VI: come registrare una auto a Port Gellhorn',url='https://www.videogameschronicle.com/news/fallback-a/', date=now),
+            article(title='GTA VI: collezionabili e mappa di Vice City',url='https://www.videogameschronicle.com/news/fallback-b/', date=now)
         ]
         attempted=[]
         def media(item, state):
