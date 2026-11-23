@@ -61,12 +61,12 @@ class EditorDirectorTests(unittest.TestCase):
             (root/'editorial-autopilot-v137.json').write_text(json.dumps({
                 'entries':{str(i):{'reserved_utc':s,'status':'sent'} for i,s in enumerate(stamps)}
             }),encoding='utf-8')
-            self.assertEqual(allowed(clock,root=root),(False,'global_rolling_24h_budget'))
+            self.assertEqual(allowed(clock,root=root),(False,'ordinary_six_message_cap'))
             # Even when total posts are below six, steady mode requires 120 min.
             (root/'editorial-autopilot-v137.json').write_text(json.dumps({
                 'entries':{'x':{'reserved_utc':(clock-timedelta(minutes=95)).isoformat(),'status':'sent'}}
             }),encoding='utf-8')
-            self.assertEqual(allowed(clock,root=root),(False,'global_spacing'))
+            self.assertEqual(allowed(clock,root=root),(False,'ordinary_minimum_gap'))
 
     def test_launch_double_thread_exclusive_and_prior_activity_respected(self):
         self.assertEqual(RECOVERY_MAX_AUTOMATED_DELIVERIES,5)
