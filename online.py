@@ -7,7 +7,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from zoneinfo import ZoneInfo
 import sqlite3
 import subprocess
@@ -313,12 +313,9 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
     enforce_job_policy(db, policy or {})
     reconcile(db, client)
     from editorial_director_v142 import allowed as director_allowed
-    if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
-        from datetime import timezone
-        ok, reason = director_allowed(datetime.now(timezone.utc))
-        if not ok:
-            LOG.info('DIRECTOR_HOLD: %s', reason)
-            return
+    from quality_publish_policy_v1 import verified_urgent
+    # The shared budget is checked per verified candidate, not once before
+    # discovery; only confirmed official emergencies use the separate budget.
     # Un'interruzione durante la richiesta non deve causare un nuovo invio cieco.
     with db:
         db.execute("UPDATE publish_jobs SET status='uncertain' WHERE status='sending'")
@@ -331,6 +328,12 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             LOG.warning("Limite prudenziale di %s invii/giorno: altre bozze conservate", daily_limit)
             break
         event = json.loads(row["event_json"])
+        publication_kind="official_breaking" if verified_urgent(event) else "ordinary"
+        if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            ok,reason=director_allowed(datetime.now(timezone.utc),kind=publication_kind)
+            if not ok:
+                LOG.info("DIRECTOR_HOLD: %s (%s)",reason,publication_kind)
+                continue
         if event.get("demo"):
             with db:
                 db.execute("UPDATE publish_jobs SET status='review',last_error='demo_not_publishable' WHERE key=?", (row["key"],))
@@ -399,13 +402,20 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                 db.execute("UPDATE publish_jobs SET status='review',last_error='english_text_not_publishable' WHERE key=?", (row["key"],))
             LOG.warning('Invio trattenuto: testo non completamente italiano')
             continue
+        if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
+            from editorial_director_v142 import note_monitor_attempt
+            now_policy=datetime.now(timezone.utc)
+            units=len(thread) if thread is not None else 1
+            # Count two thread messages as TWO X posts before writing to Buffer.
+            ok,reason=director_allowed(now_policy,kind=publication_kind,units=units)
+            if not ok:
+                LOG.info("DIRECTOR_HOLD: %s (%s, %s messages)",reason,publication_kind,units)
+                continue
         with db:
             db.execute("UPDATE publish_jobs SET status='sending',text=?,attempted_at=? WHERE key=?",
                        (single_text, time.time(), row["key"]))
         if os.getenv('EDITORIAL_DIRECTOR_V142_ENABLED','false').lower() == 'true':
-            from editorial_director_v142 import note_monitor_attempt
-            from datetime import timezone
-            note_monitor_attempt(event, datetime.now(timezone.utc))
+            note_monitor_attempt(event,now_policy,kind=publication_kind,units=units)
         if checkpoint:
             # Il journal remoto precede l'invio: un runner interrotto non lo ripete alla cieca.
             checkpoint()
