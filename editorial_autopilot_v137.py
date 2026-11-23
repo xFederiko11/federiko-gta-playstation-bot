@@ -31,6 +31,7 @@ MAX_AGE_MIN = 720  # catch up on timely launch-day coverage, not only latest 3 h
 MAX_POSTS_DAY = 6  # original posts, not tweet/reply units; global director still guards all workflows
 MIN_SPACING_MIN = 45  # avoid back-to-back generic headline posts
 RUN_LIMIT = 1
+MAX_MEDIA_CANDIDATES = 8  # inspect backups, but reserve no more than one post per run
 BRIDGE_URLS = {
     'https://www.videogameschronicle.com/review/grand-theft-auto-6/',
     'https://www.pushsquare.com/reviews/ps5/grand-theft-auto-6',
@@ -541,10 +542,14 @@ def reserve():
                 trophy_item = draft_trophy
         # Prefer original site articles with their own unique preview over
         # source spotlights without a verifiable media asset.
-        selected = ([growth_question] if growth_question
-                    else [quick_tip] if quick_tip else [owned_guide] if owned_guide
-                    else [trophy_item] if trophy_item else [spotlight] if spotlight
-                    else select(items, state, now))
+        preferred = (growth_question or quick_tip or owned_guide or trophy_item or spotlight)
+        selected = [preferred] if preferred else []
+        # A reused or unavailable image must not waste the entire scanning cycle:
+        # inspect fresh, individually deduplicated backup stories instead.
+        # Every backup MUST pass the same media and factual title gates.
+        backup = select(items, state, now, max_posts=MAX_MEDIA_CANDIDATES)
+        selected.extend(item for item in backup
+                        if item['key'] not in {x['key'] for x in selected})
         from social_media_gate_v2 import prepare as prepare_media
         converted=[]
         for item in selected:
@@ -560,6 +565,7 @@ def reserve():
                           str(item.get('url',''))[:100])
                     continue
                 converted.append(image_backed)
+                break  # one editorial reservation, never a batch
             except (KeyError,ValueError,TypeError) as exc:
                 print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
         # No retry to a text-only post; explicit media is mandatory.
