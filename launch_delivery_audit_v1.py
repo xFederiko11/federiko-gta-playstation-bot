@@ -16,6 +16,8 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 from launch_cadence_v1 import START, LAST, TARGET, TARGET_MIN, TARGET_MAX
+from quality_publish_policy_v1 import (START as QUALITY_START, DAILY_GOAL_MIN,
+    DAILY_GOAL_MAX, HOUR_START, HOUR_END)
 
 ZONE = ZoneInfo("Europe/Rome")
 PROVENANCE = "Buffer sent Post.externalLink on verified @xFederiko11 channel"
@@ -160,7 +162,7 @@ def markdown(report):
         "**Non è un conteggio di impression né di thread doppi completi.**",
         "",
         "| Giorno (Roma) | Primo post X con ricevuta | Di cui thread doppi previsti | "
-        "Prenotazioni nel registro | Mancanti al minimo di 10 |",
+        "Prenotazioni nel registro | Mancanti al vecchio minimo (10) |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]
     for item in report["days"]:
@@ -174,8 +176,13 @@ def markdown(report):
         lines.append("| Nessun giorno di campagna trascorso | — | — | — | — |")
     lines.extend([
         "",
-        f"Obiettivo giornaliero: **{TARGET_MIN} minimo / {TARGET} riferimento / "
-        f"{TARGET_MAX} tetto**, subordinati alle fonti e alla qualità.",
+        f"Obiettivo STORICO ({START}–{LAST}): **{TARGET_MIN} minimo / {TARGET} riferimento / "
+        f"{TARGET_MAX} tetto**, subordinati alle fonti e alla qualità. Questi valori NON sono più attivi.",
+        f"**Dal {QUALITY_START}: politica X attuale = {DAILY_GOAL_MIN}–{DAILY_GOAL_MAX} post originali al giorno, "
+        f"fascia {HOUR_START.strftime('%H:%M')}–{HOUR_END.strftime('%H:%M')} Europe/Rome, "
+        "più soltanto notizie urgenti verificate. Nessun post riempitivo, "
+        "nessuna risposta automatica ad altri utenti. Questa tabella resta "
+        "uno storico di novembre, non un obiettivo corrente.",
         "**Secondi post di risposta dei thread: non verificati.** "
         "Il bridge attuale conserva soltanto il permalink del primo post.",
         "**Prenotazioni = registro GitHub**, non un controllo live della coda Buffer. "
