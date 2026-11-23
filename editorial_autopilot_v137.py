@@ -28,7 +28,7 @@ STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
 MAX_DOWNLOAD = 1_800_000
 MAX_AGE_MIN = 720  # catch up on timely launch-day coverage, not only latest 3 hours
-MAX_POSTS_DAY = 5  # 1 owned guide + up to 2 trophies + selective news; leave capacity for official monitor
+MAX_POSTS_DAY = 6  # original posts, not tweet/reply units; global director still guards all workflows
 MIN_SPACING_MIN = 45  # avoid back-to-back generic headline posts
 RUN_LIMIT = 1
 BRIDGE_URLS = {
@@ -260,8 +260,10 @@ def editorial_day_slots(existing: dict, now: datetime) -> tuple[int,int]:
         recent=[published(e.get('reserved_utc')) for e in existing.values()
                 if e.get('reserved_utc')]
         return sum(stamp is not None and RECOVERY_START<=stamp<=clock for stamp in recent),5
+    today=publishing_local(now).date()
     return sum(1 for e in existing.values()
-               if e.get('reserved_utc','')[:10]==clock.date().isoformat()),MAX_POSTS_DAY
+               if (stamp := published(e.get('reserved_utc'))) is not None
+               and publishing_local(stamp).date()==today),MAX_POSTS_DAY
 
 
 def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
@@ -563,7 +565,7 @@ def reserve():
         # No retry to a text-only post; explicit media is mandatory.
         selected=converted[:1] if launch_active(now) else converted[:RUN_LIMIT]
         if selected and publishing_local(now).date()>=QUALITY_START:
-            # Reserve the actual number of X messages, not just Buffer records.
+            # The director counts a parent post and separately checks X message units.
             msg=selected[0].get("thread")
             units=len(msg) if isinstance(msg,list) and len(msg)>1 else 1
             permitted,reason=director_allowed(now,kind="ordinary",units=units)
