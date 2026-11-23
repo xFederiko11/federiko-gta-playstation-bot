@@ -46,7 +46,7 @@ def current_limits(now:datetime)->tuple[int,timedelta]:
         raise ValueError("Timezone-aware date required")
     clock=now.astimezone(timezone.utc)
     if quality_local(now).date() >= QUALITY_START:
-        return ORDINARY_LIMIT_MESSAGES_24H, ORDINARY_MIN_GAP
+        return ORDINARY_LIMIT_POSTS_24H, ORDINARY_MIN_GAP
     return ((MAX_AUTOMATED_DELIVERIES_24H,MIN_GAP) if clock<BOOST_UNTIL
             else (STEADY_MAX_AUTOMATED_DELIVERIES_24H,STEADY_MIN_GAP))
 BLOCK=re.compile(r"\b(?:parodi[ae]|spoof|parody|volvy|devolver|gta[- ]?like|rumou?r(?:s|ed)?|leaks?|fake|fan[- ]?made|deepfake|clickbait|giveaway|sponsored|sponsorizzat[oa]|gossip|actress\s+based|basat[oa]\s+su\s+un['a]?\s+attrice)\b",re.I)
