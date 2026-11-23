@@ -153,6 +153,22 @@
       "trophy_number": null,
       "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
     },
+    "2f22857e6952b337a5653fbe": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/b0b38b7362f701e2.jpg",
+      "reserved_utc": "2026-11-23T12:26:43.495444+00:00",
+      "run_id": "45174274277",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥉 GTA VI | BRONZO: Un'ultima cosa…\n\n🎯 Completa 50 sfide.\n\n💡 PowerPyx indica 70 sfide per la checklist 100%: il trofeo arriva prima del completamento totale.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-32-un-ultima-cosa/\n\n#GTAVI #Platino",
+      "thread": [
+        "🥉 GTA VI | BRONZO: Un'ultima cosa…\n\n🎯 Completa 50 sfide.\n\n💡 PowerPyx indica 70 sfide per la checklist 100%: il trofeo arriva prima del completamento totale.\n\n#GTAVI",
+        "🏆 Requisiti, consigli e avvisi sul platino nella checklist:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-32-un-ultima-cosa/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=trophy_reply"
+      ],
+      "tip_id": null,
+      "title": "Un'ultima cosa…",
+      "trophy_number": 32,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-32-un-ultima-cosa/"
+    },
     "30fde1d513737ed1a71e03e6": {
       "attempted_utc": "2026-11-19T03:59:17.642907+00:00",
       "buffer_id": "6afe741559eff0b616dae8b1",
@@ -1264,6 +1280,13 @@
       "feeds_relevant": 111,
       "reserved": 1,
       "run": "45164789454"
+    },
+    {
+      "at": "2026-11-23T12:26:43.495444+00:00",
+      "errors": [],
+      "feeds_relevant": 111,
+      "reserved": 1,
+      "run": "45174274277"
     }
   ],
   "schema": "v13.7",
@@ -1310,6 +1333,7 @@
     "stunt capogiro": "c9b715e2dcea074a8091975e",
     "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
     "twist wrist smash grab walkthrough how rob the armoured van": "bb99a97bd90e7068a727f195",
+    "ultima cosa": "2f22857e6952b337a5653fbe",
     "una lunga strada": "11fab389461a1bb02dddafd8",
     "vizio prezzo": "5f8a94faab04dc45298a0f02",
     "volvy adventure reslimed trailer devolver digital esilarante parodia": "bce83f32e0f01951b37b76c5",
