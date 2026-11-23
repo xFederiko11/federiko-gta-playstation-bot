@@ -22,6 +22,7 @@ from editorial_director_v142 import priority, allowed as director_allowed
 from launch_cadence_v1 import (active as launch_active, in_hours as launch_in_hours,
     count_local_day as launch_day_count, TARGET_MAX as LAUNCH_DAILY_CAP)
 from editorial_double_threads_v1 import double as launch_double
+from quality_publish_policy_v1 import ordinary_hours, local as publishing_local, START as QUALITY_START
 
 STATE = Path('.state/editorial-autopilot-v137.json')
 CONFIG = Path('editorial-autopilot-v137-sources.json')
@@ -561,6 +562,14 @@ def reserve():
                 print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
         # No retry to a text-only post; explicit media is mandatory.
         selected=converted[:1] if launch_active(now) else converted[:RUN_LIMIT]
+        if selected and publishing_local(now).date()>=QUALITY_START:
+            # Reserve the actual number of X messages, not just Buffer records.
+            msg=selected[0].get("thread")
+            units=len(msg) if isinstance(msg,list) and len(msg)>1 else 1
+            permitted,reason=director_allowed(now,kind="ordinary",units=units)
+            if not permitted:
+                print("DIRECTOR_HOLD_AFTER_FORMAT",reason,"X_messages",units)
+                selected=[]
     for item in selected:
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
@@ -598,6 +607,11 @@ def deliver():
         return
     if len(mine) > RUN_LIMIT:
         raise RuntimeError('Too many reservations')
+    # The Buffer reservation is durable. A delayed job may cross the quiet
+    # hours; do not deliver it after 23:00 or before 07:00.
+    if publishing_local(datetime.now(timezone.utc)).date()>=QUALITY_START and not ordinary_hours(datetime.now(timezone.utc)):
+        print('BUFFER_HOLD_OUTSIDE_07_23: retained, no Buffer mutation')
+        return
     client = BufferClient(expected_username='xFederiko11')
     client.verify_destination()
     from social_media_gate_v2 import probe_image
