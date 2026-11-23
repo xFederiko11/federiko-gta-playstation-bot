@@ -1,7 +1,25 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-23T12:17:15.801347Z",
+  "checked_utc": "2026-11-23T16:24:43.200195Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/",
+      "x_url": "https://x.com/xFederiko11/status/2124882839011279253",
+      "buffer_id": "6b0456f9d39fa532884c7e1f",
+      "sent_at": "2026-11-23T15:08:42.326000Z",
+      "excerpt": "🥉 GTA VI | BRONZO: Tuttofare\n\n🎯 Prova almeno una volta ogni categoria di attività.\n\n#GTAVI",
+      "title": "Tuttofare",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-32-un-ultima-cosa/",
+      "x_url": "https://x.com/xFederiko11/status/2124842091842847106",
+      "buffer_id": "6b0431067e433fe9cac94b40",
+      "sent_at": "2026-11-23T12:26:47.515000Z",
+      "excerpt": "🥉 GTA VI | BRONZO: Un'ultima cosa…\n\n🎯 Completa 50 sfide.\n\n💡 PowerPyx indica 70 sfide per la checklist 100%: il trofeo arriva prima del completamento totale.\n\n#GTAVI",
+      "title": "Un'ultima cosa…",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/mappe-guide/",
       "x_url": "https://x.com/xFederiko11/status/2124826288292540725",
@@ -201,6 +219,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 22,
+  "matched_this_run": 24,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
