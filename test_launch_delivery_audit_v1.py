@@ -55,7 +55,7 @@ class LaunchDeliveryAuditTests(unittest.TestCase):
         self.assertIn('Mancanti al vecchio minimo (10)',body)
         self.assertIn('Obiettivo STORICO (2026-11-19–2026-11-22)',body)
         self.assertIn('Questi valori NON sono più attivi',body)
-        self.assertIn('5–6 post originali',body)
+        self.assertIn('**Politica X dal 2026-11-23:** 5–6 post originali',body)
         self.assertIn('07:00–23:00 Europe/Rome',body)
         self.assertIn('nessuna risposta automatica ad altri utenti',body)
         self.assertIn("ZERO post", body)
