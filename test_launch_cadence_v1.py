@@ -8,16 +8,16 @@ def utc(day,hour,minute=0):
     return datetime(2026,11,day,hour,minute,tzinfo=timezone.utc)
 
 class LaunchCadenceTests(unittest.TestCase):
-    def test_first_14_days_timezone(self):
+    def test_retired_launch_window_timezone(self):
         self.assertEqual(START.isoformat(),'2026-11-19')
-        self.assertEqual(LAST.isoformat(),'2026-12-02')
-        self.assertEqual((LAST-START).days+1,14)
+        self.assertEqual(LAST.isoformat(),'2026-11-22')
+        self.assertEqual((LAST-START).days+1,4)
         self.assertTrue(launch_eligible(utc(19,7,0)))       # 08:00 Rome
         self.assertFalse(launch_eligible(utc(19,6,59)))
         self.assertTrue(launch_eligible(utc(19,19,59)))     # 20:59 Rome
         self.assertFalse(launch_eligible(utc(19,20,0)))   # 21:00 Rome
         self.assertFalse(launch_eligible(utc(18,12,0)))
-        self.assertFalse(launch_eligible(datetime(2026,12,2,21,0,tzinfo=timezone.utc)))
+        self.assertFalse(launch_eligible(datetime(2026,11,23,8,0,tzinfo=timezone.utc)))
         self.assertFalse(launch_eligible(datetime(2026,12,3,8,0,tzinfo=timezone.utc)))
         with self.assertRaises(ValueError):active(datetime(2026,11,20,9,0))
 
