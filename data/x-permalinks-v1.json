@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-23T08:50:40.792972Z",
+  "checked_utc": "2026-11-23T12:17:15.801347Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/mappe-guide/",
+      "x_url": "https://x.com/xFederiko11/status/2124826288292540725",
+      "buffer_id": "6b04224e01adccb6f537a3fa",
+      "sent_at": "2026-11-23T11:23:59.561000Z",
+      "excerpt": "🗺️ GTA VI | Casa di Jason a Key Lento: nella guida trovi il link al marker dell'edificio e la mappa zoomabile. Non è il pin esatto di una meditazione o di una rivista.\n\nQuale luogo cerchi?\n\n#GTAVI",
+      "title": "Mappe interattive GTA VI nelle guide PS5",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/",
       "x_url": "https://x.com/xFederiko11/status/2124410279677026731",
@@ -192,6 +201,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 21,
+  "matched_this_run": 22,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
