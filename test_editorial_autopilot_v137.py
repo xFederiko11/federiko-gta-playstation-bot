@@ -183,6 +183,43 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertFalse(bot.media_thread_preflight({**base,'thread':[None,base['thread'][1]]}))
         self.assertFalse(bot.media_thread_preflight({**base,'thread':[long]*3}))
 
+    def test_image_failure_tries_next_real_story_without_loosening_media_gate(self):
+        now = datetime(2026, 11, 24, 12, 0, tzinfo=timezone.utc)
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now if tz is None else now.astimezone(tz)
+        stories=[
+            article(title='GTA VI: come registrare una auto a Port Gellhorn',url='https://www.videogameschronicle.com/news/fallback-a/', date=now),
+            article(title='GTA VI: collezionabili e mappa di Vice City',url='https://www.videogameschronicle.com/news/fallback-b/', date=now)
+        ]
+        attempted=[]
+        def media(item, state):
+            attempted.append(item['key'])
+            if len(attempted)==1:
+                return None
+            return {**item, 'media_url':'https://xfederiko11.github.io/gta-6/assets/social-cards/test.jpg'}
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(bot,'datetime',Clock), \
+             patch.object(bot,'STATE',Path(temp)/'ledger.json'), \
+             patch.object(bot,'read_feeds',return_value=(stories,[])), \
+             patch.object(bot,'load_sources',return_value=[]), \
+             patch.object(bot,'powerpyx_spotlight',return_value=None), \
+             patch('quick_tips_v146.candidate',return_value=None), \
+             patch('site_evergreen_posts_v1.candidate',return_value=None), \
+             patch('trophy_posts_v142.candidate',return_value=None), \
+             patch('social_media_gate_v2.prepare',side_effect=media), \
+             patch.dict(os.environ,{'GITHUB_RUN_ID':'backup-test','EDITORIAL_DIRECTOR_V142_ENABLED':'false'}):
+            bot.reserve()
+            saved=bot.load_state()['entries']
+            self.assertEqual(len(saved),1)
+            self.assertEqual(len(attempted),2)
+            self.assertNotEqual(attempted[0],attempted[1])
+            self.assertEqual(next(iter(saved)),attempted[1])
+            self.assertEqual(next(iter(saved.values()))['status'],'reserved')
+            bot.reserve()
+            self.assertEqual(len(bot.load_state()['entries']),1)
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime(2026, 11, 20, 10, 0, tzinfo=timezone.utc)
         class Clock(datetime):
