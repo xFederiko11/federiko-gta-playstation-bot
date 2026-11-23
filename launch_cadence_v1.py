@@ -66,6 +66,17 @@ def message_units(entry: dict) -> int:
 
 def campaign_status(now: datetime, sent_threads: int = 0) -> dict:
     clock = local(now)
+    if not active(now):
+        from quality_publish_policy_v1 import report
+        p=report(now)
+        return {
+            'active':False,'timezone':p['timezone'],'date':p['date'],
+            'window':p['ordinary_window'],'thread_messages':1,
+            'target_min':5,'target':6,'cap':6,
+            'confirmed_this_day':sent_threads,
+            'missing_to_minimum':max(0,5-sent_threads),
+            'mode':'quality_gated_no_filler','last_day':str(LAST),
+        }
     return {
         'active': active(now), 'timezone': 'Europe/Rome', 'date': str(clock.date()),
         'window': '08:00-21:00', 'thread_messages': THREAD_LENGTH,
