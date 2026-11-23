@@ -1,4 +1,4 @@
-"""First fortnight of GTA VI: a *quality-gated* editorial goal, not a spam target.
+"""Legacy launch campaign (Nov 19-22 only); superseded by quality_publish_policy_v1.
 
 Calendar dates are inclusive and checked in the Italian/German CET timezone.
 Each eligible editorial item is one atomic two-message X thread.
@@ -10,7 +10,8 @@ from zoneinfo import ZoneInfo
 
 ZONE = ZoneInfo("Europe/Rome")
 START = date(2026, 11, 19)
-LAST = date(2026, 12, 2)
+# Discontinue old 10-16 two-message threads from Nov 23 onward.
+LAST = date(2026, 11, 22)
 HOUR_START = time(8, 0)
 HOUR_END = time(21, 0)
 TARGET_MIN = 10
