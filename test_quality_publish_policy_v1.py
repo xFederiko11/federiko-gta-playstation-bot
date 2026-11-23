@@ -8,7 +8,7 @@ import unittest
 
 from quality_publish_policy_v1 import (
     verified_urgent,ordinary_hours,report,
-    ORDINARY_LIMIT_MESSAGES_24H,URGENT_LIMIT_24H)
+    ORDINARY_LIMIT_POSTS_24H,ORDINARY_LIMIT_MESSAGES_24H,URGENT_LIMIT_24H)
 from launch_cadence_v1 import active as old_launch_active
 from editorial_director_v142 import allowed,read_reservations,note_monitor_attempt
 
@@ -19,7 +19,8 @@ def stamp(hour,minute=0,day=23):
 
 class QualityFirstPolicyTests(unittest.TestCase):
     def test_times_and_reporting(self):
-        self.assertEqual(ORDINARY_LIMIT_MESSAGES_24H,6)
+        self.assertEqual(ORDINARY_LIMIT_POSTS_24H,6)
+        self.assertEqual(ORDINARY_LIMIT_MESSAGES_24H,12)
         self.assertEqual(URGENT_LIMIT_24H,2)
         self.assertFalse(old_launch_active(stamp(8)))
         self.assertFalse(ordinary_hours(stamp(5,59)))
@@ -28,7 +29,9 @@ class QualityFirstPolicyTests(unittest.TestCase):
         self.assertFalse(ordinary_hours(stamp(22)))
         p=report(stamp(14))
         self.assertEqual(p["ordinary_window"],"07:00-23:00")
-        self.assertEqual(p["ordinary_goal_messages"],[5,6])
+        self.assertEqual(p["ordinary_goal_posts"],[5,6])
+        self.assertEqual(p["ordinary_post_cap_rolling_24h"],6)
+        self.assertEqual(p["ordinary_message_safety_cap_rolling_24h"],12)
         self.assertIs(p["filler_posts"],False)
         self.assertIs(p["automatic_external_replies"],False)
 
@@ -54,11 +57,20 @@ class QualityFirstPolicyTests(unittest.TestCase):
                                  "thread":["Main post","Useful cited reply"],"status":"sent"}
             (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
             self.assertEqual(sum(x["units"] for x in read_reservations(directory)),6)
-            self.assertEqual(allowed(now,root=directory),(False,"ordinary_six_message_cap"))
+            self.assertEqual(allowed(now,root=directory),(True,"quality_ordinary_ready"))
+            # Six original two-message threads are allowed; the seventh is blocked.
+            for k,hr in enumerate((13,15,17),start=3):
+                entries[str(k)]={"reserved_utc":stamp(hr).isoformat(),
+                                 "thread":["Main post","Useful cited reply"],"status":"sent"}
+            (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
+            self.assertEqual(allowed(stamp(19),root=directory),(False,"ordinary_six_post_cap"))
+            for k in ("3","4","5"):
+                entries.pop(k)
+            (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
             entries.pop("2")
             (directory/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":entries}))
             self.assertEqual(allowed(stamp(10,20),root=directory),(False,"ordinary_minimum_gap"))
-            self.assertEqual(allowed(now,root=directory,units=3),(False,"ordinary_six_message_cap"))
+            self.assertEqual(allowed(now,root=directory,units=11),(False,"ordinary_twelve_message_safety_cap"))
             self.assertEqual(allowed(now,root=directory,units=2),(True,"quality_ordinary_ready"))
 
     def test_official_breaking_extra_but_limited_and_not_spam_bypass(self):
@@ -83,6 +95,23 @@ class QualityFirstPolicyTests(unittest.TestCase):
                                      kind="official_breaking")
             with self.assertRaisesRegex(ValueError,"Invalid X message"):
                 note_monitor_attempt(event,stamp(7),root=root,units=0)
+
+
+    def test_local_day_and_original_post_budget(self):
+        from editorial_autopilot_v137 import editorial_day_slots
+        now=stamp(6,30,day=24)  # 07:30 Rome; previous UTC day
+        recent={"rome-today":{"reserved_utc":stamp(23,15,day=23).isoformat(),"status":"sent"},
+                "rome-yesterday":{"reserved_utc":stamp(20,30,day=23).isoformat(),"status":"sent"}}
+        self.assertEqual(editorial_day_slots(recent,now),(1,6))
+
+    def test_rolling_24h_limits_post_not_only_local_day(self):
+        with TemporaryDirectory() as temp,patch.dict("os.environ",{"EDITORIAL_DIRECTOR_V142_ENABLED":"true"}):
+            root=Path(temp)
+            items={str(i):{"reserved_utc":(stamp(13)-timedelta(hours=23-i*3)).isoformat(),
+                           "status":"sent","thread":["First","Second"]}
+                   for i in range(6)}
+            (root/"editorial-autopilot-v137.json").write_text(json.dumps({"entries":items}))
+            self.assertEqual(allowed(stamp(13),root=root),(False,"ordinary_six_post_cap"))
 
     def test_ordinary_gap_blocks_quiet_hour_updates(self):
         with TemporaryDirectory() as tmp,patch.dict("os.environ",{"EDITORIAL_DIRECTOR_V142_ENABLED":"true"}):
