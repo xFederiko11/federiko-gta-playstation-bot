@@ -36,7 +36,7 @@ class LaunchHealthTests(unittest.TestCase):
     def test_receipt_24h_gap_warns_only_with_recent_unresolved_attempt(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
-            now=datetime(2026,11,23,16,0,tzinfo=timezone.utc)
+            now=datetime(2026,11,22,16,0,tzinfo=timezone.utc)
             last=datetime(2026,11,20,19,35,tzinfo=timezone.utc)
             receipt=root/'receipts.json'
             receipt.write_text(json.dumps({
