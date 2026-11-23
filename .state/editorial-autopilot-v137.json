@@ -105,6 +105,22 @@
       "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/viaggio-rapido-taxi/",
       "x_permalink": "https://x.com/xFederiko11/status/2123772116491231442"
     },
+    "1d2ec123de4035096b9d40ad": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/7db1672a7a4c93c1.jpg",
+      "reserved_utc": "2026-11-23T15:08:38.743705+00:00",
+      "run_id": "45201820804",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥉 GTA VI | BRONZO: Tuttofare\n\n🎯 Prova almeno una volta ogni categoria di attività.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/\n\n#GTAVI #Platino",
+      "thread": [
+        "🥉 GTA VI | BRONZO: Tuttofare\n\n🎯 Prova almeno una volta ogni categoria di attività.\n\n#GTAVI",
+        "🏆 Requisiti, consigli e avvisi sul platino nella checklist:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=trophy_reply"
+      ],
+      "tip_id": null,
+      "title": "Tuttofare",
+      "trophy_number": 16,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/"
+    },
     "2058044becfae40b204de3e9": {
       "attempted_utc": "2026-11-19T04:36:15.996538+00:00",
       "buffer_id": "6afe7cc046636f319e895ba5",
@@ -1290,6 +1306,13 @@
       "feeds_relevant": 111,
       "reserved": 1,
       "run": "45174274277"
+    },
+    {
+      "at": "2026-11-23T15:08:38.743705+00:00",
+      "errors": [],
+      "feeds_relevant": 109,
+      "reserved": 1,
+      "run": "45201820804"
     }
   ],
   "schema": "v13.7",
@@ -1335,6 +1358,7 @@
     "studia gli animali senza cacciare": "751948baec674d204eabde64",
     "stunt capogiro": "c9b715e2dcea074a8091975e",
     "tourist trap mission walkthrough": "d6b995b0794bd4529f4cb38d",
+    "tuttofare": "1d2ec123de4035096b9d40ad",
     "twist wrist smash grab walkthrough how rob the armoured van": "bb99a97bd90e7068a727f195",
     "ultima cosa": "2f22857e6952b337a5653fbe",
     "una lunga strada": "11fab389461a1bb02dddafd8",
