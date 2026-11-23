@@ -1,8 +1,9 @@
 """Single conservative publication policy for GTA VI Italia, effective 23 Nov 2026.
 
-Goal: five to six useful X messages on a good day, 07:00-23:00 Italy/Germany.
-Never fabricate a post just to reach the goal. One two-part thread uses TWO
-message units; a Buffer reservation is not proof of delivery.
+Goal: five to six useful original X posts on a good day, 07:00-23:00 Rome.
+Never fabricate a post just to reach the goal. A two-part thread counts as
+ONE original post and TWO X messages; both have separate safety budgets.
+A Buffer reservation is not proof of delivery.
 
 Truly urgent announcements have a small separate allowance only if both the
 publisher and the topic pass an independent source test. No automatic replies
@@ -18,7 +19,8 @@ ZONE = ZoneInfo("Europe/Rome")
 START = date(2026, 11, 23)
 DAILY_GOAL_MIN = 5
 DAILY_GOAL_MAX = 6
-ORDINARY_LIMIT_MESSAGES_24H = 6
+ORDINARY_LIMIT_POSTS_24H = 6
+ORDINARY_LIMIT_MESSAGES_24H = 12  # separate conservative thread safety budget
 HOUR_START = time(7, 0)
 HOUR_END = time(23, 0)
 ORDINARY_MIN_GAP = timedelta(minutes=120)
@@ -77,8 +79,9 @@ def report(now: datetime) -> dict:
         "date": local(now).date().isoformat(),
         "timezone": "Europe/Rome",
         "ordinary_window": "07:00-23:00",
-        "ordinary_goal_messages": [DAILY_GOAL_MIN, DAILY_GOAL_MAX],
-        "ordinary_cap_rolling_24h": ORDINARY_LIMIT_MESSAGES_24H,
+        "ordinary_goal_posts": [DAILY_GOAL_MIN, DAILY_GOAL_MAX],
+        "ordinary_post_cap_rolling_24h": ORDINARY_LIMIT_POSTS_24H,
+        "ordinary_message_safety_cap_rolling_24h": ORDINARY_LIMIT_MESSAGES_24H,
         "emergency_cap_rolling_24h": URGENT_LIMIT_24H,
         "filler_posts": False,
         "automatic_external_replies": False,
