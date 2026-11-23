@@ -413,6 +413,22 @@
       "trophy_number": null,
       "url": "https://videogameschronicle.com/guide/gta-6-home-sweet-home-mission-walkthrough"
     },
+    "66c2c402ff28e6aa906cfd5d": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/84434af3647accc8.jpg",
+      "reserved_utc": "2026-11-23T11:23:56.558074+00:00",
+      "run_id": "45164789454",
+      "source": "Guide GTA VI Italia",
+      "status": "reserved",
+      "text": "🗺️ GTA VI | Casa di Jason a Key Lento: nella guida trovi il link al marker dell'edificio e la mappa zoomabile. Non è il pin esatto di una meditazione o di una rivista.\n\nQuale luogo cerchi?",
+      "thread": [
+        "🗺️ GTA VI | Casa di Jason a Key Lento: nella guida trovi il link al marker dell'edificio e la mappa zoomabile. Non è il pin esatto di una meditazione o di una rivista.\n\nQuale luogo cerchi?\n\n#GTAVI",
+        "🗺️ Guida italiana con passaggi, immagini e fonti (spoiler a scelta):\nhttps://xfederiko11.github.io/gta-6/mappe-guide/?utm_source=x&utm_medium=social&utm_campaign=gta_vi_italia_organic_2026&utm_content=community_question"
+      ],
+      "tip_id": "growth-question-mappe-interattive-ps5",
+      "title": "Mappe interattive GTA VI nelle guide PS5",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/mappe-guide/"
+    },
     "751948baec674d204eabde64": {
       "attempted_utc": "2026-11-20T07:51:11.574310+00:00",
       "buffer_id": "6afffbef738ce4635f9850a7",
@@ -1238,6 +1254,13 @@
       "feeds_relevant": 122,
       "reserved": 1,
       "run": "45000046595"
+    },
+    {
+      "at": "2026-11-23T11:23:56.558074+00:00",
+      "errors": [],
+      "feeds_relevant": 111,
+      "reserved": 1,
+      "run": "45164789454"
     }
   ],
   "schema": "v13.7",
@@ -1257,6 +1280,7 @@
     "first minutes gameplay": "4969df7e9b145d22eef7b6d5",
     "full walkthrough all missions": "590290210b2200c5d7053bec",
     "growth-limited-magazines-1-3": "94286b19fe0b03125bd1036d",
+    "growth-mappe-interattive-ps5": "66c2c402ff28e6aa906cfd5d",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "home sweet home mission walkthrough": "6647ce251bd1ba3f46879c6b",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
