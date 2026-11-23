@@ -1,4 +1,4 @@
-"""First fortnight of GTA VI: a *quality-gated* editorial goal, not a spam target.
+"""Legacy launch campaign (Nov 19-22 only); superseded by quality_publish_policy_v1.
 
 Calendar dates are inclusive and checked in the Italian/German CET timezone.
 Each eligible editorial item is one atomic two-message X thread.
@@ -10,7 +10,8 @@ from zoneinfo import ZoneInfo
 
 ZONE = ZoneInfo("Europe/Rome")
 START = date(2026, 11, 19)
-LAST = date(2026, 12, 2)
+# Discontinue old 10-16 two-message threads from Nov 23 onward.
+LAST = date(2026, 11, 22)
 HOUR_START = time(8, 0)
 HOUR_END = time(21, 0)
 TARGET_MIN = 10
@@ -65,6 +66,17 @@ def message_units(entry: dict) -> int:
 
 def campaign_status(now: datetime, sent_threads: int = 0) -> dict:
     clock = local(now)
+    if not active(now):
+        from quality_publish_policy_v1 import report
+        p=report(now)
+        return {
+            'active':False,'timezone':p['timezone'],'date':p['date'],
+            'window':p['ordinary_window'],'thread_messages':1,
+            'target_min':5,'target':6,'cap':6,
+            'confirmed_this_day':sent_threads,
+            'missing_to_minimum':max(0,5-sent_threads),
+            'mode':'quality_gated_no_filler','last_day':str(LAST),
+        }
     return {
         'active': active(now), 'timezone': 'Europe/Rome', 'date': str(clock.date()),
         'window': '08:00-21:00', 'thread_messages': THREAD_LENGTH,

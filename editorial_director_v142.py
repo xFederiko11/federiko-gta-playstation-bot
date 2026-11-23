@@ -14,6 +14,10 @@ import hashlib
 from launch_cadence_v1 import (active as launch_active, in_hours as launch_in_hours,
     TARGET_MAX as LAUNCH_DAILY_CAP, MIN_PACING as LAUNCH_GAP,
     MAX_BUFFER_X_MESSAGES_24H as LAUNCH_MESSAGE_CAP, local as launch_local)
+from quality_publish_policy_v1 import (
+    START as QUALITY_START, ORDINARY_LIMIT_MESSAGES_24H,
+    ORDINARY_MIN_GAP, URGENT_LIMIT_24H, URGENT_MIN_GAP,
+    ordinary_hours, verified_urgent, local as quality_local)
 
 STATE_DIR=Path(".state")
 # Balanced launch-phase voluntary limits for a new X profile. These are NOT
@@ -41,6 +45,8 @@ def current_limits(now:datetime)->tuple[int,timedelta]:
     if now.tzinfo is None:
         raise ValueError("Timezone-aware date required")
     clock=now.astimezone(timezone.utc)
+    if quality_local(now).date() >= QUALITY_START:
+        return ORDINARY_LIMIT_MESSAGES_24H, ORDINARY_MIN_GAP
     return ((MAX_AUTOMATED_DELIVERIES_24H,MIN_GAP) if clock<BOOST_UNTIL
             else (STEADY_MAX_AUTOMATED_DELIVERIES_24H,STEADY_MIN_GAP))
 BLOCK=re.compile(r"\b(?:parodi[ae]|spoof|parody|volvy|devolver|gta[- ]?like|rumou?r(?:s|ed)?|leaks?|fake|fan[- ]?made|deepfake|clickbait|giveaway|sponsored|sponsorizzat[oa]|gossip|actress\s+based|basat[oa]\s+su\s+un['a]?\s+attrice)\b",re.I)
@@ -89,20 +95,43 @@ def read_reservations(root:Path|None=None):
                 if stamp and entry.get("status") not in ("rejected",):
                     result.append({"at":stamp,"key":key,"workflow":filename,
                                    "status":entry.get("status","reserved"),
+                                   "kind":entry.get("kind","ordinary"),
                                    "url":str(entry.get("url") or ""),
-                                   "units":len(entry["thread"]) if isinstance(entry.get("thread"),list)
+                                   "units":entry.get("units") if isinstance(entry.get("units"),int)
+                                           and 1<=entry["units"]<=4
+                                           else len(entry["thread"]) if isinstance(entry.get("thread"),list)
                                            and len(entry["thread"])>=2 else 1})
         except (OSError,ValueError):
             # Fail closed: malformed existing ledger must not be bypassed.
             raise RuntimeError("Publication ledger cannot be read: "+filename)
     return result
 
-def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None, kind:str|None=None)->tuple[bool,str]:
+def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None,
+            kind:str|None=None, units:int=1)->tuple[bool,str]:
     if os.getenv("EDITORIAL_DIRECTOR_V142_ENABLED","false").lower()!="true":
         return True,"disabled"
     if now.tzinfo is None:raise ValueError("Timezone-aware time required")
+    if type(units) is not int or not 1<=units<=4:
+        raise ValueError("Each Buffer publication has 1 to 4 X message units")
     entries=read_reservations(root)
     clock=now.astimezone(timezone.utc)
+    if quality_local(clock).date() >= QUALITY_START:
+        recent=[x for x in entries if clock-ROLLING_WINDOW<=x["at"]<=clock]
+        if kind=="official_breaking":
+            if sum(x.get("kind")=="official_breaking" for x in recent)>=URGENT_LIMIT_24H:
+                return False,"verified_breaking_safety_cap"
+            if recent and clock-max(x["at"] for x in recent)<URGENT_MIN_GAP:
+                return False,"verified_breaking_minimum_gap"
+            return True,"verified_official_breaking"
+        if not ordinary_hours(clock):
+            return False,"outside_ordinary_07_23_rome"
+        ordinary=[x for x in recent if x.get("kind")!="official_breaking"]
+        if sum(x.get("units",1) for x in ordinary)+units>ORDINARY_LIMIT_MESSAGES_24H:
+            return False,"ordinary_six_message_cap"
+        latest=max((x["at"] for x in ordinary),default=None)
+        if latest and clock-latest<max(ORDINARY_MIN_GAP,gap or ORDINARY_MIN_GAP):
+            return False,"ordinary_minimum_gap"
+        return True,"quality_ordinary_ready"
     if launch_active(clock):
         # First 14 days are exclusively two-message editorial threads, during
         # reader hours. Legacy campaigns, breaking monitors and standalone
@@ -144,7 +173,8 @@ def allowed(now:datetime, *,root:Path|None=None, gap:timedelta|None=None, kind:s
 def candidate_sort_key(item):
     return (-priority(item["title"],item.get("source","")),item["published"])
 
-def note_monitor_attempt(event:dict, now:datetime, root:Path|None=None):
+def note_monitor_attempt(event:dict, now:datetime, root:Path|None=None,
+                         *,kind:str="ordinary", units:int=1):
     """Append a privacy-minimal monitor publication reservation BEFORE Buffer.
 
     The monitor Action commits this file on completion. Combined with a global
@@ -152,6 +182,12 @@ def note_monitor_attempt(event:dict, now:datetime, root:Path|None=None):
     """
     if os.getenv("EDITORIAL_DIRECTOR_V142_ENABLED","false").lower()!="true":
         return
+    if type(units) is not int or not 1<=units<=4:
+        raise ValueError("Invalid X message units")
+    if kind=="official_breaking" and not verified_urgent(event):
+        raise ValueError("Unverified event cannot use breaking-news allowance")
+    if kind not in ("ordinary","official_breaking"):
+        raise ValueError("Unrecognized monitor publication kind")
     root=root or STATE_DIR
     root.mkdir(exist_ok=True,parents=True)
     path=root/"monitor-publication-v142.json"
@@ -167,7 +203,8 @@ def note_monitor_attempt(event:dict, now:datetime, root:Path|None=None):
         raise ValueError("Duplicate monitor publish attempt")
     state["entries"][identifier]={
         "reserved_utc":now.astimezone(timezone.utc).isoformat(),
-        "status":"attempted","kind":"official-monitor"}
+        "status":"attempted","kind":kind,"units":units,
+        "source_class":"official-monitor"}
     # Truncate bounded historical entries; old records are still in encrypted bot state.
     if len(state["entries"])>400:
         state["entries"]=dict(list(state["entries"].items())[-400:])
