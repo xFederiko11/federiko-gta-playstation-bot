@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-24T07:50:04Z",
+  "generated_at": "2026-11-24T08:51:53Z",
   "records": [
     {
       "date_precision": "local_time",
@@ -64,7 +64,7 @@
       "game": "PlayStation",
       "metric_kind": "availability",
       "notes": "Versione corrente dichiarata da Sony; data di rilascio non specificata.",
-      "observed_at": "2026-11-24T07:49:43Z",
+      "observed_at": "2026-11-24T08:51:34Z",
       "occurred_at": null,
       "package_id": null,
       "platform": "PS5",
@@ -80,7 +80,7 @@
       "verification": "verified",
       "version": "26.07-14.23.00",
       "first_observed_at": "2026-11-17T20:51:44Z",
-      "last_observed_at": "2026-11-24T07:49:43Z"
+      "last_observed_at": "2026-11-24T08:51:34Z"
     },
     {
       "date_precision": "unknown",
