@@ -755,6 +755,19 @@
       "trophy_number": null,
       "url": "https://videogameschronicle.com/guide/gta-6-twist-wrist-smash-grab-walkthrough"
     },
+    "bc8c795691e42f838d044e80": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/99a20e9adba93230.jpg",
+      "reserved_utc": "2026-11-24T06:20:55.491215+00:00",
+      "run_id": "45339739462",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥈 GTA VI | ARGENTO: Scansionamelo tutto!\n\n🎯 Effettua scansioni WAiNK in 100 luoghi.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-31-scansionamelo-tutto/\n\n#GTAVI #Platino",
+      "thread": null,
+      "tip_id": null,
+      "title": "Scansionamelo tutto!",
+      "trophy_number": 31,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-31-scansionamelo-tutto/"
+    },
     "bce83f32e0f01951b37b76c5": {
       "attempted_utc": "2026-11-18T18:24:14.029790+00:00",
       "buffer_id": "6afded4e16b41ab07a6f3b51",
@@ -1316,6 +1329,13 @@
       "feeds_relevant": 109,
       "reserved": 1,
       "run": "45201820804"
+    },
+    {
+      "at": "2026-11-24T06:20:55.491215+00:00",
+      "errors": [],
+      "feeds_relevant": 106,
+      "reserved": 1,
+      "run": "45339739462"
     }
   ],
   "schema": "v13.7",
@@ -1357,6 +1377,7 @@
     "rockstar conferma nessuna modalita 60fps arrivo nemmeno": "a5f8e56c731dafd20c4868e7",
     "sblocca viaggio rapido con taxi": "14c5b2faa5a7551c8e33bdc3",
     "scansiona veicoli pochi secondi": "5b71297dad5452b87340282b",
+    "scansionamelo tutto": "bc8c795691e42f838d044e80",
     "sfide per completamento": "d72ab9b5e97cf094f20dee14",
     "studia gli animali senza cacciare": "751948baec674d204eabde64",
     "stunt capogiro": "c9b715e2dcea074a8091975e",
