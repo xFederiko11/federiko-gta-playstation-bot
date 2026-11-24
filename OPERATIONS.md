@@ -2,11 +2,18 @@
 
 This is a public production repository. It posts to X through existing Buffer credentials and runs on standard GitHub-hosted runners.
 
-## Situazione verificata — 21 novembre 2026
+## Configurazione editoriale corrente — dal 23 novembre 2026
+
+- **Frequenza X approvata:** obiettivo **5–6 post originali utili al giorno** dalle **07:00 alle 23:00 Europe/Rome**, con massimo **6 post ordinari per finestra mobile di 24 ore**, distanza minima di **120 minuti** e limite autonomo di **12 messaggi X** (un thread di due messaggi conta come un post ma due messaggi). L'obiettivo non autorizza post riempitivi.
+- **Notizie urgenti:** fino a 2 ulteriori pubblicazioni nelle 24 ore, distanziate almeno 30 minuti, soltanto con classificazione e URL ufficiale verificati. Mai rispondere automaticamente a utenti terzi.
+- **Codice di riferimento:** `quality_publish_policy_v1.py`, `editorial_director_v142.py`; l'applicazione del controllo dipende dalla variabile `EDITORIAL_DIRECTOR_V142_ENABLED` impostata nei workflow di produzione. Verificare sempre ricevute Buffer Sent e permalink X: prenotazioni e workflow verdi non dimostrano una pubblicazione.
+- **Campagna precedente terminata:** l'obiettivo di 10–16 thread al giorno apparteneva esclusivamente alla finestra 19–22 novembre 2026 definita in `launch_cadence_v1.py`; non è più la politica attiva.
+
+## Audit storico — 21 novembre 2026 (non usare come configurazione attuale)
 
 - **Sito GTA VI Italia:** [GitHub Pages](https://xfederiko11.github.io/gta-6/) e Search Console collegati. Homepage e /guide-e-tutorial/ risultano *indicizzate* dalla URL Inspection OpenSEO; /trofei/ e /hdr-oled/ scansionate ma non ancora indicizzate, /soldi-facili/ ancora sconosciuta. Nessuna impression/clic disponibili nel campione GSC 12–18 novembre. La verifica futura è gestita da un'automazione dedicata, non da questo repository.
 - **Umami:** script pubblico configurato e visita reale osservata in screenshot proprietario. I futuri link alle guide in risposte a thread propri di @xFederiko11 includono UTM per classificare la sorgente; **non** abbiamo prove di follower acquisiti né di eventi `x-follow-intent` già ricevuti.
-- **Campagna X dal 19 novembre al 2 dicembre:** configurazione editorial 10 thread doppi/giorno minimo, 12 obiettivo, 16 massimo; resta subordinata a qualità, deduplica, orari 08:00–21:00 Europe/Rome e fonti adeguate. Non pubblicare filler per raggiungere il minimo. Il monitor di salute è in sola lettura.
+- **Campagna X (nota storica):** il piano originario prevedeva 10–16 thread al giorno fino al 2 dicembre, ma il codice lo ha **sostituito dal 23 novembre** con la politica 5–6 post/die indicata sopra. Non utilizzare questa voce per configurare la produzione.
 - **Buffer:** il campione dell'[audit #50](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/50) del 20 novembre riportava 15 Sent, 0 Scheduled e 0 Error nel campione di massimo 15 per stato, con 10 slot editoriali verificati per *primo post*. Non certifica tutte le pubblicazioni né le risposte numero due dei thread; l'ultimo record con permalink verificato è 20/11 ore 19:34Z. La diagnosi di staleness avvisa soltanto se ci sono tentativi recenti irrisolti insieme a ricevute Sent più vecchie di 24 ore; mai ripetere una mutazione ambigua.
 - **Reddit:** 12 lead ricevuti via IFTTT/GitHub e dashboard automatica [#68](https://github.com/xFederiko11/federiko-gta-playstation-bot/issues/68). Priorità di **revisione** P1 glitch PS5, P2 trofei/soldi/auto, P3 foto/guide, P4 domande ambigue. Da titoli e permalink non possiamo concludere che un glitch funzioni o che una foto sia autorizzata.
 - **Sito fotografico:** [hub screenshot PS5](https://xfederiko11.github.io/gta-6/screenshot-ps5/) con 55 richieste e 11 guide, al momento **0/11** al target di cinque screenshot operativi unici. Le copertine promozionali non contano e ogni eventuale riuso richiede diritti confermati.
