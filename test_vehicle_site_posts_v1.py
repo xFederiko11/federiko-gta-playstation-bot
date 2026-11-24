@@ -24,7 +24,7 @@ class VehicleSitePostsTests(unittest.TestCase):
         self.assertNotIn("/veicoli/moses-sultan/",paths)
         self.assertNotIn("/veicoli/invetero-coquette-d10/",paths)
         for entry in VEHICLE_CONTENT:
-            self.assertIn("Zona documentata:",entry["text"])
+            self.assertIn("📍 ",entry["text"])
             self.assertIn("Non è uno spawn garantito",entry["text"])
             self.assertNotIn("https://",entry["text"])
             self.assertNotIn("@",entry["text"])
@@ -40,7 +40,7 @@ class VehicleSitePostsTests(unittest.TestCase):
         self.assertEqual(selected["url"],target)
         self.assertEqual(selected["media_url"],cover_for(target))
         self.assertEqual(selected["source"],"Guide GTA VI Italia")
-        self.assertIn("Zona documentata",selected["text"])
+        self.assertIn("📍 ",selected["text"])
         self.assertEqual(state["entries"],{})
         self.assertTrue(selected["media_url"].endswith(".jpg"))
 
