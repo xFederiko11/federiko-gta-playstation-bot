@@ -117,9 +117,20 @@ def get_html(source, url=None, selector=None):
                 return page.content()
             finally:
                 browser.close()
-    response = requests.get(address, headers={"User-Agent": AGENT, 'Accept-Language':'en-US,en;q=0.9'}, timeout=30)
-    response.raise_for_status()
-    return response.text
+    headers = {"User-Agent": AGENT, "Accept-Language": "en-US,en;q=0.9"}
+    # Rockstar Support intermittently times out: make one bounded retry only
+    # for this source. Poller backoff and its previous cursor stay intact
+    # when both attempts fail; other sources retain their original behavior.
+    support = source.get("id") == "support-gta"
+    for attempt in range(2 if support else 1):
+        try:
+            response = requests.get(address, headers=headers, timeout=45 if support else 30)
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.Timeout:
+            if not support or attempt:
+                raise
+            time.sleep(1)
 
 
 def event(source, identifier, text, url="", **extra):
