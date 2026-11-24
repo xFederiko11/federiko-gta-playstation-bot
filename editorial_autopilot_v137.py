@@ -448,6 +448,45 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
             break
     return out
 
+
+def selection_diagnostics(items: list[dict], state: dict, now: datetime) -> dict:
+    """Read-only funnel: explain zero reservations without bypassing safety gates.
+
+    Counts are aggregate only; no feed headlines, user handles or API data.
+    This diagnostic must not mutate the deduplication state.
+    """
+    clock = now.astimezone(timezone.utc)
+    seen = state['entries']
+    signatures = list(state['signatures'])
+    counts = {'feed_items': len(items), 'fresh': 0, 'not_reserved': 0,
+              'on_topic': 0, 'quality_eligible': 0}
+    for item in items:
+        stamp = published(item.get('published'))
+        if (stamp is None or stamp > clock + timedelta(minutes=3)
+                or clock - stamp > timedelta(minutes=MAX_AGE_MIN)):
+            continue
+        counts['fresh'] += 1
+        try:
+            url = canonical(item['url'])
+            if url in BRIDGE_URLS:
+                continue
+            key = identity(item['url'])
+            signature = similarity_key(item['title'])
+        except (KeyError, ValueError, TypeError):
+            continue
+        if (key in seen or
+                (signature and any(same_story(signature, previous) for previous in signatures))):
+            continue
+        counts['not_reserved'] += 1
+        if not topic(item['title']):
+            continue
+        counts['on_topic'] += 1
+        if not x_quality_gate(item)[0]:
+            continue
+        counts['quality_eligible'] += 1
+    return counts
+
+
 def preview():
     items, errors = read_feeds(load_sources())
     state = load_state()
@@ -600,6 +639,7 @@ def reserve():
         save_state(state)
     print(f"RESERVE count={len(selected)} relevant={len(items)} feed_errors={errors}")
     if not selected:
+        print('EDITORIAL_SELECTION_FUNNEL', json.dumps(selection_diagnostics(items, state, now), sort_keys=True))
         print('NO POST: freshness, safety, duplicate, daily or spacing rules')
 
 def preflight():
