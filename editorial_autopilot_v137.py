@@ -400,7 +400,8 @@ def save_state(state: dict, path: Path | None = None):
     temp.write_text(json.dumps(state, indent=2, ensure_ascii=False, sort_keys=True) + '\n', encoding='utf-8')
     temp.replace(path)
 
-def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT) -> list[dict]:
+def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT,
+           candidate_pool=False) -> list[dict]:
     if now.tzinfo is None:
         raise ValueError('UTC time required')
     now = now.astimezone(timezone.utc)
@@ -439,7 +440,11 @@ def select(items: list[dict], state: dict, now: datetime, *, max_posts=RUN_LIMIT
         out.append(item)
         keys.add(key)
         new_sigs.append(sig)
-        if len(out) >= min(max_posts, day_limit - entries_today):
+        # An image fallback inspects candidates, not post slots. The director
+        # still permits at most one ordinary reservation and enforces the
+        # global rolling 24-hour caps after the media gate.
+        cap = max_posts if candidate_pool else min(max_posts, day_limit - entries_today)
+        if len(out) >= cap:
             break
     return out
 
@@ -547,7 +552,8 @@ def reserve():
         # A reused or unavailable image must not waste the entire scanning cycle:
         # inspect fresh, individually deduplicated backup stories instead.
         # Every backup MUST pass the same media and factual title gates.
-        backup = select(items, state, now, max_posts=MAX_MEDIA_CANDIDATES)
+        backup = select(items, state, now, max_posts=MAX_MEDIA_CANDIDATES,
+                        candidate_pool=True)
         selected.extend(item for item in backup
                         if item['key'] not in {x['key'] for x in selected})
         from social_media_gate_v2 import prepare as prepare_media
