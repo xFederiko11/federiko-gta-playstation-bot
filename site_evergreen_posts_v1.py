@@ -59,6 +59,39 @@ CONTENT = (
      "title": "Scoperte community: verifica le fonti",
      "text": "🔎 GTA VI | Rumor e datamining non sono notizie confermate. Nella sezione Scoperte trovi titoli, fonti e classificazioni, senza promesse di glitch trophy-safe.\n\n🧪 Consulta le segnalazioni:"},
 )
+# Per-model original content. Each live URL has its own unique editorial cover;
+# promotional Rockstar pictures are never mislabeled as vehicle gameplay.
+# This queue is read-only until the site deploys and the image gate succeeds.
+# Moses' Sultan is intentionally excluded from automation (final story spoiler).
+VEHICLE_CONTENT = (
+    {"id":"car-canis-crawler","path":"/veicoli/canis-crawler/","title":"GTA VI: Canis Crawler — dove trovarla","text":"🚘 GTA VI | Canis Crawler\n\nZona documentata: Port Gellhorn.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-declasse-yosemite-1500","path":"/veicoli/declasse-yosemite-1500/","title":"GTA VI: Declasse Yosemite 1500 — dove trovarla","text":"🚘 GTA VI | Declasse Yosemite 1500\n\nZona documentata: Port Gellhorn.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-karin-futo","path":"/veicoli/karin-futo/","title":"GTA VI: Karin Futo — dove trovarla","text":"🚘 GTA VI | Karin Futo\n\nZona documentata: Draper Island.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-annis-hellion","path":"/veicoli/annis-hellion/","title":"GTA VI: Annis Hellion — dove trovarla","text":"🚘 GTA VI | Annis Hellion\n\nZona documentata: Port Gellhorn.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-bf-bandito","path":"/veicoli/bf-bandito/","title":"GTA VI: BF Bandito — dove trovarla","text":"🚘 GTA VI | BF Bandito\n\nZona documentata: Buckskin Swamp.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-declasse-vamos","path":"/veicoli/declasse-vamos/","title":"GTA VI: Declasse Vamos — dove trovarla","text":"🚘 GTA VI | Declasse Vamos\n\nZona documentata: Grayson.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-western-nightblade","path":"/veicoli/western-nightblade/","title":"GTA VI: Western Nightblade — dove trovarla","text":"🚘 GTA VI | Western Nightblade\n\nZona documentata: Ambrosia.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-granforma-zorrusso","path":"/veicoli/granforma-zorrusso/","title":"GTA VI: Granforma Zorrusso — dove trovarla","text":"🚘 GTA VI | Granforma Zorrusso\n\nZona documentata: Ocean Beach.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-pegassi-vitello","path":"/veicoli/pegassi-vitello/","title":"GTA VI: Pegassi Vitello — dove trovarla","text":"🚘 GTA VI | Pegassi Vitello\n\nZona documentata: Waning Sands.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-pegassi-infernus","path":"/veicoli/pegassi-infernus/","title":"GTA VI: Pegassi Infernus — dove trovarla","text":"🚘 GTA VI | Pegassi Infernus\n\nZona documentata: Vice City.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-pegassi-tempesta","path":"/veicoli/pegassi-tempesta/","title":"GTA VI: Pegassi Tempesta — dove trovarla","text":"🚘 GTA VI | Pegassi Tempesta\n\nZona documentata: Ambrosia.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-ascot-paragon","path":"/veicoli/ascot-paragon/","title":"GTA VI: Ascot Paragon — dove trovarla","text":"🚘 GTA VI | Ascot Paragon\n\nZona documentata: Waning Sands.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-bravado-gauntlet-hellfire","path":"/veicoli/bravado-gauntlet-hellfire/","title":"GTA VI: Bravado Gauntlet Hellfire — dove trovarla","text":"🚘 GTA VI | Bravado Gauntlet Hellfire\n\nZona documentata: Hamlet.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-piccia-furia","path":"/veicoli/piccia-furia/","title":"GTA VI: Piccia Furia — dove trovarla","text":"🚘 GTA VI | Piccia Furia\n\nZona documentata: Hamlet.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-benefactor-dubsta","path":"/veicoli/benefactor-dubsta/","title":"GTA VI: Benefactor Dubsta — dove trovarla","text":"🚘 GTA VI | Benefactor Dubsta\n\nZona documentata: Vice Beach.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+    {"id":"car-bravado-banshee","path":"/veicoli/bravado-banshee/","title":"GTA VI: Bravado Banshee — dove trovarla","text":"🚘 GTA VI | Bravado Banshee\n\nZona documentata: Hamlet.\n🔎 Quando è disponibile, dove cercarla e come ottenerla.\n⚠️ Non è uno spawn garantito: controlla WAiNK.\n\n📖 Guida e fonti:"},
+)
+# Interleave car topics with the existing evergreen diversity. One owned-site
+# story per day is still enforced by DAY_BUDGET and SPACING below.
+ORIGINAL_CONTENT = CONTENT
+CONTENT = tuple(
+    part for i in range(max(len(ORIGINAL_CONTENT),len(VEHICLE_CONTENT)))
+    for part in (
+        *((ORIGINAL_CONTENT[i],) if i<len(ORIGINAL_CONTENT) else ()),
+        *((VEHICLE_CONTENT[i],) if i<len(VEHICLE_CONTENT) else ())
+    )
+)
+
 
 
 def validate():
