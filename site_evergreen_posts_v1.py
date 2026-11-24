@@ -59,6 +59,39 @@ CONTENT = (
      "title": "Scoperte community: verifica le fonti",
      "text": "🔎 GTA VI | Rumor e datamining non sono notizie confermate. Nella sezione Scoperte trovi titoli, fonti e classificazioni, senza promesse di glitch trophy-safe.\n\n🧪 Consulta le segnalazioni:"},
 )
+# Per-model original content. Each live URL has its own unique editorial cover;
+# promotional Rockstar pictures are never mislabeled as vehicle gameplay.
+# This queue is read-only until the site deploys and the image gate succeeds.
+# Moses' Sultan is intentionally excluded from automation (final story spoiler).
+VEHICLE_CONTENT = (
+    {"id":"car-canis-crawler","path":"/veicoli/canis-crawler/","title":"GTA VI: Canis Crawler — dove trovarla","text":"🚘 GTA VI | Canis Crawler\n\n📍 Dopo la missione Moses, avvia Daily Driver e cerca il Crawler presso Gellhorn Avenue.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-declasse-yosemite-1500","path":"/veicoli/declasse-yosemite-1500/","title":"GTA VI: Declasse Yosemite 1500 — dove trovarla","text":"🚘 GTA VI | Declasse Yosemite 1500\n\n📍 Su Bastion Street il pickup giallo è agganciato a un carro attrezzi: sgancialo.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-karin-futo","path":"/veicoli/karin-futo/","title":"GTA VI: Karin Futo — dove trovarla","text":"🚘 GTA VI | Karin Futo\n\n📍 Ai Draper Island Docks entra dal lato nord: la Futo è nel garage occidentale.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-annis-hellion","path":"/veicoli/annis-hellion/","title":"GTA VI: Annis Hellion — dove trovarla","text":"🚘 GTA VI | Annis Hellion\n\n📍 A Orchard Avenue cerca il vialetto della casa al centro della zona di ricerca.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-bf-bandito","path":"/veicoli/bf-bandito/","title":"GTA VI: BF Bandito — dove trovarla","text":"🚘 GTA VI | BF Bandito\n\n📍 A Buckskin Swamp cerca il buggy argentato in movimento: ha un solo posto.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-declasse-vamos","path":"/veicoli/declasse-vamos/","title":"GTA VI: Declasse Vamos — dove trovarla","text":"🚘 GTA VI | Declasse Vamos\n\n📍 A nord-est di Grayson la Vamos è nel capanno: digita 2727 sulla porta laterale.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-western-nightblade","path":"/veicoli/western-nightblade/","title":"GTA VI: Western Nightblade — dove trovarla","text":"🚘 GTA VI | Western Nightblade\n\n📍 Ad Ambrosia cerca la moto arancione nel piano inferiore del garage centrale.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-granforma-zorrusso","path":"/veicoli/granforma-zorrusso/","title":"GTA VI: Granforma Zorrusso — dove trovarla","text":"🚘 GTA VI | Granforma Zorrusso\n\n📍 Agli Hathaway Apartments di Ocean Beach: garage recintato, poi Key Cloner.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-pegassi-vitello","path":"/veicoli/pegassi-vitello/","title":"GTA VI: Pegassi Vitello — dove trovarla","text":"🚘 GTA VI | Pegassi Vitello\n\n📍 Nella zona Waning Sands consulta la richiesta di Randy e scansiona con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-pegassi-infernus","path":"/veicoli/pegassi-infernus/","title":"GTA VI: Pegassi Infernus — dove trovarla","text":"🚘 GTA VI | Pegassi Infernus\n\n📍 Cerca la Infernus a Vice City; WAiNK indica se Randy la sta richiedendo.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-pegassi-tempesta","path":"/veicoli/pegassi-tempesta/","title":"GTA VI: Pegassi Tempesta — dove trovarla","text":"🚘 GTA VI | Pegassi Tempesta\n\n📍 GTABase segnala Ambrosia: controlla la mappa di Randy prima di cercarla.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-ascot-paragon","path":"/veicoli/ascot-paragon/","title":"GTA VI: Ascot Paragon — dove trovarla","text":"🚘 GTA VI | Ascot Paragon\n\n📍 La mappa richieste indica Waning Sands: verifica modello e tracker con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-bravado-gauntlet-hellfire","path":"/veicoli/bravado-gauntlet-hellfire/","title":"GTA VI: Bravado Gauntlet Hellfire — dove trovarla","text":"🚘 GTA VI | Bravado Gauntlet Hellfire\n\n📍 Per la richiesta di Randy consulta la zona di Hamlet sulla mappa GTABase.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-piccia-furia","path":"/veicoli/piccia-furia/","title":"GTA VI: Piccia Furia — dove trovarla","text":"🚘 GTA VI | Piccia Furia\n\n📍 La richiesta è segnalata nell'area di Hamlet: controlla WAiNK prima del furto.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-benefactor-dubsta","path":"/veicoli/benefactor-dubsta/","title":"GTA VI: Benefactor Dubsta — dove trovarla","text":"🚘 GTA VI | Benefactor Dubsta\n\n📍 GTABase segnala un parcheggio a Vice Beach: controlla il modello con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-bravado-banshee","path":"/veicoli/bravado-banshee/","title":"GTA VI: Bravado Banshee — dove trovarla","text":"🚘 GTA VI | Bravado Banshee\n\n📍 A Hamlet consulta l'area della richiesta e verifica la Banshee con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+)
+# Interleave car topics with the existing evergreen diversity. One owned-site
+# story per day is still enforced by DAY_BUDGET and SPACING below.
+ORIGINAL_CONTENT = CONTENT
+CONTENT = tuple(
+    part for i in range(max(len(ORIGINAL_CONTENT),len(VEHICLE_CONTENT)))
+    for part in (
+        *((ORIGINAL_CONTENT[i],) if i<len(ORIGINAL_CONTENT) else ()),
+        *((VEHICLE_CONTENT[i],) if i<len(VEHICLE_CONTENT) else ())
+    )
+)
+
 
 
 def validate():
