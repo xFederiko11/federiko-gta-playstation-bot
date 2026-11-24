@@ -70,6 +70,45 @@ class EditorialV137Tests(unittest.TestCase):
             self.state['entries'][str(i)] = {'reserved_utc': NOW.isoformat()}
         self.assertEqual(bot.select([article()], self.state, NOW), [])
 
+    def test_media_fallback_inspects_up_to_eight_stories_not_one_open_post_slot(self):
+        now=datetime(2026,11,24,19,0,tzinfo=timezone.utc)
+        entries={
+            'prior-'+str(i):{
+                'status':'sent',
+                'reserved_utc':(now-timedelta(hours=2+i)).isoformat()
+            }
+            for i in range(5)
+        }
+        state={'entries':entries,'signatures':{}}
+        titles=(
+            'GTA VI: dove trovare i garage di Port Gellhorn',
+            'GTA VI: nuovi dettagli sugli animali di Leonida',
+            'GTA VI: guida pratica alle sfide di guida',
+            'GTA VI: caratteristiche HDR per console PS5',
+            'GTA VI: tutorial per raggiungere i motel',
+            'GTA VI: posizione dei veicoli speciali',
+            'GTA VI: catalogo delle armi nel gioco',
+            'GTA VI: come usare il servizio taxi'
+        )
+        incoming=[
+            article(title=t,
+                    url='https://www.videogameschronicle.com/news/media-backup-'+str(i)+'/',
+                    date=now-timedelta(minutes=12))
+            for i,t in enumerate(titles)
+        ]
+        normal=bot.select(incoming,state,now,max_posts=8)
+        pool=bot.select(incoming,state,now,max_posts=8,candidate_pool=True)
+        self.assertEqual(len(normal),1,'Only one ordinary day slot remains')
+        self.assertGreaterEqual(len(pool),3,'Inspect independent images before giving up')
+        self.assertLessEqual(len(pool),bot.MAX_MEDIA_CANDIDATES)
+        self.assertEqual(len({x['key'] for x in pool}),len(pool))
+        self.assertEqual(len(state['entries']),5,'No reservation in read-only selection')
+        state['entries']['last']={
+            'reserved_utc':(now-timedelta(hours=2)).isoformat(),'status':'sent'
+        }
+        self.assertEqual(bot.select(incoming,state,now,max_posts=8,candidate_pool=True),[],
+                         'Candidate pool must not bypass a completely full daily budget')
+
     def test_time_spacing(self):
         self.state['entries']['x'] = {'reserved_utc': (NOW-timedelta(minutes=5)).isoformat()}
         self.assertEqual(bot.select([article()], self.state, NOW), [])
