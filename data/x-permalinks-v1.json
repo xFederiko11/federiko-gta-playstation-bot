@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-23T20:30:23.429849Z",
+  "checked_utc": "2026-11-24T08:39:00.900152Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-31-scansionamelo-tutto/",
+      "x_url": "https://x.com/xFederiko11/status/2125112456347295791",
+      "buffer_id": "6b052cd2f1f0435123253b3e",
+      "sent_at": "2026-11-24T06:21:07.172000Z",
+      "excerpt": "🥈 GTA VI | ARGENTO: Scansionamelo tutto!\n\n🎯 Effettua scansioni WAiNK in 100 luoghi.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-31-scansionamelo-tutto/\n\n#GTAVI #Platino",
+      "title": "Scansionamelo tutto!",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-16-tuttofare/",
       "x_url": "https://x.com/xFederiko11/status/2124882839011279253",
@@ -219,6 +228,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 24,
+  "matched_this_run": 25,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
