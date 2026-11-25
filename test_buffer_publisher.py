@@ -29,7 +29,10 @@ def delivered(status="sent"):
 class BufferPublisherTests(unittest.TestCase):
     def setUp(self):
         self.session = Mock()
-        self.client = BufferClient("test-key-not-real", "channel-1", "myfan", session=self.session)
+        # Legacy protocol tests exercise Buffer responses; a separate test verifies
+        # the production default refusing text-only X submissions.
+        self.client = BufferClient("test-key-not-real", "channel-1", "myfan",
+                                   session=self.session, require_media=False)
 
     def test_destination_is_checked_before_first_write_and_cached(self):
         self.session.post.side_effect = [response({"channel": channel()}), response(delivered()), response(delivered())]
@@ -134,6 +137,24 @@ class BufferPublisherTests(unittest.TestCase):
         with self.assertRaises(BufferAPIError) as result:
             self.client.publish("Hello")
         self.assertTrue(result.exception.outcome_unknown)
+
+    def test_production_default_rejects_text_only_post_and_thread_before_network(self):
+        client = BufferClient("test-key-not-real", "channel-1", "myfan",
+                              session=self.session)
+        with self.assertRaises(BufferMediaError):
+            client.publish("GTA VI: dettagli importanti")
+        with self.assertRaises(BufferMediaError):
+            client.publish_thread(["GTA VI: punto uno", "Fonte: Rockstar Games"])
+        self.session.post.assert_not_called()
+
+    def test_production_default_sends_photo_in_buffer_payload(self):
+        client = BufferClient("test-key-not-real", "channel-1", "myfan",
+                              session=self.session)
+        self.session.post.side_effect = [response({"channel": channel()}), response(delivered())]
+        client.publish("GTA VI Italia", media_url="https://cdn.example.org/gta-vi-photo.jpg")
+        payload = self.session.post.call_args.kwargs["json"]["variables"]["input"]
+        self.assertEqual(payload["assets"], [
+            {"image": {"url": "https://cdn.example.org/gta-vi-photo.jpg"}}])
 
     def test_public_image_url_is_passed_as_asset(self):
         self.session.post.side_effect = [response({"channel": channel()}), response(delivered())]

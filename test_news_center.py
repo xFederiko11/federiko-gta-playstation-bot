@@ -67,25 +67,27 @@ class BufferThreadTests(unittest.TestCase):
     def test_one_api_mutation_contains_all_parts_in_order(self):
         parts = ["1/2 GTA VI NEWS CENTER", "2/2 Fonte ufficiale"]
         self.session.post.return_value = self.reply()
-        self.assertEqual(self.client.publish_thread(parts), "buffer-thread-1")
+        self.assertEqual(self.client.publish_thread(parts, media_url="https://cdn.example.org/approved.jpg"), "buffer-thread-1")
         self.session.post.assert_called_once()
         payload = self.session.post.call_args.kwargs["json"]["variables"]["input"]
         self.assertEqual(payload["text"], parts[0])
         self.assertEqual([x["text"] for x in payload["metadata"]["twitter"]["thread"]], parts)
-        self.assertEqual(payload["assets"], [])
+        self.assertEqual(payload["assets"], [])  # Buffer threads carry media in metadata.thread[0]
+        self.assertEqual(payload["metadata"]["twitter"]["thread"][0]["assets"],
+                         [{"image": {"url": "https://cdn.example.org/approved.jpg"}}])
         self.assertEqual(payload["mode"], "shareNow")
 
     def test_invalid_threads_never_use_network(self):
         for parts in [["solo"], ["uno", ""], ["a", "b" * 281], []]:
             with self.subTest(parts=parts):
                 with self.assertRaises(ValueError):
-                    self.client.publish_thread(parts)
+                    self.client.publish_thread(parts, media_url="https://cdn.example.org/approved.jpg")
         self.session.post.assert_not_called()
 
     def test_pending_thread_not_resubmitted(self):
         self.session.post.return_value = self.reply("sending")
         with self.assertRaises(BufferPending) as cm:
-            self.client.publish_thread(["Uno", "Due"])
+            self.client.publish_thread(["Uno", "Due"], media_url="https://cdn.example.org/approved.jpg")
         self.assertEqual(cm.exception.post_id, "buffer-thread-1")
         self.session.post.assert_called_once()
 
