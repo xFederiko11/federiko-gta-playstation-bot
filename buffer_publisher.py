@@ -153,7 +153,8 @@ def _channel_handle(channel):
 
 class BufferClient:
     def __init__(self, api_key=None, channel_id=None, expected_username=None,
-                 *, session=None, media_uploader=None, request_guard=None, timeout=30):
+                 *, session=None, media_uploader=None, request_guard=None,
+                 timeout=30, require_media=True):
         self.api_key = _required("BUFFER_API_KEY", api_key)
         self.channel_id = (channel_id if channel_id is not None else os.getenv("BUFFER_CHANNEL_ID", "")).strip()
         if expected_username is None:
@@ -161,6 +162,10 @@ class BufferClient:
         self.expected_username = expected_username.strip().lstrip("@").casefold()
         self.session = session if session is not None else requests.Session()
         self.media_uploader = media_uploader
+        # Production default: every X post and thread MUST carry an image.
+        # The independent editorial gate checks provenance and deduplication;
+        # this is a final fail-closed check against alternative text-only paths.
+        self.require_media = bool(require_media)
         # Facoltativo: contabilizzazione persistente/limite locale gestito dal chiamante.
         # Chiamato prima di ogni richiesta, mai in un retry nascosto.
         self.request_guard = request_guard
@@ -281,6 +286,8 @@ class BufferClient:
             raise BufferMediaError("Indica media_path oppure media_url, non entrambi")
         # Valida i media prima di qualsiasi creazione di post.
         assets = [{"image": {"url": self._media_url(media_url)}}] if media_url is not None else self._assets(media_path)
+        if self.require_media and not assets:
+            raise BufferMediaError("Ogni pubblicazione X deve includere un'immagine pubblica verificata")
         if self.destination is None:
             self.verify_destination()
         data = self._graphql(CREATE_MUTATION, {"input": {
@@ -343,6 +350,8 @@ class BufferClient:
         Ciascun post ha il proprio limite caratteri. Non esegue retry
         automatici se l'esito di createPost non e' noto.
         """
+        if self.require_media and not media_url:
+            raise BufferMediaError("Il primo messaggio del thread X deve avere una fotografia")
         from presentation import _post_weight
         if not isinstance(posts, (list, tuple)) or not 2 <= len(posts) <= 5:
             raise ValueError("Il thread deve contenere da 2 a 5 post")
