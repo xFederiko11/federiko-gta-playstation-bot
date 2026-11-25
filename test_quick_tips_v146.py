@@ -107,7 +107,7 @@ class QuickTipsV146Tests(unittest.TestCase):
              patch.object(bot,"director_allowed",return_value=(True,"ready")), \
              patch("growth_conversion_v1.candidate",return_value=None), \
              patch("portal_links_v148.guide_if_live",return_value=None), \
-             patch("gta6_special_campaign_v139.probe_image",return_value=True), \
+             patch("social_media_gate_v2.probe_image",return_value=True), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-125"}):
             bot.reserve()
             entries=bot.load_state()["entries"]
@@ -139,7 +139,7 @@ class QuickTipsV146Tests(unittest.TestCase):
              patch("growth_conversion_v1.candidate",return_value=None), \
              patch("site_evergreen_posts_v1.candidate",return_value=None), \
              patch("portal_links_v148.guide_if_live",return_value=None), \
-             patch("gta6_special_campaign_v139.probe_image",return_value=False), \
+             patch("social_media_gate_v2.probe_image",return_value=False), \
              patch("trophy_posts_v142.candidate",return_value=None), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-126"}):
             bot.reserve()
@@ -160,6 +160,28 @@ class QuickTipsV146Tests(unittest.TestCase):
             bot.reserve()
             self.assertFalse(bot.STATE.exists())
             director.assert_not_called()
+
+    def test_quick_tip_uses_its_actual_published_guide_cover_for_probe(self):
+        import editorial_autopilot_v137 as bot
+        from social_media_gate_v2 import cover_for
+        page="https://xfederiko11.github.io/gta-6/guide-e-tutorial/scansionare-veicoli/"
+        hotlink=TIPS[0]["media_url"]
+        self.assertNotEqual(hotlink,cover_for(page))
+        with patch("social_media_gate_v2.probe_image",return_value=True) as checked:
+            self.assertTrue(bot.quick_tip_media_available({"url":page,"media_url":hotlink}))
+            checked.assert_called_once_with(cover_for(page))
+        with patch("social_media_gate_v2.probe_image",return_value=False) as checked:
+            self.assertFalse(bot.quick_tip_media_available({"url":page,"media_url":hotlink}))
+            checked.assert_called_once_with(cover_for(page))
+
+    def test_external_quick_tip_still_requires_actual_official_image(self):
+        import editorial_autopilot_v137 as bot
+        tip={"url":TIPS[0]["source_url"],"media_url":TIPS[0]["media_url"]}
+        with patch("social_media_gate_v2.probe_image",return_value=True) as checked:
+            self.assertTrue(bot.quick_tip_media_available(tip))
+            checked.assert_called_once_with(tip["media_url"])
+        with patch("social_media_gate_v2.probe_image",return_value=False):
+            self.assertFalse(bot.quick_tip_media_available(tip))
 
     def test_reauthorization_gates_resume_without_repeating_old_rejected_tip(self):
         from unittest.mock import patch
