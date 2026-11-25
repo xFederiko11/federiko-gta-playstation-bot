@@ -1,0 +1,7 @@
+# Rilancio degli articoli proprietari su X
+
+Decisione del 25 novembre 2026: dopo verifica del modello editoriale definitivo, aggiornare tutte le pagine articolo esistenti, mantenere URL e SEO, poi rilanciarle gradualmente su X. Non duplicare articoli né riproporre vecchie news come nuove. 
+
+Prima fase: pianificatore read-only, quattro articoli pilota, disattivato sino al deploy e alla verifica visiva; nessuna nuova infrastruttura fotografica. Estendere inventario e varianti editoriali a tutti gli articoli effettivamente aggiornati; nessun riempitivo. Soglie iniziali proposte: aggiornamento sostanziale, 7 giorni dall'ultimo Sent; interesse misurato, 14; rotazione periodica, 30. Massimo un rilancio al giorno, 20 ore fra rilanci, all'interno del limite globale di sei post ordinari e del gap ordinario esistente. Priorità alle notizie urgenti verificate. Varianti originali, mai stesso testo e mai un nuovo tentativo per ricevute pendenti/incerte. 
+
+Il pianificatore usa il registro esistente; i segnali disponibili vengono associati a permalink X verificati tramite le metriche esistenti. Metriche mancanti non sono zero e non provano domanda. La raccolta automatica di misure per articolo e l'integrazione del planner nel publisher restano da completare. Prima dell'attivazione: verificare pagina 200, canonical, H1, copertina identica a OG/Twitter e JPEG del bot; eccezione alla deduplica media solo per lo stesso URL, con ricevute Sent e cooldown. Non rimuovere il gate per altre pagine o media terzi. Nessun nuovo costo, contatto esterno o risposta automatica.
