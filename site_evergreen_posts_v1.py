@@ -30,7 +30,7 @@ CONTENT = (
      "text": "🔧 GTA VI | PATCH DEL 23 NOVEMBRE\n\nLe note Rockstar confermano 7 correzioni, tra cui salvataggi, chiamate e livello di ricercato.\n\n📖 Riepilogo italiano e fonte ufficiale:"},
     {"id": "ps5-first-person-glitch", "path": "/guide-e-tutorial/glitch-prima-persona-ps5/",
      "title": "GTA VI PS5: glitch prima persona, comandi e rischi trofei",
-     "text": "🎮 GTA VI | PRIMA PERSONA PS5\n\nIn auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Segnalato funzionante; ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:"},
+     "text": "🎮 GTA VI | PRIMA PERSONA PS5\n\nIn auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Community: segnalato dopo patch 23/11. ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:"},
     {"id": "money-early-four", "path": "/guide-e-tutorial/soldi-facili-capitolo-1/",
      "title": "GTA VI: quattro luoghi per trovare soldi subito",
      "text": "💰 GTA VI | SOLDI NEL CAPITOLO 1\n\nPrima di Recalibration salva a parte: i soldi ordinari non passano al Capitolo 2. ⚠️ Spoiler.\n\n📍 Quattro luoghi e fonte:"},
