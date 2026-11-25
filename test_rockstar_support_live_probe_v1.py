@@ -7,7 +7,7 @@ import json
 import unittest
 
 from sources import SupportBrowserFailure
-from rockstar_support_live_probe_v1 import OFFICIAL_SOURCES, probe
+from rockstar_support_live_probe_v1 import OFFICIAL_SOURCES, PATCH_ARTICLE, probe, probe_direct_article
 
 
 GOOD = ('<nav><a href="/articles/a">Release notes GTA VI</a></nav>'
@@ -78,6 +78,53 @@ class RockstarSupportLiveProbeTests(unittest.TestCase):
         self.assertEqual(outcomes["support-gta"], "listing_present")
         reader.assert_called_once()
         self.assertIn("phase=config reason=invalid_official_source", messages[0])
+
+
+class RockstarDirectArticleTests(unittest.TestCase):
+    def test_exact_direct_article_only_and_no_automatic_publication(self):
+        class Response:
+            status_code = 200
+            url = PATCH_ARTICLE
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                pass
+            def iter_content(self, chunk_size):
+                yield b"<main><article><h1>Grand Theft Auto VI Launch Updates (PS5 / XBOX)</h1><p>November 23, 2026</p><p>Fixed test fixture.</p></article></main>"
+        fetcher = Mock(return_value=Response())
+        lines = []
+        self.assertEqual(probe_direct_article(fetcher=fetcher, report=lines.append),
+                         "known_patch_article_present")
+        fetcher.assert_called_once()
+        self.assertEqual(fetcher.call_args.args, (PATCH_ARTICLE,))
+        self.assertFalse(fetcher.call_args.kwargs["allow_redirects"])
+        self.assertTrue(fetcher.call_args.kwargs["stream"])
+        self.assertNotIn("Fixed test fixture", lines[0])
+        self.assertIn("not_a_news_scan", lines[0])
+
+    def test_generic_shell_and_redirect_are_not_success(self):
+        class Response:
+            status_code = 200
+            url = PATCH_ARTICLE
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                pass
+            def iter_content(self, chunk_size):
+                yield b"<main><h1>Rockstar Support</h1>November 23, 2026</main>"
+        response = Response()
+        fetcher = Mock(return_value=response)
+        self.assertEqual(probe_direct_article(fetcher=fetcher, report=lambda _:None),
+                         "article_content_unconfirmed")
+        response.url = "https://example.invalid/"
+        self.assertEqual(probe_direct_article(fetcher=fetcher, report=lambda _:None),
+                         "redirect_or_http_unavailable")
+
+    def test_error_message_is_not_logged(self):
+        messages=[]
+        self.assertEqual(probe_direct_article(fetcher=Mock(side_effect=RuntimeError("sensitive")),
+                                             report=messages.append), "source_RuntimeError")
+        self.assertNotIn("sensitive", messages[0])
 
 
 if __name__ == "__main__":
