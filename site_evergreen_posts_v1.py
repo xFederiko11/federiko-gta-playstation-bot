@@ -24,7 +24,7 @@ CONTENT = (
     # verified before Buffer. Live page + photo + daily caps all still required.
     {"id": "creator-showcase-original", "path": "/video-tutorial/",
      "title": "GTA VI: video dei creator con guida italiana",
-     "text": "🎬 GTA VI | VIDEO DEI CREATOR\\n\\n4 filmati originali selezionati fra TGG, IGN e community. Vai al minuto utile e segui i passaggi in italiano.\\n\\n🎥 Video, fonti e guide:"},
+     "text": "🎬 GTA VI | VIDEO DEI CREATOR\n\n4 filmati originali selezionati fra TGG, IGN e community. Vai al minuto utile e segui i passaggi in italiano.\n\n🎥 Video, fonti e guide:"},
     {"id": "ps5-first-person-glitch", "path": "/guide-e-tutorial/glitch-prima-persona-ps5/",
      "title": "GTA VI PS5: glitch prima persona, comandi e rischi trofei",
      "text": "🎮 GTA VI | PRIMA PERSONA PS5\n\nIn auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Segnalato funzionante; ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:"},
