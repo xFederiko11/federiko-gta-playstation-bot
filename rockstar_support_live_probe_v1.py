@@ -9,6 +9,8 @@ from __future__ import annotations
 from pathlib import Path
 from urllib.parse import urlsplit
 import json
+import requests
+import re
 
 from bs4 import BeautifulSoup
 from sources import SupportBrowserFailure, get_html
@@ -71,7 +73,53 @@ def probe(config_file=Path("sources.free.json"), *, fetcher=None, report=print):
     return outcome
 
 
+# Exact official article surfaced by public search. This is a reachability
+# diagnostic, NOT a new source in the production monitor or a fresh event.
+PATCH_ARTICLE = "https://support.rockstargames.com/articles/sN5pEdFYZdlvijKXd6xpJ/grand-theft-auto-vi-launch-updates-ps5-xbox-series-x-or-s"
+MAX_ARTICLE_BYTES = 1_500_000
+
+
+def probe_direct_article(*, fetcher=None, report=print):
+    fetcher = fetcher or requests.get
+    outcome = "unconfirmed"
+    try:
+        with fetcher(PATCH_ARTICLE,
+                     headers={"Accept": "text/html", "Accept-Language": "en-US,en;q=0.9",
+                              "User-Agent": "GTA6Italia-SupportDiagnostic/1.0"},
+                     timeout=(5, 10), allow_redirects=False, stream=True) as response:
+            if response.status_code != 200 or response.url != PATCH_ARTICLE:
+                outcome = "redirect_or_http_unavailable"
+            else:
+                body = bytearray()
+                for chunk in response.iter_content(chunk_size=16384):
+                    body.extend(chunk)
+                    if len(body) > MAX_ARTICLE_BYTES:
+                        break
+                if len(body) > MAX_ARTICLE_BYTES:
+                    outcome = "response_too_large"
+                else:
+                    doc = BeautifulSoup(bytes(body), "html.parser")
+                    heading = doc.select_one("[data-testid='page-title'], article h1, main h1")
+                    region = doc.select_one("article, main")
+                    heading_text = heading.get_text(" ", strip=True) if heading else ""
+                    # Never count generic HTML shell, access challenge, or a
+                    # mere mention of the game as an authentic patch article.
+                    text = region.get_text(" ", strip=True) if region else ""
+                    if (re.search(r"grand theft auto vi launch updates", heading_text, re.I)
+                            and re.search(r"November\s+23,\s+2026", text, re.I)
+                            and re.search(r"\bFixed\b", text, re.I)):
+                        outcome = "known_patch_article_present"
+                    else:
+                        outcome = "article_content_unconfirmed"
+    except Exception as exc:
+        # Only exception class, no potentially sensitive response/URL.
+        outcome = "source_" + type(exc).__name__
+    report("SUPPORT_DIRECT_ARTICLE_DIAG status="+outcome+" note=not_a_news_scan")
+    return outcome
+
+
 if __name__ == "__main__":
     # Diagnostics are informational. A failed public vendor site must never
     # block CI or trigger a publication; the monitor will retain its last state.
     probe()
+    probe_direct_article()
