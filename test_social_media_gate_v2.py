@@ -2,7 +2,8 @@
 from __future__ import annotations
 import hashlib
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+import requests
 from social_media_gate_v2 import (cover_for,canonical_page_path,prepare,probe_image,
                                   trusted_asset,image_taken,SITE_IMAGE_PREFIX,BASE)
 
@@ -59,6 +60,76 @@ class ImageGateTests(unittest.TestCase):
         workflow=Path(".github/workflows/gta-monitor.yml").read_text(encoding="utf-8")
         self.assertIn("V12_UNIQUE_IMAGES: 'true'",workflow)
         self.assertIn("archive_images",Path("image_registry_v12.py").read_text(encoding="utf-8"))
+
+    def test_transient_503_then_valid_image_passes_after_one_bounded_retry(self):
+        link=cover_for(BASE+"guide-e-tutorial/scansionare-veicoli/")
+        class FakeResponse:
+            def __init__(self,status):
+                self.status_code=status
+                self.url=link
+                self.headers={"Content-Type":"image/jpeg","Content-Length":"39000"}
+            def __enter__(self):return self
+            def __exit__(self,*args):return None
+            def iter_content(self,n):yield bytes([255,216,255])+b"photo-body"
+        session=Mock()
+        session.get.side_effect=[FakeResponse(503),FakeResponse(200)]
+        with patch("social_media_gate_v2.time.sleep") as sleep:
+            self.assertTrue(probe_image(link,session=session))
+        self.assertEqual(session.get.call_count,2)
+        sleep.assert_called_once_with(1)
+        self.assertTrue(all(c.kwargs["allow_redirects"] is False
+                            for c in session.get.call_args_list))
+
+    def test_three_503_responses_keep_media_on_hold_with_safe_reason(self):
+        link=cover_for(BASE+"salvare-auto/")
+        class Down:
+            status_code=503
+            url=link
+            headers={}
+            def __enter__(self):return self
+            def __exit__(self,*args):return None
+        session=Mock()
+        session.get.return_value=Down()
+        with (patch("social_media_gate_v2.time.sleep") as sleep,
+              self.assertLogs("gta6.media",level="WARNING") as messages):
+            self.assertFalse(probe_image(link,session=session))
+        self.assertEqual(session.get.call_count,3)
+        self.assertEqual(sleep.call_count,2)
+        self.assertIn("reason=HTTP503 attempts=3"," ".join(messages.output))
+        self.assertNotIn(link," ".join(messages.output))
+
+    def test_image_404_and_invalid_mime_do_not_retry(self):
+        link=cover_for(BASE+"trofei/")
+        class Response:
+            status_code=404
+            url=link
+            headers={"Content-Type":"image/jpeg"}
+            def __enter__(self):return self
+            def __exit__(self,*args):return None
+            def iter_content(self,n):yield bytes([255,216,255])+b"real-image"
+        session=Mock()
+        res=Response()
+        session.get.return_value=res
+        with patch("social_media_gate_v2.time.sleep") as sleep:
+            self.assertFalse(probe_image(link,session=session))
+            self.assertEqual(session.get.call_count,1)
+            res.status_code=200
+            res.headers={"Content-Type":"text/html"}
+            self.assertFalse(probe_image(link,session=session))
+            self.assertEqual(session.get.call_count,2)
+            sleep.assert_not_called()
+
+    def test_tls_failure_is_not_ignored_or_retried(self):
+        link=cover_for(BASE+"trofei/")
+        session=Mock()
+        session.get.side_effect=requests.exceptions.SSLError("Do not reveal URL or token")
+        with (patch("social_media_gate_v2.time.sleep") as sleep,
+              self.assertLogs("gta6.media",level="WARNING") as messages):
+            self.assertFalse(probe_image(link,session=session))
+        session.get.assert_called_once()
+        sleep.assert_not_called()
+        self.assertIn("tls_verification_failed"," ".join(messages.output))
+        self.assertNotIn("token"," ".join(messages.output))
 
     def test_public_get_probe_validates_real_bytes_before_buffer(self):
         link=cover_for(BASE+"trofei/")
