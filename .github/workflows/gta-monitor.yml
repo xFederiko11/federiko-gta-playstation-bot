@@ -103,7 +103,7 @@ jobs:
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         run: |
           python x_automation_safety_v1.py
-          python -m unittest -q test_official_links_free_v140
+          python -m unittest -q test_official_links_free_v140 test_patch_history_v1
       - name: Raccogli, prepara le schede e pubblica se attivato
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:

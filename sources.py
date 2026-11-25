@@ -380,6 +380,7 @@ def collect_links(source, previous):
     # not breaking news. Existing watched URLs may still produce revisions.
     seed_index = using_index and not previous.get("article_index_baseline")
     events = []
+    patch_records = []
     article_hashes = dict(previous.get("article_hashes", {}))
     article_sequences = dict(previous.get("article_sequences", {}))
     for url, title in links.items():
@@ -387,6 +388,13 @@ def collect_links(source, previous):
         watch = bool(source.get("watch_existing_pattern") and re.search(source["watch_existing_pattern"], url, re.I))
         if is_new or watch:
             raw = get_html(source, url, source.get("article_selector", "main"))
+            # Reuse the already successful official article read; no extra HTTP.
+            if source.get("id") == "support-gta6" and source.get("trust") == "official":
+                from patch_history_v1 import OFFICIAL_ARTICLE, parse_patch_records
+                if url == OFFICIAL_ARTICLE:
+                    from history import utc_now
+                    patch_records = parse_patch_records(raw, url, utc_now())
+                    LOG.info("PATCH_EVIDENCE_%s dates=%d", "OBSERVED" if patch_records else "UNCONFIRMED", len(patch_records))
             body = text_from_html(raw, source.get("article_selector", "main"), source.get("article_exclude_selector"))
             heading = BeautifulSoup(raw, "html.parser").select_one("h1,[data-testid='page-title']")
             headline = heading.get_text(" ", strip=True) if heading else title
@@ -403,6 +411,8 @@ def collect_links(source, previous):
                 article_hashes[url] = digest(body)
     # Mantiene i link usciti dalla prima pagina per non ripubblicarli se ricompaiono.
     state = {"links": {**previous.get("links", {}), **links}}
+    if patch_records:
+        state["patch_history_records"] = patch_records
     if using_index or previous.get("article_index_baseline"):
         state["article_index_baseline"] = True
     if source.get("watch_existing_pattern"):
@@ -492,6 +502,12 @@ def poll(db, config, client=None, force=False):
         interval = max(60, int(source.get("interval", os.getenv("POLL_SECONDS", "300"))))
         try:
             events, current = collect(source, previous, client)
+            # Persist only fresh, parsed primary evidence in the existing ledger.
+            # A failed source scan never invents a new observation timestamp.
+            patch_records = current.pop("patch_history_records", [])
+            if patch_records:
+                from history import import_history
+                import_history(db, patch_records)
             with db:
                 if previous:
                     for item in events:
