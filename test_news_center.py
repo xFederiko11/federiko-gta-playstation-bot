@@ -95,7 +95,7 @@ if __name__ == "__main__":
     unittest.main()
 
 class ThreadDeliveryTests(unittest.TestCase):
-    def test_online_delivers_thread_once_and_does_not_upload_image(self):
+    def test_online_delivers_thread_once_with_an_editorial_image(self):
         import tempfile
         import json
         import time
@@ -109,12 +109,14 @@ class ThreadDeliveryTests(unittest.TestCase):
             client = Mock(destination={"id": "channel-1"})
             client.publish_thread.return_value = "buffer-thread-1"
             client.last_delivery.external_url = "https://x.com/myfan/status/123"
-            uploader = Mock()
+            image_url = 'https://xfederiko11.github.io/gta-6/assets/social-cards/qa-example.jpg'
+            uploader = Mock(return_value=image_url)
             renderer = Mock()
             online.deliver(db, client, uploader, td, render=renderer, news_center_threads=True)
             self.assertEqual(db.execute("SELECT status FROM publish_jobs").fetchone()[0], "posted")
             client.publish_thread.assert_called_once()
             client.publish.assert_not_called()
-            uploader.assert_not_called()
-            renderer.assert_not_called()
+            uploader.assert_called_once()
+            renderer.assert_called_once()
+            self.assertEqual(client.publish_thread.call_args.kwargs['media_url'],image_url)
             db.close()
