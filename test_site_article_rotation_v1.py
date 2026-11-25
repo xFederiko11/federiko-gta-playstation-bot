@@ -15,6 +15,8 @@ class RotationTests(TestCase):
         self.cfg=load()
         self.cfg["enabled"]=False
         self.cfg["articles"]=self.cfg["articles"][:1]
+        # Fixtures exercise the release clock, independent of production dates.
+        self.cfg["articles"][0].pop("updated_utc",None)
         self.state={"entries":{"old":{"url":URL,"status":"sent","text":"Old post",
                      "media_url":cover_for(URL),"reserved_utc":(NOW-timedelta(days=10)).isoformat()}}}
     def test_disabled_until_review(self):
@@ -109,3 +111,12 @@ class RotationTests(TestCase):
         self.assertFalse(delivery_authorized(entry,self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:False))
         self.cfg["enabled"]=False
         self.assertFalse(delivery_authorized(entry,self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True))
+
+    def test_individual_article_update_not_global_build_timestamp(self):
+        self.cfg.update(enabled=True,released_utc=(NOW-timedelta(days=1)).isoformat())
+        self.cfg["articles"][0]["updated_utc"]=(NOW-timedelta(days=50)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg),[])
+        self.cfg["articles"][0]["updated_utc"]=(NOW-timedelta(days=3)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg)[0]["rotation_reason"],"updated")
+        self.cfg["articles"][0]["updated_utc"]=(NOW+timedelta(days=1)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg),[])
