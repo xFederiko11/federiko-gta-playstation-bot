@@ -127,8 +127,8 @@ def probe_image(url, session=None):
                     LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=invalid_content_length",provider)
                     return False
                 start=next(res.iter_content(32),b"")
-                valid=(start.startswith(b"\\xff\\xd8\\xff")
-                       or start.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+                valid=(start.startswith(b"\xff\xd8\xff")
+                       or start.startswith(b"\x89PNG\r\n\x1a\n")
                        or (start.startswith(b"RIFF") and start[8:12]==b"WEBP"))
                 if not valid:
                     LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=invalid_image_magic",provider)
