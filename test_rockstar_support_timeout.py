@@ -36,6 +36,8 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         self.assertEqual(online["url"], SUPPORT_URL)
         self.assertEqual(gta6["trust"], "official")
         self.assertTrue(gta6["browser_fallback_on_timeout"])
+        self.assertTrue(gta6["article_index_fallback"])
+        self.assertNotIn("article_index_fallback", online)
         self.assertEqual(gta6["interval"], 1800)
         self.assertIn("patch-notes", gta6["watch_existing_pattern"])
         self.assertIn("grand.theft.auto.vi", gta6["include_link_pattern"])
@@ -247,6 +249,88 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         self.assertEqual(get.call_args.kwargs["timeout"], 30)
         sleep.assert_not_called()
         browser.assert_not_called()
+
+
+
+class RockstarOfficialIndexTests(unittest.TestCase):
+    URL = "https://support.rockstargames.com/articles/ABC123/grand-theft-auto-vi-launch-updates-ps5"
+    NEXT = "https://support.rockstargames.com/articles/NEW123/grand-theft-auto-vi-title-update"
+    HTML = '<a href="'+URL+'?ref=foo">Grand Theft Auto VI Launch Updates</a>'
+    BODY = '<article><h1 data-testid="page-title">GTA VI Launch Updates</h1><p>Official notes, test fixture.</p></article>'
+
+    def source(self):
+        return next(x for x in json.loads(Path("sources.free.json").read_text())["sources"]
+                    if x["id"] == "support-gta6")
+
+    def test_filters_official_patch_links_deduplicates_article_ids(self):
+        from sources import support_index_links
+        html = (self.HTML+
+                '<a href="'+self.URL+'#note">GTA VI Launch Updates</a>'
+                '<a href="/articles/ABC123/grand-theft-auto-vi-patch-notes">GTA VI Patch Notes</a>'
+                '<a href="/articles/V1/grand-theft-auto-v-title-update">GTA V Title Update</a>'
+                '<a href="/articles/VI1/grand-theft-auto-vii-title-update">Grand Theft Auto VII Title Update</a>'
+                '<a href="/articles/HELP/grand-theft-auto-vi-installation-support">GTA VI installation</a>'
+                '<a href="https://example.invalid/articles/FAKE/grand-theft-auto-vi-patch-notes">GTA VI patch notes</a>'
+                '<a href="http://support.rockstargames.com/articles/INSECURE/gta-vi-patch-notes">GTA VI patch notes</a>')
+        self.assertEqual(support_index_links(html), {self.URL:"Grand Theft Auto VI Launch Updates"})
+        old=self.URL+"?historic=1"
+        self.assertEqual(list(support_index_links(html, {old:"previous"})), [old])
+
+    def test_index_http_shell_uses_same_official_browser_and_rejects_empty(self):
+        from sources import read_support_article_index, SUPPORT_ARTICLE_INDEX
+        response=MagicMock(status_code=200,url=SUPPORT_ARTICLE_INDEX)
+        response.__enter__.return_value=response
+        response.iter_content.return_value=[b"<main>Knowledge Base</main>"]
+        source=self.source()
+        with (patch("sources.requests.get",return_value=response) as request,
+              patch("sources._browser_html",return_value=self.HTML) as browser):
+            self.assertEqual(list(read_support_article_index(source)), [self.URL])
+            request.assert_called_once()
+            self.assertFalse(request.call_args.kwargs["allow_redirects"])
+            browser.assert_called_once_with(source,SUPPORT_ARTICLE_INDEX)
+        with (patch("sources.requests.get",return_value=response),
+              patch("sources._browser_html",return_value="<main>Loading</main>")):
+            with self.assertRaisesRegex(ValueError,"no official GTA VI patch links"):
+                read_support_article_index(source)
+
+    def test_index_baselines_existing_news_then_reports_new_link_and_keeps_history(self):
+        from sources import collect_links
+        source=self.source()
+        previous={"links":{"https://support.rockstargames.com/articles/OLD/old":"Prior"}}
+        with (patch("sources.get_html",side_effect=[requests.ReadTimeout(),self.BODY]),
+              patch("sources.read_support_article_index",return_value={self.URL:"GTA VI Launch Updates"})):
+            events,state=collect_links(source,previous)
+        self.assertEqual(events,[])
+        self.assertTrue(state["article_index_baseline"])
+        self.assertIn(self.URL,state["article_hashes"])
+        self.assertEqual(len(state["links"]),2)
+        with (patch("sources.get_html",side_effect=[requests.ReadTimeout(),self.BODY,self.BODY]),
+              patch("sources.read_support_article_index",return_value={self.URL:"GTA VI Launch Updates",self.NEXT:"GTA VI Title Update"})):
+            events,next_state=collect_links(source,state)
+        self.assertEqual(len(events),1)
+        self.assertEqual(events[0]["source_url"],self.NEXT)
+        self.assertTrue(next_state["article_index_baseline"])
+
+    def test_index_does_not_mask_errors_or_other_sources(self):
+        from sources import collect_links
+        with (patch("sources.get_html",side_effect=requests.ReadTimeout()),
+              patch("sources.read_support_article_index",side_effect=ValueError("no verified links")) as index):
+            with self.assertRaisesRegex(ValueError,"no verified links"):
+                collect_links(self.source(),{})
+            index.assert_called_once()
+            with self.assertRaises(requests.ReadTimeout):
+                collect_links(SUPPORT,{})
+            self.assertEqual(index.call_count,1)
+
+    def test_known_patch_revision_is_not_hidden_by_first_index_baseline(self):
+        from sources import collect_links
+        previous={"links":{self.URL:"GTA VI Launch Updates"},"article_hashes":{self.URL:"old-hash"}}
+        with (patch("sources.get_html",side_effect=[requests.ReadTimeout(),self.BODY]),
+              patch("sources.read_support_article_index",return_value={self.URL:"GTA VI Launch Updates"})):
+            events,state=collect_links(self.source(),previous)
+        self.assertEqual(len(events),1)
+        self.assertEqual(events[0]["change_context"],"patch note aggiornata")
+        self.assertTrue(state["article_index_baseline"])
 
 
 if __name__ == "__main__":

@@ -271,10 +271,81 @@ def collect_feed(source):
     return events
 
 
-def collect_links(source, previous):
-    html = get_html(source)
-    soup = BeautifulSoup(html, "html.parser")
-    selected = soup.select(source["selector"])
+SUPPORT_ARTICLE_INDEX = "https://support.rockstargames.com/articles"
+SUPPORT_ARTICLE_HOST = "support.rockstargames.com"
+
+
+def support_index_links(html, previous=None):
+    """Read only official GTA VI update links from the general knowledge base.
+
+    Match the exact game and patch topics, not account help, GTA V or VI
+    substring collisions. Normalize tracking variants and the stable article ID.
+    """
+    previous = previous or {}
+    known = {}
+    for url in previous:
+        try:
+            u = urlsplit(url)
+            match = re.fullmatch(r"/articles/([A-Za-z0-9_-]+)/[^/]+/?", u.path)
+            if u.scheme == "https" and u.netloc == SUPPORT_ARTICLE_HOST and match:
+                known[match.group(1)] = url
+        except ValueError:
+            continue
+    found = {}
+    for node in BeautifulSoup(html, "html.parser").select("a[href]"):
+        try:
+            u = urlsplit(urljoin(SUPPORT_ARTICLE_INDEX, node.get("href", "")))
+        except ValueError:
+            continue
+        if u.scheme != "https" or u.netloc != SUPPORT_ARTICLE_HOST:
+            continue
+        match = re.fullmatch(r"/articles/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/?", u.path)
+        if not match:
+            continue
+        title = node.get_text(" ", strip=True)
+        if not title:
+            continue
+        subject = match.group(2).replace("-", " ") + " " + title
+        if not re.search(r"\b(?:grand theft auto vi|gta\s*(?:vi|6))\b", subject, re.I):
+            continue
+        if not re.search(r"\b(?:launch updates?|patch notes?|title updates?)\b", subject, re.I):
+            continue
+        ident = match.group(1)
+        url = known.get(ident, "https://" + SUPPORT_ARTICLE_HOST + u.path.rstrip("/"))
+        found.setdefault(ident, (url, title))
+    return dict(found.values())
+
+
+def read_support_article_index(source, previous=None):
+    """One bounded public HTTP request, with existing Chromium renderer only
+    for an HTTP 200 shell. No alternate host, private API, proxy changes, or
+    vendor-access bypass. Empty or unrelated content is never a success.
+    """
+    address = SUPPORT_ARTICLE_INDEX
+    headers = {"User-Agent": AGENT, "Accept-Language": "en-US,en;q=0.9"}
+    with requests.get(address, headers=headers, timeout=(5, 10),
+                      allow_redirects=False, stream=True) as response:
+        response.raise_for_status()
+        if response.status_code != 200 or response.url != address:
+            raise ValueError("Rockstar Support index unavailable")
+        body = bytearray()
+        for chunk in response.iter_content(chunk_size=16384):
+            body.extend(chunk)
+            if len(body) > 1_500_000:
+                raise ValueError("Rockstar Support index too large")
+    links = support_index_links(bytes(body), previous)
+    if not links:
+        # Same existing browser restrictions as support-gta6. The general
+        # index may be a JavaScript shell, but a shell is not a valid listing.
+        html = _browser_html(source, address)
+        links = support_index_links(html, previous)
+    if not links:
+        raise ValueError("Rockstar Support index: no official GTA VI patch links")
+    return links
+
+
+def listing_links(source, html):
+    selected = BeautifulSoup(html, "html.parser").select(source["selector"])
     if not selected:
         raise ValueError("Nessun link trovato: JavaScript o struttura della fonte da verificare")
     links = {}
@@ -283,14 +354,31 @@ def collect_links(source, previous):
         if urlsplit(url).netloc != urlsplit(source["url"]).netloc:
             continue
         title = node.get_text(" ", strip=True)
-        # Optional per-source scoping: official support category pages can also
-        # link to account/security help. Do not classify those as GTA VI news.
         include_pattern = source.get("include_link_pattern")
         if include_pattern and not re.search(include_pattern, url + " " + title, re.I):
             continue
         links[url] = title
     if not links:
         raise ValueError("Nessun articolo valido trovato")
+    return links
+
+
+def collect_links(source, previous):
+    using_index = False
+    try:
+        links = listing_links(source, get_html(source))
+    except (requests.RequestException, ValueError):
+        if (source.get("id") != "support-gta6"
+                or source.get("url") != "https://support.rockstargames.com/VI"
+                or source.get("trust") != "official"
+                or source.get("article_index_fallback") is not True):
+            raise
+        links = read_support_article_index(source, previous.get("links", {}))
+        using_index = True
+        LOG.info("Rockstar Support GTA VI: official article-index fallback, %d patch links", len(links))
+    # First use of the broader index is a baseline for newly discovered URLs,
+    # not breaking news. Existing watched URLs may still produce revisions.
+    seed_index = using_index and not previous.get("article_index_baseline")
     events = []
     article_hashes = dict(previous.get("article_hashes", {}))
     article_sequences = dict(previous.get("article_sequences", {}))
@@ -304,7 +392,7 @@ def collect_links(source, previous):
             headline = heading.get_text(" ", strip=True) if heading else title
             image_url = image_from_official_html(raw, url)
             image_meta = {"official_image_url": image_url} if image_url else {}
-            if is_new:
+            if is_new and not seed_index:
                 events.append(event(source, digest(url), headline + "\n" + body, url, headline=headline, **image_meta))
             elif watch and url in article_hashes and article_hashes[url] != digest(body):
                 sequence = article_sequences.get(url, 0) + 1
@@ -315,6 +403,8 @@ def collect_links(source, previous):
                 article_hashes[url] = digest(body)
     # Mantiene i link usciti dalla prima pagina per non ripubblicarli se ricompaiono.
     state = {"links": {**previous.get("links", {}), **links}}
+    if using_index or previous.get("article_index_baseline"):
+        state["article_index_baseline"] = True
     if source.get("watch_existing_pattern"):
         state.update(article_hashes=article_hashes, article_sequences=article_sequences)
     return events, state

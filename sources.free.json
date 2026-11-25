@@ -41,7 +41,8 @@
       "render_js": false,
       "interval": 1800,
       "browser_fallback_on_timeout": true,
-      "include_link_pattern": "grand.theft.auto.vi|gta[ -]?vi|gta[ -]?6|gtavi"
+      "include_link_pattern": "grand.theft.auto.vi|gta[ -]?vi|gta[ -]?6|gtavi",
+      "article_index_fallback": true
     },
     {
       "id": "support-gta",
