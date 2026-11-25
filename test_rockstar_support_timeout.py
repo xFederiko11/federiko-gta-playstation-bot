@@ -5,7 +5,7 @@ No external websites, paid APIs, Buffer writes or posting actions are used.
 import json
 from pathlib import Path
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 import requests
 
 from sources import _browser_html, get_html
@@ -101,7 +101,7 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         browser.new_page.return_value = page
         pw = Mock()
         pw.chromium.launch.return_value = browser
-        cm = Mock()
+        cm = MagicMock()
         cm.__enter__ = Mock(return_value=pw)
         cm.__exit__ = Mock(return_value=None)
         with patch("playwright.sync_api.sync_playwright", return_value=cm):
