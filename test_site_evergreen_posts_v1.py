@@ -22,7 +22,7 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(len({x["path"] for x in CONTENT}),len(CONTENT))
         for item in CONTENT:
             copy=item["text"]+"\nhttps://xfederiko11.github.io/gta-6"+item["path"]+"\n\n#GTAVI"
-            self.assertLessEqual(x_weight(copy),280)
+            self.assertLessEqual(x_weight(copy),235)
             self.assertGreaterEqual(x_weight(copy),80)
             self.assertEqual(copy.count("https://"),1)
             self.assertNotIn("@Rockstar",copy)
@@ -41,7 +41,7 @@ class SiteEvergreenTests(unittest.TestCase):
         proposed=candidate(self.state,NOW,live_checker=lambda url:url.endswith(item["path"]))
         self.assertIsNotNone(proposed)
         self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
-        self.assertLessEqual(x_weight(proposed["text"]),280)
+        self.assertLessEqual(x_weight(proposed["text"]),235)
 
     def test_first_public_site_canonical_selected_only_if_200(self):
         calls=[]

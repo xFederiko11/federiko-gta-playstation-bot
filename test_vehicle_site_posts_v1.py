@@ -28,7 +28,7 @@ class VehicleSitePostsTests(unittest.TestCase):
             self.assertIn("Non è uno spawn garantito",entry["text"])
             self.assertNotIn("https://",entry["text"])
             self.assertNotIn("@",entry["text"])
-            self.assertLessEqual(x_weight(entry["text"]+"\n"+SITE+entry["path"]+"\n\n#GTAVI"),280)
+            self.assertLessEqual(x_weight(entry["text"]+"\n"+SITE+entry["path"]+"\n\n#GTAVI"),235)
 
     def test_only_published_link_can_become_candidate(self):
         state={"schema":"v13.7","entries":{},"signatures":{},"run_history":[]}
