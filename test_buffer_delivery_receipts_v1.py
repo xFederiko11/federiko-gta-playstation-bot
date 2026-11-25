@@ -11,12 +11,67 @@ class ReceiptTests(unittest.TestCase):
         return dict({'id': 'post-1', 'channelId': 'channel-1', 'channelService': 'twitter',
                      'status': 'sent', 'sentAt': '2026-11-20T01:00:00Z',
                      'externalLink': 'https://x.com/xFederiko11/status/1234567890123456789',
-                     'error': None}, **changes)
+                     'error': None,
+                     'assets': [{'mimeType': 'image/jpeg',
+                                 'source': 'https://xfederiko11.github.io/gta-6/assets/social-cards/a.jpg'}],
+                     'metadata': {'thread': []}}, **changes)
 
     def test_complete_receipt_is_not_independent_x_verification(self):
         result = receipt(self.post(), channel_id='channel-1', post_id='post-1')
         self.assertEqual(result['outcome'], 'sent_receipt')
         self.assertFalse(result['public_x_independently_checked'])
+        self.assertTrue(result['buffer_image_asset_confirmed'])
+        self.assertIn('assets { mimeType source }', QUERY)
+        self.assertIn('... on TwitterPostMetadata', QUERY)
+
+    def test_sent_with_no_image_asset_is_not_certified_illustrated(self):
+        result = receipt(self.post(assets=[], metadata={'thread': []}),
+                         channel_id='channel-1', post_id='post-1',
+                         require_image=True)
+        self.assertEqual(result['buffer_status'], 'sent')
+        self.assertEqual(result['outcome'], 'sent_without_confirmed_image')
+        self.assertFalse(result['buffer_image_asset_confirmed'])
+        self.assertTrue(result['buffer_image_required'])
+        self.assertFalse(result['public_x_independently_checked'])
+
+    def test_actual_image_in_first_x_thread_item_counts(self):
+        metadata = {'thread': [{'assets': [{'mimeType': 'image/webp',
+                                            'source': 'https://images.example.org/1.webp'}]},
+                               {'assets': []}]}
+        result = receipt(self.post(assets=[], metadata=metadata),
+                         channel_id='channel-1', post_id='post-1',
+                         require_image=True)
+        self.assertTrue(result['buffer_image_asset_confirmed'])
+        self.assertEqual(result['outcome'], 'sent_receipt')
+
+    def test_second_thread_reply_image_does_not_substitute_missing_root_photo(self):
+        metadata = {'thread': [{'assets': []},
+                               {'assets': [{'mimeType': 'image/png',
+                                            'source': 'https://images.example.org/2.png'}]}]}
+        result = receipt(self.post(assets=[], metadata=metadata),
+                         channel_id='channel-1', post_id='post-1',
+                         require_image=True)
+        self.assertEqual(result['outcome'], 'sent_without_confirmed_image')
+
+    def test_link_and_video_previews_cannot_pass_photo_gate(self):
+        for item in ({'mimeType': 'video/mp4', 'source': 'https://example.org/video.mp4'},
+                     {'mimeType': 'text/html', 'source': 'https://example.org/article'},
+                     {'mimeType': 'image/png', 'source': 'http://example.org/photo.png'},
+                     {'mimeType': 'image/jpeg', 'source': 'https://user@example.org/photo.jpg'}):
+            with self.subTest(item=item):
+                value = receipt(self.post(assets=[item], metadata={'thread': []}),
+                                channel_id='channel-1', post_id='post-1',
+                                require_image=True)
+                self.assertEqual(value['outcome'], 'sent_without_confirmed_image')
+
+    def test_new_publication_requires_photo_even_if_ledger_media_field_is_absent(self):
+        client = Mock(channel_id='channel-1')
+        client._graphql.return_value = {'post': self.post(assets=[])}
+        state = {'entries': {'one': {'run_id': '42', 'buffer_id': 'post-1'}}}
+        result = collect(state, run_id='42', client=client)
+        self.assertEqual(result['receipts'][0]['outcome'], 'sent_without_confirmed_image')
+        self.assertTrue(result['receipts'][0]['buffer_image_required'])
+        client.publish.assert_not_called()
 
     def test_no_false_success_for_pending_failed_or_missing_receipt(self):
         for status, outcome in [('sending', 'pending'), ('error', 'failed'), ('draft', 'pending')]:
