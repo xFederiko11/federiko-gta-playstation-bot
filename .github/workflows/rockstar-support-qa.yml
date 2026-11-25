@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'sources.py'
+      - 'sources.free.json'
       - 'test_rockstar_support_timeout.py'
       - '.github/workflows/rockstar-support-qa.yml'
 
