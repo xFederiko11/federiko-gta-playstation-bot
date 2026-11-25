@@ -600,6 +600,18 @@ def reserve():
         # source spotlights without a verifiable media asset.
         preferred = (growth_question or quick_tip or owned_guide or trophy_item or spotlight)
         selected = [preferred] if preferred else []
+        # Reviewed owned-article rotation is one ordinary candidate, not an
+        # extra slot or a bypass of the global director. Existing fresh tips
+        # and first publications keep their original preference.
+        if not launch_active(now):
+            from site_article_rotation_v1 import candidate as rotation_candidate
+            try:
+                rotation=rotation_candidate(state,now)
+            except (OSError,ValueError,TypeError,KeyError) as exc:
+                print("ARTICLE_ROTATION_HOLD",type(exc).__name__)
+                rotation=None
+            if rotation and rotation["key"] not in {x["key"] for x in selected}:
+                selected.append(rotation)
         # A reused or unavailable image must not waste the entire scanning cycle:
         # inspect fresh, individually deduplicated backup stories instead.
         # Every backup MUST pass the same media and factual title gates.
@@ -612,7 +624,8 @@ def reserve():
         for item in selected:
             try:
                 ready=launch_double(item) if launch_active(now) else item
-                image_backed=prepare_media(ready,state)
+                image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
+                              else prepare_media(ready,state))
                 if image_backed is None:
                     print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
                           str(item.get('url',''))[:100])
@@ -642,6 +655,9 @@ def reserve():
             'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number'),
             'thread': item.get('thread'), 'tip_id': item.get('tip_id')
         }
+        if "rotation_variant" in item:
+            for field in ("key","rotation_variant","rotation_revision","rotation_reason"):
+                state['entries'][item['key']][field]=item[field]
         if item['sig']:
             state['signatures'][item['sig']] = item['key']
     if selected:
@@ -683,6 +699,12 @@ def deliver():
     from social_media_gate_v2 import probe_image
     for entry in mine:
         clock=datetime.now(timezone.utc)
+        from site_article_rotation_v1 import SOURCE as ROTATION_SOURCE, delivery_authorized
+        if entry.get("source")==ROTATION_SOURCE and not delivery_authorized(entry,state,clock):
+            entry["status"]="held_rotation_recheck"
+            save_state(state)
+            print("BUFFER_ROTATION_HOLD",str(entry.get("url",""))[:100])
+            continue
         # Fail closed BEFORE marking as attempted or invoking Buffer.
         # Unknown/missing media does not create a text-only post.
         if not entry.get('media_url') or not probe_image(entry['media_url']):
