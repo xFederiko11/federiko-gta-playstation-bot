@@ -159,7 +159,7 @@ class OnlineTests(unittest.TestCase):
         row=self.db.execute('SELECT status,last_error,attempted_at FROM publish_jobs').fetchone()
         self.assertEqual(row['status'],'review')
         self.assertEqual(row['last_error'],'image_missing_before_buffer')
-        self.assertIsNone(row['attempted_at'])
+        self.assertEqual(row['attempted_at'],0.0)
         client.publish.assert_not_called()
         client.publish_thread.assert_not_called()
         upload.assert_called_once()
