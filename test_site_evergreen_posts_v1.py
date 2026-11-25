@@ -28,6 +28,28 @@ class SiteEvergreenTests(unittest.TestCase):
             self.assertNotIn("@Rockstar",copy)
             self.assertTrue(item["path"].endswith("/"))
 
+    def test_original_creator_showcase_requires_live_page_and_unique_image(self):
+        item=next(x for x in CONTENT if x["id"]=="creator-showcase-original")
+        self.assertEqual(item["path"],"/video-tutorial/")
+        self.assertIn("TGG, IGN e community",item["text"])
+        self.assertIn(chr(10)*2,item["text"])
+        self.assertNotIn("partnership",item["text"].lower())
+        self.assertNotIn("sponsorizzato",item["text"].lower())
+        self.assertNotIn("https://www.youtube.com",item["text"])
+        self.assertEqual(DAY_BUDGET,1)
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda url:False))
+        post=candidate(self.state,NOW,live_checker=lambda url:url.endswith("/video-tutorial/"))
+        self.assertIsNotNone(post)
+        self.assertEqual(post["url"],"https://xfederiko11.github.io/gta-6/video-tutorial/")
+        self.assertLessEqual(x_weight(post["text"]),235)
+        from social_media_gate_v2 import cover_for
+        self.assertEqual(post["media_url"],cover_for(post["url"]))
+        self.assertIn("/assets/social-cards/",post["media_url"])
+        self.state["entries"][post["key"]]={
+            "source":SOURCE,"reserved_utc":NOW.isoformat(),"status":"uncertain"}
+        self.assertIsNone(candidate(self.state,NOW+timedelta(hours=2),
+                                    live_checker=lambda url:True))
+
     def test_ps5_first_person_glitch_copy_is_cautious_and_requires_live_guide(self):
         item=next(x for x in CONTENT if x["id"]=="ps5-first-person-glitch")
         self.assertEqual(item["path"],"/guide-e-tutorial/glitch-prima-persona-ps5/")
