@@ -363,7 +363,20 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
         thread = None if video_text else (thread_for_event(event) if news_center_threads else None)
         media_url = None
         if video_text:
-            pass  # X link preview instead of repeating a video thumbnail.
+            # An X link preview is not an attached image.  Use only the
+            # verifiable thumbnail of the exact Rockstar-channel YouTube video.
+            # Resolve BEFORE reserving a delivery or contacting Buffer.
+            try:
+                selected_video_media = official_media_for_event(event)
+                if selected_video_media.kind != 'video_thumbnail':
+                    raise OfficialMediaUnavailable('video_thumbnail_unavailable')
+                media_url = selected_video_media.url
+            except OfficialMediaUnavailable as error:
+                with db:
+                    db.execute("UPDATE publish_jobs SET status='review',last_error=? WHERE key=?",
+                               (str(error), row["key"]))
+                LOG.warning("Video ufficiale trattenuto: manca la miniatura verificata (%s)", str(error))
+                continue
         elif require_official_media:
             try:
                 media_url = media_resolver(event)
@@ -375,14 +388,24 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                                (str(error), row["key"]))
                 LOG.warning("Notizia in revisione: manca un'immagine ufficiale verificata (%s)", str(error))
                 continue
-        elif thread is None and not video_text:
+        else:
+            # The locally rendered editorial card is required for BOTH
+            # standalone posts and threads in this non-official-only mode.
             card = Path(directory) / (row["key"] + ".png")
             render(event, card)
             media_url = upload(card)
+        if not isinstance(media_url, str) or not media_url.startswith('https://'):
+            # Never write 'sending' and never reserve a director slot for a
+            # post that the Buffer client will reject without a photo.
+            with db:
+                db.execute("UPDATE publish_jobs SET status='review',last_error='image_missing_before_buffer' WHERE key=?",
+                           (row["key"],))
+            LOG.warning('Invio trattenuto: nessuna immagine HTTPS prima di Buffer')
+            continue
         # V12: optional persistent image uniqueness, including archived bootstrap
         # images. Never republish a used thumbnail; hold the event for review.
         # Default OFF so deploying v12 cannot interfere with today's live v11.
-        if require_official_media and not video_text and os.getenv('V12_UNIQUE_IMAGES', 'false').lower() == 'true':
+        if require_official_media and os.getenv('V12_UNIQUE_IMAGES', 'false').lower() == 'true':
             from image_registry_v12 import reserve_image
             journal = ROOT / 'bootstrap-gta6-v3-state.json'
             if not reserve_image(db, media_url, row['key'], archive_path=journal):
@@ -421,8 +444,7 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
             checkpoint()
         stop = False
         try:
-            identifier = (client.publish_thread(thread, media_url=media_url) if thread is not None and require_official_media
-                          else client.publish_thread(thread) if thread is not None
+            identifier = (client.publish_thread(thread, media_url=media_url) if thread is not None
                           else client.publish(single_text, media_url=media_url))
         except BufferPending as error:
             with db:
