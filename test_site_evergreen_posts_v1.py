@@ -85,11 +85,11 @@ class SiteEvergreenTests(unittest.TestCase):
             ("challenge-roadmap",("50 sfide","70 su 80")),
             ("range-focus",("5 GTA$","42 medaglie Oro")),
             ("randy-advanced-tracker",("Dale Mamba","16 consegne")),
-            ("car-pegassi-vitello",("Waning Sands","garage destro","nessuno spawn garantito")),
-            ("car-pegassi-infernus",("Crosstown","settimo piano","nessuno spawn garantito")),
-            ("car-pegassi-tempesta",("Vespucci Island","nessuno spawn garantito")),
-            ("car-buckingham-windsor-drop",("Bayside","Nessuno spawn garantito")),
-            ("car-pegassi-toros",("Southside","Nessuno spawn garantito")),
+            ("car-pegassi-vitello",("Waning Sands","garage destro","Non è uno spawn garantito")),
+            ("car-pegassi-infernus",("Crosstown","settimo piano","Non è uno spawn garantito")),
+            ("car-pegassi-tempesta",("Vespucci Island","Non è uno spawn garantito")),
+            ("car-buckingham-windsor-drop",("Bayside","Non è uno spawn garantito")),
+            ("car-pegassi-toros",("Southside","Non è uno spawn garantito")),
         ):
             for phrase in phrases:
                 self.assertIn(phrase,rows[ident]["text"],ident)

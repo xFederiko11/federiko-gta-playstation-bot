@@ -12,9 +12,9 @@ NOW=datetime(2026,11,24,10,0,tzinfo=timezone.utc)
 SITE="https://xfederiko11.github.io/gta-6"
 
 class VehicleSitePostsTests(unittest.TestCase):
-    def test_sixteen_verified_nonspoiler_cars_one_per_url(self):
+    def test_eighteen_verified_nonspoiler_cars_one_per_url(self):
         self.assertTrue(validate())
-        self.assertEqual(len(VEHICLE_CONTENT),16)
+        self.assertEqual(len(VEHICLE_CONTENT),18)
         self.assertEqual(len(CONTENT),len(VEHICLE_CONTENT)+len(ORIGINAL_CONTENT))
         self.assertEqual(DAY_BUDGET,1)
         self.assertGreaterEqual(SPACING.total_seconds(),18*3600)
@@ -23,6 +23,10 @@ class VehicleSitePostsTests(unittest.TestCase):
         self.assertTrue(all(p.startswith("/veicoli/") and p.endswith("/") for p in paths))
         self.assertNotIn("/veicoli/moses-sultan/",paths)
         self.assertNotIn("/veicoli/invetero-coquette-d10/",paths)
+        self.assertIn("/veicoli/buckingham-windsor-drop/",paths)
+        self.assertIn("/veicoli/pegassi-toros/",paths)
+        for pending in ("ocelot-jagular","buckingham-jubilee","grotti-itali-rsx","pfister-growler","gallivanter-baller-st-d"):
+            self.assertNotIn("/veicoli/"+pending+"/",paths)
         for entry in VEHICLE_CONTENT:
             self.assertIn("📍 ",entry["text"])
             self.assertIn("Non è uno spawn garantito",entry["text"])
