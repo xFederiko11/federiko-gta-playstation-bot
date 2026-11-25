@@ -116,7 +116,7 @@ def _browser_html(source, address, selector=None):
                 user_agent=AGENT, locale="en-US",
                 extra_http_headers={"Accept-Language": "en-US,en;q=0.9"})
             page.goto(address, wait_until="domcontentloaded", timeout=30000)
-            if source.get("id") == "support-gta":
+            if source.get("id") in {"support-gta", "support-gta6"}:
                 # A challenge/login redirect is not evidence that the Support
                 # source was read; avoid poisoning the persistent news cursor.
                 if urlsplit(page.url).hostname != "support.rockstargames.com":
@@ -142,7 +142,7 @@ def get_html(source, url=None, selector=None):
     # Newswire/YouTube are healthy. Two *bounded* HTTP reads are followed by
     # one Chromium read of the same official URL, only for explicitly opted-in
     # Support. No third-party caches, bypass hosts, credentials or paid APIs.
-    support = source.get("id") == "support-gta"
+    support = source.get("id") in {"support-gta", "support-gta6"}
     fallback = (support and source.get("browser_fallback_on_timeout") is True
                 and urlsplit(address).hostname == "support.rockstargames.com")
     selected = selector or source.get("selector")

@@ -30,6 +30,19 @@
       "interval": 900
     },
     {
+      "id": "support-gta6",
+      "type": "web_links",
+      "name": "Rockstar Support — GTA VI",
+      "trust": "official",
+      "url": "https://support.rockstargames.com/VI",
+      "selector": "a[href*='/articles/']",
+      "article_selector": "article:has([data-testid='page-title'])",
+      "watch_existing_pattern": "launch-update|patch-notes|title-update|installation-requirements",
+      "render_js": false,
+      "interval": 1800,
+      "browser_fallback_on_timeout": true
+    },
+    {
       "id": "support-gta",
       "type": "web_links",
       "name": "Rockstar Support",

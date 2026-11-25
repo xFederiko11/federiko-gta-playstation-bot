@@ -24,7 +24,7 @@ Le statistiche riportano *fonti, perimetri e limiti diversi*. Non sommare Sent d
 
 ## Active workflows
 
-- GTA Monitor gratuito: Rockstar, PlayStation and verified YouTube links.
+- GTA Monitor gratuito: Rockstar Newswire, **Rockstar Support GTA VI (/VI)**, Rockstar Support GTA Online (/gta-online), PlayStation e YouTube ufficiale. Le due sezioni Support hanno identificativi e cursori persistenti distinti; ogni nuova sorgente stabilisce una baseline senza ripubblicare articoli esistenti. In caso di timeout, la seconda lettura HTTP è seguita da un solo tentativo Chromium sul dominio ufficiale; un errore non deve cancellare lo storico né generare notizie inesistenti.
 - Breaking News Watch v13.4: official breaking news.
 - Editorial Autopilot v13.7: press articles plus four curated PowerPyx launch spotlights.
 - Special Campaign v13.9: short-lived official Rockstar image campaign, expiring 20 November 2026.
