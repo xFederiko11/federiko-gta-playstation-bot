@@ -32,7 +32,7 @@ class SiteEvergreenTests(unittest.TestCase):
         item=next(x for x in CONTENT if x["id"]=="creator-showcase-original")
         self.assertEqual(item["path"],"/video-tutorial/")
         self.assertIn("TGG, IGN e community",item["text"])
-        self.assertIn("\\n\\n",item["text"])
+        self.assertIn(chr(10)*2,item["text"])
         self.assertNotIn("partnership",item["text"].lower())
         self.assertNotIn("sponsorizzato",item["text"].lower())
         self.assertNotIn("https://www.youtube.com",item["text"])
