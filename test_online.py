@@ -150,6 +150,24 @@ class OnlineTests(unittest.TestCase):
         online.deliver(self.db, client, Mock(return_value="https://example.org/a.png"), "/tmp/cards", render=Mock())
         client.publish.assert_called_once()
 
+    def test_image_missing_before_buffer_is_review_without_attempt_or_retry(self):
+        self.draft()
+        client=Mock(destination={'id':'channel-1'})
+        upload=Mock(return_value=None)
+        renderer=Mock()
+        online.deliver(self.db,client,upload,'/tmp/cards',render=renderer)
+        row=self.db.execute('SELECT status,last_error,attempted_at FROM publish_jobs').fetchone()
+        self.assertEqual(row['status'],'review')
+        self.assertEqual(row['last_error'],'image_missing_before_buffer')
+        self.assertEqual(row['attempted_at'],0.0)
+        client.publish.assert_not_called()
+        client.publish_thread.assert_not_called()
+        upload.assert_called_once()
+        renderer.assert_called_once()
+        online.deliver(self.db,client,upload,'/tmp/cards',render=renderer)
+        client.publish.assert_not_called()
+        upload.assert_called_once()
+
     def test_bad_destination_does_not_become_uncertain(self):
         self.draft()
         client = Mock(destination=None)
