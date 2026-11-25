@@ -208,11 +208,14 @@
       "url": "https://ign.com/articles/gta-6-launch-causes-massive-spike-in-traffic-for-internet-provider-xfinity"
     },
     "352f10949e9e533410496b17": {
+      "attempted_utc": "2026-11-25T11:58:15.007185+00:00",
+      "buffer_id": "6b06cd571deee71c1234b146",
+      "completed_utc": "2026-11-25T11:58:17.624265+00:00",
       "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/9868a612cbf943ba.jpg",
       "reserved_utc": "2026-11-25T11:58:05.334428+00:00",
       "run_id": "45609234022",
       "source": "Trofei GTA VI",
-      "status": "reserved",
+      "status": "sent",
       "text": "🥉 GTA VI | BRONZO: Trattati bene\n\n🎯 Spendi complessivamente 100.000 $ nei negozi.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-53-trattati-bene/\n\n#GTAVI #Platino",
       "thread": null,
       "tip_id": null,
