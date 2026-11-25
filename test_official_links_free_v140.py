@@ -102,7 +102,7 @@ class OfficialLinksFreeTests(unittest.TestCase):
             record=db.execute('SELECT status,last_error,attempted_at FROM publish_jobs').fetchone()
             self.assertEqual(record['status'],'review')
             self.assertEqual(record['last_error'],'video_thumbnail_unavailable')
-            self.assertIsNone(record['attempted_at'])
+            self.assertEqual(record['attempted_at'],0.0)
             client.publish.assert_not_called()
             client.publish_thread.assert_not_called()
         finally:
