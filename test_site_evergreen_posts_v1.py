@@ -79,6 +79,21 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
         self.assertLessEqual(x_weight(proposed["text"]),235)
 
+    def test_final_guides_and_randy_locations_match_reviewed_pages(self):
+        rows={x["id"]:x for x in CONTENT}
+        for ident,phrases in (
+            ("challenge-roadmap",("50 sfide","70 su 80")),
+            ("range-focus",("5 GTA$","42 medaglie Oro")),
+            ("randy-advanced-tracker",("Dale Mamba","16 consegne")),
+            ("car-pegassi-vitello",("Waning Sands","garage destro","nessuno spawn garantito")),
+            ("car-pegassi-infernus",("Crosstown","settimo piano","nessuno spawn garantito")),
+            ("car-pegassi-tempesta",("Vespucci Island","nessuno spawn garantito")),
+            ("car-buckingham-windsor-drop",("Bayside","Nessuno spawn garantito")),
+            ("car-pegassi-toros",("Southside","Nessuno spawn garantito")),
+        ):
+            for phrase in phrases:
+                self.assertIn(phrase,rows[ident]["text"],ident)
+
     def test_animal_and_taxi_copy_matches_reviewed_tutorials(self):
         animals=next(x for x in CONTENT if x["id"]=="animal-guide")
         self.assertIn("100 specie su 255",animals["text"])

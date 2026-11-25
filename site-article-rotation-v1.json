@@ -95,12 +95,12 @@
     {
       "path": "guide-e-tutorial/70-sfide-100-percento/",
       "title": "70 sfide per il 100%",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T23:32:47Z",
+      "updated_utc": "2026-11-25T23:32:47Z",
       "variants": [
         {
           "id": "challenge-check",
-          "text": "🏆 GTA VI | Nel menu Progressi → Sfide puoi verificare quelle già completate e scegliere le prove più adatte per il 100%. Guida italiana:"
+          "text": "🏆 GTA VI | 50 sfide per il trofeo One Last Thing, 70 su 80 per il 100%. Controlla Progressi → Sfide. Guida:"
         }
       ]
     },
@@ -119,24 +119,24 @@
     {
       "path": "guide-e-tutorial/poligoni-concentrazione/",
       "title": "Poligoni e concentrazione",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T23:32:47Z",
+      "updated_utc": "2026-11-25T23:32:47Z",
       "variants": [
         {
           "id": "range-training",
-          "text": "🎯 GTA VI | Poligoni: distingui l’allenamento della Concentrazione dalle medaglie richieste. Controlla le prove disponibili e i progressi. Guida:"
+          "text": "🎯 GTA VI | Pass poligono: 5 GTA$. Per The Shootist e il 100% servono 42 Ori; la Concentrazione è separata. Guida:"
         }
       ]
     },
     {
       "path": "guide-e-tutorial/sportive-randy-posizioni/",
       "title": "Sportive di Randy",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T23:32:47Z",
+      "updated_utc": "2026-11-25T23:32:47Z",
       "variants": [
         {
           "id": "randy-wishlist",
-          "text": "🚗 GTA VI | Cerca prima le posizioni segnate da Randy’s Wish List sulla mappa, poi controlla le zone delle sportive. Nessuno spawn garantito. Guida:"
+          "text": "🚘 GTA VI | Advanced Tracker: completa Dale Mamba nella catena di Randy. Non devi necessariamente consegnare tutte le 16 auto. Guida:"
         }
       ]
     },
