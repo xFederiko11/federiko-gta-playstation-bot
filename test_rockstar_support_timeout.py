@@ -27,6 +27,55 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         self.assertTrue(source["browser_fallback_on_timeout"])
         self.assertFalse(source["render_js"])
 
+    def test_gta_vi_support_is_separate_official_source_with_same_safety(self):
+        config = json.loads(Path("sources.free.json").read_text())
+        online = next(x for x in config["sources"] if x["id"] == "support-gta")
+        gta6 = next(x for x in config["sources"] if x["id"] == "support-gta6")
+        self.assertNotEqual(online["id"], gta6["id"])
+        self.assertEqual(gta6["url"], "https://support.rockstargames.com/VI")
+        self.assertEqual(online["url"], SUPPORT_URL)
+        self.assertEqual(gta6["trust"], "official")
+        self.assertTrue(gta6["browser_fallback_on_timeout"])
+        self.assertEqual(gta6["interval"], 1800)
+        self.assertIn("patch-notes", gta6["watch_existing_pattern"])
+
+    def test_gta_vi_support_uses_only_same_origin_chromium_fallback(self):
+        gta6 = {
+            "id": "support-gta6",
+            "url": "https://support.rockstargames.com/VI",
+            "selector": "a[href*='/articles/']",
+            "browser_fallback_on_timeout": True,
+        }
+        html = '<main><a href="/articles/id">GTA VI patch notes</a></main>'
+        with (patch("sources.requests.get",
+                    side_effect=requests.exceptions.ReadTimeout) as requests_get,
+              patch("sources.time.sleep") as sleep,
+              patch("sources._browser_html", return_value=html) as browser):
+            self.assertEqual(get_html(gta6), html)
+        self.assertEqual(requests_get.call_count, 2)
+        sleep.assert_called_once_with(1)
+        browser.assert_called_once_with(gta6, gta6["url"], None)
+
+    def test_gta_vi_baseline_collects_real_official_links_without_announcing_old_news(self):
+        from sources import collect_links
+        gta6 = next(x for x in json.loads(Path("sources.free.json").read_text())["sources"]
+                    if x["id"] == "support-gta6")
+        html = ('<main>'
+                '<a href="/articles/123/grand-theft-auto-vi-installation-requirements">'
+                'GTA VI installation requirements</a>'
+                '<a href="/articles/456/grand-theft-auto-vi-error-troubleshooting">'
+                'GTA VI error troubleshooting</a>'
+                '</main>')
+        article = ('<article><h1 data-testid="page-title">GTA VI installation</h1>'
+                   '<p>Verified Rockstar installation support information.</p></article>')
+        with patch("sources.get_html", side_effect=[html, article]) as fetch:
+            events, state = collect_links(gta6, previous={})
+        self.assertEqual(events, [])
+        self.assertEqual(len(state["links"]), 2)
+        self.assertEqual(fetch.call_count, 2)
+        self.assertTrue(all(url.startswith("https://support.rockstargames.com/articles/")
+                            for url in state["links"]))
+
     def test_support_first_timeout_then_real_html_success(self):
         response = Mock(text=READY_HTML)
         response.raise_for_status.return_value = None
