@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-24T20:33:27.427043Z",
+  "checked_utc": "2026-11-25T08:43:03.903666Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/glitch-prima-persona-ps5/",
+      "x_url": "https://x.com/xFederiko11/status/2125478190252458432",
+      "buffer_id": "6b06816f40e1d58d12052120",
+      "sent_at": "2026-11-25T06:34:24.946000Z",
+      "excerpt": "🎮 GTA VI | PRIMA PERSONA PS5\n\nIn auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Segnalato funzionante; ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/glitch-prima-persona-ps5/\n\n#GTAVI",
+      "title": "GTA VI PS5: glitch prima persona, comandi e rischi trofei",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-31-scansionamelo-tutto/",
       "x_url": "https://x.com/xFederiko11/status/2125112456347295791",
@@ -228,6 +237,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 25,
+  "matched_this_run": 26,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
