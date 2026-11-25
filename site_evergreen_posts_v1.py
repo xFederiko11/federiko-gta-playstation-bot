@@ -53,8 +53,8 @@ CONTENT = (
      "title": "Poligoni: Concentrazione e Oro",
      "text": "🎯 GTA VI PS5 | Poligoni: medaglie Oro e Concentrazione sono due aspetti da distinguere. Nella guida trovi requisiti, procedura e avvisi sul percorso verso il platino.\n\n🏆 Leggi i passaggi:"},
     {"id": "meditation-risk", "path": "/guide-e-tutorial/meditazione-capitolo-1/",
-     "title": "Meditazione: attenzione al Capitolo 1",
-     "text": "⚠️ GTA VI | Prima di proseguire la storia, controlla le attività del Capitolo 1 potenzialmente perdibili. L'impatto sui trofei è ancora incerto.\n\n💾 Verifica prima di avanzare:"},
+     "title": "Meditazioni: lezione alternativa dopo il Capitolo 1",
+     "text": "🧘 GTA VI | Hai saltato la prima meditazione? PowerPyx indica una lezione alternativa dopo Coffee Break. Per il 100% bastano 15 sessioni su 18.\n\n📖 Guida e checklist:"},
     {"id": "trophy-index", "path": "/trofei/",
      "title": "Trofei GTA VI: checklist completa",
      "text": "🏆 GTA VI | Stai puntando al platino su PS5? La checklist in italiano separa requisiti, attività e avvisi su possibili trofei mancabili.\n\n✅ Consulta i singoli trofei:"},
@@ -118,6 +118,22 @@ def validate():
     return True
 
 
+def _owned_path(value):
+    """Recognize the owned canonical article even with tracking parameters."""
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = urlsplit(value)
+        if (parsed.scheme != "https" or parsed.hostname != "xfederiko11.github.io"
+                or parsed.username or parsed.password or parsed.port not in (None,443)):
+            return None
+    except ValueError:
+        return None
+    if not parsed.path.startswith("/gta-6/"):
+        return None
+    return parsed.path.rstrip("/") + "/"
+
+
 def candidate(state:dict, now:datetime, *, live_checker=page_live) -> dict | None:
     if now.tzinfo is None:
         raise ValueError("Aware timestamp required")
@@ -135,8 +151,15 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live) -> dict | Non
         return None
     if recent and now-max(recent)<SPACING:
         return None
+    # A legacy entry may have a different key for the same article. The
+    # evergreen queue is first-publication only; reviewed article rotation
+    # owns all repeat delivery, including cooldown and Sent receipt checks.
+    previous_paths = {_owned_path(entry.get("url")) for entry in entries.values()
+                      if isinstance(entry, dict)}
     for item in CONTENT:
         url=PORTAL_BASE+item["path"]
+        if _owned_path(url) in previous_paths:
+            continue
         if urlsplit(url).hostname!="xfederiko11.github.io":
             raise ValueError("Unsafe publisher target")
         key=hashlib.sha256(("site-evergreen-v1:"+item["id"]).encode()).hexdigest()[:24]

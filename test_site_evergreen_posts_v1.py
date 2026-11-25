@@ -65,6 +65,26 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
         self.assertLessEqual(x_weight(proposed["text"]),235)
 
+    def test_meditation_copy_reflects_current_source_without_claiming_personal_test(self):
+        item=next(x for x in CONTENT if x["id"]=="meditation-risk")
+        self.assertIn("PowerPyx",item["text"])
+        self.assertIn("lezione alternativa dopo Coffee Break",item["text"])
+        self.assertIn("15 sessioni su 18",item["text"])
+        self.assertNotIn("incerto",item["text"])
+
+    def test_legacy_article_url_is_not_a_new_evergreen_post(self):
+        item=CONTENT[0]
+        self.state["entries"]["old-key"]={
+            "source":"legacy publisher",
+            "url":"https://xfederiko11.github.io/gta-6"+item["path"].rstrip("/")+"?utm_source=x",
+            "reserved_utc":(NOW-timedelta(days=40)).isoformat(),
+            "status":"sent"}
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda u:u.endswith(item["path"])))
+        # Uncertain historical delivery also prevents duplicate first posts.
+        self.state["entries"]["old-key"]["status"]="attempted"
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda u:u.endswith(item["path"])))
+        self.assertIsNotNone(candidate(self.state,NOW,live_checker=lambda u:u.endswith(CONTENT[1]["path"])))
+
     def test_first_public_site_canonical_selected_only_if_200(self):
         calls=[]
         def live(url):
