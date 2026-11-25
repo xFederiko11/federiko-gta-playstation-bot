@@ -195,6 +195,47 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         browser.close.assert_called_once()
         page.wait_for_function.assert_not_called()
 
+    def test_browser_network_error_logs_allowlisted_code_only(self):
+        page = Mock(url=SUPPORT_URL)
+        page.goto.side_effect = RuntimeError(
+            "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at "
+            "https://proxy.invalid/user/secret-password?token=abc")
+        browser = Mock()
+        browser.new_page.return_value = page
+        pw = Mock()
+        pw.chromium.launch.return_value = browser
+        cm = MagicMock()
+        cm.__enter__.return_value = pw
+        with (patch("playwright.sync_api.sync_playwright", return_value=cm),
+              self.assertLogs("gta6.sources", level="WARNING") as captured):
+            with self.assertRaises(SupportBrowserFailure) as failure:
+                _browser_html(SUPPORT, SUPPORT_URL)
+        self.assertEqual(failure.exception.phase, "navigation")
+        self.assertEqual(failure.exception.reason,
+                         "RuntimeError_ERR_TUNNEL_CONNECTION_FAILED")
+        self.assertIn("ERR_TUNNEL_CONNECTION_FAILED", " ".join(captured.output))
+        self.assertNotIn("secret-password", " ".join(captured.output))
+        self.assertNotIn("proxy.invalid", " ".join(captured.output))
+        browser.close.assert_called_once()
+
+    def test_unknown_navigation_code_is_not_logged(self):
+        page = Mock(url=SUPPORT_URL)
+        page.goto.side_effect = RuntimeError(
+            "Page.goto: net::ERR_CUSTOM_SECRET_ACCOUNT_XYZ at https://secret.invalid")
+        browser = Mock()
+        browser.new_page.return_value = page
+        pw = Mock()
+        pw.chromium.launch.return_value = browser
+        cm = MagicMock()
+        cm.__enter__.return_value = pw
+        with (patch("playwright.sync_api.sync_playwright", return_value=cm),
+              self.assertLogs("gta6.sources", level="WARNING") as captured):
+            with self.assertRaises(SupportBrowserFailure) as failure:
+                _browser_html(SUPPORT, SUPPORT_URL)
+        self.assertEqual(failure.exception.reason, "RuntimeError")
+        self.assertNotIn("CUSTOM_SECRET", " ".join(captured.output))
+        self.assertNotIn("secret.invalid", " ".join(captured.output))
+
     def test_non_support_sources_keep_single_timeout_and_no_browser(self):
         with (patch("sources.requests.get",
                     side_effect=requests.exceptions.ReadTimeout) as get,

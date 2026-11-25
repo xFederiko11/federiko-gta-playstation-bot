@@ -6,6 +6,8 @@ on:
       - 'sources.py'
       - 'sources.free.json'
       - 'test_rockstar_support_timeout.py'
+      - 'rockstar_support_live_probe_v1.py'
+      - 'test_rockstar_support_live_probe_v1.py'
       - '.github/workflows/rockstar-support-qa.yml'
 
 permissions:
@@ -15,7 +17,7 @@ jobs:
   support-timeout-tests:
     if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -25,5 +27,18 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-free.txt
       - name: Compile and run Rockstar Support regression tests
         run: |
-          python -m py_compile sources.py test_rockstar_support_timeout.py
-          python -m unittest -q test_rockstar_support_timeout.py
+          python -m py_compile sources.py test_rockstar_support_timeout.py rockstar_support_live_probe_v1.py test_rockstar_support_live_probe_v1.py
+          python -m unittest -q test_rockstar_support_timeout.py test_rockstar_support_live_probe_v1.py
+      - name: Install browser for read-only official Support diagnosis
+        # The live probe must look in the EXACT directory used at install time;
+        # otherwise Playwright fails at launch and falsely blames the source.
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
+        run: python -m playwright install --with-deps chromium
+      - name: Report live official Support reachability (never publish)
+        # One capped diagnostic on PR; upstream access failures are explicit
+        # INCONCLUSIVE results, not invented release notes or monitor success.
+        # No Buffer/X token or bot state is used in this job.
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
+        run: timeout 210s python rockstar_support_live_probe_v1.py
