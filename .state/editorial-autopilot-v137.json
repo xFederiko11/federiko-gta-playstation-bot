@@ -990,11 +990,14 @@
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/"
     },
     "e992f6b1746dc8c79842576d": {
+      "attempted_utc": "2026-11-25T09:13:36.470563+00:00",
+      "buffer_id": "6b06a6c04a87dbb2cee3d500",
+      "completed_utc": "2026-11-25T09:13:38.098718+00:00",
       "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/0c2c165ba0ddf1dd.jpg",
       "reserved_utc": "2026-11-25T09:13:06.740694+00:00",
       "run_id": "45583223771",
       "source": "Trofei GTA VI",
-      "status": "reserved",
+      "status": "sent",
       "text": "🥉 GTA VI | BRONZO: Ci metto un secondo\n\n🎯 Registra dieci veicoli tramite l'app Scooter Bros.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/\n\n#GTAVI #Platino",
       "thread": null,
       "tip_id": null,
