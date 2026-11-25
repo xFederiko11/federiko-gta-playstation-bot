@@ -525,6 +525,19 @@ def media_thread_preflight(item:dict) -> bool:
     return not (item.get('media_url') and x_weight(thread[0])>235)
 
 
+def quick_tip_media_available(item: dict) -> bool:
+    """Probe the exact image that the final media gate would attach to Buffer.
+
+    Once our canonical Italian guide is live, prepare() chooses its dedicated
+    first-party article card instead of the optional Rockstar hotlink.
+    Validate that same card here. If no owned guide is live, validate the
+    official image as before; both paths fail closed on missing bytes.
+    """
+    from social_media_gate_v2 import cover_for, probe_image
+    selected = cover_for(item.get('url')) or item.get('media_url')
+    return probe_image(selected)
+
+
 def reserve():
     run = os.getenv('GITHUB_RUN_ID')
     if not run:
@@ -555,9 +568,8 @@ def reserve():
         # actionable steps first, attribution/source link as its first reply.
         # Never extract instructions from arbitrary feed summaries.
         from quick_tips_v146 import candidate as quick_tip_candidate
-        from gta6_special_campaign_v139 import probe_image
         quick_tip = quick_tip_candidate(state, now)
-        if quick_tip and not probe_image(quick_tip["media_url"]):
+        if quick_tip and not quick_tip_media_available(quick_tip):
             print("QUICK_TIP_HOLD_IMAGE_UNAVAILABLE", quick_tip["tip_id"])
             quick_tip = None
         # One factual, original guide-page excerpt daily provides ongoing
