@@ -13,7 +13,7 @@ import requests
 import re
 
 from bs4 import BeautifulSoup
-from sources import SupportBrowserFailure, get_html
+from sources import SupportBrowserFailure, get_html, read_support_article_index
 
 OFFICIAL_SOURCES = {
     "support-gta6": "https://support.rockstargames.com/VI",
@@ -115,6 +115,24 @@ def probe_direct_article(*, fetcher=None, report=print):
         # Only exception class, no potentially sensitive response/URL.
         outcome = "source_" + type(exc).__name__
     report("SUPPORT_DIRECT_ARTICLE_DIAG status="+outcome+" note=not_a_news_scan")
+    return outcome
+
+
+def probe_general_index(*, fetcher=None, report=print):
+    """Exercise the exact fallback in production code without state or posting."""
+    fetcher = fetcher or read_support_article_index
+    source = next(x for x in json.loads(Path("sources.free.json").read_text(encoding="utf-8"))["sources"]
+                  if x.get("id") == "support-gta6")
+    try:
+        links = fetcher(source)
+        if not links:
+            outcome = "no_patch_links"
+        else:
+            outcome = "patch_links_present"
+        report("SUPPORT_GENERAL_INDEX_DIAG status="+outcome+" links="+str(len(links))+" note=not_a_news_scan")
+    except Exception as exc:
+        outcome = "source_"+type(exc).__name__
+        report("SUPPORT_GENERAL_INDEX_DIAG status="+outcome+" note=not_a_news_scan")
     return outcome
 
 
