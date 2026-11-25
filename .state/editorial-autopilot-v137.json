@@ -505,6 +505,19 @@
       "trophy_number": null,
       "url": "https://videogameschronicle.com/guide/gta-6-discharge-time-mission-walkthrough"
     },
+    "7afb3b091f55832733581d44": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/5f3c5648ede227aa.jpg",
+      "reserved_utc": "2026-11-25T06:34:12.875419+00:00",
+      "run_id": "45561518133",
+      "source": "Guide GTA VI Italia",
+      "status": "reserved",
+      "text": "🎮 GTA VI | PRIMA PERSONA PS5\n\nIn auto apri il telefono (↑), chiudi (○) e premi subito il touchpad.\n\n🟡 Segnalato funzionante; ⚠️ trofei NON verificati. Salva prima.\n\n📖 Procedura e video:\nhttps://xfederiko11.github.io/gta-6/guide-e-tutorial/glitch-prima-persona-ps5/\n\n#GTAVI",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA VI PS5: glitch prima persona, comandi e rischi trofei",
+      "trophy_number": null,
+      "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/glitch-prima-persona-ps5/"
+    },
     "7b7859d3035b39a1ec3a70c7": {
       "attempted_utc": "2026-11-18T20:20:03.590713+00:00",
       "buffer_id": "6afe087372a787cbb5dd3887",
@@ -1339,6 +1352,13 @@
       "feeds_relevant": 106,
       "reserved": 1,
       "run": "45339739462"
+    },
+    {
+      "at": "2026-11-25T06:34:12.875419+00:00",
+      "errors": [],
+      "feeds_relevant": 97,
+      "reserved": 1,
+      "run": "45561518133"
     }
   ],
   "schema": "v13.7",
@@ -1357,6 +1377,7 @@
     "finally changed the default rockstar game controls": "5681a5403e143f8366d8877e",
     "first minutes gameplay": "4969df7e9b145d22eef7b6d5",
     "full walkthrough all missions": "590290210b2200c5d7053bec",
+    "glitch prima persona comandi rischi trofei": "7afb3b091f55832733581d44",
     "growth-limited-magazines-1-3": "94286b19fe0b03125bd1036d",
     "growth-mappe-interattive-ps5": "66c2c402ff28e6aa906cfd5d",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
