@@ -143,7 +143,8 @@ def get_html(source, url=None, selector=None):
     # one Chromium read of the same official URL, only for explicitly opted-in
     # Support. No third-party caches, bypass hosts, credentials or paid APIs.
     support = source.get("id") == "support-gta"
-    fallback = support and source.get("browser_fallback_on_timeout") is True
+    fallback = (support and source.get("browser_fallback_on_timeout") is True
+                and urlsplit(address).hostname == "support.rockstargames.com")
     selected = selector or source.get("selector")
     for attempt in range(2 if support else 1):
         try:
