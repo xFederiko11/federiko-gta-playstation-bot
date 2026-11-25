@@ -38,11 +38,11 @@
       "variants": [
         {
           "id": "money-locations",
-          "text": "💰 GTA VI | Inizio partita: quattro luoghi documentati per cercare denaro e oggetti utili. ⚠️ Spoiler sulle posizioni. Consulta mappa e fonti:"
+          "text": "💰 GTA VI | Prima di Recalibration salva a parte: i soldi ordinari non passano al Capitolo 2. Quattro luoghi e precauzioni:"
         }
       ],
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z"
+      "reviewed_utc": "2026-11-25T21:06:47Z",
+      "updated_utc": "2026-11-25T21:05:37Z"
     },
     {
       "path": "collezionabili/percorsi/",
@@ -71,12 +71,12 @@
     {
       "path": "guide-e-tutorial/soldi-2500-three-sheets-liquor/",
       "title": "Three Sheets Liquor",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T21:06:47Z",
+      "updated_utc": "2026-11-25T21:05:37Z",
       "variants": [
         {
           "id": "liquor-hidden",
-          "text": "💵 GTA VI | Three Sheets Liquor: controlla il retro del negozio, vicino al generatore e al pappagallo. Bottino segnalato, non garantito. ⚠️ Spoiler. Guida:"
+          "text": "💵 GTA VI | Dopo aver consegnato il rum a Shirley, torna al negozio con l'icona gialla. Cerca il pappagallo e il generatore. ⚠️ Spoiler. Guida:"
         }
       ]
     },

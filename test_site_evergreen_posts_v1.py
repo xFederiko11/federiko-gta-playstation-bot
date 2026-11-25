@@ -77,6 +77,15 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
         self.assertLessEqual(x_weight(proposed["text"]),235)
 
+    def test_money_copy_matches_reviewed_tutorials(self):
+        liquor=next(x for x in CONTENT if x["id"]=="money-liquor")
+        self.assertIn("Consegna il rum",liquor["text"])
+        self.assertIn("icona gialla",liquor["text"])
+        self.assertNotIn("Durante l'incarico",liquor["text"])
+        money=next(x for x in CONTENT if x["id"]=="money-early-four")
+        self.assertIn("Prima di Recalibration",money["text"])
+        self.assertIn("non passano al Capitolo 2",money["text"])
+
     def test_meditation_copy_reflects_current_source_without_claiming_personal_test(self):
         item=next(x for x in CONTENT if x["id"]=="meditation-risk")
         self.assertIn("PowerPyx",item["text"])
