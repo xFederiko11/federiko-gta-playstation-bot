@@ -239,6 +239,11 @@ def collect_links(source, previous):
         if urlsplit(url).netloc != urlsplit(source["url"]).netloc:
             continue
         title = node.get_text(" ", strip=True)
+        # Optional per-source scoping: official support category pages can also
+        # link to account/security help. Do not classify those as GTA VI news.
+        include_pattern = source.get("include_link_pattern")
+        if include_pattern and not re.search(include_pattern, url + " " + title, re.I):
+            continue
         links[url] = title
     if not links:
         raise ValueError("Nessun articolo valido trovato")

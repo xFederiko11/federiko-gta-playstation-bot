@@ -38,6 +38,7 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         self.assertTrue(gta6["browser_fallback_on_timeout"])
         self.assertEqual(gta6["interval"], 1800)
         self.assertIn("patch-notes", gta6["watch_existing_pattern"])
+        self.assertIn("grand.theft.auto.vi", gta6["include_link_pattern"])
 
     def test_gta_vi_support_uses_only_same_origin_chromium_fallback(self):
         gta6 = {
@@ -63,16 +64,17 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         html = ('<main>'
                 '<a href="/articles/123/grand-theft-auto-vi-installation-requirements">'
                 'GTA VI installation requirements</a>'
-                '<a href="/articles/456/grand-theft-auto-vi-error-troubleshooting">'
-                'GTA VI error troubleshooting</a>'
+                '<a href="/articles/456/account-recovery-help">'
+                'Account security and recovery help</a>'
                 '</main>')
         article = ('<article><h1 data-testid="page-title">GTA VI installation</h1>'
                    '<p>Verified Rockstar installation support information.</p></article>')
         with patch("sources.get_html", side_effect=[html, article]) as fetch:
             events, state = collect_links(gta6, previous={})
         self.assertEqual(events, [])
-        self.assertEqual(len(state["links"]), 2)
+        self.assertEqual(len(state["links"]), 1)
         self.assertEqual(fetch.call_count, 2)
+        self.assertFalse(any("account-recovery-help" in u for u in state["links"]))
         self.assertTrue(all(url.startswith("https://support.rockstargames.com/articles/")
                             for url in state["links"]))
 

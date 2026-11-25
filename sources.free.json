@@ -40,7 +40,8 @@
       "watch_existing_pattern": "launch-update|patch-notes|title-update|installation-requirements",
       "render_js": false,
       "interval": 1800,
-      "browser_fallback_on_timeout": true
+      "browser_fallback_on_timeout": true,
+      "include_link_pattern": "grand.theft.auto.vi|gta[ -]?vi|gta[ -]?6|gtavi"
     },
     {
       "id": "support-gta",
