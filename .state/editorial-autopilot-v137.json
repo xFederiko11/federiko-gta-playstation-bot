@@ -989,6 +989,19 @@
       "trophy_number": 35,
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-35-quattro-cento-ruote/"
     },
+    "e992f6b1746dc8c79842576d": {
+      "media_url": "https://xfederiko11.github.io/gta-6/assets/social-cards/0c2c165ba0ddf1dd.jpg",
+      "reserved_utc": "2026-11-25T09:13:06.740694+00:00",
+      "run_id": "45583223771",
+      "source": "Trofei GTA VI",
+      "status": "reserved",
+      "text": "🥉 GTA VI | BRONZO: Ci metto un secondo\n\n🎯 Registra dieci veicoli tramite l'app Scooter Bros.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/\n\n#GTAVI #Platino",
+      "thread": null,
+      "tip_id": null,
+      "title": "Ci metto un secondo",
+      "trophy_number": 55,
+      "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/"
+    },
     "f1d01c920af8776baed7b2d7": {
       "attempted_utc": "2026-11-19T11:35:47.555149+00:00",
       "buffer_id": "6afedf1356a8bceaa9081474",
@@ -1362,6 +1375,13 @@
       "feeds_relevant": 97,
       "reserved": 1,
       "run": "45561518133"
+    },
+    {
+      "at": "2026-11-25T09:13:06.740694+00:00",
+      "errors": [],
+      "feeds_relevant": 96,
+      "reserved": 1,
+      "run": "45583223771"
     }
   ],
   "schema": "v13.7",
@@ -1391,6 +1411,7 @@
     "making gainz walkthrough": "528b4fcb1f54e6b5b4c77d2c",
     "meditazione perdibile capitolo": "92416cbfcd4c226f0844b19f",
     "mentalita positiva": "43d67ac8133ea12010282a67",
+    "metto secondo": "e992f6b1746dc8c79842576d",
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
