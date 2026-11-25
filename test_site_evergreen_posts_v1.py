@@ -50,6 +50,18 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertIsNone(candidate(self.state,NOW+timedelta(hours=2),
                                     live_checker=lambda url:True))
 
+    def test_patch_archive_is_dated_not_breaking_and_requires_live_article(self):
+        item=next(x for x in CONTENT if x["id"]=="patch-archive-20261123")
+        self.assertIn("23 NOVEMBRE",item["text"])
+        self.assertIn("7 correzioni",item["text"])
+        self.assertNotIn("BREAKING",item["text"])
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda url:False))
+        proposed=candidate(self.state,NOW,live_checker=lambda url:url.endswith(item["path"]))
+        self.assertIsNotNone(proposed)
+        self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6/patch/2026-11-23/")
+        from social_media_gate_v2 import cover_for
+        self.assertEqual(proposed["media_url"],cover_for(proposed["url"]))
+
     def test_ps5_first_person_glitch_copy_is_cautious_and_requires_live_guide(self):
         item=next(x for x in CONTENT if x["id"]=="ps5-first-person-glitch")
         self.assertEqual(item["path"],"/guide-e-tutorial/glitch-prima-persona-ps5/")
