@@ -17,6 +17,12 @@ QUERY = """query Receipt($id: PostId!) {
   post(input: {id: $id}) {
     id channelId channelService status sentAt externalLink
     error { message }
+    assets { mimeType source }
+    metadata {
+      ... on TwitterPostMetadata {
+        thread { assets { mimeType source } }
+      }
+    }
   }
 }"""
 LEDGER = Path('.state/editorial-autopilot-v137.json')
@@ -49,7 +55,40 @@ def safe_message(value):
     return ' '.join(text.split())[:240]
 
 
-def receipt(post, *, channel_id, post_id):
+
+def _has_image(assets):
+    """Only actual image assets count: links, video and document previews do not."""
+    if not isinstance(assets, list):
+        return False
+    for asset in assets:
+        if not isinstance(asset, dict):
+            continue
+        mime = str(asset.get('mimeType') or '').lower().strip()
+        source = asset.get('source')
+        if mime not in {'image/jpeg', 'image/png', 'image/webp', 'image/avif'}:
+            continue
+        if not isinstance(source, str):
+            continue
+        try:
+            u = urlsplit(source)
+        except ValueError:
+            continue
+        if u.scheme == 'https' and u.hostname and not u.username and not u.password:
+            return True
+    return False
+
+
+def _post_image_attached(post):
+    """A Buffer X thread stores the first photo under metadata.twitter.thread[0]."""
+    if _has_image(post.get('assets')):
+        return True
+    metadata = post.get('metadata')
+    thread = metadata.get('thread') if isinstance(metadata, dict) else None
+    return bool(isinstance(thread, list) and thread and isinstance(thread[0], dict)
+                and _has_image(thread[0].get('assets')))
+
+
+def receipt(post, *, channel_id, post_id, require_image=False):
     if (not isinstance(post, dict) or post.get('id') != post_id
             or post.get('channelId') != channel_id or post.get('channelService') != 'twitter'):
         raise ValueError('Receipt identity or destination mismatch')
@@ -63,11 +102,19 @@ def receipt(post, *, channel_id, post_id):
         valid_time = dt.tzinfo is not None
     except (ValueError, TypeError):
         valid_time = False
+    image_attached = _post_image_attached(post)
     result = {'buffer_id': post_id, 'buffer_status': status,
               'verified_by': 'Buffer API; expected X channel verified',
               'public_x_independently_checked': False,
+              # This proves the image is attached to Buffer's post model, NOT
+              # that a public X photo was independently viewed.
+              'buffer_image_asset_confirmed': image_attached,
+              'buffer_image_required': bool(require_image),
               'sent_at': stamp if valid_time else None, 'external_url': link}
-    result['outcome'] = ('sent_receipt' if status == 'sent' and link and valid_time
+    result['outcome'] = ('sent_without_confirmed_image' if
+                         status == 'sent' and link and valid_time
+                         and require_image and not image_attached else
+                         'sent_receipt' if status == 'sent' and link and valid_time
                          else 'sent_incomplete_receipt' if status == 'sent'
                          else 'failed' if status == 'error' else 'pending')
     if status == 'error':
@@ -85,6 +132,7 @@ def collect(state, *, run_id, client):
     recent = sorted((e for e in entries.values() if isinstance(e, dict) and e.get('buffer_id')),
                     key=lambda e: e.get('reserved_utc', ''), reverse=True)
     targets = current or recent[:1]
+    # Read-only: no retry, no mutations, no external X timeline assumptions.
     result = {'checked_utc': datetime.now(timezone.utc).isoformat(),
               'current_run_attempted': bool(current), 'receipts': [],
               'mode': 'read_only_no_retry'}
@@ -96,7 +144,11 @@ def collect(state, *, run_id, client):
             item = {'outcome': 'no_receipt', 'ledger_status': entry.get('status')}
         else:
             data = client._graphql(QUERY, {'id': str(post_id)})
-            item = receipt(data.get('post'), channel_id=client.channel_id, post_id=str(post_id))
+            item = receipt(data.get('post'), channel_id=client.channel_id,
+                           post_id=str(post_id),
+                           # Every new publication requires a real image. Old
+                           # archived text-only entries remain visible as legacy.
+                           require_image=bool(current) or bool(entry.get('media_url')))
         item['title'] = str(entry.get('title') or '')
         item['current_run'] = bool(current)
         result['receipts'].append(item)
