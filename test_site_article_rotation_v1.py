@@ -3,7 +3,8 @@ from unittest import TestCase
 from tempfile import TemporaryDirectory
 from pathlib import Path
 import json
-from site_article_rotation_v1 import load,plans,BASE,SOURCE,measured_interest
+from site_article_rotation_v1 import (load,plans,BASE,SOURCE,measured_interest,
+                                      ArticleCover,candidate,authorize,delivery_authorized)
 from social_media_gate_v2 import cover_for
 
 NOW=datetime(2026,12,30,12,tzinfo=timezone.utc)
@@ -12,7 +13,10 @@ URL=BASE+"guide-e-tutorial/scansionare-veicoli/"
 class RotationTests(TestCase):
     def setUp(self):
         self.cfg=load()
+        self.cfg["enabled"]=False
         self.cfg["articles"]=self.cfg["articles"][:1]
+        # Fixtures exercise the release clock, independent of production dates.
+        self.cfg["articles"][0].pop("updated_utc",None)
         self.state={"entries":{"old":{"url":URL,"status":"sent","text":"Old post",
                      "media_url":cover_for(URL),"reserved_utc":(NOW-timedelta(days=10)).isoformat()}}}
     def test_disabled_until_review(self):
@@ -70,3 +74,49 @@ class RotationTests(TestCase):
         self.assertEqual(plans(self.state,NOW,config=self.cfg),[])
         self.state["entries"]["another"]["reserved_utc"]=(NOW-timedelta(hours=21)).isoformat()
         self.assertTrue(plans(self.state,NOW,config=self.cfg))
+
+
+    def test_live_shared_cover_exact(self):
+        image=cover_for(URL)
+        html=f'<html><head><link rel="canonical" href="{URL}"><meta property="og:image" content="{image}"><meta name="twitter:image" content="{image}"></head><body><h1>WAiNK</h1><figure data-article-cover="shared-social"><img src="{image}" width="1200" height="630"></figure></body></html>'
+        p=ArticleCover();p.feed(html)
+        self.assertTrue(p.valid(URL))
+        for invalid in (html.replace('width="1200"','width="800"'),
+                        html.replace('twitter:image','twitter:wrong'),
+                        html.replace('<h1>WAiNK</h1>','<h1>WAiNK</h1><p>Other</p>'),
+                        html.replace('shared-social','different')):
+            p=ArticleCover();p.feed(invalid)
+            self.assertFalse(p.valid(URL))
+
+    def test_runtime_review_receipt_and_delivery_recheck(self):
+        self.cfg.update(enabled=True,released_utc=(NOW-timedelta(days=1)).isoformat())
+        self.cfg["articles"][0]["reviewed_utc"]=NOW.isoformat()
+        self.state["entries"]["old"]["buffer_id"]="verified-receipt-id"
+        receipts={(URL,"verified-receipt-id")}
+        item=candidate(self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True)
+        self.assertIsNotNone(item)
+        self.assertTrue(authorize(item,self.state,NOW,config=self.cfg,receipts=receipts))
+        self.assertIsNone(candidate(self.state,NOW,config=self.cfg,receipts=set(),live_checker=lambda u:True))
+        self.assertIsNone(candidate(self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:False))
+        self.assertFalse(authorize(dict(item,text="different text"),self.state,NOW,config=self.cfg,receipts=receipts))
+        self.state["entries"]["conflict"]={"url":BASE+"trucchi/","status":"sent","media_url":cover_for(URL)}
+        self.assertFalse(authorize(item,self.state,NOW,config=self.cfg,receipts=receipts))
+        del self.state["entries"]["conflict"]
+        self.cfg["articles"][0]["reviewed_utc"]=None
+        self.assertIsNone(candidate(self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True))
+        self.cfg["articles"][0]["reviewed_utc"]=NOW.isoformat()
+        entry=dict(item,status="reserved",reserved_utc=NOW.isoformat())
+        self.state["entries"][item["key"]]=entry
+        self.assertTrue(delivery_authorized(entry,self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True))
+        self.assertFalse(delivery_authorized(entry,self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:False))
+        self.cfg["enabled"]=False
+        self.assertFalse(delivery_authorized(entry,self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True))
+
+    def test_individual_article_update_not_global_build_timestamp(self):
+        self.cfg.update(enabled=True,released_utc=(NOW-timedelta(days=1)).isoformat())
+        self.cfg["articles"][0]["updated_utc"]=(NOW-timedelta(days=50)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg),[])
+        self.cfg["articles"][0]["updated_utc"]=(NOW-timedelta(days=3)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg)[0]["rotation_reason"],"updated")
+        self.cfg["articles"][0]["updated_utc"]=(NOW+timedelta(days=1)).isoformat()
+        self.assertEqual(plans(self.state,NOW,config=self.cfg),[])

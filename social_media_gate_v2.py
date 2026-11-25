@@ -68,7 +68,7 @@ def image_taken(image,ledger):
     return False
 
 
-def prepare(item,ledger):
+def prepare(item,ledger,*,now=None):
     """Pure reserve-time gate: hold unsupported or reused images before Buffer."""
     target=str(item.get("url") or "")
     own=canonical_page_path(target) is not None
@@ -78,7 +78,13 @@ def prepare(item,ledger):
         current=cover_for(target)
     if not trusted_asset(current):
         return None
-    if image_taken(current,ledger):
+    from site_article_rotation_v1 import SOURCE
+    if item.get("source")==SOURCE:
+        from datetime import datetime,timezone
+        from site_article_rotation_v1 import authorize
+        if not own or not authorize(dict(item,media_url=current),ledger,now or datetime.now(timezone.utc)):
+            return None
+    elif image_taken(current,ledger):
         return None
     result=dict(item,media_url=current)
     if not result.get("media_url"):

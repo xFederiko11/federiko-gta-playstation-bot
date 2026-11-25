@@ -1,8 +1,8 @@
 {
   "schema": "owned-article-rotation-v1",
-  "enabled": false,
-  "revision": "pending-final-editorial-release",
-  "released_utc": null,
+  "enabled": true,
+  "revision": "linear-site-release-438cfc6",
+  "released_utc": "2026-11-25T17:29:34Z",
   "articles": [
     {
       "path": "guide-e-tutorial/scansionare-veicoli/",
@@ -16,7 +16,9 @@
           "id": "catalog-check",
           "text": "🎮 GTA VI | Inquadra il mezzo con WAiNK e tieni premuto R1. Verifica il risultato in Progressi → Veicoli. Passaggi e riferimenti nella guida italiana:"
         }
-      ]
+      ],
+      "reviewed_utc": "2026-11-25T17:29:34Z",
+      "updated_utc": "2026-11-25T17:29:34Z"
     },
     {
       "path": "salvare-auto/",
@@ -26,7 +28,9 @@
           "id": "car-registration",
           "text": "🚘 GTA VI | Non confondere rubare un’auto con registrarla. Prima verifica tracker, requisiti e procedura di registrazione. Guida italiana e video:"
         }
-      ]
+      ],
+      "reviewed_utc": "2026-11-25T17:29:34Z",
+      "updated_utc": "2026-11-25T17:29:34Z"
     },
     {
       "path": "guide-e-tutorial/soldi-facili-capitolo-1/",
@@ -36,7 +40,9 @@
           "id": "money-locations",
           "text": "💰 GTA VI | Inizio partita: quattro luoghi documentati per cercare denaro e oggetti utili. ⚠️ Spoiler sulle posizioni. Consulta mappa e fonti:"
         }
-      ]
+      ],
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z"
     },
     {
       "path": "collezionabili/percorsi/",
@@ -45,6 +51,116 @@
         {
           "id": "collectibles-chapters",
           "text": "🏆 GTA VI | Prima di cambiare capitolo, controlla le carte potenzialmente mancabili e le copie delle riviste legate alla storia. Checklist e fonti:"
+        }
+      ],
+      "reviewed_utc": "2026-11-25T17:29:34Z",
+      "updated_utc": "2026-11-25T17:29:34Z"
+    },
+    {
+      "path": "guide-e-tutorial/meditazione-capitolo-1/",
+      "title": "Meditazioni e platino",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T18:10:38Z",
+      "variants": [
+        {
+          "id": "meditation-alternative",
+          "text": "🧘 GTA VI | Hai saltato la prima meditazione? PowerPyx segnala una lezione alternativa dopo Coffee Break. Nella guida trovi i 10 luoghi, video e checklist:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/soldi-2500-three-sheets-liquor/",
+      "title": "Three Sheets Liquor",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "liquor-hidden",
+          "text": "💵 GTA VI | Three Sheets Liquor: controlla il retro del negozio, vicino al generatore e al pappagallo. Bottino segnalato, non garantito. ⚠️ Spoiler. Guida:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/studiare-animali/",
+      "title": "Studiare gli animali",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "animals-binoculars",
+          "text": "🦜 GTA VI | Per studiare un animale non serve cacciarlo: usa il binocolo, avvicina l’inquadratura e verifica la specie registrata. Comandi e guida:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/70-sfide-100-percento/",
+      "title": "70 sfide per il 100%",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "challenge-check",
+          "text": "🏆 GTA VI | Nel menu Progressi → Sfide puoi verificare quelle già completate e scegliere le prove più adatte per il 100%. Guida italiana:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/viaggio-rapido-taxi/",
+      "title": "Viaggio rapido in taxi",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "taxi-contacts",
+          "text": "🚕 GTA VI | Vuoi evitare un tragitto lungo? Dopo lo sblocco, cerca Paradise Taxi nei Contatti del telefono e imposta la destinazione. Procedura:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/poligoni-concentrazione/",
+      "title": "Poligoni e concentrazione",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "range-training",
+          "text": "🎯 GTA VI | Poligoni: distingui l’allenamento della Concentrazione dalle medaglie richieste. Controlla le prove disponibili e i progressi. Guida:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/sportive-randy-posizioni/",
+      "title": "Sportive di Randy",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "randy-wishlist",
+          "text": "🚗 GTA VI | Cerca prima le posizioni segnate da Randy’s Wish List sulla mappa, poi controlla le zone delle sportive. Nessuno spawn garantito. Guida:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/glitch-prima-persona-ps5/",
+      "title": "Visuale in prima persona",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "first-person-save",
+          "text": "🎮 GTA VI | Prima di provare il glitch della visuale in prima persona, crea un salvataggio separato. Compatibilità con patch e trofei non certificata. Guida:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/veicoli-per-moses/",
+      "title": "Veicoli per Moses",
+      "reviewed_utc": null,
+      "updated_utc": "2026-11-25T17:29:34Z",
+      "variants": [
+        {
+          "id": "moses-deliveries",
+          "text": "🚘 GTA VI | Cerchi i veicoli richiesti da Moses? Consulta le singole consegne, i riferimenti ai luoghi e i capitoli del video IGN. ⚠️ Spoiler. Guida:"
         }
       ]
     }
