@@ -91,46 +91,74 @@ def text_from_html(raw, selector, exclude=None):
     return text
 
 
-def _browser_html(source, address, selector=None):
-    """Read only the approved source in Chromium when HTTP is inaccessible.
+class SupportBrowserFailure(ValueError):
+    """Safe diagnostic, without leaking website markup, URLs or credentials."""
 
-    Existing Playwright installation from gta-monitor.yml is reused.  A
-    timeout never becomes a successful monitor snapshot without the expected
-    article selector and meaningful visible text.
+    def __init__(self, phase, reason):
+        self.phase = phase
+        self.reason = reason
+        super().__init__(f"Rockstar Support browser {phase}: {reason}")
+
+
+def _browser_html(source, address, selector=None):
+    """Render an official source; diagnose the phase without exposing secrets.
+
+    A failed Chromium navigation, challenge, missing selector or empty article
+    is never accepted as a successful source snapshot. The caller preserves
+    the last good state and uses its existing backoff.
     """
-    os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(Path(__file__).with_name(".browsers")))
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as playwright:
-        options = {"headless": True}
-        proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
-        if proxy:
-            parts = urlsplit(proxy)
-            options["proxy"] = {"server": f"{parts.scheme}://{parts.hostname}:{parts.port or 80}"}
-            if parts.username:
-                from urllib.parse import unquote
-                options["proxy"].update(username=unquote(parts.username),
-                                        password=unquote(parts.password or ""))
-        browser = playwright.chromium.launch(**options)
-        try:
-            page = browser.new_page(
-                user_agent=AGENT, locale="en-US",
-                extra_http_headers={"Accept-Language": "en-US,en;q=0.9"})
-            page.goto(address, wait_until="domcontentloaded", timeout=30000)
-            if source.get("id") in {"support-gta", "support-gta6"}:
-                # A challenge/login redirect is not evidence that the Support
-                # source was read; avoid poisoning the persistent news cursor.
-                if urlsplit(page.url).hostname != "support.rockstargames.com":
-                    raise ValueError("Rockstar Support browser left the approved host")
-            selected = selector or source["selector"]
-            page.wait_for_selector(selected, state="attached", timeout=20000)
-            page.wait_for_function(
-                "({selector,minimum}) => [...document.querySelectorAll(selector)].some(n => (n.innerText || '').trim().length >= minimum)",
-                arg={"selector": selected,
-                     "minimum": 80 if selector else source.get("min_text_chars", 1)},
-                timeout=20000)
-            return page.content()
-        finally:
-            browser.close()
+    phase = "setup"
+    is_support = source.get("id") in {"support-gta", "support-gta6"}
+    try:
+        os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(Path(__file__).with_name(".browsers")))
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as playwright:
+            options = {"headless": True}
+            proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+            if proxy:
+                parts = urlsplit(proxy)
+                options["proxy"] = {"server": f"{parts.scheme}://{parts.hostname}:{parts.port or 80}"}
+                if parts.username:
+                    from urllib.parse import unquote
+                    options["proxy"].update(username=unquote(parts.username),
+                                            password=unquote(parts.password or ""))
+            phase = "launch"
+            browser = playwright.chromium.launch(**options)
+            try:
+                phase = "page"
+                page = browser.new_page(
+                    user_agent=AGENT, locale="en-US",
+                    extra_http_headers={"Accept-Language": "en-US,en;q=0.9"})
+                phase = "navigation"
+                page.goto(address, wait_until="domcontentloaded", timeout=30000)
+                phase = "origin"
+                if is_support and urlsplit(page.url).hostname != "support.rockstargames.com":
+                    raise SupportBrowserFailure("origin", "left the approved host")
+                selected = selector or source["selector"]
+                phase = "selector"
+                page.wait_for_selector(selected, state="attached", timeout=20000)
+                phase = "content"
+                page.wait_for_function(
+                    "({selector,minimum}) => [...document.querySelectorAll(selector)].some(n => (n.innerText || '').trim().length >= minimum)",
+                    arg={"selector": selected,
+                         "minimum": 80 if selector else source.get("min_text_chars", 1)},
+                    timeout=20000)
+                phase = "html"
+                return page.content()
+            finally:
+                browser.close()
+    except Exception as error:
+        if not is_support:
+            raise
+        # Do not print Playwright's exception message: it can contain a proxy
+        # URL, auth data, or a third-party challenge's markup.
+        if isinstance(error, SupportBrowserFailure):
+            LOG.warning("Rockstar Support browser failed phase=%s reason=%s",
+                        error.phase, error.reason)
+            raise
+        reason = type(error).__name__
+        LOG.warning("Rockstar Support browser failed phase=%s reason=%s", phase, reason)
+        raise SupportBrowserFailure(phase, reason) from None
 
 
 def get_html(source, url=None, selector=None):

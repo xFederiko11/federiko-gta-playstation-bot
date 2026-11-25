@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import MagicMock, Mock, patch
 import requests
 
-from sources import _browser_html, get_html
+from sources import _browser_html, get_html, SupportBrowserFailure
 
 SUPPORT_URL = "https://support.rockstargames.com/gta-online"
 SUPPORT = {
@@ -160,6 +160,40 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
                 _browser_html(SUPPORT, SUPPORT_URL)
         browser.close.assert_called_once()
         page.wait_for_selector.assert_not_called()
+
+    def test_chromium_launch_failure_has_safe_phase_not_playwright_message(self):
+        pw = Mock()
+        pw.chromium.launch.side_effect = RuntimeError("proxy-auth:confidential")
+        cm = MagicMock()
+        cm.__enter__.return_value = pw
+        with (patch("playwright.sync_api.sync_playwright", return_value=cm),
+              self.assertLogs("gta6.sources", level="WARNING") as captured):
+            with self.assertRaises(SupportBrowserFailure) as failure:
+                _browser_html(SUPPORT, SUPPORT_URL)
+        self.assertEqual(failure.exception.phase, "launch")
+        self.assertEqual(failure.exception.reason, "RuntimeError")
+        self.assertNotIn("confidential", str(failure.exception))
+        self.assertNotIn("confidential", "\\n".join(captured.output))
+        self.assertIn("phase=launch", "\\n".join(captured.output))
+
+    def test_selector_failure_is_distinguished_from_navigation_failure(self):
+        page = Mock(url=SUPPORT_URL)
+        page.wait_for_selector.side_effect = RuntimeError("response content sensitive")
+        browser = Mock()
+        browser.new_page.return_value = page
+        pw = Mock()
+        pw.chromium.launch.return_value = browser
+        cm = MagicMock()
+        cm.__enter__.return_value = pw
+        with (patch("playwright.sync_api.sync_playwright", return_value=cm),
+              self.assertLogs("gta6.sources", level="WARNING") as captured):
+            with self.assertRaises(SupportBrowserFailure) as failure:
+                _browser_html(SUPPORT, SUPPORT_URL)
+        self.assertEqual(failure.exception.phase, "selector")
+        self.assertIn("reason=RuntimeError", "\\n".join(captured.output))
+        self.assertNotIn("sensitive", str(failure.exception))
+        browser.close.assert_called_once()
+        page.wait_for_function.assert_not_called()
 
     def test_non_support_sources_keep_single_timeout_and_no_browser(self):
         with (patch("sources.requests.get",
