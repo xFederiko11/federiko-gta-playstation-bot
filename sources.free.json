@@ -39,7 +39,8 @@
       "article_selector": "article:has([data-testid='page-title'])",
       "watch_existing_pattern": "title-update|patch-notes",
       "render_js": false,
-      "interval": 1800
+      "interval": 1800,
+      "browser_fallback_on_timeout": true
     },
     {
       "id": "youtube",
