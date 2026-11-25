@@ -30,6 +30,10 @@ jobs:
           python -m py_compile sources.py test_rockstar_support_timeout.py rockstar_support_live_probe_v1.py test_rockstar_support_live_probe_v1.py
           python -m unittest -q test_rockstar_support_timeout.py test_rockstar_support_live_probe_v1.py
       - name: Install browser for read-only official Support diagnosis
+        # The live probe must look in the EXACT directory used at install time;
+        # otherwise Playwright fails at launch and falsely blames the source.
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
         run: python -m playwright install --with-deps chromium
       - name: Report live official Support reachability (never publish)
         # One capped diagnostic on PR; upstream access failures are explicit
