@@ -157,6 +157,22 @@ def _browser_html(source, address, selector=None):
                         error.phase, error.reason)
             raise
         reason = type(error).__name__
+        # Playwright often includes a long URL or a proxy address in the
+        # navigation exception. Extract ONLY one allowlisted Chromium net::
+        # constant; never log the raw exception message or an unknown code.
+        if phase == "navigation":
+            recognized = {
+                "ERR_TUNNEL_CONNECTION_FAILED", "ERR_PROXY_CONNECTION_FAILED",
+                "ERR_NAME_NOT_RESOLVED", "ERR_CONNECTION_REFUSED",
+                "ERR_CONNECTION_RESET", "ERR_CONNECTION_CLOSED",
+                "ERR_CONNECTION_TIMED_OUT", "ERR_TIMED_OUT",
+                "ERR_CERT_AUTHORITY_INVALID", "ERR_CERT_COMMON_NAME_INVALID",
+                "ERR_BLOCKED_BY_CLIENT", "ERR_NETWORK_CHANGED",
+                "ERR_ADDRESS_UNREACHABLE", "ERR_HTTP_RESPONSE_CODE_FAILURE",
+            }
+            match = re.search(r"net::(ERR_[A-Z0-9_]+)", str(error))
+            if match and match.group(1) in recognized:
+                reason += "_" + match.group(1)
         LOG.warning("Rockstar Support browser failed phase=%s reason=%s", phase, reason)
         raise SupportBrowserFailure(phase, reason) from None
 
