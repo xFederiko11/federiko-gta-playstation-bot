@@ -1,7 +1,25 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-25T08:43:03.903666Z",
+  "checked_utc": "2026-11-25T12:21:52.679340Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-53-trattati-bene/",
+      "x_url": "https://x.com/xFederiko11/status/2125559691568685368",
+      "buffer_id": "6b06cd571deee71c1234b146",
+      "sent_at": "2026-11-25T11:58:16.579000Z",
+      "excerpt": "🥉 GTA VI | BRONZO: Trattati bene\n\n🎯 Spendi complessivamente 100.000 $ nei negozi.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-53-trattati-bene/\n\n#GTAVI #Platino",
+      "title": "Trattati bene",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/",
+      "x_url": "https://x.com/xFederiko11/status/2125518257880756438",
+      "buffer_id": "6b06a6c04a87dbb2cee3d500",
+      "sent_at": "2026-11-25T09:13:37.781000Z",
+      "excerpt": "🥉 GTA VI | BRONZO: Ci metto un secondo\n\n🎯 Registra dieci veicoli tramite l'app Scooter Bros.\n\n📖 Guida in italiano:\nhttps://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/\n\n#GTAVI #Platino",
+      "title": "Ci metto un secondo",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/glitch-prima-persona-ps5/",
       "x_url": "https://x.com/xFederiko11/status/2125478190252458432",
@@ -237,6 +255,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 26,
+  "matched_this_run": 28,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
