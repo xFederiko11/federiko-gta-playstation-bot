@@ -79,6 +79,14 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(proposed["url"],"https://xfederiko11.github.io/gta-6"+item["path"])
         self.assertLessEqual(x_weight(proposed["text"]),235)
 
+    def test_animal_and_taxi_copy_matches_reviewed_tutorials(self):
+        animals=next(x for x in CONTENT if x["id"]=="animal-guide")
+        self.assertIn("100 specie su 255",animals["text"])
+        self.assertIn("Caccia separata",animals["text"])
+        taxi=next(x for x in CONTENT if x["id"]=="taxi-fast-travel")
+        self.assertIn("Gone Fishing",taxi["text"])
+        self.assertIn("100 GTA$ oltre alla tariffa",taxi["text"])
+
     def test_money_copy_matches_reviewed_tutorials(self):
         liquor=next(x for x in CONTENT if x["id"]=="money-liquor")
         self.assertIn("Consegna il rum",liquor["text"])

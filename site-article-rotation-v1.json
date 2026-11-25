@@ -83,12 +83,12 @@
     {
       "path": "guide-e-tutorial/studiare-animali/",
       "title": "Studiare gli animali",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T22:35:12Z",
+      "updated_utc": "2026-11-25T22:35:12Z",
       "variants": [
         {
           "id": "animals-binoculars",
-          "text": "🦜 GTA VI | Per studiare un animale non serve cacciarlo: usa il binocolo, avvicina l’inquadratura e verifica la specie registrata. Comandi e guida:"
+          "text": "🦜 GTA VI | Per il 100% servono 100 specie su 255. Usa il binocolo e tieni premuto R1, poi verifica Progressi → Animali. Guida:"
         }
       ]
     },
@@ -107,12 +107,12 @@
     {
       "path": "guide-e-tutorial/viaggio-rapido-taxi/",
       "title": "Viaggio rapido in taxi",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T22:35:12Z",
+      "updated_utc": "2026-11-25T22:35:12Z",
       "variants": [
         {
           "id": "taxi-contacts",
-          "text": "🚕 GTA VI | Vuoi evitare un tragitto lungo? Dopo lo sblocco, cerca Paradise Taxi nei Contatti del telefono e imposta la destinazione. Procedura:"
+          "text": "🚕 GTA VI | Dopo Gone Fishing chiama Paradise Taxi. Saltare il tragitto costa 100 GTA$ oltre alla tariffa. Comandi e guida:"
         }
       ]
     },
@@ -155,12 +155,12 @@
     {
       "path": "guide-e-tutorial/veicoli-per-moses/",
       "title": "Veicoli per Moses",
-      "reviewed_utc": null,
-      "updated_utc": "2026-11-25T17:29:34Z",
+      "reviewed_utc": "2026-11-25T22:35:12Z",
+      "updated_utc": "2026-11-25T22:35:12Z",
       "variants": [
         {
           "id": "moses-deliveries",
-          "text": "🚘 GTA VI | Cerchi i veicoli richiesti da Moses? Consulta le singole consegne, i riferimenti ai luoghi e i capitoli del video IGN. ⚠️ Spoiler. Guida:"
+          "text": "🚘 GTA VI | Sei consegne per Moses dopo Daily Driver: consulta luoghi e video IGN al minuto giusto. ⚠️ Spoiler. Guida:"
         }
       ]
     }
