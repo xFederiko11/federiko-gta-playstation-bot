@@ -16,6 +16,15 @@ GOOD = ('<nav><a href="/articles/a">Release notes GTA VI</a></nav>'
 
 
 class RockstarSupportLiveProbeTests(unittest.TestCase):
+    def test_live_chromium_install_and_probe_share_the_same_browser_directory(self):
+        workflow = Path(".github/workflows/rockstar-support-qa.yml").read_text(
+            encoding="utf-8")
+        value = "PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers"
+        self.assertEqual(workflow.count(value), 2)
+        self.assertIn("timeout 210s python rockstar_support_live_probe_v1.py", workflow)
+        self.assertNotIn("BUFFER_API_KEY:", workflow)
+        self.assertNotIn("STATE_PASSWORD:", workflow)
+
     def test_strict_source_list_is_official_and_only_two_sources(self):
         self.assertEqual(set(OFFICIAL_SOURCES), {"support-gta6", "support-gta"})
         self.assertTrue(all(url.startswith("https://support.rockstargames.com/")
