@@ -1,0 +1,52 @@
+{
+  "schema": "owned-article-rotation-v1",
+  "enabled": false,
+  "revision": "pending-final-editorial-release",
+  "released_utc": null,
+  "articles": [
+    {
+      "path": "guide-e-tutorial/scansionare-veicoli/",
+      "title": "WAiNK: scanner e tracker",
+      "variants": [
+        {
+          "id": "tracker-check",
+          "text": "🚘 GTA VI | Prima di prendere un veicolo, controlla il tracker con WAiNK. No Tracker, Standard e Advanced non hanno gli stessi rischi. Comandi PS5 e video:"
+        },
+        {
+          "id": "catalog-check",
+          "text": "🎮 GTA VI | Inquadra il mezzo con WAiNK e tieni premuto R1. Verifica il risultato in Progressi → Veicoli. Passaggi e riferimenti nella guida italiana:"
+        }
+      ]
+    },
+    {
+      "path": "salvare-auto/",
+      "title": "Come salvare un'auto",
+      "variants": [
+        {
+          "id": "car-registration",
+          "text": "🚘 GTA VI | Non confondere rubare un’auto con registrarla. Prima verifica tracker, requisiti e procedura di registrazione. Guida italiana e video:"
+        }
+      ]
+    },
+    {
+      "path": "guide-e-tutorial/soldi-facili-capitolo-1/",
+      "title": "Soldi nel Capitolo 1",
+      "variants": [
+        {
+          "id": "money-locations",
+          "text": "💰 GTA VI | Inizio partita: quattro luoghi documentati per cercare denaro e oggetti utili. ⚠️ Spoiler sulle posizioni. Consulta mappa e fonti:"
+        }
+      ]
+    },
+    {
+      "path": "collezionabili/percorsi/",
+      "title": "Percorsi collezionabili",
+      "variants": [
+        {
+          "id": "collectibles-chapters",
+          "text": "🏆 GTA VI | Prima di cambiare capitolo, controlla le carte potenzialmente mancabili e le copie delle riviste legate alla storia. Checklist e fonti:"
+        }
+      ]
+    }
+  ]
+}
