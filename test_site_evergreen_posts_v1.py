@@ -66,6 +66,8 @@ class SiteEvergreenTests(unittest.TestCase):
         item=next(x for x in CONTENT if x["id"]=="ps5-first-person-glitch")
         self.assertEqual(item["path"],"/guide-e-tutorial/glitch-prima-persona-ps5/")
         self.assertIn("trofei NON verificati",item["text"])
+        self.assertIn("Community:",item["text"])
+        self.assertIn("patch 23/11",item["text"])
         self.assertIn("Salva prima",item["text"])
         self.assertNotIn("Trophy Safe",item["text"])
         self.assertNotIn("infinito",item["text"])
