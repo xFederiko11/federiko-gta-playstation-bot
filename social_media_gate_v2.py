@@ -8,6 +8,8 @@ This doesn't download third-party article thumbnails or bypass Buffer safety.
 """
 from __future__ import annotations
 import hashlib
+import logging
+import time
 from urllib.parse import urlsplit
 import requests
 
@@ -16,6 +18,9 @@ SITE_IMAGE_PREFIX=BASE+"assets/social-cards/"
 OFFICIAL=("www.rockstargames.com","media-rockstargames-com.akamaized.net",
           "blog.playstation.com","www.playstation.com")
 ACTIVE_STATUSES={"reserved","attempted","sent","accepted_pending","scheduled","uncertain","review"}
+LOG=logging.getLogger("gta6.media")
+TRANSIENT_IMAGE_HTTP=frozenset({429,500,502,503,504})
+MAX_IMAGE_READS=3
 
 
 def canonical_page_path(target):
@@ -81,21 +86,65 @@ def prepare(item,ledger):
     return result
 
 
-def probe_image(url,session=None):
-    """Bounded binary check; no redirects or raw third-party photo downloads."""
-    if not trusted_asset(url):return False
+def probe_image(url, session=None):
+    """Check the real public image bytes; retry only short-lived CDN outages.
+
+    The same canonical trusted URL is retried, never a guessed replacement.
+    A 404, redirect, invalid MIME, HTML, tiny blob, corrupt JPEG/PNG/WebP,
+    untrusted host or bad TLS certificate still fails closed immediately.
+    """
+    if not trusted_asset(url):
+        return False
     http=session or requests
-    try:
-        with http.get(url,stream=True,timeout=(4,10),allow_redirects=False,
-                      headers={"User-Agent":"GTA6Italia-ImageDelivery/1.0",
-                               "Accept":"image/jpeg,image/png,image/webp"}) as res:
-            if res.status_code!=200:return False
-            target=urlsplit(res.url)
-            if target.scheme!="https" or not trusted_asset(res.url):return False
-            kind=res.headers.get("Content-Type","").split(";")[0].strip().lower()
-            if kind not in {"image/jpeg","image/png","image/webp"}:return False
-            length=res.headers.get("Content-Length","")
-            if length.isdigit() and not 8000<=int(length)<=12000000:return False
-            start=next(res.iter_content(32),b"")
-            return start.startswith(b"\xff\xd8\xff") or start.startswith(b"\x89PNG\r\n\x1a\n") or (start.startswith(b"RIFF") and start[8:12]==b"WEBP")
-    except (requests.RequestException,OSError,StopIteration,ValueError):return False
+    provider="owned-site" if url.startswith(SITE_IMAGE_PREFIX) else "official"
+    for attempt in range(MAX_IMAGE_READS):
+        try:
+            with http.get(url,stream=True,timeout=(4,10),allow_redirects=False,
+                          headers={"User-Agent":"GTA6Italia-ImageDelivery/1.0",
+                                   "Accept":"image/jpeg,image/png,image/webp"}) as res:
+                status=res.status_code
+                if status in TRANSIENT_IMAGE_HTTP:
+                    if attempt+1<MAX_IMAGE_READS:
+                        time.sleep(attempt+1)
+                        continue
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=HTTP%s attempts=%s",
+                                provider,status,MAX_IMAGE_READS)
+                    return False
+                if status!=200:
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=HTTP%s",
+                                provider,status)
+                    return False
+                target=urlsplit(res.url)
+                if target.scheme!="https" or not trusted_asset(res.url):
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=unexpected_media_url",provider)
+                    return False
+                kind=res.headers.get("Content-Type","").split(";")[0].strip().lower()
+                if kind not in {"image/jpeg","image/png","image/webp"}:
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=invalid_content_type",provider)
+                    return False
+                length=res.headers.get("Content-Length","")
+                if length.isdigit() and not 8000<=int(length)<=12000000:
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=invalid_content_length",provider)
+                    return False
+                start=next(res.iter_content(32),b"")
+                valid=(start.startswith(b"\\xff\\xd8\\xff")
+                       or start.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+                       or (start.startswith(b"RIFF") and start[8:12]==b"WEBP"))
+                if not valid:
+                    LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=invalid_image_magic",provider)
+                return valid
+        except requests.exceptions.SSLError:
+            LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=tls_verification_failed",provider)
+            return False
+        except (requests.exceptions.Timeout,requests.exceptions.ConnectionError) as exc:
+            if attempt+1<MAX_IMAGE_READS:
+                time.sleep(attempt+1)
+                continue
+            LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=%s attempts=%s",
+                        provider,type(exc).__name__,MAX_IMAGE_READS)
+            return False
+        except (requests.RequestException,OSError,StopIteration,ValueError) as exc:
+            LOG.warning("MEDIA_IMAGE_PROBE_HOLD source=%s reason=%s",
+                        provider,type(exc).__name__)
+            return False
+    return False
