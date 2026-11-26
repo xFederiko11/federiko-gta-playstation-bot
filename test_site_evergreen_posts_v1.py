@@ -28,6 +28,13 @@ class SiteEvergreenTests(unittest.TestCase):
             self.assertNotIn("@Rockstar",copy)
             self.assertTrue(item["path"].endswith("/"))
 
+    def test_photo_filter_skips_illustrated_entries_to_find_reviewed_article(self):
+        target="https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/"
+        item=candidate(self.state,NOW,live_checker=lambda u:True,
+                       photo_checker=lambda u:u==target)
+        self.assertEqual(item["url"],target)
+        self.assertFalse(self.state["entries"])
+
     def test_original_creator_showcase_requires_live_page_and_unique_image(self):
         item=next(x for x in CONTENT if x["id"]=="creator-showcase-original")
         self.assertEqual(item["path"],"/video-tutorial/")
