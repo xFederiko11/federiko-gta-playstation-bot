@@ -122,6 +122,11 @@ class SiteEvergreenTests(unittest.TestCase):
             ("car-pegassi-tempesta",("Vespucci Island","Non è uno spawn garantito")),
             ("car-buckingham-windsor-drop",("Bayside","Non è uno spawn garantito")),
             ("car-pegassi-toros",("Southside","Non è uno spawn garantito")),
+            ("car-ascot-paragon",("Bayside","Dynamix Fitness")),
+            ("car-bravado-gauntlet-hellfire",("Capri","Hair by Clair")),
+            ("car-piccia-furia",("Vespucci Island","seconda casa")),
+            ("car-benefactor-dubsta",("Bayside","sinistra")),
+            ("car-bravado-banshee",("Southside","salone centrale")),
         ):
             for phrase in phrases:
                 self.assertIn(phrase,rows[ident]["text"],ident)
