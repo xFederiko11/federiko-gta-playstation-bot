@@ -97,6 +97,8 @@ jobs:
           fi
       - name: Deliver reserved post once
         if: steps.reserve.outcome == 'success'
+        env:
+          GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
         run: python gta6_special_campaign_v139.py --mode deliver
       - name: Persist outcome without retry
         if: always() && steps.reserve.outcome == 'success'

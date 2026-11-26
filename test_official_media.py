@@ -54,6 +54,17 @@ class OfficialMediaTests(unittest.TestCase):
         with self.assertRaises(OfficialMediaUnavailable):
             official_image_for_event(event, session=sess)
 
+    def test_strict_official_mode_never_uses_brand_logo(self):
+        from official_media import official_media_for_event, GTA_VI_LOGO
+        event = {'trust':'official', 'game':'GTA VI',
+                 'source_url':'https://www.rockstargames.com/newswire/article/123'}
+        sess = Mock()
+        sess.get.return_value = ResponseImage()
+        self.assertFalse(approved_image_url(GTA_VI_LOGO, 'rockstar'))
+        self.assertEqual(official_media_for_event(event, session=sess).kind, 'official_logo')
+        with self.assertRaises(OfficialMediaUnavailable):
+            official_media_for_event(event, session=sess, allow_logo=False)
+
     def test_missing_media_prevents_any_publication(self):
         db = online.open_db(':memory:')
         try:

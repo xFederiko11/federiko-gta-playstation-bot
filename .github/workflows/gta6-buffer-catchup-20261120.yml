@@ -78,6 +78,8 @@ jobs:
           git pull --rebase origin main
           python buffer_catchup_20261120.py --mode preview
       - name: Schedule genuine future Buffer X threads and commit each receipt
+        env:
+          GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
         run: python buffer_catchup_20261120.py --mode schedule
 
   preview:

@@ -108,6 +108,7 @@ jobs:
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
+          GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           STATE_PASSWORD: ${{ secrets.STATE_PASSWORD }}

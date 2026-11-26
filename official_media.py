@@ -77,6 +77,8 @@ def approved_image_url(url, family):
     if not host or not family or not _unsigned(url):
         return False
     parsed = urlsplit(url)
+    if any(parsed.path == urlsplit(logo).path for logo in LOGO_CREDITS):
+        return False
     if re.search(r'(?:favicon|logo|placeholder|default-avatar|site-icon|\.svg(?:$|\?))', parsed.path, re.I):
         return False
     if family == 'rockstar':
@@ -185,7 +187,7 @@ def _official_logo_for_event(event, family):
     return None
 
 
-def official_media_for_event(event, *, session=None):
+def official_media_for_event(event, *, session=None, allow_logo=True):
     """Rank legitimate photos first; use only a product-correct official logo last."""
     if event.get('trust') != 'official' or event.get('demo'):
         raise OfficialMediaUnavailable('event_not_official')
@@ -214,7 +216,7 @@ def official_media_for_event(event, *, session=None):
                         return OfficialMediaChoice(photo, 'editorial_image', source)
         except (requests.RequestException, OSError):
             pass
-    fallback = _official_logo_for_event(event, family)
+    fallback = _official_logo_for_event(event, family) if allow_logo else None
     if fallback and _probe_image(fallback, family, session, logo=True):
         return OfficialMediaChoice(fallback, 'official_logo', LOGO_CREDITS[fallback])
     raise OfficialMediaUnavailable('no_verified_official_image_or_logo')
