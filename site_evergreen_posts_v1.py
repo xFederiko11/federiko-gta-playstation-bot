@@ -16,6 +16,9 @@ from portal_links_v148 import PORTAL_BASE, page_live
 SOURCE = "Guide GTA VI Italia"
 DAY_BUDGET = 1
 SPACING = timedelta(hours=20)
+# Only strict reviewed-photo first publications get a wider inventory window.
+PHOTO_DAY_BUDGET = 3
+PHOTO_SPACING = timedelta(hours=4)
 # Every entry is original editorial copy pointing to an existing public
 # informational landing page; do not claim the third-party source verified it.
 CONTENT = (
@@ -166,9 +169,16 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
         stamp=published(e.get("reserved_utc"))
         if stamp:
             recent.append(stamp)
-    if sum(t.date()==now.date() for t in recent)>=DAY_BUDGET:
+    from game_photo_policy_v1 import active as photo_active
+    from quality_publish_policy_v1 import local
+    strict_photo = photo_checker is not None and photo_active(now)
+    day_budget = PHOTO_DAY_BUDGET if strict_photo else DAY_BUDGET
+    gap = PHOTO_SPACING if strict_photo else SPACING
+    if sum(local(t).date()==local(now).date() for t in recent)>=day_budget:
         return None
-    if recent and now-max(recent)<SPACING:
+    if strict_photo and sum(now-timedelta(hours=24)<=t<=now for t in recent)>=PHOTO_DAY_BUDGET:
+        return None
+    if recent and now-max(recent)<gap:
         return None
     # A legacy entry may have a different key for the same article. The
     # evergreen queue is first-publication only; reviewed article rotation
@@ -189,15 +199,22 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
         key=hashlib.sha256(("site-evergreen-v1:"+item["id"]).encode()).hexdigest()[:24]
         if key in entries:
             continue
-        if photo_checker is not None and not photo_checker(url):
+        kind=photo_checker(url) if photo_checker is not None else None
+        if photo_checker is not None and not kind:
             continue
         if not live_checker(url):
             continue
         from social_media_gate_v2 import cover_for
-        return {"key":key,"sig":similarity_key(item["title"]),
+        proposed={"key":key,"sig":similarity_key(item["title"]),
                 "url":url, "title":item["title"],"source":SOURCE,
                 "text":item["text"]+"\n"+url+"\n\n#GTAVI",
                 "media_url":cover_for(url)}
+        # Do not let an oversized first candidate obstruct the next photo.
+        if strict_photo:
+            from game_photo_policy_v1 import single_photo_item
+            if not single_photo_item(proposed,kind):
+                continue
+        return proposed
     return None
 
 

@@ -13,3 +13,7 @@ GitHub Actions are pinned to full commit hashes checked against upstream release
 ## Publishing safety
 
 Every public news post must be in Italian, with clear source attribution and no fabricated claims. PowerPyx guides are linked and summarized in original words; no copied articles or images. Reserve in persistent ledgers before calling Buffer, and never automatically retry an uncertain write. Viral-video responses and native X reposts are not auto-published. Do not introduce paid API dependencies or spammy engagement automation.
+
+## Source visibility and operational reports
+
+The public repository and its Actions logs/artifacts remain publicly accessible subject to GitHub access rules. They are not a private operator workspace. Do not add new internal review details to public issues. The discovery job reads only fixed JSON inputs from a single observed public site revision; it never exports the excluded site build backlog. Scheduled X intake uses no paid X search. Private-engine migration requires verified plan/runner quotas, tested cross-repository credentials, a public static publishing target, and an explicit rollback plan. Obfuscation is not access control. Changing visibility alone does not remove historical public copies or forks.
