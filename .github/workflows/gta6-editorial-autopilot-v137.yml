@@ -5,51 +5,30 @@ on:
     branches: [main]
     paths:
       - '*.py'
+      - 'requirements-free.txt'
+      - 'photo-rights-review-v1.json'
       - 'editorial-calendar-v149.json'
       - 'site-article-rotation-v1.json'
       - '.github/workflows/gta-monitor.yml'
       - '.github/workflows/gta6-editorial-autopilot-v137.yml'
-  workflow_run:
-    workflows: ["GTA Monitor gratuito"]
-    types: [completed]
-  # Scanning frequency is not publication frequency: global pacing stays active.
+  # Ordinary editorial scans are independent from the urgent-news monitor.
+  # UTC union covers 07:00-23:00 Europe/Rome in CET and CEST.
+  # The Python local-time gate remains authoritative.
   schedule:
-    - cron: '7,37 * * * *'
-    # Dedicated 15-minute sampling in the 14-day GTA VI launch (UTC = Rome - 1h).
-    # Source-aware launch_cadence_v1.py is the final 08:00-21:00 and date gate.
-    - cron: '0,15,30,45 7-19 19-30 11 *'
-    - cron: '0,15,30,45 7-19 1-2 12 *'
+    - cron: '10,40 5-21 * * *'
+    # Add only the two intervening slots during launch; no duplicate scans.
+    - cron: '25,55 7-19 19-30 11 *'
+    - cron: '25,55 7-19 1-2 12 *'
   push:
     branches: [main]
     paths:
-      - '.github/workflows/gta6-editorial-autopilot-v137.yml'
-      - 'editorial_director_v142.py'
-      - 'editorial_autopilot_v137.py'
-      - 'growth_conversion_v1.py'
-      - 'test_growth_conversion_v1.py'
-      - 'owned_utm_attribution_v1.py'
-      - 'test_owned_utm_attribution_v1.py'
-      - 'editorial_double_threads_v1.py'
-      - 'quick_tips_v146.py'
-      - 'launch_cadence_v1.py'
-      - 'quality_publish_policy_v1.py'
-      - 'test_quality_publish_policy_v1.py'
-      - 'editorial_double_threads_v1.py'
-      - 'site_evergreen_posts_v1.py'
-      - 'site_article_rotation_v1.py'
+      - '*.py'
+      - 'requirements-free.txt'
+      - 'editorial-calendar-v149.json'
       - 'site-article-rotation-v1.json'
-      - 'test_site_article_rotation_v1.py'
-      - 'social_media_gate_v2.py'
-      - 'game_photo_policy_v1.py'
-      - 'live_editorial_feed_v1.py'
-      - 'test_live_editorial_feed_v1.py'
-      - 'buffer_publisher.py'
-      - 'official_media.py'
-      - 'test_social_media_gate_v2.py'
-      - 'buffer_delivery_receipts_v1.py'
-      - 'test_buffer_delivery_receipts_v1.py'
-      - 'buffer_failed_diagnostics_v147.py'
-      - 'test_buffer_failed_diagnostics_v147.py'
+      - 'photo-rights-review-v1.json'
+      - '.github/workflows/gta-monitor.yml'
+      - '.github/workflows/gta6-editorial-autopilot-v137.yml'
   workflow_dispatch:
     inputs:
       action:
@@ -63,17 +42,20 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('gta-v142-qa-editorial-{0}', github.ref) || 'gta-v142-publication-global' }}
+  group: ${{ (github.event_name == 'pull_request' || github.event_name == 'push') && format('gta-v142-qa-editorial-{0}', github.ref) || 'gta-v142-publication-global' }}
   cancel-in-progress: false
 
 jobs:
   italian_qa:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 6
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.12'
@@ -92,14 +74,8 @@ jobs:
       contents: write
     if: >-
       github.event.repository.private == false &&
-      ((github.event_name == 'workflow_dispatch') ||
-       ((github.event_name == 'schedule' || github.event_name == 'push') &&
-        vars.AUTO_PUBLISH == 'true' &&
-        vars.EDITORIAL_AUTOPILOT_V137_ENABLED != 'false') ||
-       (github.event_name == 'workflow_run' &&
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'schedule' &&
-        github.event.workflow_run.head_branch == github.event.repository.default_branch &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'schedule' &&
         vars.AUTO_PUBLISH == 'true' &&
         vars.EDITORIAL_AUTOPILOT_V137_ENABLED != 'false'))
     runs-on: ubuntu-latest
@@ -126,18 +102,13 @@ jobs:
         run: |
           python x_automation_safety_v1.py
           python -m py_compile social_media_gate_v2.py test_social_media_gate_v2.py owned_utm_attribution_v1.py buffer_failed_diagnostics_v147.py buffer_delivery_receipts_v1.py buffer_status_summary_v151.py launch_cadence_v1.py quality_publish_policy_v1.py test_quality_publish_policy_v1.py growth_conversion_v1.py editorial_double_threads_v1.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
-          env -u GITHUB_STEP_SUMMARY python -m unittest -q test_buffer_publisher test_official_media test_site_article_rotation_v1 test_social_media_gate_v2 test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_vehicle_site_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151 test_launch_cadence_v1 test_quality_publish_policy_v1 test_editorial_double_threads_v1 test_growth_conversion_v1 test_owned_utm_attribution_v1 test_live_editorial_feed_v1
-      - name: Inspect historical rejected thread (advisory, no retry)
-        if: github.event_name == 'push'
-        run: python buffer_failed_diagnostics_v147.py
+          env -u GITHUB_STEP_SUMMARY python -m unittest -q test_buffer_publisher test_official_media test_site_article_rotation_v1 test_social_media_gate_v2 test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_vehicle_site_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151 test_launch_cadence_v1 test_quality_publish_policy_v1 test_editorial_double_threads_v1 test_growth_conversion_v1 test_owned_utm_attribution_v1 test_live_editorial_feed_v1 test_photo_rights_v1
       - name: Preview feeds without publication
         if: github.event_name == 'workflow_dispatch' && inputs.action == 'preview'
         run: python editorial_autopilot_v137.py --mode preview
       - name: Verify Buffer X destination before reservation
         if: >-
           github.event_name == 'schedule' ||
-          (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
-          github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         env:
           TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}
@@ -153,8 +124,6 @@ jobs:
           TIPS_REAUTH_CONFIRMED_V149: ${{ vars.TIPS_REAUTH_CONFIRMED_V149 || 'true' }}
         if: >-
           github.event_name == 'schedule' ||
-          (github.event_name == 'push' && vars.AUTO_PUBLISH == 'true') ||
-          github.event_name == 'workflow_run' ||
           (github.event_name == 'workflow_dispatch' && inputs.action == 'run')
         run: |
           git pull --rebase origin "${{ github.event.repository.default_branch }}"

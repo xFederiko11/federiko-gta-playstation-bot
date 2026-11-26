@@ -36,6 +36,15 @@ class BotHealthTests(unittest.TestCase):
         self.assertEqual(check[0]["health"],"stale")
         self.assertTrue(any(x["health"]=="unknown" for x in check[1:]))
 
+    def test_editorial_push_qa_is_not_production_evidence(self):
+        name="GTA VI - Editorial Autopilot v13.7"
+        rows=[run(name,2,event="push"),run(name,60,"failure",event="schedule")]
+        result=next(x for x in summarize_runs(rows,NOW) if x["name"]==name)
+        self.assertEqual(result["health"],"degraded")
+        rows=[run(name,2,event="push")]
+        result=next(x for x in summarize_runs(rows,NOW) if x["name"]==name)
+        self.assertEqual(result["health"],"unknown")
+
     def test_inactive_site_with_last_successful_deploy_is_not_stale(self):
         rows=[run(x,60) for x in REQUIRED[:-1]]
         rows.append(run("GTA 6 Italia - Website", 14*24*60, event="push"))

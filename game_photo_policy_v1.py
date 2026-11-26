@@ -129,8 +129,13 @@ def scan_details(url):
 
 
 def scan_kind(url):
+    from photo_rights_v1 import reuse_documented
     details=scan_details(url)
-    return details[0] if details else None
+    if not details:return None
+    if not reuse_documented(url,*details):
+        print("PHOTO_RIGHTS_HOLD: no reviewed reuse evidence for this cover")
+        return None
+    return details[0]
 
 
 def single_photo_item(item, kind):
@@ -167,6 +172,9 @@ def prepare_photo(item):
     details = scan_details(item.get("url"))
     if not details:
         return None
+    from photo_rights_v1 import reuse_documented
+    if not reuse_documented(item.get('url'),*details):
+        return None
     if item.get('feed_summary'):
         from live_editorial_feed_v1 import matching
         if details!=(item.get('feed_kind'),item.get('feed_digest')) or not matching(item):
@@ -184,7 +192,9 @@ def verify_delivery(entry):
         if not matching(entry):return False
     kind=entry.get("photo_kind")
     digest=entry.get("cover_sha256")
+    from photo_rights_v1 import reuse_documented
     return (kind in KINDS and isinstance(digest,str)
+            and reuse_documented(entry.get("url"),kind,digest)
             and not entry.get("thread")
             and entry.get("media_url") == cover_for(entry.get("url"))
             and owned_photo_details(entry.get("url")) == (kind,digest)
