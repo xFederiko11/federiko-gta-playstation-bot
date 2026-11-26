@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-26T21:40:48Z",
+  "generated_at": "2026-11-26T22:31:26Z",
   "records": [
     {
       "date_precision": "local_time",
@@ -105,6 +105,39 @@
       "version": "14.02",
       "first_observed_at": "2026-11-17T20:51:45Z",
       "last_observed_at": "2026-11-18T00:30:23Z"
+    },
+    {
+      "date_precision": "date",
+      "event_type": "official_patch_notes_available",
+      "game": "GTA VI",
+      "metadata": {
+        "content_sha256": "de15b0deee3608936ce9ad8ec677db302f96291a5fe210838bdfd345d7e9ad70",
+        "entry_count": 7,
+        "kind": "official_patch_note_metadata_v1",
+        "platforms": [
+          "PS5",
+          "Xbox Series X|S"
+        ]
+      },
+      "metric_kind": "availability",
+      "notes": "Data delle note Rockstar osservata dal monitor. Non prova numero di build, dimensione o test nel gioco.",
+      "observed_at": "2026-11-26T22:30:33Z",
+      "occurred_at": "2026-11-23",
+      "package_id": null,
+      "platform": "common",
+      "qualifier": "not_applicable",
+      "record_id": "b8cd257a031f26ac06a0923212ddadfbdd08d3034190b7b998196b09016d69aa",
+      "region": "global",
+      "size_bytes": null,
+      "sku": null,
+      "source_tier": "primary",
+      "source_url": "https://support.rockstargames.com/articles/sN5pEdFYZdlvijKXd6xpJ/grand-theft-auto-vi-launch-updates-ps5-xbox-series-x-or-s",
+      "unit_original": null,
+      "value": null,
+      "verification": "verified",
+      "version": null,
+      "first_observed_at": "2026-11-26T22:30:33Z",
+      "last_observed_at": "2026-11-26T22:30:33Z"
     }
   ],
   "gaps": [
