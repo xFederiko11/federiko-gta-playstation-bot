@@ -57,6 +57,20 @@ class PhotoDiscoveryTests(unittest.TestCase):
         self.assertEqual(leads["leads"][0]["status"],"source_unreadable")
         self.assertIn("/eliplaysgta/status/2125723744094269617",leads["leads"][0]["url"])
 
+    def test_standout_map_and_verified_source_domains_are_deduped(self):
+        d=sample()
+        car=d["vehicles"]["items"][0]
+        car.update(source_url="https://gta6.house/guides/example",
+                   additional_source="https://www.gtabites.com/guides/example",
+                   map_url="https://www.gtabase.com/gta-6/map/?feature=standout-vehicle")
+        r=discover(d)
+        self.assertEqual(len(r["vehicle_source_references"]),3)
+        self.assertEqual(r["new_approvals"],0)
+        car["additional_source"]=car["source_url"]
+        self.assertEqual(len(discover(d)["vehicle_source_references"]),2)
+        car["map_url"]="https://www.gtabase.com.evil.example/image.jpg"
+        self.assertEqual(len(discover(d)["vehicle_source_references"]),1)
+
     def test_fixed_commit_snapshot(self):
         d=sample();calls=[]
         def read(url):
