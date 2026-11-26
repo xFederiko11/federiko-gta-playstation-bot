@@ -587,7 +587,7 @@ def main():
     publishing_enabled = os.getenv("AUTO_PUBLISH", "false").strip().lower() == "true"
     # The first deployment of the guard establishes a no-backfill baseline.
     # Setup only lists Buffer channels and never changes publication state.
-    first_baseline = mode in {"check", "run"} and needs_first_publication_baseline(db)
+    first_baseline = mode in {"check", "collect", "run"} and needs_first_publication_baseline(db)
     errors = 0
     try:
         seed = json.loads((ROOT / config.get("history_seed", "history-seed.json")).read_text())
@@ -640,7 +640,7 @@ def main():
         # IMPORTANT: previews made while automatic posting is disabled are not a
         # backlog. The first run after this upgrade also quarantines all prior
         # drafts, even if someone enabled AUTO_PUBLISH prematurely.
-        if mode in {"check", "run"}:
+        if mode in {"check", "collect", "run"}:
             if first_baseline or not publishing_enabled:
                 reason = "pre_launch_baseline" if first_baseline else "publishing_disabled"
                 suppressed = suppress_unpublished(db, reason, initialize=first_baseline)
@@ -663,13 +663,15 @@ def main():
                         LOG.warning("Quota gratuita locale esaurita: bozze conservate, nessun acquisto")
             else:
                 LOG.info("AUTO_PUBLISH=false: raccolta e anteprime senza coda pubblicabile; nessun invio")
+        elif mode == "collect":
+            print(f"MONITOR_RELEASE_COLLECTION_OK errors={errors}; no Buffer calls or preview text")
         elif mode != "check":
-            raise ValueError("RUN_MODE deve essere setup, check o run")
+            raise ValueError("RUN_MODE deve essere setup, check, collect o run")
         # Research RSS is strictly lower priority than official breaking news.
         # Do NOT delay the normal v11 publisher to wait for secondary sources.
         # V12 intelligence is separately switchable, fully READ-ONLY toward
         # Buffer/X, and its press items NEVER enter v11 publish_jobs.
-        if os.getenv('INTELLIGENCE_V12_ENABLED', 'false').strip().lower() == 'true':
+        if mode != 'collect' and os.getenv('INTELLIGENCE_V12_ENABLED', 'false').strip().lower() == 'true':
             try:
                 from intelligence_v12 import poll as poll_intelligence, report as report_intelligence
                 result = poll_intelligence(db, ROOT / 'intelligence-sources-v12.json')
@@ -682,7 +684,7 @@ def main():
                 LOG.warning('V12 RSS unavailable (%s); original official pipeline remains active', type(error).__name__)
         # V12.1: weekly GTAV Online and VI launch radar. Research-only, independently
         # switchable from the official publishing engine and from RSS research.
-        if os.getenv('WEEKLY_RADAR_V12_ENABLED', 'false').strip().lower() == 'true':
+        if mode != 'collect' and os.getenv('WEEKLY_RADAR_V12_ENABLED', 'false').strip().lower() == 'true':
             try:
                 from weekly_radar_v12 import poll as weekly_poll, report as weekly_report
                 weekly_status = weekly_poll(db)
@@ -696,7 +698,7 @@ def main():
                 LOG.warning('Weekly research unavailable (%s); official pipeline unaffected', type(error).__name__)
         # V13: official Rockstar GTA Online editorial digest (source-grounded).
         # No media reuploads or press autoposts; no historical backfill.
-        if os.getenv('EDITORIAL_V13_ENABLED', 'false').strip().lower() == 'true':
+        if mode != 'collect' and os.getenv('EDITORIAL_V13_ENABLED', 'false').strip().lower() == 'true':
             try:
                 from editorial_v13 import research as v13_research, report as v13_report, deliver_ready as v13_deliver
                 v13_status = v13_research(db)
