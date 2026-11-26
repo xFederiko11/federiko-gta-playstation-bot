@@ -221,3 +221,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Prevent accidental publication of local plaintext runtime data and credentials.
+/.runtime/
+.env.*
+!.env.example
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.pem
+*.key
+*.p12
+*.pfx

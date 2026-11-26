@@ -310,6 +310,11 @@ def reconcile(db, client):
 
 def deliver(db, client, upload, directory, render=render_card, checkpoint=None, policy=None,
             news_center_threads=False, require_official_media=False, media_resolver=official_image_for_event):
+    if os.getenv('GTA6_REQUIRE_ALL_POST_PHOTOS') == 'true':
+        # Production: one illustrated message; never generated cards or logo fallback.
+        news_center_threads = False
+        require_official_media = True
+        media_resolver = lambda event: official_media_for_event(event, allow_logo=False).url
     enforce_job_policy(db, policy or {})
     reconcile(db, client)
     from editorial_director_v142 import allowed as director_allowed

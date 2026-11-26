@@ -174,6 +174,21 @@ class BufferClient:
         self.last_delivery = None
 
     def _graphql(self, query, variables, *, mutation=False):
+        # Final barrier for every production createPost, including legacy
+        # scheduled mutations that bypass publish(). No text-only replies.
+        if mutation and "createPost" in query and os.getenv("GTA6_REQUIRE_ALL_POST_PHOTOS") == "true":
+            value = variables.get("input") or {}
+            thread = ((value.get("metadata") or {}).get("twitter") or {}).get("thread")
+            messages = thread if thread is not None else [value]
+            def has_image(message):
+                return any(isinstance(asset, dict)
+                           and isinstance(asset.get("image"), dict)
+                           and isinstance(asset["image"].get("url"), str)
+                           and asset["image"]["url"].startswith("https://")
+                           for asset in (message.get("assets") or []))
+            if not messages or not all(isinstance(m, dict) and has_image(m) for m in messages):
+                raise BufferAPIError("Invio bloccato: fotografia obbligatoria in ogni messaggio X",
+                                     status=400, outcome_unknown=False)
         if self.request_guard is not None:
             self.request_guard()
         try:

@@ -82,6 +82,7 @@ jobs:
         id: deliver
         if: steps.reserve.outcome == 'success'
         env:
+          GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
         run: python launch_watch_v134.py --mode deliver

@@ -166,6 +166,8 @@ jobs:
           fi
       - name: Deliver one reserved item to Buffer
         if: steps.reserve.outcome == 'success'
+        env:
+          GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
         run: python editorial_autopilot_v137.py --mode deliver
       - name: Persist Buffer outcome without automatic retry
         if: always() && steps.reserve.outcome == 'success'
