@@ -222,9 +222,17 @@ def authorize(item,state,now,*,config=None,receipts=None):
     for row in state.get("entries",{}).values():
         if row.get("status") in ACTIVE_STATUSES and identity(row.get("media_url"))==identity(image):
             if row.get("url")!=url or row.get("status")!="sent":return False
-    return any(all(item.get(k)==plan.get(k) for k in
-                   ("key","url","source","text","media_url","rotation_reason","rotation_revision","rotation_variant"))
-               for plan in ready_plans(state,now,config=config,receipts=receipts))
+    for plan in ready_plans(state,now,config=config,receipts=receipts):
+        expected=plan
+        if item.get("photo_kind"):
+            from game_photo_policy_v1 import single_photo_item
+            expected=single_photo_item(plan,item["photo_kind"])
+            if not expected or item.get("thread"):
+                continue
+        if all(item.get(k)==expected.get(k) for k in
+               ("key","url","source","text","media_url","rotation_reason","rotation_revision","rotation_variant","photo_kind")):
+            return True
+    return False
 
 
 def delivery_authorized(entry,state,now,*,live_checker=live_article,config=None,receipts=None):

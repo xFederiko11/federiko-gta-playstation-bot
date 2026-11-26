@@ -589,6 +589,9 @@ def reserve():
         if launch_active(now):
             from growth_conversion_v1 import candidate as growth_candidate
             growth_question = growth_candidate(state, now)
+            if growth_question and photo_required and not prepare_photo(growth_question):
+                print('GROWTH_HOLD_NO_REVIEWED_GAME_PHOTO')
+                growth_question = None
         owned_guide = None
         if not (quick_tip or growth_question):
             from site_evergreen_posts_v1 import candidate as owned_candidate
@@ -612,7 +615,7 @@ def reserve():
         if not launch_active(now):
             from site_article_rotation_v1 import candidate as rotation_candidate
             try:
-                rotation=rotation_candidate(state,now)
+                rotation=rotation_candidate(state,now,live_checker=lambda url: bool(scan_kind(url))) if photo_required else rotation_candidate(state,now)
             except (OSError,ValueError,TypeError,KeyError) as exc:
                 print("ARTICLE_ROTATION_HOLD",type(exc).__name__)
                 rotation=None
@@ -629,7 +632,7 @@ def reserve():
         converted=[]
         for item in selected:
             try:
-                ready=launch_double(item) if launch_active(now) else item
+                ready=launch_double(item) if launch_active(now) and not photo_required else item
                 if photo_required:
                     ready = prepare_photo(ready)
                     if ready is None:
