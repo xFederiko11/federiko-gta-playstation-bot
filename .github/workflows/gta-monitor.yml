@@ -1,6 +1,16 @@
 name: GTA Monitor gratuito
 
 on:
+  # Verify source/runner changes on the deployed default branch, even if a
+  # scheduled event is delayed. This event collects only, never sends to X.
+  push:
+    branches: [main]
+    paths:
+      - 'online.py'
+      - 'sources.py'
+      - 'sources.free.json'
+      - 'playstation_system.py'
+      - '.github/workflows/gta-monitor.yml'
   schedule:
     - cron: '7,22,37,52 * * * *'
     - cron: '4/5 * 18-20 11 *'
@@ -42,7 +52,7 @@ jobs:
       ENCRYPTED_STATE: ${{ github.workspace }}/.state/bot.enc
       GITHUB_BRANCH: ${{ github.event.repository.default_branch }}
       AUTO_PUBLISH: ${{ vars.AUTO_PUBLISH || 'false' }}
-      RUN_MODE: ${{ github.event_name == 'schedule' && 'run' || inputs.action || 'check' }}
+      RUN_MODE: ${{ github.event_name == 'push' && 'collect' || github.event_name == 'schedule' && 'run' || inputs.action || 'check' }}
       BUFFER_EXPECTED_USERNAME: 'xFederiko11'
       BUFFER_PLAN: essentials
       BUFFER_PAID_THROUGH: '2026-12-15'
@@ -115,8 +125,8 @@ jobs:
         env:
           EDITORIAL_DIRECTOR_V142_ENABLED: 'true'
           GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_API_KEY: ${{ github.event_name != 'push' && secrets.BUFFER_API_KEY || '' }}
+          BUFFER_CHANNEL_ID: ${{ github.event_name != 'push' && secrets.BUFFER_CHANNEL_ID || '' }}
           STATE_PASSWORD: ${{ secrets.STATE_PASSWORD }}
           GITHUB_TOKEN: ${{ github.token }}
         run: python online.py --once
