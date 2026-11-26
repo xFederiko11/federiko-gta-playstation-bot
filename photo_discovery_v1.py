@@ -38,7 +38,8 @@ SOURCE_HOSTS={"www.powerpyx.com","www.pushsquare.com","www.gtabase.com","gta6dat
               "www.rockstargames.com","support.rockstargames.com","gta6gps.com",
               "www.youtube.com","youtu.be","www.ign.com","insider-gaming.com",
               "www.insider-gaming.com","www.gamesradar.com","www.gtaboom.com",
-              "solucemode.com","gta6-japan.com","getvicekeys.com"}
+              "solucemode.com","gta6-japan.com","getvicekeys.com",
+              "gta6.house","gtami.com","www.gtabites.com"}
 
 def read_json(url, session=None):
     if url != API and not any(re.fullmatch(re.escape(RAW)+r"[0-9a-f]{40}/"+re.escape(path),url)
@@ -139,7 +140,7 @@ def discover(data):
     seen_vehicle=set()
     for car in data["vehicles"]["items"]:
         if car.get("spoiler") or car.get("status")!="Verificata":continue
-        for value in (car.get("source_url"),car.get("additional_source")):
+        for value in (car.get("source_url"),car.get("additional_source"),car.get("map_url")):
             url=safe_source(value)
             key=(car.get("slug",car["name"]),url)
             if url and key not in seen_vehicle:
