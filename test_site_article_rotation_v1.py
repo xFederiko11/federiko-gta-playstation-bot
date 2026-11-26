@@ -96,6 +96,11 @@ class RotationTests(TestCase):
         item=candidate(self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:True)
         self.assertIsNotNone(item)
         self.assertTrue(authorize(item,self.state,NOW,config=self.cfg,receipts=receipts))
+        from game_photo_policy_v1 import single_photo_item
+        with_photo=single_photo_item(item,"official_game_photo")
+        self.assertIsNotNone(with_photo)
+        self.assertTrue(authorize(with_photo,self.state,NOW,config=self.cfg,receipts=receipts))
+        self.assertFalse(authorize(dict(with_photo,text=with_photo["text"]+" changed"),self.state,NOW,config=self.cfg,receipts=receipts))
         self.assertIsNone(candidate(self.state,NOW,config=self.cfg,receipts=set(),live_checker=lambda u:True))
         self.assertIsNone(candidate(self.state,NOW,config=self.cfg,receipts=receipts,live_checker=lambda u:False))
         self.assertFalse(authorize(dict(item,text="different text"),self.state,NOW,config=self.cfg,receipts=receipts))

@@ -97,6 +97,11 @@ VEHICLE_CONTENT = (
     {"id":"car-bravado-banshee","path":"/veicoli/bravado-banshee/","title":"GTA VI: Bravado Banshee — dove trovarla","text":"🚘 GTA VI | Bravado Banshee\n\n📍 A Hamlet consulta l'area della richiesta e verifica la Banshee con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
     {"id":"car-buckingham-windsor-drop","path":"/veicoli/buckingham-windsor-drop/","title":"GTA VI: Buckingham Windsor Drop — dove trovarla","text":"🚘 GTA VI | Windsor Drop\n\n📍 Concessionaria a Bayside, a ovest di Dynamix Fitness. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
     {"id":"car-pegassi-toros","path":"/veicoli/pegassi-toros/","title":"GTA VI: Pegassi Toros — dove trovarla","text":"🚘 GTA VI | Toros\n\n📍 A Southside cerca il salone esagonale centrale. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-ocelot-jagular","path":"/veicoli/ocelot-jagular/","title":"GTA VI: Ocelot Jagular — dove trovarla","text":"🚘 GTA VI | Ocelot Jagular\n\n📍 Indizio Randy: Belville. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-buckingham-jubilee","path":"/veicoli/buckingham-jubilee/","title":"GTA VI: Buckingham Jubilee — dove trovarla","text":"🚘 GTA VI | Buckingham Jubilee\n\n📍 Indizio Randy: Bayside. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-grotti-itali-rsx","path":"/veicoli/grotti-itali-rsx/","title":"GTA VI: Grotti Itali RSX — dove trovarla","text":"🚘 GTA VI | Grotti Itali RSX\n\n📍 Indizio Randy: Bayside. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-pfister-growler","path":"/veicoli/pfister-growler/","title":"GTA VI: Pfister Growler — dove trovarla","text":"🚘 GTA VI | Pfister Growler\n\n📍 Indizio Randy: Southside. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-gallivanter-baller-st-d","path":"/veicoli/gallivanter-baller-st-d/","title":"GTA VI: Gallivanter Baller ST-D — dove trovarla","text":"🚘 GTA VI | Gallivanter Baller ST-D\n\n📍 Indizio Randy: Casanova Island. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
 )
 # Interleave car topics with the existing evergreen diversity. One owned-site
 # story per day is still enforced by DAY_BUDGET and SPACING below.
@@ -167,7 +172,11 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
     # owns all repeat delivery, including cooldown and Sent receipt checks.
     previous_paths = {_owned_path(entry.get("url")) for entry in entries.values()
                       if isinstance(entry, dict)}
-    for item in CONTENT:
+    # A reviewed photographic story is the first useful fallback, not the last
+    # of dozens of illustrated candidates. Preserve the historical queue order
+    # for inventory and offline tests; no extra slot or bypass of cooldown.
+    ordered = sorted(CONTENT,key=lambda item: item['id']!='leonida-six-official-photos') if photo_checker else CONTENT
+    for item in ordered:
         url=PORTAL_BASE+item["path"]
         if _owned_path(url) in previous_paths:
             continue
