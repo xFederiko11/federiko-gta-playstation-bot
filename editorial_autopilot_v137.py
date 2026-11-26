@@ -311,18 +311,53 @@ def powerpyx_spotlight(state: dict, now: datetime) -> dict | None:
     return None
 
 
+FEED_ACCEPT = 'application/rss+xml, application/atom+xml, application/xml, text/xml'
+ATOM_ROOT = '{http://www.w3.org/2005/Atom}feed'
+
+
+def feed_payload_kind(data):
+    """Bounded, sanitized shape diagnostics; never expose response text."""
+    prefix = data[:4096].lstrip(b'\xef\xbb\xbf \t\r\n')
+    if not prefix:
+        return 'empty'
+    prefix = re.sub(rb'^<\?xml[^>]*>\s*', b'', prefix, count=1)
+    if re.match(rb'<(?:rss|feed)(?:\s|>)', prefix):
+        return 'rss_or_atom'
+    if re.match(rb'(?:<!doctype\s+html\b|<html(?:\s|>)|<head(?:\s|>)|<body(?:\s|>))',
+                prefix, flags=re.I):
+        return 'html'
+    return 'other'
+
+
+def validate_feed_root(root):
+    """Only supported public RSS/Atom envelopes count as a successful read."""
+    if root.tag == 'rss' and root.find('channel') is not None:
+        return 'rss'
+    if root.tag == ATOM_ROOT:
+        return 'atom'
+    raise ValueError('Unexpected RSS/Atom root or missing RSS channel')
+
+
+def validate_feed_url(value, domains):
+    parsed = urlsplit(value)
+    if (parsed.scheme != 'https' or parsed.hostname not in domains or
+            parsed.username or parsed.password or parsed.port not in (None, 443)):
+        raise ValueError('Unexpected feed URL or redirect')
+
+
 def parse_feed(data: bytes, src: dict):
     if len(data) > MAX_DOWNLOAD:
         raise ValueError('Feed too large')
     root = ET.fromstring(data)
     rows = []
-    if root.tag == 'rss':
+    kind = validate_feed_root(root)
+    if kind == 'rss':
         for node in root.findall('.//item'):
             title = node.findtext('title') or ''
             url = node.findtext('link') or ''
             stamp = node.findtext('pubDate') or node.findtext('{http://purl.org/dc/elements/1.1/}date')
             rows.append((title, url, stamp))
-    elif root.tag == '{http://www.w3.org/2005/Atom}feed':
+    else:
         atom = '{http://www.w3.org/2005/Atom}'
         for node in root.findall(f'.//{atom}entry'):
             title = node.findtext(atom + 'title') or ''
@@ -333,9 +368,6 @@ def parse_feed(data: bytes, src: dict):
                              if not n.get('rel') or n.get('rel') == 'alternate'), '')
             stamp = node.findtext(atom + 'published') or node.findtext(atom + 'updated')
             rows.append((title, link, stamp))
-    else:
-        # A well-formed HTML access page is not a successful empty RSS feed.
-        raise ValueError('Unexpected RSS/Atom root')
     for title, url, stamp in rows:
         if not topic(title) or not published(stamp):
             continue
@@ -353,19 +385,19 @@ def load_sources(path: Path = CONFIG) -> list[dict]:
     if settings.get('schema') != 'v13.7' or not isinstance(settings.get('sources'), list):
         raise ValueError('Unsupported sources schema')
     for src in settings['sources']:
-        u = urlsplit(src['feed'])
-        if u.scheme != 'https' or u.hostname not in src['feed_domains'] or u.username or u.password:
-            raise ValueError('Invalid feed domain')
+        validate_feed_url(src['feed'], src['feed_domains'])
     return settings['sources']
 
 def _read_feed_once(http, src):
+    validate_feed_url(src['feed'], src['feed_domains'])
     response = http.get(src['feed'], timeout=(5, 12),
-                        headers={'User-Agent': 'FederikoGTANewsCenter/1.0 (RSS reader)'},
+                        headers={'User-Agent': 'FederikoGTANewsCenter/1.0 (RSS reader)',
+                                 'Accept': FEED_ACCEPT},
                         stream=True, allow_redirects=True)
     try:
         response.raise_for_status()
-        if response.url and urlsplit(response.url).hostname not in src['feed_domains']:
-            raise ValueError('Unexpected feed redirect')
+        if response.url:
+            validate_feed_url(response.url, src['feed_domains'])
         data = bytearray()
         for block in response.iter_content(65536):
             data.extend(block)
@@ -377,10 +409,7 @@ def _read_feed_once(http, src):
 
 
 def _looks_like_feed(data):
-    # Only a recognizable RSS/Atom prefix can justify a single parse retry.
-    # An HTML/challenge document or arbitrary XML is not a feed.
-    prefix = data[:4096].lstrip(b'\xef\xbb\xbf \t\r\n')
-    return bool(re.match(rb'(?:<\?xml[^>]*>\s*)?<(?:rss|feed)(?:\s|>)', prefix))
+    return feed_payload_kind(data) == 'rss_or_atom'
 
 
 def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[str]]:
@@ -390,6 +419,7 @@ def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[s
     for src in sources:
         if not src.get('enabled', True):
             continue
+        data = None
         try:
             data = _read_feed_once(http, src)
             try:
@@ -406,6 +436,8 @@ def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[s
         except (requests.RequestException, ET.ParseError, ValueError, KeyError, TypeError) as exc:
             errors.append(f"{src['name']}: {type(exc).__name__}")
             print(f"FEED_ERROR {src['name']}: {type(exc).__name__}")
+            if data is not None and isinstance(exc, (ET.ParseError, ValueError)):
+                print(f"FEED_RESPONSE_KIND {src['name']}: {feed_payload_kind(data)} bytes={len(data)}")
     return items, errors
 
 def load_state(path: Path | None = None) -> dict:

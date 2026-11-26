@@ -87,6 +87,23 @@ class CommunityResearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(bad)
 
+    def test_nonfeed_and_rss_without_channel_are_unavailable_not_empty_success(self):
+        source = next(x for x in self.config["sources"] if x["name"] == "PowerPyx")
+        for raw in (b"<html><body>temporary access page</body></html>", b"<rss/>",
+                    b"<unrelated-rss><item/></unrelated-rss>", b"<rss><broken"):
+            with self.subTest(raw=raw):
+                result = collect(self.config, session=HTTP(source["feed"], raw), now=NOW)
+                row = next(x for x in result["sources_checked"] if x["source"] == "PowerPyx")
+                self.assertEqual(row["status"], "unavailable")
+                self.assertFalse(result["candidates"])
+                self.assertTrue(any(x["source"] == "PowerPyx" for x in result["errors"]))
+
+    def test_valid_empty_rss_is_reachable_without_inventing_candidates(self):
+        source = next(x for x in self.config["sources"] if x["name"] == "PowerPyx")
+        result = collect(self.config, session=HTTP(source["feed"], b"<rss><channel/></rss>"), now=NOW)
+        self.assertEqual(next(x for x in result["sources_checked"] if x["source"] == "PowerPyx")["status"], "ok")
+        self.assertEqual(result["candidates"], [])
+
     def test_manual_sources_never_scraped(self):
         source = next(x for x in self.config["sources"] if x["name"] == "PowerPyx")
         date = (NOW - timedelta(hours=2)).isoformat()

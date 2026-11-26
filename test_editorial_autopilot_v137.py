@@ -58,6 +58,22 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertNotIn('Rockstar conferma', post)
         self.assertLessEqual(bot.weight_x(post), 280)
 
+    def test_feed_shape_diagnostics_are_bounded_and_safe(self):
+        for raw, expected in ((b"", "empty"), (b"<!DOCTYPE html><html>private details", "html"),
+                              (b"<?xml version='1.0'?><rss><channel>", "rss_or_atom"),
+                              (b"unexpected private body", "other")):
+            self.assertEqual(bot.feed_payload_kind(raw), expected)
+        for url in ("http://www.powerpyx.com/feed/", "https://user@www.powerpyx.com/feed/",
+                    "https://www.powerpyx.com:8443/feed/", "https://other.example/feed/"):
+            with self.assertRaises(ValueError):
+                bot.validate_feed_url(url, ["www.powerpyx.com"])
+
+    def test_empty_feed_requires_rss_channel(self):
+        src = {'name': 'PowerPyx', 'domains': ['powerpyx.com']}
+        with self.assertRaises(ValueError):
+            list(bot.parse_feed(b'<rss/>', src))
+        self.assertEqual(list(bot.parse_feed(b'<rss><channel/></rss>', src)), [])
+
     def test_well_formed_html_is_not_a_successful_empty_feed(self):
         src = {'name': 'PowerPyx', 'domains': ['powerpyx.com']}
         with self.assertRaises(ValueError):

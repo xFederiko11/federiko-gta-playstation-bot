@@ -16,7 +16,8 @@ import xml.etree.ElementTree as ET
 
 import requests
 
-from editorial_autopilot_v137 import canonical, published, clean, TOPIC_RE
+from editorial_autopilot_v137 import (canonical, published, clean, TOPIC_RE,
+    FEED_ACCEPT, validate_feed_root, feed_payload_kind)
 
 REGISTRY = Path("community-research-sources-v1.json")
 MAX_DOWNLOAD = 1_800_000
@@ -83,7 +84,7 @@ def parse_research_feed(raw: bytes, source: dict):
         raise ValueError("Excessive feed size")
     root = ET.fromstring(raw)
     rows = []
-    if root.tag.lower().endswith("rss") or root.tag.lower().endswith("rdf"):
+    if validate_feed_root(root) == "rss":
         for node in root.findall(".//item"):
             rows.append((node.findtext("title"), node.findtext("link"),
                          node.findtext("pubDate") or
@@ -123,7 +124,8 @@ def fetch_candidates(source: dict, *, session, now: datetime) -> list[dict]:
     """Fetch one pinned public feed and retain attribution and age."""
     response = session.get(
         source["feed"], timeout=(5, 12), stream=True, allow_redirects=True,
-        headers={"User-Agent": "Federiko-GTA-VI-Research/1.0 (public RSS only)"},
+        headers={"User-Agent": "Federiko-GTA-VI-Research/1.0 (public RSS only)",
+                 "Accept": FEED_ACCEPT},
     )
     try:
         response.raise_for_status()
@@ -137,7 +139,13 @@ def fetch_candidates(source: dict, *, session, now: datetime) -> list[dict]:
     finally:
         response.close()
     candidates = []
-    for item in parse_research_feed(bytes(raw), source):
+    try:
+        rows = list(parse_research_feed(bytes(raw), source))
+    except (ET.ParseError, ValueError):
+        print("RESEARCH_FEED_RESPONSE_KIND", source["name"], feed_payload_kind(bytes(raw)),
+              "bytes=" + str(len(raw)))
+        raise
+    for item in rows:
         when = published(item["published"])
         if when is None or when > now + timedelta(minutes=5) or now - when > timedelta(hours=WINDOW_HOURS):
             continue
@@ -208,6 +216,9 @@ def main():
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("RESEARCH_DIGEST", "candidates=" + str(len(result["candidates"])),
           "errors=" + str(len(result["errors"])), "read_only=true")
+    for row in result["sources_checked"]:
+        print("RESEARCH_SOURCE_CHECK", row["source"], row["status"],
+              "relevant=" + str(row["relevant"]))
     for item in result["candidates"][:15]:
         print("RESEARCH_LEAD", item["source"], item["published_utc"], item["url"])
     print("RESEARCH_NO_POST: all candidates require editorial verification")
