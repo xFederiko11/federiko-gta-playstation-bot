@@ -20,7 +20,11 @@ class RockstarSupportLiveProbeTests(unittest.TestCase):
         workflow = Path(".github/workflows/rockstar-support-qa.yml").read_text(
             encoding="utf-8")
         value = "PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers"
-        self.assertEqual(workflow.count(value), 3)
+        # Job-level configuration is inherited by install, launch smoke and both probes.
+        self.assertEqual(workflow.count(value), 1)
+        self.assertIn("    env:\n      "+value+"\n    steps:", workflow)
+        self.assertIn("OFFICIAL_BROWSER_LAUNCH_OK", workflow)
+        self.assertIn("ROCKSTAR_BROWSER_CHANNEL=chrome", workflow)
         self.assertIn("probe_general_index()",workflow)
         self.assertIn("timeout 210s python rockstar_support_live_probe_v1.py", workflow)
         self.assertNotIn("BUFFER_API_KEY:", workflow)

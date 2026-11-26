@@ -100,6 +100,22 @@ class SupportBrowserFailure(ValueError):
         super().__init__(f"Rockstar Support browser {phase}: {reason}")
 
 
+def _browser_launch_options():
+    """Match the installed browser selected by the existing runner workflow."""
+    options = {"headless": True, "args": ["--disable-dev-shm-usage"]}
+    if os.getenv("ROCKSTAR_BROWSER_CHANNEL", "").strip() == "chrome":
+        options["channel"] = "chrome"
+    proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+    if proxy:
+        parts = urlsplit(proxy)
+        options["proxy"] = {"server": f"{parts.scheme}://{parts.hostname}:{parts.port or 80}"}
+        if parts.username:
+            from urllib.parse import unquote
+            options["proxy"].update(username=unquote(parts.username),
+                                    password=unquote(parts.password or ""))
+    return options
+
+
 def _browser_html(source, address, selector=None):
     """Render an official source; diagnose the phase without exposing secrets.
 
@@ -113,15 +129,7 @@ def _browser_html(source, address, selector=None):
         os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(Path(__file__).with_name(".browsers")))
         from playwright.sync_api import sync_playwright
         with sync_playwright() as playwright:
-            options = {"headless": True}
-            proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
-            if proxy:
-                parts = urlsplit(proxy)
-                options["proxy"] = {"server": f"{parts.scheme}://{parts.hostname}:{parts.port or 80}"}
-                if parts.username:
-                    from urllib.parse import unquote
-                    options["proxy"].update(username=unquote(parts.username),
-                                            password=unquote(parts.password or ""))
+            options = _browser_launch_options()
             phase = "launch"
             browser = playwright.chromium.launch(**options)
             try:

@@ -163,6 +163,35 @@ class RockstarSupportTimeoutTests(unittest.TestCase):
         browser.close.assert_called_once()
         page.wait_for_selector.assert_not_called()
 
+    def test_configured_chrome_channel_is_used_by_support_and_newswire(self):
+        for source, address in (
+                (SUPPORT, SUPPORT_URL),
+                ({"id": "newswire", "selector": "main a"},
+                 "https://www.rockstargames.com/newswire")):
+            with self.subTest(source=source["id"]):
+                page = Mock(url=address)
+                page.content.return_value = READY_HTML
+                browser = Mock()
+                browser.new_page.return_value = page
+                pw = Mock()
+                pw.chromium.launch.return_value = browser
+                cm = MagicMock()
+                cm.__enter__.return_value = pw
+                with (patch.dict("os.environ", {"ROCKSTAR_BROWSER_CHANNEL": "chrome"}, clear=True),
+                      patch("playwright.sync_api.sync_playwright", return_value=cm)):
+                    self.assertEqual(_browser_html(source, address), READY_HTML)
+                self.assertEqual(pw.chromium.launch.call_args.kwargs["channel"], "chrome")
+                self.assertTrue(pw.chromium.launch.call_args.kwargs["headless"])
+                browser.close.assert_called_once()
+
+    def test_default_shell_and_unrecognized_channel_never_select_another_browser(self):
+        from sources import _browser_launch_options
+        for channel in ("", "untrusted-browser"):
+            with patch.dict("os.environ", {"ROCKSTAR_BROWSER_CHANNEL": channel}, clear=True):
+                options = _browser_launch_options()
+                self.assertNotIn("channel", options)
+                self.assertTrue(options["headless"])
+
     def test_chromium_launch_failure_has_safe_phase_not_playwright_message(self):
         pw = Mock()
         pw.chromium.launch.side_effect = RuntimeError("proxy-auth:confidential")
