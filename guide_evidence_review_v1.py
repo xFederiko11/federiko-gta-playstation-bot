@@ -21,6 +21,11 @@ TOPICS = (
     ("trofei", re.compile(r"\b(troph(?:y|ies)|achievement|platinum|platino)\b",re.I)),
     ("glitch", re.compile(r"\b(glitch|exploit|duplication|duplicate|money farm|xp farm)\b",re.I)),
     ("trucchi", re.compile(r"\b(cheat|code|codici|trucchi)\b",re.I)),
+    ("kenton", re.compile(r"\b(kenton|dive sites?|shipwrecks?|maritime disputes?)\b",re.I)),
+    ("animali", re.compile(r"\b(animals?|wildlife|aquatic|birds?|reptiles?|amphibians?|cats\s*(?:&|and)\s*dogs|fish|species)\b",re.I)),
+    ("meditazione", re.compile(r"\b(meditat(?:e|ion|ing)|buff)\b",re.I)),
+    ("economia", re.compile(r"\b(buckme|bank account|banking|savings|deposit)\b",re.I)),
+    ("collezionabili", re.compile(r"\b(under the bridges|no flusher|utility markings)\b",re.I)),
     ("missioni", re.compile(r"\b(mission|walkthrough|chapter|heist)\b",re.I)),
     ("collezionabili", re.compile(r"\b(collectible|collectable|hidden package|easter egg)\b",re.I)),
     ("veicoli", re.compile(r"\b(vehicle|car|bike|boat|jet ski|garage)\b",re.I)),
@@ -81,6 +86,10 @@ def make_report(digest:dict) -> dict:
                   "glitch":["guide-e-tutorial/"],"missioni":["guide-e-tutorial/"],
                   "veicoli":["guide-e-tutorial/"],
                   "collezionabili":["guide-e-tutorial/"],"hdr":["hdr-oled/"],
+                  "animali":["guide-e-tutorial/studiare-animali/"],
+                  "meditazione":["guide-e-tutorial/meditazione-capitolo-1/"],
+                  "kenton":["collezionabili/percorsi/","guide-e-tutorial/"],
+                  "economia":["soldi-facili/"],
                   "altro":["scoperte/"]}
     for name in sorted(grouped):
         rows=grouped[name]
@@ -94,7 +103,7 @@ def make_report(digest:dict) -> dict:
             "topic":name,
             "source_count":len({x["source"] for x in rows}),
             "lead_count":len(rows),
-            "leads":rows[:12],
+            "leads":rows,
             # Two sources discussing "missions" does not corroborate the same claim.
             "claim_verified":False,
             "trophy_safe_verified":False,
@@ -105,7 +114,7 @@ def make_report(digest:dict) -> dict:
             "target_page_candidates":targets,
         })
     return {"schema":SCHEMA,"generated_utc":digest.get("generated_utc"),
-            "sections":sections,"publication":"review_only__no_site_or_buffer_changes"}
+            "reviewed_lead_count":len(entries),"sections":sections,"publication":"review_only__no_site_or_buffer_changes"}
 
 
 def markdown(report:dict) -> str:
@@ -114,7 +123,8 @@ def markdown(report:dict) -> str:
     lines=["<!-- gta6-guide-review-v1 -->","# GTA VI — revisione guide e scoperte","",
            "Questa è una **lista di verifiche**, non una guida già verificata.",
            "Titoli simili non provano che descrivano lo stesso glitch o metodo.",
-           "Nessun testo di articoli copiato; nessun post X o modifica del sito.",""]
+           "Nessun testo di articoli copiato; nessun post X o modifica del sito.",
+           f"Titoli inventariati: {sum(section['lead_count'] for section in report['sections'])}. Tutti i link conservati nella revisione, senza aumentare il feed del sito.",""]
     if not report["sections"]:
         lines.append("Nessuna pista recente adatta alla revisione.")
     for section in report["sections"]:

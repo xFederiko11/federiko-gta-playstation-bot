@@ -68,6 +68,7 @@ def markdown(digest: dict) -> str:
     if digest.get("schema") != "gta6-research-digest-v1":
         raise ValueError("Unexpected research digest schema")
     candidates = [x for x in digest.get("candidates", []) if valid_candidate(x)]
+    total_candidates = len(candidates)
     candidates = candidates[:MAX_ENTRIES]
     # Machine-readable research leads for the independently deployed site.
     # These are explicitly NOT verified article claims or permissions to tweet.
@@ -93,7 +94,8 @@ def markdown(digest: dict) -> str:
         "Non rappresentano annunci Rockstar e non vengono inviati a Buffer.",
         "",
         f"Scansione UTC: {escape(str(digest.get('generated_utc', 'non disponibile')))}",
-        f" | Candidati pertinenti: {len(candidates)}",
+        f" | Candidati pertinenti: {total_candidates} · Selezione feed sito: {len(candidates)}",
+        "L’inventario completo è nella revisione guide sottostante e nell’artifact del workflow.",
         "",
         "## Nuove piste editoriali",
         "",
@@ -114,6 +116,8 @@ def markdown(digest: dict) -> str:
         ])
     errors = digest.get("errors", [])
     lines.extend(["## Salute dei feed", ""])
+    for row in digest.get("sources_checked", []):
+        lines.append(f"- {safe_md(row['source'])}: {safe_md(row['status'])} · titoli pertinenti: {int(row['relevant'])}")
     if errors:
         for e in errors:
             lines.append(f"- ⚠️ {safe_md(e['source'])}: {safe_md(e['error'])} — acquisizione non riuscita")
