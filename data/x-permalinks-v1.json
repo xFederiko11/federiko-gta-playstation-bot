@@ -1,7 +1,16 @@
 {
   "schema": "verified-buffer-x-permalinks-v1",
-  "checked_utc": "2026-11-25T20:37:44.183513Z",
+  "checked_utc": "2026-11-26T08:40:58.115067Z",
   "posts": [
+    {
+      "article_url": "https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/",
+      "x_url": "https://x.com/xFederiko11/status/2125838860567351489",
+      "buffer_id": "6b07d156f13f49a925990eda",
+      "sent_at": "2026-11-26T06:27:35.430000Z",
+      "excerpt": "🌴 GTA VI | LEONIDA IN SEI SCATTI\n\nDa Vice City alle Leonida Keys, sei ambienti nelle immagini ufficiali Rockstar. Nessuno spoiler della storia.\n\n📸 Galleria e fonti:\nhttps://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/\n\nFoto promozionale: Rockstar Games.",
+      "title": "GTA VI: Leonida in sei immagini Rockstar",
+      "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
+    },
     {
       "article_url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-53-trattati-bene/",
       "x_url": "https://x.com/xFederiko11/status/2125559691568685368",
@@ -255,6 +264,6 @@
       "verified_by": "Buffer sent Post.externalLink on verified @xFederiko11 channel"
     }
   ],
-  "matched_this_run": 28,
+  "matched_this_run": 29,
   "note": "Buffer delivery receipts verified; live X existence and engagement are not independently checked"
 }
