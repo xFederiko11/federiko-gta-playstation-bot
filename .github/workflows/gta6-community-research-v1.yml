@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/gta6-community-research-v1.yml'
+      - 'community_research_v1.py'
       - 'community-research-sources-v1.json'
       - 'guide_evidence_review_v1.py'
       - 'guide_claim_evidence_gate.py'
