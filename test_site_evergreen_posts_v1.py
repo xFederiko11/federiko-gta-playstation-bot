@@ -45,6 +45,21 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertIn("Non sono istruzioni di sblocco",selected["text"])
         self.assertIsNone(candidate(self.state,NOW,live_checker=lambda u:False,photo_checker=lambda u:u==new))
 
+    def test_strict_photo_first_publication_capacity_is_bounded_and_uncertain_counts(self):
+        now=datetime(2026,11,26,12,tzinfo=timezone.utc)
+        first="https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/"
+        second="https://xfederiko11.github.io/gta-6/articoli/gta-vi-ultimate-edition-auto-garage/"
+        self.state["entries"]["one"]={"source":SOURCE,"status":"uncertain","url":first,
+            "reserved_utc":(now-timedelta(hours=5)).isoformat()}
+        check=lambda url:"official_game_photo" if url==second else None
+        item=candidate(self.state,now,live_checker=lambda url:True,photo_checker=check)
+        self.assertEqual(item["url"],second)
+        self.assertIsNone(candidate(self.state,now-timedelta(hours=2),live_checker=lambda url:True,photo_checker=check))
+        self.state["entries"]["two"]={"source":SOURCE,"status":"sent","reserved_utc":(now-timedelta(hours=9)).isoformat()}
+        self.state["entries"]["three"]={"source":SOURCE,"status":"sent","reserved_utc":(now-timedelta(hours=13)).isoformat()}
+        self.assertIsNone(candidate(self.state,now,live_checker=lambda url:True,photo_checker=check))
+        self.assertIsNone(candidate({"entries":{}},now,live_checker=lambda url:True,photo_checker=lambda url:True))
+
     def test_original_creator_showcase_requires_live_page_and_unique_image(self):
         item=next(x for x in CONTENT if x["id"]=="creator-showcase-original")
         self.assertEqual(item["path"],"/video-tutorial/")
@@ -107,6 +122,11 @@ class SiteEvergreenTests(unittest.TestCase):
             ("car-pegassi-tempesta",("Vespucci Island","Non è uno spawn garantito")),
             ("car-buckingham-windsor-drop",("Bayside","Non è uno spawn garantito")),
             ("car-pegassi-toros",("Southside","Non è uno spawn garantito")),
+            ("car-ascot-paragon",("Bayside","Dynamix Fitness")),
+            ("car-bravado-gauntlet-hellfire",("Capri","Hair by Clair")),
+            ("car-piccia-furia",("Vespucci Island","seconda casa")),
+            ("car-benefactor-dubsta",("Bayside","sinistra")),
+            ("car-bravado-banshee",("Southside","salone centrale")),
         ):
             for phrase in phrases:
                 self.assertIn(phrase,rows[ident]["text"],ident)

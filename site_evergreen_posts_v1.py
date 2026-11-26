@@ -16,6 +16,9 @@ from portal_links_v148 import PORTAL_BASE, page_live
 SOURCE = "Guide GTA VI Italia"
 DAY_BUDGET = 1
 SPACING = timedelta(hours=20)
+# Only strict reviewed-photo first publications get a wider inventory window.
+PHOTO_DAY_BUDGET = 3
+PHOTO_SPACING = timedelta(hours=4)
 # Every entry is original editorial copy pointing to an existing public
 # informational landing page; do not claim the third-party source verified it.
 CONTENT = (
@@ -93,11 +96,11 @@ VEHICLE_CONTENT = (
     {"id":"car-pegassi-vitello","path":"/veicoli/pegassi-vitello/","title":"GTA VI: Pegassi Vitello — dove trovarla","text":"🚘 GTA VI | Pegassi Vitello\n\n📍 Indizio Randy: villa a Waning Sands, garage destro.\n⚠️ Attiva la richiesta. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
     {"id":"car-pegassi-infernus","path":"/veicoli/pegassi-infernus/","title":"GTA VI: Pegassi Infernus — dove trovarla","text":"🚘 GTA VI | Pegassi Infernus\n\n📍 Indizio Randy: deposito della polizia a Crosstown, settimo piano.\n⚠️ Segui la richiesta. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
     {"id":"car-pegassi-tempesta","path":"/veicoli/pegassi-tempesta/","title":"GTA VI: Pegassi Tempesta — dove trovarla","text":"🚘 GTA VI | Pegassi Tempesta\n\n📍 PowerPyx segnala un vialetto a Vespucci Island.\n⚠️ Controlla WAiNK. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
-    {"id":"car-ascot-paragon","path":"/veicoli/ascot-paragon/","title":"GTA VI: Ascot Paragon — dove trovarla","text":"🚘 GTA VI | Ascot Paragon\n\n📍 La mappa richieste indica Waning Sands: verifica modello e tracker con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
-    {"id":"car-bravado-gauntlet-hellfire","path":"/veicoli/bravado-gauntlet-hellfire/","title":"GTA VI: Bravado Gauntlet Hellfire — dove trovarla","text":"🚘 GTA VI | Bravado Gauntlet Hellfire\n\n📍 Per Randy consulta la zona di Hamlet sulla mappa GTABase.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
-    {"id":"car-piccia-furia","path":"/veicoli/piccia-furia/","title":"GTA VI: Piccia Furia — dove trovarla","text":"🚘 GTA VI | Piccia Furia\n\n📍 La richiesta è segnalata nell'area di Hamlet: controlla WAiNK prima del furto.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
-    {"id":"car-benefactor-dubsta","path":"/veicoli/benefactor-dubsta/","title":"GTA VI: Benefactor Dubsta — dove trovarla","text":"🚘 GTA VI | Benefactor Dubsta\n\n📍 GTABase segnala un parcheggio a Vice Beach: controlla il modello con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
-    {"id":"car-bravado-banshee","path":"/veicoli/bravado-banshee/","title":"GTA VI: Bravado Banshee — dove trovarla","text":"🚘 GTA VI | Bravado Banshee\n\n📍 A Hamlet consulta l'area della richiesta e verifica la Banshee con WAiNK.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-ascot-paragon","path":"/veicoli/ascot-paragon/","title":"GTA VI: Ascot Paragon — dove trovarla","text":"🚘 GTA VI | Ascot Paragon\n\n📍 Salone di Bayside, a ovest di Dynamix Fitness. Cerca nell'angolo sud.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-bravado-gauntlet-hellfire","path":"/veicoli/bravado-gauntlet-hellfire/","title":"GTA VI: Bravado Gauntlet Hellfire — dove trovarla","text":"🚘 GTA VI | Bravado Gauntlet Hellfire\n\n📍 Capri: parcheggio coperto dell'albergo a sud-ovest di Hair by Clair.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-piccia-furia","path":"/veicoli/piccia-furia/","title":"GTA VI: Piccia Furia — dove trovarla","text":"🚘 GTA VI | Piccia Furia\n\n📍 Vespucci Island: vialetto della seconda casa a nord della strada centrale.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-benefactor-dubsta","path":"/veicoli/benefactor-dubsta/","title":"GTA VI: Benefactor Dubsta — dove trovarla","text":"🚘 GTA VI | Benefactor Dubsta\n\n📍 Bayside: salone a ovest di Dynamix Fitness, a sinistra dell'ingresso.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
+    {"id":"car-bravado-banshee","path":"/veicoli/bravado-banshee/","title":"GTA VI: Bravado Banshee — dove trovarla","text":"🚘 GTA VI | Bravado Banshee\n\n📍 Southside: salone centrale dei tre edifici esagonali a nord-est.\n⚠️ Non è uno spawn garantito fuori dall'incarico: controlla WAiNK.\n\n📖 Passaggi e fonti:"},
     {"id":"car-buckingham-windsor-drop","path":"/veicoli/buckingham-windsor-drop/","title":"GTA VI: Buckingham Windsor Drop — dove trovarla","text":"🚘 GTA VI | Windsor Drop\n\n📍 Concessionaria a Bayside, a ovest di Dynamix Fitness. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
     {"id":"car-pegassi-toros","path":"/veicoli/pegassi-toros/","title":"GTA VI: Pegassi Toros — dove trovarla","text":"🚘 GTA VI | Toros\n\n📍 A Southside cerca il salone esagonale centrale. Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
     {"id":"car-ocelot-jagular","path":"/veicoli/ocelot-jagular/","title":"GTA VI: Ocelot Jagular — dove trovarla","text":"🚘 GTA VI | Ocelot Jagular\n\n📍 Indizio Randy: Belville. Attiva la richiesta e verifica WAiNK.\n⚠️ Non è uno spawn garantito.\n\n📖 Passaggi e fonti:"},
@@ -166,9 +169,16 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
         stamp=published(e.get("reserved_utc"))
         if stamp:
             recent.append(stamp)
-    if sum(t.date()==now.date() for t in recent)>=DAY_BUDGET:
+    from game_photo_policy_v1 import active as photo_active
+    from quality_publish_policy_v1 import local
+    strict_photo = photo_checker is not None and photo_active(now)
+    day_budget = PHOTO_DAY_BUDGET if strict_photo else DAY_BUDGET
+    gap = PHOTO_SPACING if strict_photo else SPACING
+    if sum(local(t).date()==local(now).date() for t in recent)>=day_budget:
         return None
-    if recent and now-max(recent)<SPACING:
+    if strict_photo and sum(now-timedelta(hours=24)<=t<=now for t in recent)>=PHOTO_DAY_BUDGET:
+        return None
+    if recent and now-max(recent)<gap:
         return None
     # A legacy entry may have a different key for the same article. The
     # evergreen queue is first-publication only; reviewed article rotation
@@ -189,15 +199,22 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
         key=hashlib.sha256(("site-evergreen-v1:"+item["id"]).encode()).hexdigest()[:24]
         if key in entries:
             continue
-        if photo_checker is not None and not photo_checker(url):
+        kind=photo_checker(url) if photo_checker is not None else None
+        if photo_checker is not None and not kind:
             continue
         if not live_checker(url):
             continue
         from social_media_gate_v2 import cover_for
-        return {"key":key,"sig":similarity_key(item["title"]),
+        proposed={"key":key,"sig":similarity_key(item["title"]),
                 "url":url, "title":item["title"],"source":SOURCE,
                 "text":item["text"]+"\n"+url+"\n\n#GTAVI",
                 "media_url":cover_for(url)}
+        # Do not let an oversized first candidate obstruct the next photo.
+        if strict_photo:
+            from game_photo_policy_v1 import single_photo_item
+            if not single_photo_item(proposed,kind):
+                continue
+        return proposed
     return None
 
 

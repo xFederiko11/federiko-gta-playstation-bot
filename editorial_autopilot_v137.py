@@ -634,9 +634,12 @@ def reserve():
             try:
                 ready=launch_double(item) if launch_active(now) and not photo_required else item
                 if photo_required:
+                    if not scan_kind(ready.get('url')):
+                        print('MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO')
+                        continue
                     ready = prepare_photo(ready)
                     if ready is None:
-                        print('MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO_OR_COPY_BUDGET')
+                        print('MEDIA_HOLD_PHOTO_COPY_OVER_BUDGET')
                         continue
                 image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
                               else prepare_media(ready,state))
