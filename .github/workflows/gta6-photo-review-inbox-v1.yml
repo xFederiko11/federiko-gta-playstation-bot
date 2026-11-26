@@ -12,6 +12,7 @@ on:
       - 'test_photo_gap_digest_v1.py'
       - 'data/photo-intake-known-status-v1.json'
       - 'data/official-gallery-leads-v1.json'
+      - 'data/vehicle-location-leads-v1.json'
       - '.github/workflows/gta6-photo-review-inbox-v1.yml'
   push:
     branches: [main]
@@ -24,6 +25,7 @@ on:
       - 'test_photo_gap_digest_v1.py'
       - 'data/photo-intake-known-status-v1.json'
       - 'data/official-gallery-leads-v1.json'
+      - 'data/vehicle-location-leads-v1.json'
       - '.github/workflows/gta6-photo-review-inbox-v1.yml'
   schedule:
     - cron: '32 8 * * *'

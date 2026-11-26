@@ -42,6 +42,21 @@ class PhotoDiscoveryTests(unittest.TestCase):
         self.assertEqual(doc["status"],"link_only_rights_unverified")
         self.assertEqual(sum("Vapid Stanier" in x for x in doc["titles"]),4)
 
+    def test_vehicle_research_and_rights_are_link_only(self):
+        from photo_discovery_v1 import vehicle_location_leads
+        d=sample()
+        d["vehicles"]["items"][0]["source_url"]="https://www.gtabase.com/gta-6/vehicles/example"
+        d["vehicles"]["items"][0]["additional_source"]="https://evil.test/image.jpg"
+        d["provenance"]["assets"]=[{"reuse_permission":"not_documented"}]
+        result=discover(d)
+        self.assertEqual(len(result["vehicle_source_references"]),1)
+        self.assertEqual(result["rights_metadata_audit"]["archive_originals_with_no_specific_grant_in_manifest"],3)
+        self.assertEqual(result["rights_metadata_audit"]["legacy_screenshots_without_documented_permission"],1)
+        self.assertEqual(result["new_approvals"],0)
+        leads=vehicle_location_leads()
+        self.assertEqual(leads["leads"][0]["status"],"source_unreadable")
+        self.assertIn("/eliplaysgta/status/2125723744094269617",leads["leads"][0]["url"])
+
     def test_fixed_commit_snapshot(self):
         d=sample();calls=[]
         def read(url):

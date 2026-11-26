@@ -1,0 +1,16 @@
+{
+  "schema": "gta6-vehicle-location-leads-v1",
+  "reviewed_on": "2026-11-26",
+  "leads": [
+    {
+      "url": "https://x.com/eliplaysgta/status/2125723744094269617",
+      "status": "source_unreadable",
+      "description": "Segnalazione dell'utente sulle posizioni dei veicoli. Nessun modello o fotografia attribuito al post senza verifica."
+    },
+    {
+      "url": "https://www.gtabase.com/gta-6/map/?feature=standout-vehicle",
+      "status": "source_page_only",
+      "description": "Mappa Standout da usare per scoprire e verificare singole posizioni, non per importare immagini o coordinate automaticamente."
+    }
+  ]
+}
