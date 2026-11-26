@@ -156,7 +156,7 @@ def _owned_path(value):
     return parsed.path.rstrip("/") + "/"
 
 
-def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker=None) -> dict | None:
+def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker=None, include_feed=False) -> dict | None:
     if now.tzinfo is None:
         raise ValueError("Aware timestamp required")
     now=now.astimezone(timezone.utc)
@@ -190,6 +190,13 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
     # for inventory and offline tests; no extra slot or bypass of cooldown.
     photo_editorials = {"leonida-six-official-photos", "ultimate-edition-auto-garage"}
     ordered = sorted(CONTENT,key=lambda item: item['id'] not in photo_editorials) if photo_checker else CONTENT
+    if strict_photo and include_feed:
+        from live_editorial_feed_v1 import candidates
+        feed_rows=candidates()
+        # Prefer the new live data for any path it owns. Do not fall back
+        # to stale hardcoded summaries for a rejected feed row.
+        feed_paths={row['path'] for row in feed_rows}
+        ordered=list(feed_rows)+[row for row in ordered if row['path'] not in feed_paths]
     for item in ordered:
         url=PORTAL_BASE+item["path"]
         if _owned_path(url) in previous_paths:
@@ -209,6 +216,11 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
                 "url":url, "title":item["title"],"source":SOURCE,
                 "text":item["text"]+"\n"+url+"\n\n#GTAVI",
                 "media_url":cover_for(url)}
+        if item.get("feed_summary"):
+            from live_editorial_feed_v1 import matching
+            proposed.update({key:item[key] for key in ("feed_summary","feed_kind","feed_digest")})
+            if kind!=item["feed_kind"] or not matching(proposed):
+                continue
         # Do not let an oversized first candidate obstruct the next photo.
         if strict_photo:
             from game_photo_policy_v1 import single_photo_item

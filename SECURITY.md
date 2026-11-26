@@ -17,3 +17,7 @@ Every public news post must be in Italian, with clear source attribution and no 
 ## Source visibility and operational reports
 
 The public repository and its Actions logs/artifacts remain publicly accessible subject to GitHub access rules. They are not a private operator workspace. Do not add new internal review details to public issues. The discovery job reads only fixed JSON inputs from a single observed public site revision; it never exports the excluded site build backlog. Scheduled X intake uses no paid X search. Private-engine migration requires verified plan/runner quotas, tested cross-repository credentials, a public static publishing target, and an explicit rollback plan. Obfuscation is not access control. Changing visibility alone does not remove historical public copies or forks.
+
+## Cross-repository reader feed
+
+Use a public, reader-only JSON feed of explicitly reviewed article summaries and image hashes. The bot consumes it as data, never executes code from the site, and independently checks the rendered article and exact JPEG before reserving and sending. This removes cross-repository write tokens and makes a future private-engine migration simpler. Do not move internal ledgers, candidates, secrets or report artifacts into the public feed. Keep public static delivery separate from private execution. The new integration workflow is read-only and does not call Buffer.

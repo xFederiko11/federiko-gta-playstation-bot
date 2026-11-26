@@ -595,7 +595,7 @@ def reserve():
         owned_guide = None
         if not (quick_tip or growth_question):
             from site_evergreen_posts_v1 import candidate as owned_candidate
-            owned_guide = (owned_candidate(state, now, photo_checker=scan_kind)
+            owned_guide = (owned_candidate(state, now, photo_checker=scan_kind, include_feed=True)
                            if photo_required else owned_candidate(state, now))
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
@@ -680,6 +680,9 @@ def reserve():
         if item.get('photo_kind'):
             state['entries'][item['key']]['photo_kind'] = item['photo_kind']
             state['entries'][item['key']]['cover_sha256'] = item.get('cover_sha256')
+        if item.get('feed_summary'):
+            for field in ('feed_summary','feed_kind','feed_digest'):
+                state['entries'][item['key']][field]=item[field]
         if "rotation_variant" in item:
             for field in ("key","rotation_variant","rotation_revision","rotation_reason"):
                 state['entries'][item['key']][field]=item[field]

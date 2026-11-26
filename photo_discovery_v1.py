@@ -36,7 +36,8 @@ TOPIC_SUBJECTS={
 }
 SOURCE_HOSTS={"www.powerpyx.com","www.pushsquare.com","www.gtabase.com","gta6data.com",
               "www.rockstargames.com","support.rockstargames.com","gta6gps.com",
-              "www.youtube.com","youtu.be","www.ign.com"}
+              "www.youtube.com","youtu.be","www.ign.com","insider-gaming.com",
+              "www.insider-gaming.com","www.gamesradar.com"}
 
 def read_json(url, session=None):
     if url != API and not any(re.fullmatch(re.escape(RAW)+r"[0-9a-f]{40}/"+re.escape(path),url)
@@ -123,6 +124,15 @@ def discover(data):
         url=safe_source(entry.get("url"))
         if url:
             refs.append({"guide":entry["guide"],"url":url,"kind":"source_page_only"})
+    # Include the existing verified guide source lists, even when they have no
+    # manually indexed image. They remain links, never approved screenshots.
+    seen_pages={(row["guide"],row["url"]) for row in refs}
+    for gid,guide in guides.items():
+        for candidate in [guide.get("source_url")]+guide.get("extra_sources",[]):
+            url=safe_source(candidate)
+            if url and (gid,url) not in seen_pages:
+                seen_pages.add((gid,url))
+                refs.append({"guide":gid,"url":url,"kind":"source_page_only"})
     tasks=[]
     for gid,roles in requests_by_guide.items():
         for i,desc in enumerate(roles,1):
