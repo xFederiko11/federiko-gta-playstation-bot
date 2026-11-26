@@ -67,6 +67,9 @@ CONTENT = (
     {"id": "cheats-trophy-risk", "path": "/trucchi/",
      "title": "Trucchi PS5: rischio trofei",
      "text": "🎮 GTA VI | Prima di usare i trucchi su PS5 controlla gli avvisi su salvataggi e trofei. Per il platino non dare per scontato che un codice sia innocuo.\n\n⚠️ Sequenze e precauzioni:"},
+    {"id": "leonida-six-official-photos", "path": "/articoli/gta-vi-leonida-sei-luoghi/",
+     "title": "GTA VI: Leonida in sei immagini Rockstar",
+     "text": "🌴 GTA VI | LEONIDA IN SEI SCATTI\n\nDa Vice City alle Leonida Keys, sei ambienti nelle immagini ufficiali Rockstar. Nessuno spoiler della storia.\n\n📸 Galleria e fonti:"},
     {"id": "community-sources", "path": "/scoperte/",
      "title": "Scoperte community: verifica le fonti",
      "text": "🔎 GTA VI | Rumor e datamining non sono notizie confermate. Nella sezione Scoperte trovi titoli, fonti e classificazioni, senza promesse di glitch trophy-safe.\n\n🧪 Consulta le segnalazioni:"},
@@ -142,7 +145,7 @@ def _owned_path(value):
     return parsed.path.rstrip("/") + "/"
 
 
-def candidate(state:dict, now:datetime, *, live_checker=page_live) -> dict | None:
+def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker=None) -> dict | None:
     if now.tzinfo is None:
         raise ValueError("Aware timestamp required")
     now=now.astimezone(timezone.utc)
@@ -172,6 +175,8 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live) -> dict | Non
             raise ValueError("Unsafe publisher target")
         key=hashlib.sha256(("site-evergreen-v1:"+item["id"]).encode()).hexdigest()[:24]
         if key in entries:
+            continue
+        if photo_checker is not None and not photo_checker(url):
             continue
         if not live_checker(url):
             continue

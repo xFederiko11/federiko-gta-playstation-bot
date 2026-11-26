@@ -545,6 +545,8 @@ def reserve():
     state = load_state()
     items, errors = read_feeds(load_sources())
     now = datetime.now(timezone.utc)
+    from game_photo_policy_v1 import active as photo_policy_active, prepare_photo, scan_kind
+    photo_required = photo_policy_active(now)
     if launch_active(now) and not launch_in_hours(now):
         print('LAUNCH_HOLD outside 08:00-21:00 Europe/Rome; no reservation')
         return
@@ -569,6 +571,9 @@ def reserve():
         # Never extract instructions from arbitrary feed summaries.
         from quick_tips_v146 import candidate as quick_tip_candidate
         quick_tip = quick_tip_candidate(state, now)
+        if quick_tip and photo_required and not prepare_photo(quick_tip):
+            print('QUICK_TIP_HOLD_NO_REVIEWED_GAME_PHOTO')
+            quick_tip = None
         if quick_tip and not quick_tip_media_available(quick_tip):
             print("QUICK_TIP_HOLD_IMAGE_UNAVAILABLE", quick_tip["tip_id"])
             quick_tip = None
@@ -587,7 +592,8 @@ def reserve():
         owned_guide = None
         if not (quick_tip or growth_question):
             from site_evergreen_posts_v1 import candidate as owned_candidate
-            owned_guide = owned_candidate(state, now)
+            owned_guide = (owned_candidate(state, now, photo_checker=scan_kind)
+                           if photo_required else owned_candidate(state, now))
         # Search-indexable Italian trophy pages must exist BEFORE linking them.
         # This is optional: unavailable Pages never blocks breaking news.
         trophy_item = None
@@ -624,12 +630,22 @@ def reserve():
         for item in selected:
             try:
                 ready=launch_double(item) if launch_active(now) else item
+                if photo_required:
+                    ready = prepare_photo(ready)
+                    if ready is None:
+                        print('MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO_OR_COPY_BUDGET')
+                        continue
                 image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
                               else prepare_media(ready,state))
                 if image_backed is None:
                     print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
                           str(item.get('url',''))[:100])
                     continue
+                if photo_required:
+                    from social_media_gate_v2 import probe_image
+                    if not probe_image(image_backed['media_url']):
+                        print('MEDIA_HOLD_GAME_PHOTO_UNAVAILABLE')
+                        continue
                 if not media_thread_preflight(image_backed):
                     print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown')),
                           str(item.get('url',''))[:100])
@@ -655,6 +671,8 @@ def reserve():
             'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number'),
             'thread': item.get('thread'), 'tip_id': item.get('tip_id')
         }
+        if item.get('photo_kind'):
+            state['entries'][item['key']]['photo_kind'] = item['photo_kind']
         if "rotation_variant" in item:
             for field in ("key","rotation_variant","rotation_revision","rotation_reason"):
                 state['entries'][item['key']][field]=item[field]
@@ -707,6 +725,12 @@ def deliver():
             continue
         # Fail closed BEFORE marking as attempted or invoking Buffer.
         # Unknown/missing media does not create a text-only post.
+        from game_photo_policy_v1 import active as photo_policy_active, verify_delivery
+        if photo_policy_active(clock) and not verify_delivery(entry):
+            entry['status']='held_missing_reviewed_game_photo'
+            save_state(state)
+            print('BUFFER_GAME_PHOTO_HOLD: no matching live photographic cover or standalone copy')
+            continue
         if not entry.get('media_url') or not probe_image(entry['media_url']):
             entry['status']='held_missing_verified_image'
             save_state(state)
@@ -736,8 +760,7 @@ def deliver():
                 # One createPost mutation with both items; no retries on timeout.
                 result = client.publish_thread(entry['thread'], media_url=entry['media_url'])
             else:
-                result = (client.publish(entry['text'], media_url=entry['media_url'])
-                          if entry.get('media_url') else client.publish(entry['text']))
+                result = client.publish(entry['text'], media_url=entry['media_url'])
         except BufferPending as exc:
             entry['status'] = 'accepted_pending'
             entry['buffer_id'] = exc.post_id

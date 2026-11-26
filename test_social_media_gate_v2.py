@@ -152,4 +152,51 @@ class ImageGateTests(unittest.TestCase):
         self.assertFalse(probe_image("https://fake.example/card.jpg",session=session))
 
 
+class PhotographicPublicationTests(unittest.TestCase):
+    def test_photo_metadata_rejects_illustration_and_missing_or_wrong_cover(self):
+        from game_photo_policy_v1 import PhotographicCover
+        page=BASE+"salvare-auto/"
+        cover=cover_for(page)
+        html=(f'<link rel="canonical" href="{page}">'
+              f'<meta property="og:image" content="{cover}">'
+              f'<meta name="twitter:image" content="{cover}">'
+              '<meta name="gta6:cover-kind" content="official_game_photo">'
+              '<meta property="og:image:alt" content="Immagine promozionale Rockstar Games">'
+              '<h1>Auto</h1><figure data-article-cover="shared-social">'
+              f'<img src="{cover}" width="1200" height="630"></figure>')
+        for raw,expected in ((html,"official_game_photo"),
+            (html.replace("official_game_photo","original_illustration"),None),
+            (html.replace("Immagine promozionale","Illustrazione"),None),
+            (html.replace('width="1200"','width="800"'),None),
+            (html.replace('<meta name="gta6:cover-kind"','<meta name="other"'),None)):
+            parser=PhotographicCover()
+            parser.feed(raw)
+            self.assertEqual(parser.photo_kind(page),expected)
+
+    def test_thread_converted_to_one_photo_post_with_link_and_credit(self):
+        from game_photo_policy_v1 import single_photo_item
+        page=BASE+"salvare-auto/"
+        item={"url":page,"source":"PowerPyx Tips","thread":["Salva la tua auto. #GTAVI","Fonte"],
+              "text":"Salva la tua auto."}
+        result=single_photo_item(item,"official_game_photo")
+        self.assertIsNone(result["thread"])
+        self.assertIn(page,result["text"])
+        self.assertIn("PowerPyx",result["text"])
+        self.assertIn("Rockstar Games",result["text"])
+        self.assertIsNone(single_photo_item(item,"original_illustration"))
+        self.assertIsNone(single_photo_item(dict(item,thread=["x"*240,"Fonte"]),"official_game_photo"))
+
+    def test_delivery_revalidates_photo_and_refuses_old_text_reply(self):
+        from game_photo_policy_v1 import verify_delivery
+        page=BASE+"salvare-auto/"
+        entry={"url":page,"media_url":cover_for(page),"photo_kind":"official_game_photo","thread":None}
+        with (patch("game_photo_policy_v1.owned_photo_kind",return_value="official_game_photo") as check,
+              patch("game_photo_policy_v1.probe_image",return_value=True)):
+            self.assertTrue(verify_delivery(entry))
+            self.assertFalse(verify_delivery(dict(entry,thread=["one","two"])))
+            self.assertFalse(verify_delivery(dict(entry,media_url=cover_for(BASE+"trofei/"))))
+            check.return_value=None
+            self.assertFalse(verify_delivery(entry))
+
+
 if __name__=="__main__":unittest.main()
