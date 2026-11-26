@@ -21,3 +21,9 @@ The public repository and its Actions logs/artifacts remain publicly accessible 
 ## Cross-repository reader feed
 
 Use a public, reader-only JSON feed of explicitly reviewed article summaries and image hashes. The bot consumes it as data, never executes code from the site, and independently checks the rendered article and exact JPEG before reserving and sending. This removes cross-repository write tokens and makes a future private-engine migration simpler. Do not move internal ledgers, candidates, secrets or report artifacts into the public feed. Keep public static delivery separate from private execution. The new integration workflow is read-only and does not call Buffer.
+
+## Private migration and recurring workload
+
+The editorial workflow now runs full QA on code pushes/PRs without Buffer credentials; publication runs only on its independent schedule or explicit manual run, not when the monitor completes or a code push occurs. Ordinary UTC hours cover both CET and CEST reader windows. The urgent official-news monitor and launch watch remain independent; the local-time, dedupe, pacing, and receipt guards are unchanged. New owned editorial covers require an independently reviewed URL/kind/SHA-256 record with documented site/social reuse evidence. An empty registry intentionally holds posts instead of assuming copyright permission. Public feeds and existing archive entries are technical provenance, not a grant. Audit the separate official news media pathway and existing public derivatives before migrating them. No rights contacts or new licensed downloads are automatic.
+
+See PRIVATE-ENGINE-MIGRATION.md for the staged no-cost migration plan. Keep private execution disabled until the billing owner has verified a zero-overage budget, compute and storage allowances, and secrets/state separation.

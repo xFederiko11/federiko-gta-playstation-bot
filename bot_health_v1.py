@@ -34,6 +34,8 @@ def summarize_runs(runs: list[dict], now: datetime) -> list[dict]:
             run for run in runs
             if run.get("name") == name
             and run.get("event") in ("schedule", "workflow_run", "workflow_dispatch", "push")
+            # Editorial push runs now exercise read-only QA, not publication.
+            and not (name == "GTA VI - Editorial Autopilot v13.7" and run.get("event") == "push")
             and run.get("status") == "completed"
         ]
         latest = max(relevant, key=lambda x: x.get("created_at") or "", default=None)

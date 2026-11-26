@@ -199,6 +199,7 @@ class PhotographicPublicationTests(unittest.TestCase):
         page=BASE+"salvare-auto/"
         entry={"url":page,"media_url":cover_for(page),"photo_kind":"official_game_photo","thread":None,"cover_sha256":"a"*64}
         with (patch("game_photo_policy_v1.owned_photo_details",return_value=("official_game_photo","a"*64)) as check,
+              patch("photo_rights_v1.reuse_documented",return_value=True),
               patch("game_photo_policy_v1.probe_cover_digest",return_value=True) as probe):
             self.assertTrue(verify_delivery(entry))
             self.assertFalse(verify_delivery(dict(entry,thread=["one","two"])))
