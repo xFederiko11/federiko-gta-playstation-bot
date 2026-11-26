@@ -34,7 +34,34 @@ jobs:
         # otherwise Playwright fails at launch and falsely blames the source.
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
-        run: python -m playwright install --with-deps chromium
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo 'ROCKSTAR_BROWSER_CHANNEL=chrome' >> "$GITHUB_ENV"
+            echo 'Using preinstalled Google Chrome'
+          else
+            python -m playwright install --with-deps --only-shell chromium
+          fi
+      - name: Verify installed browser actually launches (local content, no network)
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          from sources import _browser_launch_options
+          try:
+              with sync_playwright() as playwright:
+                  options = _browser_launch_options()
+                  browser = playwright.chromium.launch(**options)
+                  try:
+                      page = browser.new_page()
+                      page.set_content('<main>browser-ready</main>')
+                      assert page.locator('main').inner_text() == 'browser-ready'
+                  finally:
+                      browser.close()
+              print('OFFICIAL_BROWSER_LAUNCH_OK channel=' + options.get('channel', 'chromium-shell'))
+          except Exception as exc:
+              raise SystemExit('OFFICIAL_BROWSER_LAUNCH_FAILED ' + type(exc).__name__) from None
+          PY
       - name: Report live official Support reachability (never publish)
         # One capped diagnostic on PR; upstream access failures are explicit
         # INCONCLUSIVE results, not invented release notes or monitor success.
