@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 import sys
 import types
 
@@ -57,6 +57,39 @@ class EditorialV137Tests(unittest.TestCase):
         self.assertIn('Fonte: GTA Series Videos', post)
         self.assertNotIn('Rockstar conferma', post)
         self.assertLessEqual(bot.weight_x(post), 280)
+
+    def test_well_formed_html_is_not_a_successful_empty_feed(self):
+        src = {'name': 'PowerPyx', 'domains': ['powerpyx.com']}
+        with self.assertRaises(ValueError):
+            list(bot.parse_feed(b'<html><body>Access unavailable</body></html>', src))
+
+    def test_powerpyx_xml_retry_recovers_and_is_bounded(self):
+        src = {'name': 'PowerPyx', 'domains': ['powerpyx.com'],
+               'feed': 'https://www.powerpyx.com/feed/', 'feed_domains': ['www.powerpyx.com']}
+        valid = (f'<rss><channel><item><title>GTA VI review details</title>'
+                 f'<link>https://www.powerpyx.com/gta-vi/</link><pubDate>{format_datetime(NOW)}</pubDate>'
+                 f'</item></channel></rss>').encode()
+        for responses, expected in (([b'<rss><channel>', valid], 1),
+                                    ([b'<rss><channel>', b'<rss><channel>'], 0)):
+            with (patch.object(bot, '_read_feed_once', side_effect=responses) as read,
+                  patch.object(bot.time, 'sleep') as delay):
+                items, errors = bot.read_feeds([src], session=Mock())
+                self.assertEqual(len(items), expected)
+                self.assertEqual(bool(errors), not bool(expected))
+                self.assertEqual(read.call_count, 2)
+                self.assertEqual(read.call_args_list[0], read.call_args_list[1])
+                delay.assert_called_once_with(1)
+
+    def test_powerpyx_access_page_and_other_sources_do_not_retry(self):
+        for name, raw in (('PowerPyx', b'<html><broken'), ('VGC', b'<rss><channel>')):
+            src = {'name': name, 'domains': ['powerpyx.com']}
+            with (patch.object(bot, '_read_feed_once', return_value=raw) as read,
+                  patch.object(bot.time, 'sleep') as delay):
+                items, errors = bot.read_feeds([src], session=Mock())
+                self.assertFalse(items)
+                self.assertEqual(errors, [name + ': ParseError'])
+                read.assert_called_once()
+                delay.assert_not_called()
 
     def test_atom_feed(self):
         src = {'name': 'VGC', 'domains': ['videogameschronicle.com']}

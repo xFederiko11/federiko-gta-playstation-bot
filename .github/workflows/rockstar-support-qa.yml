@@ -8,6 +8,10 @@ on:
       - 'test_rockstar_support_timeout.py'
       - 'rockstar_support_live_probe_v1.py'
       - 'test_rockstar_support_live_probe_v1.py'
+      - 'playstation_system.py'
+      - 'test_playstation_system.py'
+      - 'editorial_autopilot_v137.py'
+      - 'test_editorial_autopilot_v137.py'
       - '.github/workflows/rockstar-support-qa.yml'
 
 permissions:
@@ -31,6 +35,21 @@ jobs:
         run: |
           python -m py_compile sources.py test_rockstar_support_timeout.py rockstar_support_live_probe_v1.py test_rockstar_support_live_probe_v1.py
           python -m unittest -q test_rockstar_support_timeout.py test_rockstar_support_live_probe_v1.py
+      - name: Probe Sony and PowerPyx read-only (no state or Buffer)
+        run: |
+          python -m unittest -q test_playstation_system test_editorial_autopilot_v137
+          timeout 100s python - <<'PY'
+          from playstation_system import fetch_system_update
+          from editorial_autopilot_v137 import read_feeds, load_sources
+          try:
+              event = fetch_system_update('PS5', timeout=12)
+              print('SONY_SOURCE_PROBE_OK platform=PS5 version=' + event['version'])
+          except Exception as exc:
+              print('SONY_SOURCE_PROBE_UNAVAILABLE type=' + type(exc).__name__)
+          items, errors = read_feeds([s for s in load_sources() if s['name'] == 'PowerPyx'])
+          print('POWERPYX_SOURCE_PROBE', 'unavailable' if errors else 'read_ok',
+                'items=' + str(len(items)), 'not_a_news_scan')
+          PY
       - name: Install browser for read-only official Support diagnosis
         # The live probe must look in the EXACT directory used at install time;
         # otherwise Playwright fails at launch and falsely blames the source.

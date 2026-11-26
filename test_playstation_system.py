@@ -1,4 +1,5 @@
 import unittest
+import requests
 from unittest.mock import Mock, patch
 
 from playstation_system import parse_system_page, fetch_system_update, URLS
@@ -39,6 +40,38 @@ class SystemTests(unittest.TestCase):
     def test_absent_notes_do_not_create_fake_patch_notes(self):
         value = parse_system_page("<div><h3>Versione: 14.02</h3></div><span>Aggiornamenti precedenti del software</span>", "PS4")
         self.assertIsNone(value["facts"][1]["value"])
+
+    def test_transient_http_retries_same_page_once(self):
+        error = requests.HTTPError("private upstream details", response=Mock(status_code=503))
+        with (patch("playstation_system._fetch_system_page", side_effect=[error, {"version": "test"}]) as fetch,
+              patch("playstation_system.time.sleep") as delay,
+              self.assertLogs("gta6.playstation", level="WARNING") as logs):
+            self.assertEqual(fetch_system_update("PS5"), {"version": "test"})
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(fetch.call_args_list[0], fetch.call_args_list[1])
+        delay.assert_called_once_with(1)
+        self.assertIn("HTTP_503", " ".join(logs.output))
+        self.assertNotIn("private upstream details", " ".join(logs.output))
+
+    def test_rate_limit_and_access_denial_do_not_retry(self):
+        for status in (401, 403, 404, 429):
+            with self.subTest(status=status):
+                error = requests.HTTPError("do not print", response=Mock(status_code=status))
+                with (patch("playstation_system._fetch_system_page", side_effect=error) as fetch,
+                      patch("playstation_system.time.sleep") as delay):
+                    with self.assertRaises(requests.HTTPError):
+                        fetch_system_update("PS5")
+                fetch.assert_called_once()
+                delay.assert_not_called()
+
+    def test_timeout_retry_is_bounded_and_parse_failure_never_retries(self):
+        for error, count in ((requests.ReadTimeout(), 2), (ValueError("ambiguous page"), 1),
+                             (requests.exceptions.SSLError(), 1), (requests.exceptions.ProxyError(), 1)):
+            with (patch("playstation_system._fetch_system_page", side_effect=error) as fetch,
+                  patch("playstation_system.time.sleep")):
+                with self.assertRaises(type(error)):
+                    fetch_system_update("PS5")
+                self.assertEqual(fetch.call_count, count)
 
     @patch("playstation_system.requests.get")
     def test_binary_redirect_is_not_downloaded(self, get):
