@@ -161,6 +161,7 @@ class PhotographicPublicationTests(unittest.TestCase):
               f'<meta property="og:image" content="{cover}">'
               f'<meta name="twitter:image" content="{cover}">'
               '<meta name="gta6:cover-kind" content="official_game_photo">'
+              f'<meta name="gta6:cover-sha256" content="{"a"*64}">'
               '<meta property="og:image:alt" content="Immagine promozionale Rockstar Games">'
               '<h1>Auto</h1><figure data-article-cover="shared-social">'
               f'<img src="{cover}" width="1200" height="630"></figure>')
@@ -172,6 +173,13 @@ class PhotographicPublicationTests(unittest.TestCase):
             parser=PhotographicCover()
             parser.feed(raw)
             self.assertEqual(parser.photo_kind(page),expected)
+            self.assertEqual(parser.photo_details(page),(expected,"a"*64) if expected else None)
+        for raw in (html.replace("gta6:cover-sha256","other"),
+                    html.replace("a"*64,"not-a-digest"),
+                    html+f'<meta name="gta6:cover-sha256" content="{"b"*64}">'):
+            parser=PhotographicCover()
+            parser.feed(raw)
+            self.assertIsNone(parser.photo_details(page))
 
     def test_thread_converted_to_one_photo_post_with_link_and_credit(self):
         from game_photo_policy_v1 import single_photo_item
@@ -189,14 +197,48 @@ class PhotographicPublicationTests(unittest.TestCase):
     def test_delivery_revalidates_photo_and_refuses_old_text_reply(self):
         from game_photo_policy_v1 import verify_delivery
         page=BASE+"salvare-auto/"
-        entry={"url":page,"media_url":cover_for(page),"photo_kind":"official_game_photo","thread":None}
-        with (patch("game_photo_policy_v1.owned_photo_kind",return_value="official_game_photo") as check,
-              patch("game_photo_policy_v1.probe_image",return_value=True)):
+        entry={"url":page,"media_url":cover_for(page),"photo_kind":"official_game_photo","thread":None,"cover_sha256":"a"*64}
+        with (patch("game_photo_policy_v1.owned_photo_details",return_value=("official_game_photo","a"*64)) as check,
+              patch("game_photo_policy_v1.probe_cover_digest",return_value=True) as probe):
             self.assertTrue(verify_delivery(entry))
             self.assertFalse(verify_delivery(dict(entry,thread=["one","two"])))
             self.assertFalse(verify_delivery(dict(entry,media_url=cover_for(BASE+"trofei/"))))
+            probe.assert_called_once_with(entry["media_url"],entry["cover_sha256"])
+            self.assertFalse(verify_delivery(dict(entry,cover_sha256=None)))
+            check.return_value=("official_game_photo","b"*64)
+            self.assertFalse(verify_delivery(entry))
             check.return_value=None
             self.assertFalse(verify_delivery(entry))
+
+    def test_exact_jpeg_digest_rejects_stale_truncated_or_redirected_photo(self):
+        from game_photo_policy_v1 import probe_cover_digest
+        import hashlib
+        url=cover_for(BASE+"salvare-auto/")
+        data=bytes.fromhex("ffd8ff")+b"x"*8200+bytes.fromhex("ffd9")
+        digest=hashlib.sha256(data).hexdigest()
+        class Response:
+            status_code=200
+            headers={"Content-Type":"image/jpeg"}
+            body=data
+            def __enter__(self):return self
+            def __exit__(self,*args):return False
+            def iter_content(self,n):
+                for i in range(0,len(self.body),4096):yield self.body[i:i+4096]
+        response=Response()
+        response.url=url
+        session=Mock()
+        session.get.return_value=response
+        self.assertTrue(probe_cover_digest(url,digest,session))
+        self.assertFalse(probe_cover_digest(url,"b"*64,session))
+        response.body=data[:-2]
+        self.assertFalse(probe_cover_digest(url,digest,session))
+        response.body=data
+        response.url=url+"?different=1"
+        self.assertFalse(probe_cover_digest(url,digest,session))
+        response.url=url
+        response.headers={"Content-Type":"text/html"}
+        self.assertFalse(probe_cover_digest(url,digest,session))
+        self.assertFalse(probe_cover_digest("https://example.com/a.jpg",digest,session))
 
 
 if __name__=="__main__":unittest.main()

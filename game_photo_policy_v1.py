@@ -5,8 +5,10 @@ No generic logos, unrelated official images, or text-only reply fallbacks.
 """
 from datetime import date
 from functools import lru_cache
+import hashlib
+import re
 import requests
-from social_media_gate_v2 import canonical_page_path, cover_for, probe_image
+from social_media_gate_v2 import canonical_page_path, cover_for, trusted_asset
 from site_article_rotation_v1 import ArticleCover
 from editorial_seo_v135 import x_weight
 from quality_publish_policy_v1 import local
@@ -24,12 +26,15 @@ class PhotographicCover(ArticleCover):
         super().__init__()
         self.kinds = []
         self.alts = []
+        self.digests = []
 
     def handle_starttag(self, tag, attrs):
         super().handle_starttag(tag, attrs)
         a = dict(attrs)
         if tag == "meta" and a.get("name") == "gta6:cover-kind":
             self.kinds.append(a.get("content"))
+        if tag == "meta" and a.get("name") == "gta6:cover-sha256":
+            self.digests.append(a.get("content") or "")
         if tag == "meta" and a.get("property") == "og:image:alt":
             self.alts.append(a.get("content") or "")
 
@@ -44,12 +49,20 @@ class PhotographicCover(ArticleCover):
         return None
 
 
-def owned_photo_kind(url, session=None):
+    def photo_details(self, url):
+        kind = self.photo_kind(url)
+        if not kind or len(self.digests) != 1 or not re.fullmatch(r"[a-f0-9]{64}", self.digests[0]):
+            return None
+        return kind, self.digests[0]
+
+
+def owned_photo_details(url, session=None):
     if not canonical_page_path(url):
         return None
     try:
         with (session or requests).get(url, timeout=(3, 7), stream=True,
-                  allow_redirects=False, headers={"User-Agent": "GTA6Italia-PhotoCheck/1.0"}) as r:
+                  allow_redirects=False, headers={"User-Agent": "GTA6Italia-PhotoCheck/1.0",
+                                                 "Cache-Control": "no-cache"}) as r:
             if r.status_code != 200 or r.url != url:
                 return None
             data = bytearray()
@@ -59,15 +72,49 @@ def owned_photo_kind(url, session=None):
                     return None
             parser = PhotographicCover()
             parser.feed(data.decode("utf-8", errors="replace"))
-            return parser.photo_kind(url)
+            return parser.photo_details(url)
     except (requests.RequestException, OSError, ValueError):
         return None
 
 
+def probe_cover_digest(url, digest, session=None):
+    """Compare every byte of the exact public JPEG with its reviewed page.
+
+    A stale CDN object, partial file, missing digest or unrelated redirect holds
+    publication. No query-string replacement, upload, or Buffer mutation.
+    """
+    if (not isinstance(digest, str) or not re.fullmatch(r"[a-f0-9]{64}", digest)
+            or not trusted_asset(url) or not url.startswith("https://xfederiko11.github.io/gta-6/assets/social-cards/")):
+        return False
+    try:
+        with (session or requests).get(url, timeout=(4, 10), stream=True,
+                  allow_redirects=False, headers={"User-Agent":"GTA6Italia-ExactPhoto/1.0",
+                                                  "Accept":"image/jpeg","Cache-Control":"no-cache"}) as r:
+            if r.status_code != 200 or r.url != url:
+                return False
+            if r.headers.get("Content-Type","").split(";")[0].strip().lower() != "image/jpeg":
+                return False
+            data=bytearray()
+            for chunk in r.iter_content(16384):
+                data.extend(chunk)
+                if len(data)>1_600_000:
+                    return False
+            return (8_000<=len(data)<=1_600_000 and data.startswith(bytes.fromhex("ffd8ff"))
+                    and data.endswith(bytes.fromhex("ffd9"))
+                    and hashlib.sha256(data).hexdigest()==digest)
+    except (requests.RequestException, OSError, ValueError):
+        return False
+
+
 @lru_cache(maxsize=64)
+def scan_details(url):
+    """One bounded page read per candidate in this scan; delivery checks again."""
+    return owned_photo_details(url)
+
+
 def scan_kind(url):
-    """One bounded read per candidate in this scan; delivery checks again."""
-    return owned_photo_kind(url)
+    details=scan_details(url)
+    return details[0] if details else None
 
 
 def single_photo_item(item, kind):
@@ -101,16 +148,21 @@ def single_photo_item(item, kind):
 
 def prepare_photo(item):
     """Owned article covers are individually reviewed; unrelated source photos wait."""
-    kind = scan_kind(item.get("url"))
-    if not kind:
+    details = scan_details(item.get("url"))
+    if not details:
         return None
-    return single_photo_item(item, kind)
+    prepared = single_photo_item(item, details[0])
+    if prepared is None:
+        return None
+    return dict(prepared, cover_sha256=details[1])
 
 
 def verify_delivery(entry):
     """Recheck live article and the exact attachment, not a Buffer URL preview."""
-    return (entry.get("photo_kind") in KINDS
+    kind=entry.get("photo_kind")
+    digest=entry.get("cover_sha256")
+    return (kind in KINDS and isinstance(digest,str)
             and not entry.get("thread")
             and entry.get("media_url") == cover_for(entry.get("url"))
-            and owned_photo_kind(entry.get("url")) == entry.get("photo_kind")
-            and probe_image(entry.get("media_url")))
+            and owned_photo_details(entry.get("url")) == (kind,digest)
+            and probe_cover_digest(entry.get("media_url"),digest))
