@@ -35,6 +35,13 @@ class PhotoDiscoveryTests(unittest.TestCase):
         self.assertTrue(all(x["kind"]=="source_page_only" for x in r["source_references"]))
         self.assertEqual(r["new_approvals"],0)
 
+    def test_reviewed_vintage_gallery_is_link_only(self):
+        from photo_discovery_v1 import gallery_leads
+        doc=gallery_leads()
+        self.assertEqual(len(doc["titles"]),12)
+        self.assertEqual(doc["status"],"link_only_rights_unverified")
+        self.assertEqual(sum("Vapid Stanier" in x for x in doc["titles"]),4)
+
     def test_fixed_commit_snapshot(self):
         d=sample();calls=[]
         def read(url):
