@@ -41,6 +41,8 @@ on:
       - 'test_site_article_rotation_v1.py'
       - 'social_media_gate_v2.py'
       - 'game_photo_policy_v1.py'
+      - 'live_editorial_feed_v1.py'
+      - 'test_live_editorial_feed_v1.py'
       - 'buffer_publisher.py'
       - 'official_media.py'
       - 'test_social_media_gate_v2.py'
@@ -124,7 +126,7 @@ jobs:
         run: |
           python x_automation_safety_v1.py
           python -m py_compile social_media_gate_v2.py test_social_media_gate_v2.py owned_utm_attribution_v1.py buffer_failed_diagnostics_v147.py buffer_delivery_receipts_v1.py buffer_status_summary_v151.py launch_cadence_v1.py quality_publish_policy_v1.py test_quality_publish_policy_v1.py growth_conversion_v1.py editorial_double_threads_v1.py editorial_language_it.py editorial_autopilot_v137.py editorial_seo_v135.py buffer_publisher.py video_cards_v12.py test_editorial_autopilot_v137.py test_editorial_language_it.py
-          env -u GITHUB_STEP_SUMMARY python -m unittest -q test_buffer_publisher test_official_media test_site_article_rotation_v1 test_social_media_gate_v2 test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_vehicle_site_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151 test_launch_cadence_v1 test_quality_publish_policy_v1 test_editorial_double_threads_v1 test_growth_conversion_v1 test_owned_utm_attribution_v1 
+          env -u GITHUB_STEP_SUMMARY python -m unittest -q test_buffer_publisher test_official_media test_site_article_rotation_v1 test_social_media_gate_v2 test_buffer_delivery_receipts_v1 test_site_evergreen_posts_v1 test_vehicle_site_posts_v1 test_editorial_autopilot_v137 test_editorial_language_it test_official_links_free_v140 test_trophies_v142 test_editorial_director_v142 test_quick_tips_v146 test_portal_links_v148 test_buffer_failed_diagnostics_v147 test_buffer_status_summary_v151 test_launch_cadence_v1 test_quality_publish_policy_v1 test_editorial_double_threads_v1 test_growth_conversion_v1 test_owned_utm_attribution_v1 test_live_editorial_feed_v1
       - name: Inspect historical rejected thread (advisory, no retry)
         if: github.event_name == 'push'
         run: python buffer_failed_diagnostics_v147.py

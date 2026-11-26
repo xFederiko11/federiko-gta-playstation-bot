@@ -27,12 +27,15 @@ class PhotographicCover(ArticleCover):
         self.kinds = []
         self.alts = []
         self.digests = []
+        self.summaries = []
 
     def handle_starttag(self, tag, attrs):
         super().handle_starttag(tag, attrs)
         a = dict(attrs)
         if tag == "meta" and a.get("name") == "gta6:cover-kind":
             self.kinds.append(a.get("content"))
+        if tag == "meta" and a.get("name") == "gta6:share-summary":
+            self.summaries.append(a.get("content") or "")
         if tag == "meta" and a.get("name") == "gta6:cover-sha256":
             self.digests.append(a.get("content") or "")
         if tag == "meta" and a.get("property") == "og:image:alt":
@@ -56,7 +59,7 @@ class PhotographicCover(ArticleCover):
         return kind, self.digests[0]
 
 
-def owned_photo_details(url, session=None):
+def _owned_photo_page(url, session=None):
     if not canonical_page_path(url):
         return None
     try:
@@ -72,9 +75,22 @@ def owned_photo_details(url, session=None):
                     return None
             parser = PhotographicCover()
             parser.feed(data.decode("utf-8", errors="replace"))
-            return parser.photo_details(url)
+            return parser
     except (requests.RequestException, OSError, ValueError):
         return None
+
+
+def owned_photo_details(url, session=None):
+    page=_owned_photo_page(url,session)
+    return page.photo_details(url) if page else None
+
+
+def owned_photo_contract(url, session=None):
+    page=_owned_photo_page(url,session)
+    details=page.photo_details(url) if page else None
+    if not details or len(page.summaries)!=1:
+        return None
+    return (*details,page.summaries[0])
 
 
 def probe_cover_digest(url, digest, session=None):
@@ -151,6 +167,10 @@ def prepare_photo(item):
     details = scan_details(item.get("url"))
     if not details:
         return None
+    if item.get('feed_summary'):
+        from live_editorial_feed_v1 import matching
+        if details!=(item.get('feed_kind'),item.get('feed_digest')) or not matching(item):
+            return None
     prepared = single_photo_item(item, details[0])
     if prepared is None:
         return None
@@ -159,6 +179,9 @@ def prepare_photo(item):
 
 def verify_delivery(entry):
     """Recheck live article and the exact attachment, not a Buffer URL preview."""
+    if entry.get("feed_summary"):
+        from live_editorial_feed_v1 import matching
+        if not matching(entry):return False
     kind=entry.get("photo_kind")
     digest=entry.get("cover_sha256")
     return (kind in KINDS and isinstance(digest,str)

@@ -26,6 +26,15 @@ class PhotoDiscoveryTests(unittest.TestCase):
         self.assertEqual(result["posts"],0)
         self.assertEqual(before,d)
         self.assertIn("non verifica del deploy",report(result,"a"*40))
+    def test_guide_sources_and_insider_links_stay_link_only(self):
+        d=sample();g=d["guides"]["guides"][0]
+        g["source_url"]="https://insider-gaming.com/example/"
+        g["extra_sources"]=["https://www.gamesradar.com/example/","https://evil.test/image"]
+        r=discover(d)
+        self.assertEqual(len(r["source_references"]),3)
+        self.assertTrue(all(x["kind"]=="source_page_only" for x in r["source_references"]))
+        self.assertEqual(r["new_approvals"],0)
+
     def test_fixed_commit_snapshot(self):
         d=sample();calls=[]
         def read(url):
