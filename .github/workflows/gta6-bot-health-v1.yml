@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/gta6-bot-health-v1.yml', 'actions_runtime_sample_v1.py', 'test_actions_runtime_sample_v1.py']
+    paths: ['.github/workflows/gta6-bot-health-v1.yml', 'bot_health_v1.py', 'test_bot_health_v1.py', 'actions_runtime_sample_v1.py', 'test_actions_runtime_sample_v1.py']
   schedule:
     - cron: '43 8,20 * * *'
   pull_request:
@@ -63,7 +63,7 @@ jobs:
           python buffer_status_summary_v151.py > previews/buffer-health.log 2>&1
           printf '%s\n' "$?" > previews/buffer-health.exit
           exit 0
-      - name: Assess production workflows and Buffer without publishing
+      - name: Assess production workflows, official sources and Buffer without publishing
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -83,7 +83,7 @@ jobs:
           issue="$(gh issue list --state open --search 'in:title GTA VI - Bot Health Alerts' --json number,title --jq '.[] | select(.title == "GTA VI - Bot Health Alerts") | .number' | head -n 1)"
           if [ "$status" = "healthy" ]; then
             if [ -n "$issue" ]; then
-              gh issue close "$issue" --comment "Rientrato: controlli GitHub e Buffer senza errori rilevati."
+              gh issue close "$issue" --comment "Rientrato: controlli GitHub, fonti ufficiali e Buffer senza errori rilevati."
             fi
             echo "### GTA VI Bot Health: healthy" >> "$GITHUB_STEP_SUMMARY"
           else

@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
+import math
 from pathlib import Path
 import os
 import sys
@@ -75,19 +76,84 @@ def buffer_health(stdout: str, exit_code: int) -> dict:
     return {"status": "healthy", "reason": "connected_read_only"}
 
 
-def assess(runs: list[dict], buffer_output: str, buffer_code: int, now: datetime) -> dict:
+# Required active sources: PS4 is intentionally excluded by online.py.
+# Thresholds include scheduling jitter (not a polling-frequency change).
+SOURCE_MAX_AGE_MINUTES = {
+    "newswire": 60, "support-gta6": 90, "support-gta": 90,
+    "youtube": 150, "system:PS5": 150,
+}
+HEARTBEAT_MAX_AGE_MINUTES = 90
+SAFE_SOURCE_ERRORS = {
+    "Timeout", "ReadTimeout", "ConnectTimeout", "HTTPError", "ConnectionError",
+    "ProxyError", "SSLError", "JSONDecodeError", "ParseError", "ValueError",
+    "Error", "SourceError",
+}
+
+
+def summarize_sources(snapshot, now: datetime) -> dict:
+    """Use the existing public heartbeat, never infer success from a green job."""
+    if not isinstance(snapshot, dict) or snapshot.get("schema_version") != 1:
+        return {"status": "unknown", "reason": "missing_or_invalid_heartbeat", "sources": []}
+    try:
+        generated = datetime.fromisoformat(snapshot["generated_at"].replace("Z", "+00:00"))
+        if generated.tzinfo is None:
+            raise ValueError("Missing timezone")
+        age = (now - generated).total_seconds() / 60
+        if age < -5:
+            raise ValueError("Future heartbeat")
+        records = snapshot["monitors"]
+        if not isinstance(records, list):
+            raise ValueError("Invalid monitor rows")
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return {"status": "unknown", "reason": "invalid_heartbeat", "sources": []}
+    rows = []
+    for source_id, limit in SOURCE_MAX_AGE_MINUTES.items():
+        matching = [r for r in records if isinstance(r, dict) and r.get("id") == source_id]
+        item = {"id": source_id}
+        if len(matching) != 1:
+            item.update(status="unknown", reason="missing_or_duplicate_source")
+        else:
+            row = matching[0]
+            if row.get("last_error") is not None:
+                error = row["last_error"]
+                item.update(status="degraded", reason=(
+                    error if isinstance(error, str) and error in SAFE_SOURCE_ERRORS else "SourceError"))
+            elif age > HEARTBEAT_MAX_AGE_MINUTES:
+                item.update(status="stale", reason="stale_heartbeat")
+            else:
+                stamp = row.get("last_success")
+                if not isinstance(stamp, (float, int)) or isinstance(stamp, bool) or not math.isfinite(stamp):
+                    item.update(status="unknown", reason="no_valid_success_timestamp")
+                else:
+                    elapsed = (now.timestamp() - stamp) / 60
+                    if elapsed < -5 or stamp < 0:
+                        item.update(status="unknown", reason="invalid_success_timestamp")
+                    elif elapsed > limit:
+                        item.update(status="stale", reason="last_success_too_old")
+                    else:
+                        item.update(status="healthy", reason="recent_success")
+        rows.append(item)
+    status = ("degraded" if age > HEARTBEAT_MAX_AGE_MINUTES or
+              any(r["status"] in ("degraded", "stale") for r in rows) else
+              "unknown" if any(r["status"] == "unknown" for r in rows) else "healthy")
+    return {"status": status, "reason": "stale_heartbeat" if age > HEARTBEAT_MAX_AGE_MINUTES else "source_observations",
+            "generated_utc": generated.astimezone(timezone.utc).isoformat(), "sources": rows}
+
+
+def assess(runs: list[dict], buffer_output: str, buffer_code: int, now: datetime, snapshot=None) -> dict:
     if now.tzinfo is None:
         raise ValueError("Timezone-aware date required")
     jobs = summarize_runs(runs, now)
     buff = buffer_health(buffer_output, buffer_code)
-    overall = ("degraded" if buff["status"] == "degraded" or
+    coverage = summarize_sources(snapshot, now)
+    overall = ("degraded" if coverage["status"] == "degraded" or buff["status"] == "degraded" or
                any(x["health"] in ("degraded", "stale") for x in jobs) else
-               "unknown" if buff["status"] == "unknown" or
+               "unknown" if coverage["status"] == "unknown" or buff["status"] == "unknown" or
                any(x["health"] == "unknown" for x in jobs) else "healthy")
     return {"schema": "gta6-bot-health-v1",
             "checked_utc": now.astimezone(timezone.utc).isoformat(),
             "overall": overall,
-            "workflows": jobs, "buffer": buff,
+            "workflows": jobs, "buffer": buff, "source_coverage": coverage,
             "publication": "read_only_diagnostics"}
 
 
@@ -110,6 +176,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--buffer-log", type=Path, required=True)
     parser.add_argument("--buffer-exit", type=Path, required=True)
+    parser.add_argument("--monitor-health", type=Path, default=Path("monitor-health.json"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--issue-output", type=Path)
     args = parser.parse_args()
@@ -129,7 +196,11 @@ def main() -> None:
         lines = args.buffer_log.read_text(encoding="utf-8")
     except OSError:
         lines = ""
-    result = assess(runs, lines, code, now)
+    try:
+        snapshot = json.loads(args.monitor_health.read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeError):
+        snapshot = None
+    result = assess(runs, lines, code, now, snapshot)
     if api_error:
         result["overall"] = "degraded"
         result["api_error"] = api_error
@@ -140,12 +211,15 @@ def main() -> None:
         lines = [
             "# GTA VI — salute bot GitHub", "",
             f"**Stato: {result['overall'].upper()}** · UTC: {result['checked_utc']}", "",
-            "Valutazione automatica di log GitHub e preflight Buffer in sola lettura.",
+            "Valutazione automatica di workflow GitHub, heartbeat delle fonti e preflight Buffer in sola lettura.",
             ("⚠️ GitHub API: " + result["api_error"] if result.get("api_error") else ""),
             "Nessun post creato né ritentato.", "",
             "## Workflow", ""
         ]
         lines.extend(f"- **{j['name']}**: {j['health']} · {j.get('run_url', 'nessun run trovato')}" for j in result["workflows"])
+        coverage = result["source_coverage"]
+        lines += ["", "## Fonti ufficiali", "", f"**{coverage['status']}** — {coverage['reason']}"]
+        lines.extend(f"- {row['id']}: {row['status']} — {row['reason']}" for row in coverage["sources"])
         lines += ["", "## Buffer / X", "",
                   f"**{result['buffer']['status']}** — {result['buffer']['reason']}", "",
                   "Per ripristinare un canale scollegato serve conferma manuale; non riattivare i Quick Tips senza controllare i post su X.",
@@ -154,6 +228,10 @@ def main() -> None:
     print("GTA6_BOT_HEALTH", result["overall"])
     for job in result["workflows"]:
         print("CHECK", job["name"], job["health"], job.get("run_url", ""))
+    coverage = result["source_coverage"]
+    print("SOURCE_COVERAGE", coverage["status"], coverage["reason"])
+    for row in coverage["sources"]:
+        print("SOURCE_CHECK", row["id"], row["status"], row["reason"])
     print("BUFFER", result["buffer"]["status"], result["buffer"]["reason"])
     # Do not leak Buffer tokens, IDs or the unredacted diagnostic log.
     if result["overall"] == "degraded":
