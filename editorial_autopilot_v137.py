@@ -645,9 +645,9 @@ def reserve():
                           str(item.get('url',''))[:100])
                     continue
                 if photo_required:
-                    from social_media_gate_v2 import probe_image
-                    if not probe_image(image_backed['media_url']):
-                        print('MEDIA_HOLD_GAME_PHOTO_UNAVAILABLE')
+                    from game_photo_policy_v1 import probe_cover_digest
+                    if not probe_cover_digest(image_backed['media_url'], image_backed.get('cover_sha256')):
+                        print('MEDIA_HOLD_GAME_PHOTO_DIGEST_MISMATCH_OR_UNAVAILABLE')
                         continue
                 if not media_thread_preflight(image_backed):
                     print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown')),
@@ -676,6 +676,7 @@ def reserve():
         }
         if item.get('photo_kind'):
             state['entries'][item['key']]['photo_kind'] = item['photo_kind']
+            state['entries'][item['key']]['cover_sha256'] = item.get('cover_sha256')
         if "rotation_variant" in item:
             for field in ("key","rotation_variant","rotation_revision","rotation_reason"):
                 state['entries'][item['key']][field]=item[field]
@@ -734,7 +735,7 @@ def deliver():
             save_state(state)
             print('BUFFER_GAME_PHOTO_HOLD: no matching live photographic cover or standalone copy')
             continue
-        if not entry.get('media_url') or not probe_image(entry['media_url']):
+        if not photo_policy_active(clock) and (not entry.get('media_url') or not probe_image(entry['media_url'])):
             entry['status']='held_missing_verified_image'
             save_state(state)
             print('BUFFER_IMAGE_HOLD',str(entry.get('url',''))[:100])

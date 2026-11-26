@@ -70,6 +70,9 @@ CONTENT = (
     {"id": "leonida-six-official-photos", "path": "/articoli/gta-vi-leonida-sei-luoghi/",
      "title": "GTA VI: Leonida in sei immagini Rockstar",
      "text": "🌴 GTA VI | LEONIDA IN SEI SCATTI\n\nDa Vice City alle Leonida Keys, sei ambienti nelle immagini ufficiali Rockstar. Nessuno spoiler della storia.\n\n📸 Galleria e fonti:"},
+    {"id": "ultimate-edition-auto-garage", "path": "/articoli/gta-vi-ultimate-edition-auto-garage/",
+     "title": "GTA VI Ultimate Edition: auto e garage in quattro immagini",
+     "text": "🚘 GTA VI | AUTO E GARAGE\n\nRideout Customs, interni, collezione Wyman e veicoli del rifugio: quattro immagini ufficiali. Non sono istruzioni di sblocco.\n\n📸 Foto e guide:"},
     {"id": "community-sources", "path": "/scoperte/",
      "title": "Scoperte community: verifica le fonti",
      "text": "🔎 GTA VI | Rumor e datamining non sono notizie confermate. Nella sezione Scoperte trovi titoli, fonti e classificazioni, senza promesse di glitch trophy-safe.\n\n🧪 Consulta le segnalazioni:"},
@@ -175,7 +178,8 @@ def candidate(state:dict, now:datetime, *, live_checker=page_live, photo_checker
     # A reviewed photographic story is the first useful fallback, not the last
     # of dozens of illustrated candidates. Preserve the historical queue order
     # for inventory and offline tests; no extra slot or bypass of cooldown.
-    ordered = sorted(CONTENT,key=lambda item: item['id']!='leonida-six-official-photos') if photo_checker else CONTENT
+    photo_editorials = {"leonida-six-official-photos", "ultimate-edition-auto-garage"}
+    ordered = sorted(CONTENT,key=lambda item: item['id'] not in photo_editorials) if photo_checker else CONTENT
     for item in ordered:
         url=PORTAL_BASE+item["path"]
         if _owned_path(url) in previous_paths:

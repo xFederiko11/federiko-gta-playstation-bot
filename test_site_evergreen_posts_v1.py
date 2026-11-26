@@ -35,6 +35,16 @@ class SiteEvergreenTests(unittest.TestCase):
         self.assertEqual(item["url"],target)
         self.assertFalse(self.state["entries"])
 
+    def test_new_photo_editorial_is_available_after_prior_photo_story(self):
+        old="https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/"
+        new="https://xfederiko11.github.io/gta-6/articoli/gta-vi-ultimate-edition-auto-garage/"
+        self.state["entries"]["old"]={"source":SOURCE,"status":"sent","url":old,
+                                       "reserved_utc":(NOW-timedelta(days=2)).isoformat()}
+        selected=candidate(self.state,NOW,live_checker=lambda u:True,photo_checker=lambda u:u in (old,new))
+        self.assertEqual(selected["url"],new)
+        self.assertIn("Non sono istruzioni di sblocco",selected["text"])
+        self.assertIsNone(candidate(self.state,NOW,live_checker=lambda u:False,photo_checker=lambda u:u==new))
+
     def test_original_creator_showcase_requires_live_page_and_unique_image(self):
         item=next(x for x in CONTENT if x["id"]=="creator-showcase-original")
         self.assertEqual(item["path"],"/video-tutorial/")
