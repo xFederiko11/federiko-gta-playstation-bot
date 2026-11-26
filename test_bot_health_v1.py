@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-from bot_health_v1 import summarize_runs, buffer_health, assess, REQUIRED
+from bot_health_v1 import summarize_runs, buffer_health, assess, REQUIRED, summarize_sources, SOURCE_MAX_AGE_MINUTES
 
 NOW = datetime(2026, 11, 19, 12, 0, tzinfo=timezone.utc)
 
@@ -16,10 +16,55 @@ def run(name, minutes_ago, conclusion="success", event="schedule"):
     return {"name":name,"event":event,"status":"completed","conclusion":conclusion,
             "created_at":at,"html_url":"https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/12"}
 
+def heartbeat():
+    return {"schema_version": 1, "generated_at": NOW.isoformat(),
+            "monitors": [{"id": ident, "last_success": NOW.timestamp() - 300,
+                          "last_error": None} for ident in SOURCE_MAX_AGE_MINUTES]}
+
+
 class BotHealthTests(unittest.TestCase):
+    def test_source_failure_overrides_green_workflows_and_buffer(self):
+        data = heartbeat()
+        data["monitors"][0]["last_error"] = "ReadTimeout"
+        result = assess([run(x, 60) for x in REQUIRED], "BUFFER_PREFLIGHT_OK", 0, NOW, data)
+        self.assertEqual(result["overall"], "degraded")
+        self.assertEqual(result["source_coverage"]["sources"][0]["reason"], "ReadTimeout")
+
+    def test_stale_source_and_heartbeat_cannot_report_healthy(self):
+        data = heartbeat()
+        data["monitors"][0]["last_success"] = (NOW - timedelta(hours=5)).timestamp()
+        self.assertEqual(summarize_sources(data, NOW)["status"], "degraded")
+        data = heartbeat()
+        data["generated_at"] = (NOW - timedelta(hours=3)).isoformat()
+        self.assertEqual(summarize_sources(data, NOW)["reason"], "stale_heartbeat")
+
+    def test_missing_duplicate_future_and_invalid_source_evidence(self):
+        self.assertEqual(summarize_sources(None, NOW)["status"], "unknown")
+        for modify in (
+                lambda d: d["monitors"].pop(),
+                lambda d: d["monitors"].append(d["monitors"][0]),
+                lambda d: d["monitors"][0].update(last_success=float("nan")),
+                lambda d: d.update(generated_at=(NOW + timedelta(hours=1)).isoformat())):
+            data = heartbeat()
+            modify(data)
+            self.assertEqual(summarize_sources(data, NOW)["status"], "unknown")
+
+    def test_legacy_ps4_is_not_required_and_raw_errors_are_not_exported(self):
+        data = heartbeat()
+        data["monitors"].append({"id": "system:PS4", "last_error": "old"})
+        self.assertEqual(summarize_sources(data, NOW)["status"], "healthy")
+        data["monitors"][0]["last_error"] = "token=secret"
+        self.assertNotIn("secret", json.dumps(summarize_sources(data, NOW)))
+        self.assertEqual(summarize_sources(data, NOW)["sources"][0]["reason"], "SourceError")
+
+    def test_no_source_heartbeat_is_not_healthy(self):
+        result = assess([run(x, 60) for x in REQUIRED], "BUFFER_PREFLIGHT_OK", 0, NOW)
+        self.assertEqual(result["overall"], "unknown")
+
+
     def test_all_workflows_healthy_and_connected(self):
         rows=[run(x,60) for x in REQUIRED]
-        check=assess(rows,"BUFFER_PREFLIGHT_OK account=@xFederiko11\nQUICK_TIPS_READY",0,NOW)
+        check=assess(rows,"BUFFER_PREFLIGHT_OK account=@xFederiko11\nQUICK_TIPS_READY",0,NOW,heartbeat())
         self.assertEqual(check["overall"],"healthy")
         self.assertEqual(len(check["workflows"]),5)
 
@@ -48,7 +93,7 @@ class BotHealthTests(unittest.TestCase):
     def test_inactive_site_with_last_successful_deploy_is_not_stale(self):
         rows=[run(x,60) for x in REQUIRED[:-1]]
         rows.append(run("GTA 6 Italia - Website", 14*24*60, event="push"))
-        result=assess(rows,"BUFFER_PREFLIGHT_OK\nQUICK_TIPS_READY",0,NOW)
+        result=assess(rows,"BUFFER_PREFLIGHT_OK\nQUICK_TIPS_READY",0,NOW,heartbeat())
         self.assertEqual(result["overall"],"healthy")
 
     def test_buffer_read_only_status_never_claims_delivery(self):
