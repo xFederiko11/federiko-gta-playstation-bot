@@ -45,5 +45,42 @@ def load(path=FILE):
 def reuse_documented(url,kind,digest):
     return (url,kind,digest) in load()
 
+def attachment_allowed(media_url,page_url):
+    """Only explicitly reviewed owned JPEGs; external media are held."""
+    if not isinstance(page_url,str) or canonical_page_path(page_url) is None:
+        return False
+    if not isinstance(media_url,str) or cover_for(page_url)!=media_url:
+        return False
+    matches=[(url,kind,digest) for url,kind,digest in load() if url==page_url]
+    if len(matches)!=1:return False
+    _,kind,digest=matches[0]
+    from game_photo_policy_v1 import owned_photo_details,probe_cover_digest
+    return (owned_photo_details(page_url)==(kind,digest)
+            and probe_cover_digest(media_url,digest))
+
+
+def message_attachments_allowed(message):
+    """Check every attachment against a specific reviewed article in the copy."""
+    if not isinstance(message,dict):return False
+    text=message.get("text")
+    assets=message.get("assets")
+    if not isinstance(text,str) or not isinstance(assets,list) or not assets:return False
+    from urllib.parse import urlunsplit
+    pages=set()
+    for match in re.findall(r"https://[^\s<>]+",text):
+        try:
+            u=urlsplit(match.rstrip(".,);"))
+            clean=urlunsplit((u.scheme,u.netloc,u.path,"",""))
+            if not u.fragment and canonical_page_path(clean) is not None:pages.add(clean)
+        except ValueError:
+            continue
+    for asset in assets:
+        if not isinstance(asset,dict) or set(asset)!={"image"} or not isinstance(asset["image"],dict):
+            return False
+        media=asset["image"].get("url")
+        if not any(cover_for(page)==media and attachment_allowed(media,page) for page in pages):
+            return False
+    return True
+
 if __name__=="__main__":
     print("PHOTO_RIGHTS_REVIEW_RECORDS",len(load()),"records; no inferred rights")

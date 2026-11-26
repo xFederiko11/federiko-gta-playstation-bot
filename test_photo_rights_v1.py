@@ -37,6 +37,19 @@ class RightsTests(unittest.TestCase):
         with patch("game_photo_policy_v1.scan_details",return_value=(KIND,DIGEST)),patch("photo_rights_v1.reuse_documented",return_value=True):
             self.assertEqual(scan_kind(URL),KIND)
             self.assertEqual(prepare_photo(item)["cover_sha256"],DIGEST)
+    def test_attachment_and_copy_contract(self):
+        from photo_rights_v1 import attachment_allowed,message_attachments_allowed
+        cover=cover_for(URL)
+        message={"text":"Guida "+URL,"assets":[{"image":{"url":cover}}]}
+        with patch("photo_rights_v1.load",return_value={(URL,KIND,DIGEST):{}}),patch("game_photo_policy_v1.owned_photo_details",return_value=(KIND,DIGEST)),patch("game_photo_policy_v1.probe_cover_digest",return_value=True):
+            self.assertTrue(attachment_allowed(cover,URL))
+            self.assertTrue(message_attachments_allowed(message))
+            self.assertTrue(message_attachments_allowed(dict(message,text="Guida "+URL+"?utm_source=x")))
+            self.assertFalse(message_attachments_allowed(dict(message,text="Altra guida https://xfederiko11.github.io/gta-6/other/")))
+            self.assertFalse(message_attachments_allowed(dict(message,assets=message["assets"]+[{"image":{"url":"https://www.rockstargames.com/photo.jpg"}}])))
+            self.assertFalse(attachment_allowed("https://www.rockstargames.com/photo.jpg","https://www.rockstargames.com/VI/"))
+        self.assertFalse(message_attachments_allowed(message))
+
     def test_missing_or_malformed_registry_fails_closed(self):
         with tempfile.TemporaryDirectory() as d:
             file=Path(d)/"missing.json";self.assertEqual(load(file),{})

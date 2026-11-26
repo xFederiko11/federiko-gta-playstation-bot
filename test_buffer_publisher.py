@@ -232,8 +232,23 @@ class BufferPublisherTests(unittest.TestCase):
                 self.client.publish_thread(["Foto", "Fonte"], media_url="https://example.org/photo.jpg")
             self.session.post.assert_not_called()
             self.session.post.return_value = response(delivered())
-            self.client.publish("Foto", media_url="https://example.org/photo.jpg")
+            with self.assertRaises(BufferAPIError) as result:
+                self.client.publish("Foto", media_url="https://example.org/photo.jpg")
+            self.assertFalse(result.exception.outcome_unknown)
+            self.session.post.assert_not_called()
+            with patch("photo_rights_v1.message_attachments_allowed",return_value=True):
+                self.client.publish("Foto", media_url="https://example.org/photo.jpg")
             self.session.post.assert_called_once()
+
+    def test_project_account_cannot_bypass_rights_without_environment_switch(self):
+        from unittest.mock import patch
+        client=BufferClient("test-key-not-real","channel-1","xFederiko11",session=self.session)
+        client.destination=channel()
+        with patch.dict("os.environ",{"GTA6_REQUIRE_ALL_POST_PHOTOS":"false"}):
+            with self.assertRaises(BufferAPIError) as result:
+                client.publish("Notizia ufficiale https://www.rockstargames.com/VI/",media_url="https://www.rockstargames.com/photo.jpg")
+            self.assertFalse(result.exception.outcome_unknown)
+        self.session.post.assert_not_called()
 
     def test_image_thread_requires_reserved_character_budget_before_network(self):
         a="🚗 GTA VI | "+("A"*245)

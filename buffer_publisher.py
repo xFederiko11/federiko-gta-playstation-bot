@@ -176,7 +176,7 @@ class BufferClient:
     def _graphql(self, query, variables, *, mutation=False):
         # Final barrier for every production createPost, including legacy
         # scheduled mutations that bypass publish(). No text-only replies.
-        if mutation and "createPost" in query and os.getenv("GTA6_REQUIRE_ALL_POST_PHOTOS") == "true":
+        if mutation and "createPost" in query and (self.expected_username == "xfederiko11" or os.getenv("GTA6_REQUIRE_ALL_POST_PHOTOS") == "true"):
             value = variables.get("input") or {}
             thread = ((value.get("metadata") or {}).get("twitter") or {}).get("thread")
             messages = thread if thread is not None else [value]
@@ -188,6 +188,10 @@ class BufferClient:
                            for asset in (message.get("assets") or []))
             if not messages or not all(isinstance(m, dict) and has_image(m) for m in messages):
                 raise BufferAPIError("Invio bloccato: fotografia obbligatoria in ogni messaggio X",
+                                     status=400, outcome_unknown=False)
+            from photo_rights_v1 import message_attachments_allowed
+            if not all(message_attachments_allowed(message) for message in messages):
+                raise BufferAPIError("Invio bloccato: diritti di riutilizzo della fotografia non documentati",
                                      status=400, outcome_unknown=False)
         if self.request_guard is not None:
             self.request_guard()

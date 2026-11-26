@@ -407,6 +407,14 @@ def deliver(db, client, upload, directory, render=render_card, checkpoint=None, 
                            (row["key"],))
             LOG.warning('Invio trattenuto: nessuna immagine HTTPS prima di Buffer')
             continue
+        if os.getenv('GTA6_REQUIRE_ALL_POST_PHOTOS') == 'true':
+            from photo_rights_v1 import attachment_allowed
+            if not attachment_allowed(media_url,event.get('source_url')):
+                with db:
+                    db.execute("UPDATE publish_jobs SET status='review',last_error='photo_rights_unverified' WHERE key=?",
+                               (row["key"],))
+                LOG.warning('PHOTO_RIGHTS_HOLD: fonte ufficiale non equivale a permesso di riutilizzo')
+                continue
         # V12: optional persistent image uniqueness, including archived bootstrap
         # images. Never republish a used thumbnail; hold the event for review.
         # Default OFF so deploying v12 cannot interfere with today's live v11.

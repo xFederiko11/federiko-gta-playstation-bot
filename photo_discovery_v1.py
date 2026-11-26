@@ -145,6 +145,18 @@ def discover(data):
             "exact_model_leads":exact,"context_leads":topic,"source_references":refs,"tasks":tasks,
             "new_approvals":0,"downloaded_images":0,"posts":0}
 
+def gallery_leads(path=None):
+    """Dated source review, not a live import or reuse grant."""
+    if path is None:path=Path(__file__).with_name("data")/"official-gallery-leads-v1.json"
+    doc=json.loads(path.read_text(encoding="utf-8"))
+    if (doc.get("schema")!="gta6-official-gallery-leads-v1"
+        or doc.get("source")!="https://www.rockstargames.com/VI/media/screenshots"
+        or doc.get("status")!="link_only_rights_unverified"
+        or len(doc.get("titles",[]))!=12 or len(set(doc["titles"]))!=12
+        or not all(isinstance(t,str) and 5<=len(t)<=100 for t in doc["titles"])):
+        raise ValueError("Invalid gallery leads; no approval")
+    return doc
+
 def report(data,revision):
     lines=["# Ricerca fotografica — sola lettura","",
            "Snapshot GitHub del sito: "+revision+" (dati sorgente, non verifica del deploy).",
@@ -178,6 +190,11 @@ def main():
         revision,inputs=snapshot()
         result=discover(inputs)
         body=report(result,revision)
+        extra=gallery_leads()
+        body+="\n## Nuova raccolta ufficiale, solo link (review "+extra["reviewed_on"]+")\n\n"
+        body+="Fonte: "+extra["source"]+"\nPolicy: "+extra["policy"]+"\n\n"
+        body+="\n".join("- "+title+" — diritti da verificare, nessun download" for title in extra["titles"])+"\n"
+        print("PHOTO_GALLERY_LINK_ONLY",len(extra["titles"]),"new leads; no downloads or approvals")
         print("PHOTO_DISCOVERY_OK archive",result["archive_count"],"roles",result["requested_roles"],
               "registry",result["registry_rows"],"exact_models",len(result["exact_model_leads"]),
               "context",len(result["context_leads"]),"source_links",len(result["source_references"]),

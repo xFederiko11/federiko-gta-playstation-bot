@@ -98,7 +98,13 @@ jobs:
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         run: |
           python -m pip install --disable-pip-version-check -r requirements-free.txt
-          python -m playwright install --with-deps chromium
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo 'ROCKSTAR_BROWSER_CHANNEL=chrome' >> "$GITHUB_ENV"
+            echo 'Using preinstalled Google Chrome'
+          else
+            echo 'Preinstalled Chrome missing; using Playwright headless Chromium shell'
+            python -m playwright install --with-deps --only-shell chromium
+          fi
       - name: Verifica gratuita i link ufficiali prima di pubblicare
         if: ${{ steps.launch_window.outputs.active == 'true' }}
         run: |
