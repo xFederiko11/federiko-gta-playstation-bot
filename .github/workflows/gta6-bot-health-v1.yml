@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/gta6-bot-health-v1.yml']
+    paths: ['.github/workflows/gta6-bot-health-v1.yml', 'actions_runtime_sample_v1.py', 'test_actions_runtime_sample_v1.py']
   schedule:
     - cron: '43 8,20 * * *'
   pull_request:
@@ -12,6 +12,8 @@ on:
     paths:
       - 'bot_health_v1.py'
       - 'test_bot_health_v1.py'
+      - 'actions_runtime_sample_v1.py'
+      - 'test_actions_runtime_sample_v1.py'
       - '.github/workflows/gta6-bot-health-v1.yml'
 
 permissions:
@@ -41,7 +43,13 @@ jobs:
       - name: Validate safe health checker without network
         run: |
           python -m py_compile bot_health_v1.py
-          python -m unittest -q test_bot_health_v1
+          python -m unittest -q test_bot_health_v1 test_actions_runtime_sample_v1
+      - name: Measure bounded scheduled job sample (read only)
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: timeout 70s python actions_runtime_sample_v1.py
       - name: Buffer / X preflight (read-only)
         if: github.event_name != 'pull_request'
         env:

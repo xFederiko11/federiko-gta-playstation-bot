@@ -37,7 +37,8 @@ TOPIC_SUBJECTS={
 SOURCE_HOSTS={"www.powerpyx.com","www.pushsquare.com","www.gtabase.com","gta6data.com",
               "www.rockstargames.com","support.rockstargames.com","gta6gps.com",
               "www.youtube.com","youtu.be","www.ign.com","insider-gaming.com",
-              "www.insider-gaming.com","www.gamesradar.com"}
+              "www.insider-gaming.com","www.gamesradar.com","www.gtaboom.com",
+              "solucemode.com","gta6-japan.com","getvicekeys.com"}
 
 def read_json(url, session=None):
     if url != API and not any(re.fullmatch(re.escape(RAW)+r"[0-9a-f]{40}/"+re.escape(path),url)
@@ -133,6 +134,24 @@ def discover(data):
             if url and (gid,url) not in seen_pages:
                 seen_pages.add((gid,url))
                 refs.append({"guide":gid,"url":url,"kind":"source_page_only"})
+    # Vehicle-specific source pages are distinct from tutorial photo roles.
+    vehicle_refs=[]
+    seen_vehicle=set()
+    for car in data["vehicles"]["items"]:
+        if car.get("spoiler") or car.get("status")!="Verificata":continue
+        for value in (car.get("source_url"),car.get("additional_source")):
+            url=safe_source(value)
+            key=(car.get("slug",car["name"]),url)
+            if url and key not in seen_vehicle:
+                seen_vehicle.add(key)
+                vehicle_refs.append({"model":car["name"],"url":url,"kind":"source_page_only"})
+    # Archive metadata records origin, not a rights grant. The legacy registry
+    # explicitly distinguishes link-only material. Keep these counts separate.
+    legacy=data["provenance"].get("assets",[])
+    audit={"archive_originals_with_no_specific_grant_in_manifest":sum(
+        not item.get("reuse_grant") for item in assets),
+        "legacy_screenshots_without_documented_permission":sum(
+            row.get("reuse_permission")=="not_documented" for row in legacy)}
     tasks=[]
     for gid,roles in requests_by_guide.items():
         for i,desc in enumerate(roles,1):
@@ -143,6 +162,7 @@ def discover(data):
     return {"archive_count":len(assets),"requested_roles":55,"registry_rows":len(registry["photos"]),
             "roles_with_recorded_approval":len(recorded),"unrecorded_roles":len(tasks),
             "exact_model_leads":exact,"context_leads":topic,"source_references":refs,"tasks":tasks,
+            "vehicle_source_references":vehicle_refs,"rights_metadata_audit":audit,
             "new_approvals":0,"downloaded_images":0,"posts":0}
 
 def gallery_leads(path=None):
@@ -157,6 +177,20 @@ def gallery_leads(path=None):
         raise ValueError("Invalid gallery leads; no approval")
     return doc
 
+def vehicle_location_leads(path=None):
+    if path is None:path=Path(__file__).with_name("data")/"vehicle-location-leads-v1.json"
+    doc=json.loads(path.read_text(encoding="utf-8"))
+    if doc.get("schema")!="gta6-vehicle-location-leads-v1" or not isinstance(doc.get("leads"),list):
+        raise ValueError("Invalid vehicle research leads")
+    for row in doc["leads"]:
+        url=row["url"]
+        if row["status"]=="source_unreadable":
+            if not re.fullmatch(r"https://x[.]com/[A-Za-z0-9_]{1,15}/status/[0-9]{10,25}",url):
+                raise ValueError("Invalid social source link")
+        elif row["status"]!="source_page_only" or not safe_source(url):
+            raise ValueError("Unreviewed vehicle research source")
+    return doc
+
 def report(data,revision):
     lines=["# Ricerca fotografica — sola lettura","",
            "Snapshot GitHub del sito: "+revision+" (dati sorgente, non verifica del deploy).",
@@ -168,6 +202,9 @@ def report(data,revision):
            "- Corrispondenze esatte per modello da verificare: "+str(len(data["exact_model_leads"])),
            "- Possibili contesti promozionali da verificare: "+str(len(data["context_leads"])),
            "- Riferimenti a pagine fonte, non foto autorizzate: "+str(len(data["source_references"])),
+           "- Fonti specifiche dei veicoli (solo link): "+str(len(data["vehicle_source_references"])),
+           "- Originali senza concessione specifica registrata nel manifest: "+str(data["rights_metadata_audit"]["archive_originals_with_no_specific_grant_in_manifest"]),
+           "- Screenshot storici con permesso non documentato: "+str(data["rights_metadata_audit"]["legacy_screenshots_without_documented_permission"]),
            "- Nuove foto approvate/scaricate/post: 0/0/0.","",
            "## Priorità da documentare"]
     for item in data["tasks"][:10]:
@@ -178,6 +215,9 @@ def report(data,revision):
     lines.extend(["","## Riferimenti alla fonte (nessun download)"])
     for item in data["source_references"][:60]:
         lines.append("- "+item["guide"]+" · "+item["url"])
+    lines.extend(["","## Fonti veicoli: nessun diritto fotografico inferito"])
+    for item in data["vehicle_source_references"][:100]:
+        lines.append("- "+item["model"]+" · "+item["url"])
     return "\n".join(lines)+"\n"
 
 def main():
@@ -190,6 +230,10 @@ def main():
         revision,inputs=snapshot()
         result=discover(inputs)
         body=report(result,revision)
+        locations=vehicle_location_leads()
+        body+="\n## Segnalazioni posizioni veicoli (solo ricerca)\n\n"
+        body+="\n".join("- "+row["url"]+" — "+row["status"]+" — "+row["description"] for row in locations["leads"])+"\n"
+        print("PHOTO_RIGHTS_METADATA_AUDIT",json.dumps(result["rights_metadata_audit"],sort_keys=True),"vehicle_source_links",len(result["vehicle_source_references"]),"unreadable_social_leads",sum(row["status"]=="source_unreadable" for row in locations["leads"]))
         extra=gallery_leads()
         body+="\n## Nuova raccolta ufficiale, solo link (review "+extra["reviewed_on"]+")\n\n"
         body+="Fonte: "+extra["source"]+"\nPolicy: "+extra["policy"]+"\n\n"

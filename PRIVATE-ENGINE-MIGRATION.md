@@ -22,3 +22,7 @@ GitHub standard public runners are free; private runner use draws from the owner
 
 ## Completion criteria
 Private execution, real cost ceiling, stable public URL, identical quality and publication checks, successful rollback rehearsal. Until then no visibility or account settings are changed.
+
+## Runtime sample 2026-11-26
+
+Eight recent scheduled jobs (IDs 45863498026, 45863299975, 45859495213, 45858531119, 45856181506, 45855539128, 45853536667, 45849361842) took 274 seconds in total from individual GitHub job start/end timestamps. Sum of per-job ceilings to minutes: 9. This is an illustrative short sample, not invoiced usage or a representative monthly projection. The existing health job now measures up to 12 recent scheduled runs read-only, no extra scheduled workflow. Missing timestamps or API failures are not treated as zero. Account budget and storage still require verification before cutover.
