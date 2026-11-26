@@ -27,3 +27,5 @@ Aggiornato: 26 novembre 2026, sessione integrazione e verifica pubblica integrit
 
 ## Chiusura
 Report breve: completato, verificato, da risolvere, massimo tre priorità. Aggiornare questo stesso file su main con blob SHA corrente, senza credenziali o dati personali. Non innescare pubblicazioni solo per aggiornare la consegna. Distinguere commit, deploy, Buffer Sent e X visibile. I job autonomi seguono la pianificazione.
+
+**Consegna per la prossima sessione:** in ogni report includere sempre un testo autonomo pronto da copiare/incollare in una nuova chat del progetto, con repository, lettura di BOTX-STATE.md, task prioritaria e criteri di completamento, test/deploy/verifica e aggiornamento del registro. Quando l'utente chiede di scegliere, presentare task numerate con risultati attesi e dipendenze, senza avviare cambiamenti alle priorità prima della scelta. Resta valida la prosecuzione autonoma quando esplicitamente richiesta.
