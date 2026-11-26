@@ -62,6 +62,18 @@ class QueueTests(unittest.TestCase):
         self.assertNotIn("[Click](https://evil.example)",body)
         self.assertIn("gta6-verified-source-feed-b64:",body)
 
+    def test_feed_stays_bounded_and_full_count_is_visible(self):
+        entries=[item("GTA 6 guide "+str(i),url="https://powerpyx.com/gta-6-guide-"+str(i)) for i in range(45)]
+        result=markdown({"schema":"gta6-research-digest-v1","candidates":entries,
+                         "sources_checked":[{"source":"PowerPyx","status":"ok","relevant":45}]})
+        self.assertIn("Candidati pertinenti: 45",result)
+        self.assertIn("Selezione feed sito: 25",result)
+        self.assertIn("titoli pertinenti: 45",result)
+        payload=json.loads(base64.urlsafe_b64decode(re.search(
+            r"<!-- gta6-verified-source-feed-b64:([A-Za-z0-9_=-]+) -->",result).group(1)))
+        self.assertEqual(len(payload["items"]),25)
+        self.assertTrue(all(not x["verified"] for x in payload["items"]))
+
     def test_unknown_schema_fails_closed(self):
         with self.assertRaises(ValueError):
             markdown({"schema":"different"})

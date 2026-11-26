@@ -178,7 +178,13 @@ def collect(registry: dict, *, session=None, now: datetime | None = None) -> dic
             checked.append({"source": src["name"], "status": "ok", "relevant": len(found)})
             research.extend(found)
         except (requests.RequestException, ValueError, ET.ParseError, KeyError, TypeError) as exc:
-            errors.append({"source": src["name"], "error": type(exc).__name__})
+            reason = type(exc).__name__
+            response = getattr(exc, "response", None)
+            code = getattr(response, "status_code", None)
+            if isinstance(exc, requests.HTTPError) and isinstance(code, int) and 100 <= code <= 599:
+                reason = "HTTP_" + str(code)
+            errors.append({"source": src["name"], "error": reason})
+            print("RESEARCH_SOURCE_ERROR", src["name"], reason)
             checked.append({"source": src["name"], "status": "unavailable", "relevant": 0})
     # No speculative auto-publication and no double-counting multiple-source reprints.
     seen, distinct = set(), []

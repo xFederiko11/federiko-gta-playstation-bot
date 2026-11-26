@@ -86,6 +86,29 @@ class ReviewTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             markdown({"schema":"not-supported"})
 
+    def test_all_45_candidates_are_retained_in_review_not_certified(self):
+        rows=[lead("GTABase","GTA 6 gameplay lead "+str(i),
+                   "https://www.gtabase.com/gta-6/articles/test-"+str(i)) for i in range(45)]
+        report=make_report(digest(rows))
+        self.assertEqual(report["reviewed_lead_count"],45)
+        self.assertEqual(sum(len(x["leads"]) for x in report["sections"]),45)
+        self.assertIn(rows[-1]["url"],markdown(report))
+        self.assertTrue(all(not x["ready_to_publish"] for x in report["sections"]))
+
+    def test_specialist_topics_route_to_existing_pages_not_new_claims(self):
+        cases=[("GTA 6 All Kenton Sets Locations","kenton","guide-e-tutorial/"),
+               ("GTA 6 All Aquatic Animals","animali","guide-e-tutorial/studiare-animali/"),
+               ("GTA 6 All Cats & Dogs","animali","guide-e-tutorial/studiare-animali/"),
+               ("GTA 6 All Meditation Locations","meditazione","guide-e-tutorial/meditazione-capitolo-1/"),
+               ("GTA 6 How to Increase Your BuckMe Limit","economia","soldi-facili/"),
+               ("GTA 6 All Under the Bridges Locations","collezionabili","guide-e-tutorial/")]
+        for title,label,path in cases:
+            with self.subTest(title=title):
+                section=make_report(digest([lead("PowerPyx",title,"https://powerpyx.com/gta-6-guide/")]))["sections"][0]
+                self.assertEqual(section["topic"],label)
+                self.assertIn(path,section["target_page_candidates"])
+                self.assertFalse(section["claim_verified"])
+
     def test_empty_report_is_safe(self):
         out=make_report(digest([]))
         self.assertEqual(out["sections"],[])
