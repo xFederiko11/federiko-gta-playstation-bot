@@ -2,6 +2,8 @@
 
 from datetime import datetime, timezone
 import re
+import logging
+import time
 from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
@@ -58,8 +60,8 @@ def parse_system_page(raw, platform, *, source_url=None, observed_at=None):
             **({"official_image_url": image_url} if image_url else {})}
 
 
-def fetch_system_update(platform, timeout=25):
-    """Scarica solo HTML da Sony (massimo 2 MB), mai file PUP o binari."""
+def _fetch_system_page(platform, timeout):
+    """Single bounded HTML read; never download firmware."""
     if platform not in URLS:
         raise ValueError("Il monitor software supporta PS5 e PS4")
     with requests.get(URLS[platform], headers={"User-Agent": "GTA-PlayStation-Monitor/4.0", "Accept": "text/html"},
@@ -73,3 +75,31 @@ def fetch_system_update(platform, timeout=25):
             if len(raw) > 2_000_000:
                 raise ValueError("Pagina Sony oltre il limite dei metadati")
         return parse_system_page(bytes(raw), platform, source_url=response.url)
+
+
+LOG = logging.getLogger("gta6.playstation")
+TRANSIENT_HTTP = {408, 500, 502, 503, 504}
+
+
+def fetch_system_update(platform, timeout=25):
+    """One retry of the same official URL on transient network/server errors."""
+    for attempt in range(2):
+        try:
+            return _fetch_system_page(platform, timeout)
+        except requests.RequestException as exc:
+            response = getattr(exc, "response", None)
+            status = response.status_code if isinstance(exc, requests.HTTPError) and response is not None else None
+            if isinstance(status, int) and 100 <= status <= 599:
+                reason = "HTTP_" + str(status)
+            else:
+                reason = type(exc).__name__
+            transient = (status in TRANSIENT_HTTP if isinstance(exc, requests.HTTPError)
+                         else isinstance(exc, (requests.Timeout, requests.ConnectionError))
+                         and not isinstance(exc, (requests.exceptions.SSLError, requests.exceptions.ProxyError)))
+            LOG.warning("SONY_SOURCE_ERROR platform=%s reason=%s attempt=%d",
+                        platform, reason, attempt + 1)
+            # Do not retry access denial, rate limits, redirects to non-HTML,
+            # parse failures, certificate/proxy errors, or unknown status.
+            if attempt or not transient:
+                raise
+            time.sleep(1)

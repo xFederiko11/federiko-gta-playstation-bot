@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import re
+import time
 import unicodedata
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
@@ -315,13 +316,13 @@ def parse_feed(data: bytes, src: dict):
         raise ValueError('Feed too large')
     root = ET.fromstring(data)
     rows = []
-    if root.tag.lower().endswith('rss') or root.tag.lower() == 'rdf:rdf':
+    if root.tag == 'rss':
         for node in root.findall('.//item'):
             title = node.findtext('title') or ''
             url = node.findtext('link') or ''
             stamp = node.findtext('pubDate') or node.findtext('{http://purl.org/dc/elements/1.1/}date')
             rows.append((title, url, stamp))
-    else:
+    elif root.tag == '{http://www.w3.org/2005/Atom}feed':
         atom = '{http://www.w3.org/2005/Atom}'
         for node in root.findall(f'.//{atom}entry'):
             title = node.findtext(atom + 'title') or ''
@@ -332,6 +333,9 @@ def parse_feed(data: bytes, src: dict):
                              if not n.get('rel') or n.get('rel') == 'alternate'), '')
             stamp = node.findtext(atom + 'published') or node.findtext(atom + 'updated')
             rows.append((title, link, stamp))
+    else:
+        # A well-formed HTML access page is not a successful empty RSS feed.
+        raise ValueError('Unexpected RSS/Atom root')
     for title, url, stamp in rows:
         if not topic(title) or not published(stamp):
             continue
@@ -354,6 +358,31 @@ def load_sources(path: Path = CONFIG) -> list[dict]:
             raise ValueError('Invalid feed domain')
     return settings['sources']
 
+def _read_feed_once(http, src):
+    response = http.get(src['feed'], timeout=(5, 12),
+                        headers={'User-Agent': 'FederikoGTANewsCenter/1.0 (RSS reader)'},
+                        stream=True, allow_redirects=True)
+    try:
+        response.raise_for_status()
+        if response.url and urlsplit(response.url).hostname not in src['feed_domains']:
+            raise ValueError('Unexpected feed redirect')
+        data = bytearray()
+        for block in response.iter_content(65536):
+            data.extend(block)
+            if len(data) > MAX_DOWNLOAD:
+                raise ValueError('Excessive feed size')
+    finally:
+        response.close()
+    return bytes(data)
+
+
+def _looks_like_feed(data):
+    # Only a recognizable RSS/Atom prefix can justify a single parse retry.
+    # An HTML/challenge document or arbitrary XML is not a feed.
+    prefix = data[:4096].lstrip(b'\xef\xbb\xbf \t\r\n')
+    return bool(re.match(rb'(?:<\?xml[^>]*>\s*)?<(?:rss|feed)(?:\s|>)', prefix))
+
+
 def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[str]]:
     http = session or requests.Session()
     items = []
@@ -362,21 +391,16 @@ def read_feeds(sources: list[dict], *, session=None) -> tuple[list[dict], list[s
         if not src.get('enabled', True):
             continue
         try:
-            response = http.get(src['feed'], timeout=(5, 12),
-                                headers={'User-Agent': 'FederikoGTANewsCenter/1.0 (RSS reader)'},
-                                stream=True, allow_redirects=True)
+            data = _read_feed_once(http, src)
             try:
-                response.raise_for_status()
-                if response.url and urlsplit(response.url).hostname not in src['feed_domains']:
-                    raise ValueError('Unexpected feed redirect')
-                data = bytearray()
-                for block in response.iter_content(65536):
-                    data.extend(block)
-                    if len(data) > MAX_DOWNLOAD:
-                        raise ValueError('Excessive feed size')
-            finally:
-                response.close()
-            found = list(parse_feed(bytes(data), src))
+                found = list(parse_feed(data, src))
+            except ET.ParseError:
+                if src['name'] != 'PowerPyx' or not _looks_like_feed(data):
+                    raise
+                print('FEED_RETRY PowerPyx: malformed RSS/Atom; one retry')
+                time.sleep(1)
+                data = _read_feed_once(http, src)
+                found = list(parse_feed(data, src))
             items.extend(found)
             print(f"FEED_OK {src['name']}: qualifying={len(found)} bytes={len(data)}")
         except (requests.RequestException, ET.ParseError, ValueError, KeyError, TypeError) as exc:
