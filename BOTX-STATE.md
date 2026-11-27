@@ -1,3 +1,15 @@
+# Checkpoint — Autopilot #846 riconciliato, Southside da migliorare — 2026-11-27 16:34 CET
+
+- **Bot/X:** Autopilot [#846](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46026039751) completato con successo. Il log del ciclo reale mostra zero riserve uniche (74 feed, 32 freschi, 31 idonei), quindi DELIVERY_NOT_ATTEMPTED; il preflight registra BUFFER_QUEUE_PAUSED. La receipt conferma current_run_attempted=false e mostra soltanto il vecchio Buffer ID 6b098aa532c212878fd445fb, già riconciliato con [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710). Nessun nuovo post da riconciliare; nessun retry.
+- **Buffer:** scheda dedicata ancora in attesa di accesso manuale. La coda non è stata modificata o riattivata; leggere queue/draft/scheduled/sent e pausa prima di ogni azione.
+- **Repository:** remote sito main include #170/#171 con guida strip club e registrazione storica; checkout locale gta-6 è 6 commit indietro e contiene modifiche locali non commesse. Conservate senza sovrascrittura. Repository bot non è presente nel workspace locale; verificato via GitHub.
+- **Next:** migliorare Southside Storage per località, cinque murales, azione e verifica in pagina; prima confrontare le fonti e le modifiche remote già esistenti. Sviluppo X-feed e tassonomia/tag dipendono dall’audit del codice remoto.
+- Search Console dal 30/11 solo in lettura. Nessun costo, contatto, risposta o interazione automatica.
+
+**Priorità:** (1) Southside, con mappe/media documentabili per passaggio; (2) dopo login, Buffer in sola lettura e ripresa idempotente; (3) feed X e tassonomia tag dopo audit delle implementazioni esistenti.
+**Prossimo comando:** Continua Bot X dal checkpoint più recente; non ripetere PR #170/#171; verifica l’Autopilot #846 (nessun invio) e prosegui con audit e miglioramento Southside, feed X e tag. Dopo il login Buffer, controlla in sola lettura queue/draft/scheduled/sent e poi riattiva soltanto con contenuti verificati; Search Console dal 30/11 read-only; aggiorna questo checkpoint dopo ogni modifica significativa.
+---
+
 # Checkpoint — guida online, run monitor #373 senza invio — 2026-11-27 16:11 CET
 
 - **Sito:** PR [#170](https://github.com/xFederiko11/gta-6/pull/170) e registro [#171](https://github.com/xFederiko11/gta-6/pull/171) integrati. CI #533/#535 e deploy Pages [#534](https://github.com/xFederiko11/gta-6/actions/runs/46019709741), [#536](https://github.com/xFederiko11/gta-6/actions/runs/46021691856) riusciti. La guida [Tre strip club in GTA 6](https://xfederiko11.github.io/gta-6/guide-e-tutorial/strip-club-gta-6/) risulta live; l’archivio pubblico mostra 155 articoli e la nuova guida al 27/11. datePublished=2026-11-27, dateModified=2026-11-27T14:51:41Z. Visual: tre pin mappa esterni e video YouTube opt-in, senza iframe prima del clic; card grafica marcata non-gameplay. Meditazioni resta con datePublished=2026-11-18, dateModified=2026-11-27T09:45:21Z.
