@@ -1,3 +1,7 @@
+## Session follow-up — merge Southside, Pages deploy in corso — 2026-11-27 17:32 CET
+- PR [#173](https://github.com/xFederiko11/gta-6/pull/173) merged after green CI; squash commit `80ef131fbd8db3bd7434142f04b39ec6c3dddb5a` is now `main`.
+- Pages push workflow [#46034218975](https://github.com/xFederiko11/gta-6/actions/runs/46034218975) is in_progress. Do not claim deployment or production content until it completes and the public page can be checked.
+- No Buffer/X post was created in this session; #847 remains an existing Buffer receipt without independently verified X media. Buffer visual queue login still pending.
 ## Session follow-up — Southside CI verde — 2026-11-27 17:30 CET
 - Site PR [#173](https://github.com/xFederiko11/gta-6/pull/173) head `33594d35e665e3ee4a0e87775da502ed91fa2d55` is open and mergeable against `1b849376ae68b85f43d2a32abe8c93bdafe0a900`. QA run [#46033112924](https://github.com/xFederiko11/gta-6/actions/runs/46033112924) completed successfully, including production build, media/source checks, page output tests, and responsive real-browser QA. Main currently resolves to `1b849376ae68b85f43d2a32abe8c93bdafe0a900`; no merge/deploy yet at this checkpoint.
 - Next authorized operation: merge #173 only if head/base still match the reviewed revisions, then verify the Pages deployment and public page. Do not claim PS5 gameplay verification; external map pin coordinates and video timestamps remain source-referenced, not personally checked.
