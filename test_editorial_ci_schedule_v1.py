@@ -4,8 +4,10 @@ class EditorialCIScheduleTests(unittest.TestCase):
     def test_push_and_pr_are_qa_only_and_night_slots_bounded(self):
         raw=Path(".github/workflows/gta6-editorial-autopilot-v137.yml").read_text(encoding="utf-8")
         self.assertNotIn("workflow_run:",raw)
-        self.assertIn("10,40 5-21 * * *",raw)
-        self.assertIn("25,55 7-19 19-30 11 *",raw)
+        self.assertIn("- cron: '10 7 * * *'",raw)
+        self.assertIn("- cron: '10 21 * * *'",raw)
+        self.assertEqual(raw.count("- cron:"),7)
+        self.assertEqual(raw.count("timezone: Europe/Rome"),7)
         qa,production=raw.split("\n  editorial:\n",1)
         self.assertIn("if: github.event_name == 'pull_request' || github.event_name == 'push'",qa)
         self.assertNotIn("BUFFER_API_KEY",qa)
