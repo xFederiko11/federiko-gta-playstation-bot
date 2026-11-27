@@ -1,6 +1,13 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #162/#163 online, #209 attiva, #210 integrata e audit live verificato, #164 in QA; #208 GSC privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #162/#163 online, #164 QA superata sul commit esatto, merge/deploy da fare; #210 integrata e audit Buffer live verificato; #208 Search Console privata non attiva.
+
+## Checkpoint corrente — 27 novembre 2026
+- PR sito #164, head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7: QA run 45964800694 completata con successo alle 08:26:09 UTC; build superata, deploy correttamente saltato sul PR. PR ancora aperta. Prossimo: merge, attendere deploy main e verificare dal vivo guida meditazioni, mappa, archivio/ricerca e title/canonical/datePublished. Non dichiarare produzione finché URL e metadati non sono verificati.
+- Bot #210 già integrata (81164efa48156162a8160515a76eeab4775eddfb); audit live 45964882110 e issue #50 aggiornati alle 08:20:37 UTC. Buffer: 15 Sent nel campione, 0 Scheduled, 0 Error, coda non sospesa; 26/11 due invii con allegato Buffer e 27/11 nessun invio osservato alle 09:20 CET. Non equivale a totale giornaliero o a immagine visibile su X.
+- Registro diritti foto vuoto: 0 prove valide / 0 articoli con riutilizzo autorizzato. La coda editoriale resta bloccata per nuove copertine, senza disattivare i controlli. Nessuna foto PS5 autentica acquisita/documentata in questa sessione. Nessuna risposta X autentica pronta né invio. Non inventare licenze o screenshot; nessun contatto a Rockstar/creator.
+- GSC resta solo in assetto read-only preparato: privata/repository autorizzato, budget senza overage e credenziali owner-controlled mancanti. Non abilitare credenziali nel repository pubblico, non attivare costi.
+
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
