@@ -1,3 +1,11 @@
+## Session follow-up — audit tag editoriale e Monitor #375 — 2026-11-27
+- **Sito/tag:** controllo del main conferma che esiste una tassonomia di categorie e sottocategorie, ma gli archivi sono solo categoriali. Gli item delle guide hanno un singolo campo libero “tag”; gli articoli correlati vengono scelti per categoria, non per tag. Non ci sono ancora archivi dinamici di tag né selezione hashtag X derivata dai tag. Non ho modificato questa parte mentre #175 è in QA; resta la successiva priorità editoriale dopo il feed.
+- **Run bot:** Monitor [#375](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46040320135) è ancora in corso al controllo. Nessuna nuova Autopilot oltre #849; l’ultimo ciclo #848/#849 non ha inviato post e non modifica la pausa Buffer.
+- **Sito/feed:** PR #175 head df58d424ce7405a9be7e0d7ab657505b13cee4ac; QA #547 è in corso. Non fare merge/deploy fino a CI verde.
+- **Prossimo:** completare #547 e verificare Monitor #375; a feed integrato, implementare tassonomia di tag e archivi cliccabili separati dalla categoria, con deduplicazione/sitemap e test di ricerca.
+
+---
+
 ## Session follow-up — lazy feed browser QA — 2026-11-27
 - PR [#175](https://github.com/xFederiko11/gta-6/pull/175) QA [#546](https://github.com/xFederiko11/gta-6/actions/runs/46039250730) ha superato validazione contenuti, build e test statici; il browser headless non ha osservato l’intersezione del pannello X e ha scaduto l’attesa. Ho aggiornato il browser QA perché simuli esplicitamente il superamento della soglia lazy per quel solo pannello, lasciando nativi gli altri observer. Nuovo head df58d424ce7405a9be7e0d7ab657505b13cee4ac; QA [#547](https://github.com/xFederiko11/gta-6/actions/runs/46040406096) in coda. Nessun deploy.
 - L’apertura web della home GitHub Pages e del post X #847 ha restituito “non accessibile / cache miss”; non ho verificato il feed pubblico o i media del post. L’artifact Pages del deploy #540 è scaricabile, ma la lettura diretta via web/node in questa sessione non ha funzionato; datePublished meditazioni resta non verificato in produzione.
