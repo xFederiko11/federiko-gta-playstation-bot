@@ -1,3 +1,10 @@
+## Session follow-up — Watch #235 e Research #85 — 2026-11-27
+- Breaking News Watch [#235](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46041177652) succeeded; V13.4 reserved zero candidates (no Buffer/X send). Il workflow è configurato con launch-watch autopublish, ma questo run non aveva elementi da inviare; non prova la ripresa della coda.
+- Research indipendente [#85](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46041533092) succeeded: 7 guide candidates, 0 ready-to-publish, 0 claims reviewable, AUTO_PUBLISH=false. Non usare gli URL fonte come opportunità di risposta X.
+- Ultimo Autopilot resta #849 senza nuovo invio; niente nuovi permalink X da riconciliare. Buffer globale resta non verificato in UI e non è stato modificato.
+
+---
+
 ## Session follow-up — isolamento browser QA X — 2026-11-27
 - Ulteriore revisione PR #175: il test browser blocca tutte le richieste esterne ma il JS delle guide può tentare anche il fetch read-only del registro permalink su raw.githubusercontent.com. Ho corretto l’asserzione affinché controlli che il widget X usi la route simulata, senza fallire per il bridge già presente; il traffico esterno resta bloccato nel test.
 - Nuovo head 811d0fe38bfce0473ef1f621fed7126aafdc7bc6. I run #547/#548 sono stati annullati da GitHub dopo gli aggiornamenti; #549 potrebbe essere annullato anch’esso, attendere il run sull’head corrente. Nessun merge/deploy.
