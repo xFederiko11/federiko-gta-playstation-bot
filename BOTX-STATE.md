@@ -4,6 +4,9 @@ Aggiornato: 27 novembre 2026 CET — #162 online (151 date), #163 SEO in QA, #20
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
+### Checkpoint nuovo — 27 novembre 2026
+- #163 QA esatta 45963704287 SUCCESS; merge 983e932128fb45769b92170cd7273a69ad457cc1. Deploy/HTTP ancora da verificare. SEO canonica salvare-auto, link contestuali, snippet meditazione, datePublished da registro. Non ripetere merge.
+
 ### Checkpoint della sessione successiva — 27 novembre 2026
 - #209 OPERATIVA: main run 45963942216 success, editorial 45963942229 success. Issue #50 aggiornata 08:13:05 UTC, API Buffer 15 Sent/0 Scheduled/0 Error, coda non sospesa. Campione sentAt: 26/11 2 invii e 2 con allegato immagine confermato dal modello Buffer; 27/11 fino alle 09:13 CET 0 osservati; nessun orario invalido. Non è prova di totale giornaliero o media visibile su X. Tentato accesso diretto al permalink X del 26/11: non disponibile, ricerca post esterni senza testo e permalink autentici utilizzabili. Nessun nuovo costo o risposta automatica.
 - #209 INTEGRATA: QA 45963834609 (48 test) e 45963834601 success sul head esatto, main dopo base aveva solo checkpoint; merge bf91cb3ddac35c03fdc5f91e40fb0f2b271d7247. Verificare run live e issue #50 con sentAt e allegati; se API GraphQL non disponibile, correggere senza nuove richieste onerose. Non equivale a prova immagini visibili su X.
