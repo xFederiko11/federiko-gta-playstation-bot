@@ -325,7 +325,7 @@ class BufferClient:
         if self.require_media and not assets:
             from per_item_media_policy_v1 import link_only_message_allowed
             if (self.expected_username != "xfederiko11"
-                    or not link_only_message_allowed({"text": text, "assets": []})):
+                    or not link_only_message_allowed({"text": text, "assets": []}, allow_thread=False)):
                 raise BufferMediaError("Invio senza foto consentito solo per un link ufficiale registrato e validato")
         if self.destination is None:
             self.verify_destination()
