@@ -1,3 +1,9 @@
+## Session follow-up — isolamento browser QA X — 2026-11-27
+- Ulteriore revisione PR #175: il test browser blocca tutte le richieste esterne ma il JS delle guide può tentare anche il fetch read-only del registro permalink su raw.githubusercontent.com. Ho corretto l’asserzione affinché controlli che il widget X usi la route simulata, senza fallire per il bridge già presente; il traffico esterno resta bloccato nel test.
+- Nuovo head 811d0fe38bfce0473ef1f621fed7126aafdc7bc6. I run #547/#548 sono stati annullati da GitHub dopo gli aggiornamenti; #549 potrebbe essere annullato anch’esso, attendere il run sull’head corrente. Nessun merge/deploy.
+
+---
+
 ## Session follow-up — identità X visibile nel feed — 2026-11-27
 - Revisione PR #175: il feed nascondeva l’intestazione X. Ho mantenuto visibili avatar/nome profilo rimuovendo noheader e impostato lingua italiana, lasciando il limite di cinque post, il caricamento lazy e il link al profilo. Il feed continua a incorporare media ospitati da X, senza scraping o rehosting.
 - Head PR c366a9b37fd708aa249ce2f1b0e9253ad6a9ad15, mergeable. CI #547 (head precedente) è ancora in corso; #548 è in coda sul commit intermedio 111fb3db. Nessun merge/deploy fino al controllo del run che copre l’head corrente.
