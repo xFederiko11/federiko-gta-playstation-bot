@@ -75,6 +75,33 @@ def valid_receipts(feed, now):
     return by_id
 
 
+def quality_receipt_window(feed, now):
+    """Bounded lower bound of owned-guide parent receipts, NOT all original X posts."""
+    if now.utcoffset() is None:
+        raise ValueError("Timezone-aware clock required")
+    receipts = valid_receipts(feed, now)
+    day = now.astimezone(ZONE).date()
+    checked = aware(feed.get("checked_utc"))
+    fresh = bool(checked and now-timedelta(hours=6) <= checked <= now+timedelta(minutes=5))
+    counts = defaultdict(set)
+    for _, permalink, sent in receipts.values():
+        if sent <= now:
+            counts[sent.astimezone(ZONE).date()].add(permalink)
+    days = []
+    for offset in range(6,-1,-1):
+        local_day = day-timedelta(days=offset)
+        if local_day < QUALITY_START:
+            continue
+        observed = len(counts[local_day])
+        days.append({"date":local_day.isoformat(),
+                     "verified_owned_guide_parent_receipts":observed,
+                     "goal_min":DAILY_GOAL_MIN,"goal_max":DAILY_GOAL_MAX,
+                     "minimum_not_demonstrated_by_receipts":max(0, DAILY_GOAL_MIN-observed),
+                     "all_original_posts_verified":None})
+    return {"receipt_checked_utc":checked.isoformat() if checked else None,
+            "fresh_within_6h":fresh,"days":days}
+
+
 def audit(ledger, feed, now):
     if now.utcoffset() is None:
         raise ValueError("Timezone-aware clock required")
@@ -147,6 +174,7 @@ def audit(ledger, feed, now):
         "checked_utc": now.isoformat().replace("+00:00", "Z"),
         "period": f"{START} / {LAST}",
         "days": result,
+        "current_quality_receipts": quality_receipt_window(feed, now),
         "provenance": "Owned editorial ledger matched to authenticated Buffer sent permalink bridge",
         "warning": "Only first X post delivery is supported by Buffer receipts. "
                    "Second thread replies, X reach, profile visits and followers are unverified. "
@@ -155,7 +183,22 @@ def audit(ledger, feed, now):
 
 
 def markdown(report):
-    lines = [
+    current = report.get("current_quality_receipts", {})
+    lines = ["## 📅 Politica corrente: ricevute delle guide / obiettivo 5–6", "",
+             "Solo primi post con permalink delle guide del nostro sito, deduplicati per URL X. "
+             "Sono un **minimo documentato**, non tutti i post originali (notizie e urgenti possono mancare).",
+             "Ultimo controllo ricevute: "+str(current.get("receipt_checked_utc") or "non disponibile"), ""]
+    if not current.get("fresh_within_6h"):
+        lines += ["⚠️ Ricevute non aggiornate nelle ultime 6 ore: non interpretare i conteggi come stato live.", ""]
+    lines += ["| Giorno (Roma) | Ricevute guide | Distanza documentale dal minimo 5 |",
+              "| --- | ---: | ---: |"]
+    for row in current.get("days", []):
+        lines.append(f"| {row['date']} | {row['verified_owned_guide_parent_receipts']} | "
+                     f"{row['minimum_not_demonstrated_by_receipts']} |")
+    if not current.get("days"):
+        lines.append("| Periodo non iniziato | — | — |")
+    lines += ["", "Lo scarto riguarda solo le ricevute disponibili; zero ricevute non significa zero pubblicazioni. "
+              "Non autorizza post riempitivi o retry. Immagini, metriche e risposta del thread non sono verificati qui.", "",
         "## 📅 Campagna GTA VI: pubblicazioni verificate / obiettivi",
         "",
         "Fonte: registro editoriale e permalink originali presenti nelle ricevute Buffer. "
