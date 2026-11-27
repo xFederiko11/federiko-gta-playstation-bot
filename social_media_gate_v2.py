@@ -1,10 +1,10 @@
-"""One dedicated verified image per published GTA VI X link.
+"""Per-item verified image preparation for GTA VI X posts.
 
-The bot NEVER publishes a link-bearing post without a distinct image. It
-derives official site cover URL from the exact canonical article path; the
-site builds that JPEG with matching SHA-256. Other media must already be
-official Rockstar/PlayStation and distinct in the persistent delivery ledger.
-This doesn't download third-party article thumbnails or bypass Buffer safety.
+When a photo is attached, its source, exact bytes, destination and duplicate
+status must pass the separate rights and media checks. This module never grants
+image rights or creates an attachment for a link-only post. The separately
+reviewed official-video path in per_item_media_policy_v1.py keeps the media on
+its source platform and does not authorize downloading a thumbnail.
 """
 from __future__ import annotations
 import hashlib
