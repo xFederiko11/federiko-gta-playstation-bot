@@ -1,3 +1,11 @@
+## Aggiornamento continuo — causa feed X individuata — 2026-11-27
+- Il test #551 è stato annullato dopo un nuovo commit sul ramo PR. La revisione [#175](https://github.com/xFederiko11/gta-6/pull/175) ora è a `6d419a68dce39360aa0729e4f4722cdd8a17a6cf`: confronto commit mostra una correzione reale in `community-social-v1.js`; lo script X caricava ma non chiamava il rendering al suo evento `load`. Run #552 sta eseguendo QA completo sull’head aggiornato; #553 è un workflow main separato. Nessun merge o deploy prima del verde.
+- La QA #550 aveva segnalato timeout sul test del widget; il nuovo mock browser attiva in modo deterministico l’IntersectionObserver. La correzione separata dell’evento load ora avvia `twttr.widgets.load(slot)`; confermare test e deploy prima di dichiarare il feed aggiornato.
+- Nessun nuovo Autopilot dopo #849 nei run controllati; Watch #235 e Research #85 non hanno prodotto invii. Nessuna nuova receipt, permalink o media X da riconciliare. Buffer resta non autenticato in questa sessione, nessuna modifica/riattivazione.
+- Una ricerca web per candidature X ha restituito post/summary vecchi e non verificabili; non preparo opportunità manuali senza permalink e contenuto corrente confermati. Nessuna interazione.
+- Il checkout bot condiviso contiene modifiche non committate, incluse un workflow/community worker capace di azioni social. Lasciati intatti e non pubblicati, in coerenza con la richiesta corrente di non automatizzare risposte, like, follow o repost.
+
+---
 ## Session follow-up — Strategia C: ripresa X/Buffer, feed live e community — 2026-11-27
 
 - **Mandato:** priorita a invii X verificati, feed X aggiornato e opportunita Community X autentiche; nessuna risposta automatica, duplicazione, spesa o riutilizzo foto privo di diritti verificati.
