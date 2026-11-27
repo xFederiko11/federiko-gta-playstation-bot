@@ -58,6 +58,66 @@ def approved_link_url(value: str) -> bool:
     return False
 
 
+
+SOURCE_LINK_DOMAINS = {
+    "PowerPyx": {"powerpyx.com", "www.powerpyx.com"},
+    "VGC": {"videogameschronicle.com", "www.videogameschronicle.com"},
+    "Push Square": {"pushsquare.com", "www.pushsquare.com"},
+    "IGN": {"ign.com", "www.ign.com"},
+    "GameSpot": {"gamespot.com", "www.gamespot.com"},
+    "Everyeye": {"everyeye.it", "www.everyeye.it"},
+    "Multiplayer.it": {"multiplayer.it", "www.multiplayer.it"},
+}
+
+
+def source_link_message_allowed(message: dict, *, source: str | None = None,
+                                expected_url: str | None = None) -> bool:
+    """Allow an eligible post to share its own RSS article without copying media."""
+    if not isinstance(message, dict) or message.get("assets") not in (None, []):
+        return False
+    text = message.get("text")
+    if not isinstance(text, str) or not text.strip():
+        return False
+    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\\s<>]+", text)]
+    if len(links) != 1 or (expected_url is not None and links[0] != expected_url):
+        return False
+    try:
+        parsed = urlsplit(links[0])
+        if (parsed.scheme != "https" or parsed.username or parsed.password
+                or parsed.port not in (None, 443) or parsed.fragment):
+            return False
+    except ValueError:
+        return False
+    for publisher, domains in SOURCE_LINK_DOMAINS.items():
+        if source is not None and publisher != source:
+            continue
+        if f"Fonte: {publisher}" in text and parsed.hostname in domains:
+            return True
+    return False
+
+
+def source_link_candidate(item: dict) -> dict | None:
+    """Preserve a verified editorial item as a source link when no photo is cleared."""
+    if not isinstance(item, dict) or not source_link_message_allowed(
+            {"text": item.get("text"), "assets": []},
+            source=item.get("source"), expected_url=item.get("url")):
+        return None
+    result = dict(item)
+    result.update(media_url=None, media_mode="source_link_only")
+    result.pop("photo_kind", None)
+    result.pop("cover_sha256", None)
+    return result
+
+
+def verify_source_link_entry(entry: dict) -> bool:
+    """Recheck source, URL, and attachment absence immediately before Buffer."""
+    return (isinstance(entry, dict) and entry.get("media_mode") == "source_link_only"
+            and not entry.get("media_url") and not entry.get("photo_kind")
+            and not entry.get("cover_sha256")
+            and source_link_message_allowed(
+                {"text": entry.get("text"), "assets": []},
+                source=entry.get("source"), expected_url=entry.get("url")))
+
 VIDEO_TEXT = ("🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n\n"
                "Video ufficiale Rockstar Games:\n" + VIDEO_URL)
 SOURCE_TEXT = ("La pagina Rockstar raccoglie il video, gli screenshot e la mappa stampabile "
