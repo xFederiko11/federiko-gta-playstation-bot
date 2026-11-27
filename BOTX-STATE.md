@@ -5,6 +5,7 @@ Aggiornato: 27 novembre 2026 CET — #158–161 distribuite, HTTP mirato positiv
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint della sessione successiva — 27 novembre 2026
+- PR #163 riallineata al main #162 senza sovrapposizioni file; nuovo head 8ff1d1a47fb2ebac8b111cceee86f7856d3cfff3. Attendere QA sul nuovo head. Deploy #162: run 45963622579, in_progress/pending.
 - #162 QA esatta 45962607713 SUCCESS; merge 418cb37fe045644c8695ffbe0c05c787dae9e9ef eseguito. Deploy main da controllare; non dichiarare produzione verificata prima del risultato HTTP.
 - Sito main 5b91a71c3c14b42f464428c80beee9ebce11d413: #161 già in produzione; non ripetere. #162 head 5366d2540cad8374ad3477f2b48d1d8b20ff1d2a, workflow 45962607713: completed/success; non integrare prima di success.
 - [PR #163](https://github.com/xFederiko11/gta-6/pull/163) aperta, head 0f5c9f39f2cea6d76449f2d622d39dabce358a27. SEO: titolo canonico salvare-auto orientato alle ricerche GSC, link contestuali tra registrazione/WAiNK/Randy e Key Cloner/garage/vendita; snippet meditazione non più presenta la prima occasione come mancabile; datePublished Article da registro documentato, dateModified separata. Test aggiunti. Non ancora integrata: dopo #162 riallineare al main e verificare QA esatta. Nessun nuovo costo, post o media.
