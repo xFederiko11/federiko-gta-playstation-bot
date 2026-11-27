@@ -1,3 +1,6 @@
+## Session follow-up — build Pages completato, deploy in corso — 2026-11-27 17:34 CET
+- Main build for commit `80ef131fbd8db3bd7434142f04b39ec6c3dddb5a` completed successfully in deployment run [#46034218975](https://github.com/xFederiko11/gta-6/actions/runs/46034218975); the Pages deployment job is currently in_progress.
+- Production HTML was not independently fetched yet. Continue after deployment: check the live Southside route and attempt the meditation JSON-LD datePublished read; the public site URL is inaccessible through the web reader and general network egress was blocked in this environment.
 ## Session follow-up — merge Southside, Pages deploy in corso — 2026-11-27 17:32 CET
 - PR [#173](https://github.com/xFederiko11/gta-6/pull/173) merged after green CI; squash commit `80ef131fbd8db3bd7434142f04b39ec6c3dddb5a` is now `main`.
 - Pages push workflow [#46034218975](https://github.com/xFederiko11/gta-6/actions/runs/46034218975) is in_progress. Do not claim deployment or production content until it completes and the public page can be checked.
