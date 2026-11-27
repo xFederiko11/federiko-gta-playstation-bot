@@ -1,3 +1,11 @@
+## Session follow-up — lazy feed browser QA — 2026-11-27
+- PR [#175](https://github.com/xFederiko11/gta-6/pull/175) QA [#546](https://github.com/xFederiko11/gta-6/actions/runs/46039250730) ha superato validazione contenuti, build e test statici; il browser headless non ha osservato l’intersezione del pannello X e ha scaduto l’attesa. Ho aggiornato il browser QA perché simuli esplicitamente il superamento della soglia lazy per quel solo pannello, lasciando nativi gli altri observer. Nuovo head df58d424ce7405a9be7e0d7ab657505b13cee4ac; QA [#547](https://github.com/xFederiko11/gta-6/actions/runs/46040406096) in coda. Nessun deploy.
+- L’apertura web della home GitHub Pages e del post X #847 ha restituito “non accessibile / cache miss”; non ho verificato il feed pubblico o i media del post. L’artifact Pages del deploy #540 è scaricabile, ma la lettura diretta via web/node in questa sessione non ha funzionato; datePublished meditazioni resta non verificato in produzione.
+- Run #848/#849: nessun invio nuovo; Buffer in pausa, receipt #847 invariata. Nessuna modifica alla coda o interazione X. Search Console non consultata prima del 30/11.
+- **Prossimo:** controllare #547; se verde, integrare e verificare il Pages deploy. Provare la timeline live nel browser X quando il controllo autenticato manuale sarà concluso; mantenere Buffer e media con gli stati già registrati finché non verificati.
+
+---
+
 ## Session follow-up — correzione test feed X — 2026-11-27
 - PR [#175](https://github.com/xFederiko11/gta-6/pull/175): QA [#545](https://github.com/xFederiko11/gta-6/actions/runs/46038936423) ha individuato un test storico che richiedeva la vecchia scheda Buffer server-side (sunset_blog_v1.load). Il test è stato aggiornato per verificare la timeline ufficiale a cinque post e l’assenza delle card stale; non ho ripristinato le ricevute statiche. PR head ora 5dba1eaf9f2706ecd463effa93b9c405cd06b438, mergeable; nuova QA [#546](https://github.com/xFederiko11/gta-6/actions/runs/46039250730) è in corso. #545 non ha fatto deploy.
 - La timeline X resta caricata con IntersectionObserver e rete X simulata nei test browser; non è ancora verificato il rendering live. La pagina pubblica GitHub Pages non è accessibile tramite il web reader di questa sessione.
