@@ -5,6 +5,7 @@ Aggiornato: 27 novembre 2026 CET — #158–161 distribuite, HTTP mirato positiv
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint della sessione successiva — 27 novembre 2026
+- [Bot PR #209](https://github.com/xFederiko11/federiko-gta-playstation-bot/pull/209), head 8cf60a2d3ae9c1fab39246e23e2a646e693d5b13: audit Buffer distingue sentAt da dueAt e controlla assets/metadata per immagine del primo post. Campione limitato, non prova foto pubblica su X. Nessuna chiamata supplementare o mutazione. Attendere QA e report live #50 prima di dichiarare attiva. Workflow 45963834609 in_progress/pending, 45963834601 in_progress/pending.
 - PR #163 riallineata al main #162 senza sovrapposizioni file; nuovo head 8ff1d1a47fb2ebac8b111cceee86f7856d3cfff3. Attendere QA sul nuovo head. Deploy #162: run 45963622579, in_progress/pending.
 - #162 QA esatta 45962607713 SUCCESS; merge 418cb37fe045644c8695ffbe0c05c787dae9e9ef eseguito. Deploy main da controllare; non dichiarare produzione verificata prima del risultato HTTP.
 - Sito main 5b91a71c3c14b42f464428c80beee9ebce11d413: #161 già in produzione; non ripetere. #162 head 5366d2540cad8374ad3477f2b48d1d8b20ff1d2a, workflow 45962607713: completed/success; non integrare prima di success.
