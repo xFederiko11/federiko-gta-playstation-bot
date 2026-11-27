@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 
 from per_item_media_policy_v1 import (
-    VIDEO_KEY, VIDEO_URL, SOURCE_URL, launch_video_candidate,
+    VIDEO_KEY, VIDEO_URL, SOURCE_URL, VIDEO_TEXT, SOURCE_TEXT, launch_video_candidate,
     link_only_message_allowed, verify_link_only_entry,
 )
 
@@ -14,6 +14,7 @@ class PerItemMediaPolicyTests(unittest.TestCase):
             "assets": [],
         }
         self.assertTrue(link_only_message_allowed(message))
+        self.assertFalse(link_only_message_allowed({**message, "text": message["text"].replace("è disponibile", "include una missione segreta")}))
         self.assertFalse(link_only_message_allowed({**message, "assets": [{"image": {"url": "https://example.org/x.jpg"}}]}))
         self.assertFalse(link_only_message_allowed({
             **message, "text": message["text"].replace("T95WGWkx7P0", "aaaaaaaaaaa")
@@ -31,6 +32,7 @@ class PerItemMediaPolicyTests(unittest.TestCase):
             "assets": [],
         }
         self.assertTrue(link_only_message_allowed(message))
+        self.assertFalse(link_only_message_allowed(message, allow_thread=False))
         self.assertFalse(link_only_message_allowed({
             **message, "text": message["text"].replace("grand-theft-auto-vi-now-available",
                                                        "grand-theft-auto-vi-now-available?utm=other")
