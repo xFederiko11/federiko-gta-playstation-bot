@@ -1,3 +1,10 @@
+## Session follow-up — Monitor #375 completato — 2026-11-27
+- Monitor [#375](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46040320135) riuscito. Il report mostra 30 candidati di ricerca, 18 lead review/hold e zero post Buffer/X; nessuna novità inventata. Un risultato Everyeye su GTA VI Cloud/Xbox è da verificare editorialmente e non è un’opportunità di risposta X (nessun post X diretto verificato).
+- Il log ribadisce il controllo di sicurezza manual-only e l’assenza di X API. Non prova che la coda Buffer sia ripresa né che una foto sia presente.
+- PR sito #175 e QA #547 ancora in corso. Search Console non consultata prima del 30/11; media foto ancora soggetti a prova per canale.
+
+---
+
 ## Session follow-up — audit tag editoriale e Monitor #375 — 2026-11-27
 - **Sito/tag:** controllo del main conferma che esiste una tassonomia di categorie e sottocategorie, ma gli archivi sono solo categoriali. Gli item delle guide hanno un singolo campo libero “tag”; gli articoli correlati vengono scelti per categoria, non per tag. Non ci sono ancora archivi dinamici di tag né selezione hashtag X derivata dai tag. Non ho modificato questa parte mentre #175 è in QA; resta la successiva priorità editoriale dopo il feed.
 - **Run bot:** Monitor [#375](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46040320135) è ancora in corso al controllo. Nessuna nuova Autopilot oltre #849; l’ultimo ciclo #848/#849 non ha inviato post e non modifica la pausa Buffer.
