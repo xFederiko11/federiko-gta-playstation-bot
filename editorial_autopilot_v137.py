@@ -96,6 +96,10 @@ def identity(url: str) -> str:
 
 def similarity_key(title: str) -> str:
     title = unicodedata.normalize('NFKD', clean(title)).encode('ascii', 'ignore').decode().lower()
+    # Protect narrative progression: "Capitolo 1" and "Chapter 5" must
+    # retain their number even when short digits and GTA 6 are stripped.
+    title = re.sub(r'\b(?:capitolo|chapter|atto|act)\s+([0-9]+)\b',
+                   lambda m: 'capitolo' + m.group(1), title)
     title = re.sub(r'\b(?:gta|grand|theft|auto|vi|6|online|playstation|ps5|pro|review|recensione|news|video)\b', ' ', title)
     title = re.sub(r'[^a-z0-9 ]+', ' ', title)
     return ' '.join(w for w in title.split() if len(w) > 2)[:180]
@@ -109,7 +113,7 @@ def same_story(a: str, b: str) -> bool:
     y = set(b.split())
     # Different numbered chapters are distinct tutorials, even if the
     # template words match; never suppress one chapter with another.
-    chapter = re.compile(r'\b(?:capitolo|chapter|atto|act)\s+([0-9]+)\b')
+    chapter = re.compile(r'\bcapitolo([0-9]+)\b')
     chapter_a, chapter_b = chapter.search(a), chapter.search(b)
     if chapter_a and chapter_b and chapter_a.group(1) != chapter_b.group(1):
         return False
