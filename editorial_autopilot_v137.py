@@ -107,15 +107,25 @@ def same_story(a: str, b: str) -> bool:
         return True
     x = set(a.split())
     y = set(b.split())
+    # Different numbered chapters are distinct tutorials, even if the
+    # template words match; never suppress one chapter with another.
+    chapter = re.compile(r'\b(?:capitolo|chapter|atto|act)\s+([0-9]+)\b')
+    chapter_a, chapter_b = chapter.search(a), chapter.search(b)
+    if chapter_a and chapter_b and chapter_a.group(1) != chapter_b.group(1):
+        return False
     overlap = len(x & y)
     shorter = min(len(x), len(y))
-    # Two publishers can paraphrase the same story with a few new words.
-    # Require five shared content words; for longer titles, allow a slightly
-    # lower overlap ratio. Short generic guide titles stay on the strict gate.
-    return (overlap >= 5 and (
-        overlap / max(1, shorter) >= 0.80 or
-        (shorter >= 8 and overlap / shorter >= 0.60)
-    ))
+    if overlap < 5:
+        return False
+    if overlap / max(1, shorter) >= 0.80:
+        return True
+    # Cross-publisher paraphrases may keep distinctive adjacent phrases.
+    # Require two intact bigrams to avoid suppressing generic GTA VI titles.
+    def bigrams(text):
+        words = text.split()
+        return set(zip(words, words[1:]))
+    return (shorter >= 8 and overlap / shorter >= 0.55
+            and len(bigrams(a) & bigrams(b)) >= 2)
 
 def published(s: str) -> datetime | None:
     if not s:
