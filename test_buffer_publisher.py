@@ -191,8 +191,8 @@ class BufferPublisherTests(unittest.TestCase):
     def test_project_account_rejects_extra_claims_on_approved_link_before_network(self):
         client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
                               session=self.session)
-        text = ("🎮 GTA VI è disponibile e include una missione segreta.\\n\\n"
-                "Video ufficiale Rockstar Games:\\n"
+        text = ("🎮 GTA VI è disponibile e include una missione segreta.\n\n"
+                "Video ufficiale Rockstar Games:\n"
                 "https://www.youtube.com/watch?v=T95WGWkx7P0")
         with self.assertRaises(BufferMediaError):
             client.publish(text)
