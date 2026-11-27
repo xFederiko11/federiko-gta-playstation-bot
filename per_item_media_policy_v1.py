@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from urllib.parse import parse_qs, urlsplit
+import re
 
 # Exact destinations reviewed against the source publisher on 2026-11-27.
 # The official video remains on YouTube; its link preview belongs to the platform.
