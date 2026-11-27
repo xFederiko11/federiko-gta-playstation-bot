@@ -263,13 +263,16 @@
       "x_permalink": "https://x.com/xFederiko11/status/2123787215859769725"
     },
     "3abd1a78adfd691289ccf726": {
+      "attempted_utc": "2026-11-27T17:57:10.688306+00:00",
+      "buffer_id": "6b09c476446d2e47aaa9d243",
+      "completed_utc": "2026-11-27T17:57:11.987670+00:00",
       "media_mode": "source_link_only",
       "media_url": null,
       "official_video_url": null,
       "reserved_utc": "2026-11-27T17:57:04.201730+00:00",
       "run_id": "46045706220",
       "source": "Multiplayer.it",
-      "status": "reserved",
+      "status": "sent",
       "text": "🧭 GTA VI | Guida\n\nIl modello di guida in GTA 6 è stato elaborato da esperti, provenienti anche da Gran Turismo\n\n🔗 Fonte: Multiplayer.it\nhttps://multiplayer.it/notizie/il-modello-di-guida-in-gta-6-e-stato-elaborato-da-esperti-provenienti-anche-da-gran-turismo.html\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
