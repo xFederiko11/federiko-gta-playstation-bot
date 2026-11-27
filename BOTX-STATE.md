@@ -1,3 +1,7 @@
+# Checkpoint Magazine online — 27 novembre 2026
+
+- **Sunset Magazine #165 + #166 ONLINE**: [deploy 45971618714](https://github.com/xFederiko11/gta-6/actions/runs/45971618714) completed/success, commit 91a05ed86df5a41d952b8690f88e221e3ef7bd3f, job build 140413159011 e deploy 140413698699 success. 21 verifiche HTTP PUBLIC_EDITORIAL_RELEASE_OK alle 09:12:51 UTC, incl. home/archivio/pagina 2 (25 schede), categorie HDR/Trucchi/Veicoli, sottocategoria garage, canonical e titolo SEO; datePublished 2026-11-18 meditazione confermato in HTTP; PUBLIC_EDITORIAL_FEED_OK 2 contratti, PUBLIC_SUNSET_BLOG_OK, PUBLIC_CLOUX_PREVIEW_OK, PUBLIC_GTA6_UMAMI_TAG_OK su 5 URL e category-open in archivio. Presenza markup, non prova ricezione eventi Umami. QA browser precedente 272 combinazioni, no-JS e ricerca; non nuova verifica visiva live (strumento web non raggiunge Pages). PR #167 chiusa senza merge, duplicato del fix #166; nessuna integrazione ridondante. Gate diritti foto invariato, nessun costo/invio X.
+
 # Checkpoint operativo — 27 novembre 2026, 10:13 CET
 
 - **PR #166 integrata** dopo QA [45970667901](https://github.com/xFederiko11/gta-6/actions/runs/45970667901) success sul head esatto `dc8270484c5c9d097578f5ee47e7e0ded7e42795`; merge commit `91a05ed86df5a41d952b8690f88e221e3ef7bd3f`. Include fix taxonomy analytics, fixture offline, metadata SEO unici, percorsi prioritari, deduplicazione index e verifica live di `datePublished=2026-11-18`. La PR #167 duplicata è chiusa senza merge.
