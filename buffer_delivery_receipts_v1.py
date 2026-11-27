@@ -144,11 +144,15 @@ def collect(state, *, run_id, client):
             item = {'outcome': 'no_receipt', 'ledger_status': entry.get('status')}
         else:
             data = client._graphql(QUERY, {'id': str(post_id)})
+            # Link-only fallbacks are an explicit per-item exception;
+            # unknown current modes still fail closed.
+            no_image_mode = entry.get('media_mode') in {
+                'source_link_only', 'official_video_link'}
             item = receipt(data.get('post'), channel_id=client.channel_id,
                            post_id=str(post_id),
-                           # Every new publication requires a real image. Old
-                           # archived text-only entries remain visible as legacy.
-                           require_image=bool(current) or bool(entry.get('media_url')))
+                           require_image=(
+                               bool(entry.get('media_url')) or
+                               (bool(current) and not no_image_mode)))
         item['title'] = str(entry.get('title') or '')
         item['current_run'] = bool(current)
         result['receipts'].append(item)
