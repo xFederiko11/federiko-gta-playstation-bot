@@ -1,3 +1,14 @@
+# Aggiornamento operativo finale — 27 novembre 2026, 12:25 CET
+
+- **Southside Storage online:** PR [#169](https://github.com/xFederiko11/gta-6/pull/169) integrata nel commit `34247beea60ed3a2b2aaf55923474b220938fad8`; deploy produzione [run 45989828926](https://github.com/xFederiko11/gta-6/actions/runs/45989828926) success. Main corrente: `34247beea60ed3a2b2aaf55923474b220938fad8`. Verificata nel browser la pagina [Southside Storage](https://xfederiko11.github.io/gta-6/garage-gratuiti/southside-storage/): card GTABase esterna visibile, cinque riferimenti PowerPyx collassati con minuti/fonti WarpPipes. Su richiesta del lettore, il primo apre il player YouTube; al controllo iniziale era in preroll pubblicitario, quindi il contenuto gameplay non è stato visto/verificato. Nessuna immagine statica copiata o hotlinkata e nessuna nuova autorizzazione. Gate screenshot resta chiuso.
+- **Publisher / Buffer / X:** ultimo run nell’elenco Actions ricontrollato alle 12:25 CET ancora #828 ([45986649311](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/45986649311)); non sono comparsi run successivi. Buffer ha segnalato coda in pausa; zero nuove pubblicazioni e nessuna azione per riattivarla. Nessuna nuova ricevuta da riconciliare. L’ultimo invio rimane quello del 26/11 alle 13:44 CET, con immagine visibile sul permalink X [2125933757257449699](https://x.com/xFederiko11/status/2125933757257449699), verificato sul profilo in precedenza.
+- **Opportunità X:** nessun nuovo lead verificabile; resta il post già annotato di @__booga_b_ da rivalutare manualmente prima di un eventuale commento. Nessun like, repost o risposta.
+- **Search Console:** non consultata prima del 30/11; dal 30/11 sola lettura. Motore privato dormiente. Nessuna ripetizione PR #164, audit #210 o PR sito #168; nessun costo o contatto.
+
+Prossimo: dal 30/11 leggere Search Console soltanto in modalità read-only; controllare i run publisher e l’eventuale coda Buffer senza mutazioni, abbinando ogni nuovo invio al permalink e all’immagine realmente visibili su X. Per le guide, raccogliere soltanto media con base di riuso documentata, mantenendo i player video opt-in e le mappe come link esterni.
+
+---
+
 # Aggiornamento operativo — 27 novembre 2026, 12:21 CET
 
 - **Southside Storage:** PR sito [#169](https://github.com/xFederiko11/gta-6/pull/169) integrata con squash nel commit `34247beea60ed3a2b2aaf55923474b220938fad8`. La QA PR [run 45988791320](https://github.com/xFederiko11/gta-6/actions/runs/45988791320) è success: build, controlli repository e browser responsive verdi. L'upload Pages è stato saltato nel PR; al momento del checkpoint il rilascio dopo il merge è in attesa di verifica. La pagina include player PowerPyx click-to-load con cinque minuti/ fonti WarpPipes e link esterno alla scheda/mappa GTABase. Nessuna immagine copiata o hotlinkata; gate foto ancora chiuso e playback non verificato.
