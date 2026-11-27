@@ -1,3 +1,15 @@
+# Checkpoint operativo — PR guida in QA e monitor senza consegne — 2026-11-27 14:23:08 UTC
+
+- **Sito, PR #170:** [guida GTA 6 sui tre strip club](https://github.com/xFederiko11/gta-6/pull/170) aperta dal main `34247beea60ed3a2b2aaf55923474b220938fad8`. Include i tre pin esterni GTAMI, un video YouTube in spagnolo caricato solo dopo il clic, fonti e date strutturate. Nessuna immagine statica o miniatura viene copiata; la cover generica è rimossa dalla pagina e dai metadati social.
+- **QA attuale:** sito run #527 [46015257633](https://github.com/xFederiko11/gta-6/actions/runs/46015257633) ha compilato con successo il nuovo modulo, JS e test; il test unitario ha fallito soltanto su un’asserzione che cercava il JSON-LD come stringa senza spazi. Non è un errore della pagina. Ho isolato la correzione del test; nessun deploy è avvenuto.
+- **Bot/X:** monitor schedulato #232 [46014285636](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46014285636) ha riservato zero candidati e registra `DELIVERY_NOT_ATTEMPTED: no unique reservation`. Nessuna chiamata di consegna Buffer nel run, nessun nuovo invio X da abbinare. L’ultimo post confermato resta [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710), senza immagine. Buffer ultimo letto: coda 0, bozze 0, inviati 103, pausa off.
+- **Media e fonti:** GTAMI segnala che coordinate/etichette community possono non essere verificate in-game; l’articolo dichiara questo limite e distingue le divergenze Everyeye/PC Gamer su accesso e prezzo. Nessun uso di foto con licenza non documentata.
+- Search Console non consultata prima del 30/11; dal 30/11 sola lettura. Nessun costo, contatto, interazione social automatica o retry di invii.
+
+**Prossime priorità:** (1) correggere l’asserzione JSON-LD e attendere CI verde; (2) integrare solo dopo QA, poi verificare deploy e pagina online; (3) continuare la riconciliazione Buffer/X e Search Console read-only dal 30/11.
+**Prossimo comando:** Continua Bot X dal checkpoint; completa QA e deploy verificato della PR #170 sulla guida strip club, poi riconcilia i nuovi run Buffer con X; dal 30/11 consulta Search Console in sola lettura; niente foto statiche senza diritti specifici documentati.
+---
+
 # Checkpoint operativo — ricevute link-only corrette e PR #212 integrata — 2026-11-27 14:12:24 UTC
 
 - **PR #212** integrata con squash nel commit `6ea9438ad6168e67bb908049a1551eca9627559e`. La CI PR [run 46012148037](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46012148037) ha completato `italian_qa` con successo; il job editoriale è stato saltato. Anche il workflow push su main [run #843 / 46013652045](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46013652045) ha completato il controllo `italian_qa` con successo e saltato l'editoriale: **nessun invio Buffer è stato eseguito da questi due run**.
