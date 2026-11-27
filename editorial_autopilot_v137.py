@@ -96,6 +96,10 @@ def identity(url: str) -> str:
 
 def similarity_key(title: str) -> str:
     title = unicodedata.normalize('NFKD', clean(title)).encode('ascii', 'ignore').decode().lower()
+    # Protect narrative progression: "Capitolo 1" and "Chapter 5" must
+    # retain their number even when short digits and GTA 6 are stripped.
+    title = re.sub(r'\b(?:capitolo|chapter|atto|act)\s+([0-9]+)\b',
+                   lambda m: 'capitolo' + m.group(1), title)
     title = re.sub(r'\b(?:gta|grand|theft|auto|vi|6|online|playstation|ps5|pro|review|recensione|news|video)\b', ' ', title)
     title = re.sub(r'[^a-z0-9 ]+', ' ', title)
     return ' '.join(w for w in title.split() if len(w) > 2)[:180]
@@ -107,7 +111,25 @@ def same_story(a: str, b: str) -> bool:
         return True
     x = set(a.split())
     y = set(b.split())
-    return len(x & y) >= 5 and len(x & y) / max(1, min(len(x), len(y))) >= 0.80
+    # Different numbered chapters are distinct tutorials, even if the
+    # template words match; never suppress one chapter with another.
+    chapter = re.compile(r'\bcapitolo([0-9]+)\b')
+    chapter_a, chapter_b = chapter.search(a), chapter.search(b)
+    if chapter_a and chapter_b and chapter_a.group(1) != chapter_b.group(1):
+        return False
+    overlap = len(x & y)
+    shorter = min(len(x), len(y))
+    if overlap < 5:
+        return False
+    if overlap / max(1, shorter) >= 0.80:
+        return True
+    # Cross-publisher paraphrases may keep distinctive adjacent phrases.
+    # Require two intact bigrams to avoid suppressing generic GTA VI titles.
+    def bigrams(text):
+        words = text.split()
+        return set(zip(words, words[1:]))
+    return (shorter >= 8 and overlap / shorter >= 0.55
+            and len(bigrams(a) & bigrams(b)) >= 2)
 
 def published(s: str) -> datetime | None:
     if not s:
