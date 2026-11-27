@@ -78,7 +78,7 @@ def source_link_message_allowed(message: dict, *, source: str | None = None,
     text = message.get("text")
     if not isinstance(text, str) or not text.strip():
         return False
-    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\\s<>]+", text)]
+    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\s<>]+", text)]
     if len(links) != 1 or (expected_url is not None and links[0] != expected_url):
         return False
     try:
