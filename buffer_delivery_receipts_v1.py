@@ -144,12 +144,12 @@ def collect(state, *, run_id, client):
             item = {'outcome': 'no_receipt', 'ledger_status': entry.get('status')}
         else:
             data = client._graphql(QUERY, {'id': str(post_id)})
+            # Link-only fallbacks are an explicit per-item exception;
+            # unknown current modes still fail closed.
+            no_image_mode = entry.get('media_mode') in {
+                'source_link_only', 'official_video_link'}
             item = receipt(data.get('post'), channel_id=client.channel_id,
                            post_id=str(post_id),
-                           # Link-only fallbacks are an explicit per-item
-                           # exception; unknown current modes still fail closed.
-                           no_image_mode = entry.get('media_mode') in {
-                               'source_link_only', 'official_video_link'}
                            require_image=(
                                bool(entry.get('media_url')) or
                                (bool(current) and not no_image_mode)))
