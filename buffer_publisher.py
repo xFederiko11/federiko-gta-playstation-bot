@@ -207,7 +207,7 @@ class BufferClient:
                     if not isinstance(message.get("text"), str) or not message["text"].strip():
                         raise BufferAPIError("Invio bloccato: messaggio del thread vuoto",
                                              status=400, outcome_unknown=False)
-                elif not link_only_message_allowed(message):
+                elif not link_only_message_allowed(message, allow_thread=thread is not None):
                     raise BufferAPIError("Invio bloccato: link ufficiale non approvato per il percorso senza foto",
                                          status=400, outcome_unknown=False)
         if self.request_guard is not None:
