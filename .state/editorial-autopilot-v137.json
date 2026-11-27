@@ -262,6 +262,21 @@
       "url": "https://xfederiko11.github.io/gta-6/guide-e-tutorial/poligoni-concentrazione/",
       "x_permalink": "https://x.com/xFederiko11/status/2123787215859769725"
     },
+    "3abd1a78adfd691289ccf726": {
+      "media_mode": "source_link_only",
+      "media_url": null,
+      "official_video_url": null,
+      "reserved_utc": "2026-11-27T17:57:04.201730+00:00",
+      "run_id": "46045706220",
+      "source": "Multiplayer.it",
+      "status": "reserved",
+      "text": "🧭 GTA VI | Guida\n\nIl modello di guida in GTA 6 è stato elaborato da esperti, provenienti anche da Gran Turismo\n\n🔗 Fonte: Multiplayer.it\nhttps://multiplayer.it/notizie/il-modello-di-guida-in-gta-6-e-stato-elaborato-da-esperti-provenienti-anche-da-gran-turismo.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "Il modello di guida in GTA 6 è stato elaborato da esperti, provenienti anche da Gran Turismo",
+      "trophy_number": null,
+      "url": "https://multiplayer.it/notizie/il-modello-di-guida-in-gta-6-e-stato-elaborato-da-esperti-provenienti-anche-da-gran-turismo.html"
+    },
     "4114d48c2ead8758ea05d75e": {
       "attempted_utc": "2026-11-20T01:26:58.442646+00:00",
       "buffer_id": "6affa1e27b0a126ceb99ab72",
@@ -1511,6 +1526,13 @@
       "feeds_relevant": 71,
       "reserved": 1,
       "run": "46028383188"
+    },
+    {
+      "at": "2026-11-27T17:57:04.201730+00:00",
+      "errors": [],
+      "feeds_relevant": 81,
+      "reserved": 1,
+      "run": "46045706220"
     }
   ],
   "schema": "v13.7",
@@ -1546,6 +1568,7 @@
     "metto secondo": "e992f6b1746dc8c79842576d",
     "mission hey arnold chapter full walkthrough": "4e69b4fe4c668f2e733e362e",
     "mission island dreams chapter full walkthrough": "8ed59c76a92d7a48379e3cee",
+    "modello guida stato elaborato esperti provenienti anche gran turismo": "3abd1a78adfd691289ccf726",
     "non ricevera una modalita fps fps non abbastanza potente per rockstar": "22cefae2430575059569ef32",
     "oled trova codice preciso": "8229d1264b07ed9da2de0593",
     "presidente rockstar games celebra lancio promettendo molti altri anni esperienze": "a7585b90667b279c490a4185",
