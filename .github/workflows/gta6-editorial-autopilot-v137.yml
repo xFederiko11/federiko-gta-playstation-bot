@@ -11,14 +11,26 @@ on:
       - 'site-article-rotation-v1.json'
       - '.github/workflows/gta-monitor.yml'
       - '.github/workflows/gta6-editorial-autopilot-v137.yml'
-  # Ordinary editorial scans are independent from the urgent-news monitor.
-  # UTC union covers 07:00-23:00 Europe/Rome in CET and CEST.
-  # The Python local-time gate remains authoritative.
+  # Buffer rate budget: seven attempts per day, spread > 120 minutes apart.
+  # Former 34+ daily scheduled runs consumed many preflight API reads even
+  # when no item was published. A confirmed official urgent news workflow
+  # remains separate; never add filler posts to meet the daily goal.
+  # GitHub's timezone-aware cron handles CET/CEST; Python remains final gate.
   schedule:
-    - cron: '10,40 5-21 * * *'
-    # Add only the two intervening slots during launch; no duplicate scans.
-    - cron: '25,55 7-19 19-30 11 *'
-    - cron: '25,55 7-19 1-2 12 *'
+    - cron: '10 7 * * *'
+      timezone: Europe/Rome
+    - cron: '30 9 * * *'
+      timezone: Europe/Rome
+    - cron: '50 11 * * *'
+      timezone: Europe/Rome
+    - cron: '10 14 * * *'
+      timezone: Europe/Rome
+    - cron: '30 16 * * *'
+      timezone: Europe/Rome
+    - cron: '50 18 * * *'
+      timezone: Europe/Rome
+    - cron: '10 21 * * *'
+      timezone: Europe/Rome
   push:
     branches: [main]
     paths:
