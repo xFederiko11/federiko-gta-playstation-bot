@@ -824,6 +824,13 @@ def deliver():
                 save_state(state)
                 print('BUFFER_OFFICIAL_LINK_HOLD: source or link changed')
                 continue
+        elif media_mode == 'source_link_only':
+            from per_item_media_policy_v1 import verify_source_link_entry
+            if not verify_source_link_entry(entry):
+                entry['status']='held_invalid_source_link'
+                save_state(state)
+                print('BUFFER_SOURCE_LINK_HOLD: source, URL or copy changed')
+                continue
         elif photo_policy_active(clock):
             if media_mode != 'approved_photo' or not verify_delivery(entry):
                 entry['status']='held_missing_reviewed_game_photo'
