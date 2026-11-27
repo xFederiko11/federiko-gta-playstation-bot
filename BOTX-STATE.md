@@ -1,3 +1,8 @@
+# Checkpoint operativo — 27 novembre 2026, 10:12 CET
+
+- **PR #166 identificata come fix canonico**: è già aperta sulla stessa base #165 e contiene lo stesso fix category-open, più fixture offline attiva/disattiva, metadata/route SEO e verifica di produzione della data `datePublished=2026-11-18` per la guida meditazioni. QA [45970667901](https://github.com/xFederiko11/gta-6/actions/runs/45970667901) success sull’head esatto `dc8270484c5c9d097578f5ee47e7e0ded7e42795`; non integrare prima di verificare status e recensioni. La mia PR #167 era duplicata: chiusa senza merge; nessun codice extra integrato.
+- #165 run `45970068481` resta fallita e la produzione non include ancora l’archivio; proseguire con #166, poi deploy e verifica HTTP/datePublished sul live.
+
 # Checkpoint Magazine — 27 novembre 2026
 
 - PR #166 integrata commit 91a05ed86df5a41d952b8690f88e221e3ef7bd3f. QA 45970667901 success (job 140410034749), fixture Umami on/off, 44 metadata distinti, 154 articoli, 44 collezioni, 121 copertine originali, 272 controlli responsive, ricerca e no-JS; 0 link mancanti/URL indicizzabili omessi. Deploy [45971618714](https://github.com/xFederiko11/gta-6/actions/runs/45971618714) in_progress; non dichiarare online prima del successo e delle verifiche HTTP. PR #167 concorrente rilevata: hotfix sovrapposto, non integrare automaticamente; verificare dopo deploy e coordinare eventuale chiusura senza perdere modifiche uniche. Nessun costo o nuovo post X. Prossimo comando: verifica deploy #45971618714, pagine live, Umami e SEO; risolvi eventuali errori; valuta #167 e priorità successive.
