@@ -1,3 +1,7 @@
+# Checkpoint Magazine — 27 novembre 2026
+
+- PR #166 integrata commit 91a05ed86df5a41d952b8690f88e221e3ef7bd3f. QA 45970667901 success (job 140410034749), fixture Umami on/off, 44 metadata distinti, 154 articoli, 44 collezioni, 121 copertine originali, 272 controlli responsive, ricerca e no-JS; 0 link mancanti/URL indicizzabili omessi. Deploy [45971618714](https://github.com/xFederiko11/gta-6/actions/runs/45971618714) in_progress; non dichiarare online prima del successo e delle verifiche HTTP. PR #167 concorrente rilevata: hotfix sovrapposto, non integrare automaticamente; verificare dopo deploy e coordinare eventuale chiusura senza perdere modifiche uniche. Nessun costo o nuovo post X. Prossimo comando: verifica deploy #45971618714, pagine live, Umami e SEO; risolvi eventuali errori; valuta #167 e priorità successive.
+
 # Checkpoint operativo — 27 novembre 2026, 10:10 CET
 
 - **Correzione deploy #165**: aperta [PR sito #167](https://github.com/xFederiko11/gta-6/pull/167), head `a212dbcafde6d9671b84c6e993ae9fbe5e093a3b`, base `92cb562ef3d214f7ee1680a15f3b340e54637ea5`. Causa isolata: il nuovo albero categorie mancava gli eventi Umami `category-open` richiesti dalla verifica; PR aggiunge tracking solo opt-in su riepiloghi/link e controlla anche lo stato disattivato. In attesa QA esatta; non integrare né rilanciare deploy prima di esito success.
