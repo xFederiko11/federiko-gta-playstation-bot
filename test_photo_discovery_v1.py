@@ -57,6 +57,23 @@ class PhotoDiscoveryTests(unittest.TestCase):
         self.assertEqual(leads["leads"][0]["status"],"source_unreadable")
         self.assertIn("/eliplaysgta/status/2125723744094269617",leads["leads"][0]["url"])
 
+    def test_free_garage_photo_leads_are_research_only(self):
+        from photo_discovery_v1 import vehicle_location_leads
+        doc=vehicle_location_leads()
+        leads={row["url"]:row for row in doc["leads"]}
+        for url in (
+            "https://www.powerpyx.com/gta-6-all-1010-mural-locations",
+            "https://www.gtabase.com/gta-6/properties/southside-storage",
+            "https://www.powerpyx.com/gta-6-collect-the-tempesta-walkthrough/",
+            "https://www.gtabase.com/gta-6/properties/domestic-timbers",
+            "https://www.gtabase.com/gta-6/vehicles/rauls-tempesta",
+            "https://www.powerpyx.com/gta-6-all-garage-locations/",
+            "https://www.gtaboom.com/gta-6-vanessas-garage-and-pink-growler-7339/",
+        ):
+            self.assertEqual(leads[url]["status"],"source_page_only")
+            self.assertNotIn("reuse_permission",leads[url])
+        self.assertIn("treno fermo",leads["https://www.powerpyx.com/gta-6-all-1010-mural-locations"]["description"])
+
     def test_standout_map_and_verified_source_domains_are_deduped(self):
         d=sample()
         car=d["vehicles"]["items"][0]

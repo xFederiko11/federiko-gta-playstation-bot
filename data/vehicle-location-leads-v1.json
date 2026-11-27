@@ -1,6 +1,6 @@
 {
   "schema": "gta6-vehicle-location-leads-v1",
-  "reviewed_on": "2026-11-26",
+  "reviewed_on": "2026-11-27",
   "leads": [
     {
       "url": "https://x.com/eliplaysgta/status/2125723744094269617",
@@ -11,6 +11,41 @@
       "url": "https://www.gtabase.com/gta-6/map/?feature=standout-vehicle",
       "status": "source_page_only",
       "description": "Mappa Standout, fonte di ricerca. Indice pubblico datato 25/11 riportava 254 posizioni; altre versioni cache differiscono. Conteggio non definitivo, pin e modelli vanno verificati singolarmente. Nessun import automatico di foto o coordinate."
+    },
+    {
+      "url": "https://www.powerpyx.com/gta-6-all-1010-mural-locations",
+      "status": "source_page_only",
+      "description": "Southside Storage: cinque foto della posizione e inquadratura di ciascun murale (Rockridge, Compliance Theater, Extraction Service, Ocean Beach, Crosstown con treno fermo); tastierino 1010, apertura, 1010 Cheetah e menu registrazione. Ricerca schermate pertinenti; nessuna autorizzazione di riuso documentata."
+    },
+    {
+      "url": "https://www.gtabase.com/gta-6/properties/southside-storage",
+      "status": "source_page_only",
+      "description": "Southside Storage: posizione Salton e conferma dello slot di proprietà. Link alla mappa originale; non copiare la mappa o le foto."
+    },
+    {
+      "url": "https://www.powerpyx.com/gta-6-collect-the-tempesta-walkthrough/",
+      "status": "source_page_only",
+      "description": "Domestic Timbers: messaggio di Randy, indicatore Collect the Tempesta a Balsero, auto nel garage e menu di registrazione/vendita. Cercare catture originali della missione, non usare foto del modello base come prova della variante."
+    },
+    {
+      "url": "https://www.gtabase.com/gta-6/properties/domestic-timbers",
+      "status": "source_page_only",
+      "description": "Domestic Timbers: mappa e proprietà gratuita con uno slot. Fonte consultabile, non concessione di riutilizzo."
+    },
+    {
+      "url": "https://www.gtabase.com/gta-6/vehicles/rauls-tempesta",
+      "status": "source_page_only",
+      "description": "Raul's Tempesta: variante Standout e ricompensa della catena Randy. Immagine della scheda solo come riferimento, senza copia."
+    },
+    {
+      "url": "https://www.powerpyx.com/gta-6-all-garage-locations/",
+      "status": "source_page_only",
+      "description": "Quattro garage di storia: schermata notifica sblocco, mappa e numero slot. Distinguere dagli otto garage acquistabili di Little Boxes."
+    },
+    {
+      "url": "https://www.gtaboom.com/gta-6-vanessas-garage-and-pink-growler-7339/",
+      "status": "source_page_only",
+      "description": "Del Rio Boulevard: laptop nel Capitolo 3, indizio 92665, porta con fiocco rosa, Growler e notifica proprietà. Il riferimento a una foto non dimostra diritti di utilizzo."
     }
   ]
 }
