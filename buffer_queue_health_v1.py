@@ -148,9 +148,10 @@ def render_photo_readiness():
            "Record di riutilizzo specifico validi nel registro: "+str(records)+".",
            "Articoli distinti con almeno un record: "+str(pages)+"."]
     if not pages:
-        lines += ["**Blocco editoriale: nessuna copertina con riutilizzo documentato nel registro.**",
-                  "La politica fotografica sospende gli invii, anche se la coda Buffer è vuota. Non inviare testo senza foto o indebolire la verifica.",
-                  "Usare il percorso di acquisizione screenshot e revisione dei diritti già previsto."]
+        lines += ["**Allegati fotografici bloccati: nessuna copertina con riutilizzo documentato nel registro.**",
+                  "Non allegare immagini senza prova di riutilizzo per lo specifico asset e canale.",
+                  "La policy corrente ammette separatamente solo post con link fonte/video originali, verificati per singolo elemento e privi di foto caricate (source_link_only / official_video_link): non sono autorizzazioni per miniature o screenshot.",
+                  "Acquisire e verificare screenshot originali PS5 prima di abilitare post fotografici."]
     else:
         lines += ["I record non sono post pronti: restano obbligatori verifica live di copertina/hash, pertinenza, deduplica e limiti editoriali."]
     lines += ["Registro vuoto, mancante o non valido = nessuna autorizzazione operativa. Nessun URL degli asset o prova privata esposta.",""]
