@@ -1,10 +1,11 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #162 integrata e deploy HTTP positivo (151 date documentate); #163 SEO e #209 Buffer in QA; #208 GSC privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #162 online (151 date), #163 SEO in QA, #209 Buffer integrata e verificata live; #208 GSC privata non attiva.
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint della sessione successiva — 27 novembre 2026
+- #209 OPERATIVA: main run 45963942216 success, editorial 45963942229 success. Issue #50 aggiornata 08:13:05 UTC, API Buffer 15 Sent/0 Scheduled/0 Error, coda non sospesa. Campione sentAt: 26/11 2 invii e 2 con allegato immagine confermato dal modello Buffer; 27/11 fino alle 09:13 CET 0 osservati; nessun orario invalido. Non è prova di totale giornaliero o media visibile su X. Tentato accesso diretto al permalink X del 26/11: non disponibile, ricerca post esterni senza testo e permalink autentici utilizzabili. Nessun nuovo costo o risposta automatica.
 - #209 INTEGRATA: QA 45963834609 (48 test) e 45963834601 success sul head esatto, main dopo base aveva solo checkpoint; merge bf91cb3ddac35c03fdc5f91e40fb0f2b271d7247. Verificare run live e issue #50 con sentAt e allegati; se API GraphQL non disponibile, correggere senza nuove richieste onerose. Non equivale a prova immagini visibili su X.
 - #162 COMPLETATA: merge 418cb37fe045644c8695ffbe0c05c787dae9e9ef; QA 45962607713 success, 272 combinazioni browser e test registro; deploy [45963622579](https://github.com/xFederiko11/gta-6/actions/runs/45963622579) success, job 140387353817 alle 08:11:37 UTC PUBLIC_EDITORIAL_RELEASE_OK per 13 URL inclusi homepage, /articoli/, /glitch/ e guide/garage corretti. Registro 151 date in main distribuito; non ripetere #162. HTTP controlla canonical e marker, QA verifica il registro e l'ordine. #163 head 8ff1d1a47fb2ebac8b111cceee86f7856d3cfff3, QA 45963704287 in corso.
 - [Bot PR #209](https://github.com/xFederiko11/federiko-gta-playstation-bot/pull/209), head 8cf60a2d3ae9c1fab39246e23e2a646e693d5b13: audit Buffer distingue sentAt da dueAt e controlla assets/metadata per immagine del primo post. Campione limitato, non prova foto pubblica su X. Nessuna chiamata supplementare o mutazione. Attendere QA e report live #50 prima di dichiarare attiva. Workflow 45963834609 in_progress/pending, 45963834601 in_progress/pending.
