@@ -1,3 +1,15 @@
+# Checkpoint operativo — PR #211 integrata e QA post-merge — 27 novembre 2026, 14:46 CET
+
+- **Main bot:** PR [#211](https://github.com/xFederiko11/federiko-gta-playstation-bot/pull/211) integrata con squash in `3f2bae24194097d122093e28cb22490c5d3a9a7b`. PR QA verde al commit `8dda820a1edbc68a331d3f13320616f56acf2ec1`: Editorial Autopilot #837, test/editor QA e verifiche di crescita, Buffer in sola lettura, sito in sola lettura e Source Regression QA completati success. Anche i controlli push su main [run 46009840832](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46009840832) e integrazione sito [run 46009840659](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46009840659) sono success. Nessun deploy o post è stato attribuito a questi controlli; l’Autopilot push ha soltanto eseguito QA.
+- **Nuova policy live su main:** la foto è validata per singolo item/canale; quando manca una foto con riuso documentato, un item RSS idoneo può usare il proprio link originale senza allegati, solo con attribuzione e dominio del feed verificati. Il link Rockstar al video è un fallback separato e deduplicato. Non è consentito allegare o scaricare thumbnail.
+- **Coda/social:** l’ultima lettura UI Buffer disponibile (27/11, 13:49 CET) era Queue 0, Drafts 0, Sent 102 e coda in pausa; il run #832 non aveva prodotto un invio nuovo. Nessun post nuovo è stato ancora inviato dopo il merge. L’istruzione del 27/11 autorizza la riattivazione: procedere ora a rileggere coda e impostazione in UI, riattivare se è ancora in pausa, poi avviare un run manuale controllato e verificare receipt, permalink e contenuto/media visibili su X. Non inviare bozze non revisionate.
+- **Sito:** main resta `34247beea60ed3a2b2aaf55923474b220938fad8`; PR #169 Southside già verificata, con video opt-in e link mappa. Nessun articolo nuovo creato in questo checkpoint.
+- **SEO/limiti:** Search Console dal 30/11 solo read-only. Motore privato dormiente fino a verifica di budget e credenziali read-only. Nessun costo, contatto, risposta, like o repost.
+
+**Prossimi passaggi:** (1) verificare/riattivare Buffer e produrre il primo invio controllato; (2) controllare permalink e media X prima di attribuire pubblicazione; (3) creare la prossima guida documentata con player opt-in e mappa esterna. Foto statiche soltanto con autorizzazione digitale documentata.
+
+---
+
 # Checkpoint — fallback link per notizia senza immagine — 27 novembre 2026, 14:35 CET
 
 - Ho esteso il ramo `feat/per-item-media-fallback-20261127` (head prima di questo checkpoint `991c30148b62f94e9092c24c74f6a59b90361521`): se un item RSS supera i gate editoriali ma nessuna immagine singola ha diritti/contenuto compatibili, il flusso può usare il solo URL originale, senza allegati. Sono allowlistati gli host dei feed VGC, Push Square, IGN, GameSpot, Everyeye, Multiplayer.it e PowerPyx; copia, attribuzione, URL e asset vengono ricontrollati in riserva e prima di Buffer. L’eccezione non apre un canale a testi liberi né concede diritti sulle preview.
