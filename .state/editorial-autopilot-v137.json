@@ -841,13 +841,16 @@
       "x_permalink": "https://x.com/xFederiko11/status/2123847614332280833"
     },
     "bae8fed88ef905fa0a82e6ac": {
+      "attempted_utc": "2026-11-27T20:00:21.459777+00:00",
+      "buffer_id": "6b09e155c02ca0988aaf40ef",
+      "completed_utc": "2026-11-27T20:00:22.979412+00:00",
       "media_mode": "source_link_only",
       "media_url": null,
       "official_video_url": null,
       "reserved_utc": "2026-11-27T20:00:15.205405+00:00",
       "run_id": "46060543961",
       "source": "VGC",
-      "status": "reserved",
+      "status": "sent",
       "text": "📰 GTA VI | Novità\n\nGTA 6: soluzione completa della missione \"Trova le auto per Wyman\"\n\n🔗 Fonte: VGC\nhttps://videogameschronicle.com/guide/gta-6-find-cars-wyman-mission-walkthrough\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
