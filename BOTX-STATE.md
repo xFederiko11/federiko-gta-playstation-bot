@@ -1,10 +1,11 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #162/#163 online, #209 attiva, #210 integrata (audit live da verificare), #164 in QA; #208 GSC privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #162/#163 online, #209 attiva, #210 integrata e audit live verificato, #164 in QA; #208 GSC privata non attiva.
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint nuovo — 27 novembre 2026
+- #210 OPERATIVA: audit live 45964882110 completed/success; #50 aggiornata 08:20:37 UTC. Registro 0 prove valide / 0 articoli autorizzati; blocco foto esplicitamente segnalato. Buffer 15 Sent nel campione, 0 Scheduled, 0 Error, nessuna pausa. 26/11 due invii con allegato Buffer, 27/11 zero osservati alle 09:20 CET. Nessuna verifica indipendente di media pubblici X. Non ripetere #210; priorità concreta reperire prove specifiche di riutilizzo e screenshot propri con autorizzazione documentata.
 - Chiusura sessione: #163 online via deploy 45964458608 success e 13 URL HTTP; #164 QA [45964800694](https://github.com/xFederiko11/gta-6/actions/runs/45964800694) in_progress/pending (head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7); #210 merge 81164efa48156162a8160515a76eeab4775eddfb, audit live 45964882110 in_progress/pending, issue #50 non ancora aggiornata con i nuovi conteggi.
 - Nessun post X esterno verificabile trovato tramite ricerca web; non inventare link. Rockstar policy (10 gennaio 2025) descrive tolleranza non-commerciale condizionata, non prova specifica per ogni foto o uso promozionale; registro 0, non allentare. Percorso pratico: acquisire screenshot propri o documentazione specifica per sito e social, verificarne pertinenza e hash, senza contattare Rockstar/creator. Proseguire con garage e missioni dopo #164. GSC privata resta bloccata; nessun costo, risposta a terzi o nuovo invio effettuato.
 - #210 QA 45964656892, 45964656761, 45964656805 tutte success, integrata 81164efa48156162a8160515a76eeab4775eddfb. Attendere audit live #50; nessuna nuova autorizzazione o pubblicazione.
