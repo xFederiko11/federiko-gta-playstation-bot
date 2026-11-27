@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import json
 import unittest
 
-from launch_delivery_audit_v1 import audit, markdown, valid_receipts, PROVENANCE
+from launch_delivery_audit_v1 import audit, markdown, valid_receipts, quality_receipt_window, PROVENANCE
 
 NOW = datetime(2026, 11, 20, 15, 0, tzinfo=timezone.utc)
 URL = "https://xfederiko11.github.io/gta-6/salvare-auto/"
@@ -106,6 +106,41 @@ class LaunchDeliveryAuditTests(unittest.TestCase):
             audit(ledger(), {"schema": "unverified", "posts": []}, NOW)
         with self.assertRaises(ValueError):
             audit(ledger(), feed(), datetime(2026, 11, 20, 15, 0))
+
+    def test_current_policy_counts_unique_receipts_by_rome_day_without_claiming_all_posts(self):
+        now = datetime(2026, 11, 27, 12, tzinfo=timezone.utc)
+        f = feed()
+        f["checked_utc"] = "2026-11-27T11:30:00Z"
+        f["posts"][0]["sent_at"] = "2026-11-26T23:30:00Z"
+        f["posts"].append({**f["posts"][0],"buffer_id": FUTURE_ID})
+        f["posts"].append({**f["posts"][0],"buffer_id":UNKNOWN_ID,
+                            "x_url":"https://x.com/xFederiko11/status/2123741902625218842",
+                            "sent_at":"2026-11-26T22:59:00Z"})
+        result=quality_receipt_window(f,now)
+        self.assertTrue(result["fresh_within_6h"])
+        self.assertEqual(result["days"][-1]["date"],"2026-11-27")
+        self.assertEqual(result["days"][-1]["verified_owned_guide_parent_receipts"],1)
+        self.assertEqual(result["days"][-2]["verified_owned_guide_parent_receipts"],1)
+        self.assertEqual(result["days"][-1]["minimum_not_demonstrated_by_receipts"],4)
+        self.assertIsNone(result["days"][-1]["all_original_posts_verified"])
+
+    def test_stale_missing_future_receipt_checks_are_not_live_counts(self):
+        now=datetime(2026,11,27,12,tzinfo=timezone.utc)
+        for checked in (None,"2026-11-26T12:00:00Z","2026-11-28T12:00:00Z"):
+            f=feed()
+            f["checked_utc"]=checked
+            report=audit(ledger(),f,now)
+            self.assertFalse(report["current_quality_receipts"]["fresh_within_6h"])
+            body=markdown(report)
+            self.assertIn("non interpretare i conteggi come stato live",body)
+            self.assertIn("zero ricevute non significa zero pubblicazioni",body)
+            self.assertIn("Politica corrente",body)
+
+    def test_quality_window_is_bounded_to_seven_days(self):
+        report=quality_receipt_window(feed(),datetime(2026,12,27,12,tzinfo=timezone.utc))
+        self.assertEqual(len(report["days"]),7)
+        self.assertEqual(report["days"][-1]["date"],"2026-12-27")
+        self.assertEqual(report["days"][-1]["goal_min"],5)
 
     def test_only_passed_campaign_dates_reported(self):
         older = audit(ledger(), feed(), datetime(2026, 11, 19, 10, 0, tzinfo=timezone.utc))
