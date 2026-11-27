@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T22:34:30+00:00",
+  "generated_at": "2026-11-27T23:31:11+00:00",
   "history_observed": [
     {
       "last_observed_at": "2026-11-27T22:34:06Z",
@@ -18,7 +18,7 @@
       "record_id": "92eb6ac03c7a2107ad6eafd5f787a1ec79c12eccaa29c883bf440a4f78960b85"
     },
     {
-      "last_observed_at": "2026-11-27T22:33:11Z",
+      "last_observed_at": "2026-11-27T23:29:55Z",
       "record_id": "b8cd257a031f26ac06a0923212ddadfbdd08d3034190b7b998196b09016d69aa"
     }
   ],
@@ -27,20 +27,20 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1795818734.491655,
-      "next_due": 1795819634.491655
+      "last_success": 1795822123.6247694,
+      "next_due": 1795823023.6247694
     },
     {
       "id": "support-gta",
       "last_error": null,
-      "last_success": 1795818792.0308585,
-      "next_due": 1795820592.0308585
+      "last_success": 1795822195.7518718,
+      "next_due": 1795823995.7518718
     },
     {
       "id": "support-gta6",
       "last_error": null,
-      "last_success": 1795818738.1256907,
-      "next_due": 1795820538.1256907
+      "last_success": 1795822142.396791,
+      "next_due": 1795823942.396791
     },
     {
       "id": "system:PS4",
