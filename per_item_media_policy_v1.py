@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from urllib.parse import parse_qs, urlsplit
-import re
 
 # Exact destinations reviewed against the source publisher on 2026-11-27.
 # The official video remains on YouTube; its link preview belongs to the platform.
@@ -58,34 +57,42 @@ def approved_link_url(value: str) -> bool:
     return False
 
 
+VIDEO_TEXT = ("🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n\n"
+               "Video ufficiale Rockstar Games:\n" + VIDEO_URL)
+SOURCE_TEXT = ("La pagina Rockstar raccoglie il video, gli screenshot e la mappa stampabile "
+               "di Leonida.\n\nFonte: Rockstar Games\n" + SOURCE_URL)
+
+
 def link_only_message_allowed(message: dict, *, allow_thread: bool = True) -> bool:
-    """Validate the complete text and exact link before a no-image X mutation."""
+    """Allow only exact reviewed copy; a source URL cannot license extra claims."""
     if not isinstance(message, dict) or message.get("assets") not in (None, []):
         return False
     text = message.get("text")
-    if not isinstance(text, str) or not text.strip():
+    allowed = {VIDEO_TEXT}
+    if allow_thread:
+        allowed.add(SOURCE_TEXT)
+    if text not in allowed:
         return False
-    if not re.search(r"(?:Video ufficiale Rockstar Games|Fonte: Rockstar Games)",
-                     text, re.IGNORECASE):
-        return False
-    if not allow_thread and not re.search(r"T95WGWkx7P0", text):
-        return False
-    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\s<>]+", text)]
+    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\\s<>]+", text)]
     return len(links) == 1 and approved_link_url(links[0])
 
 
+def link_only_thread_allowed(messages) -> bool:
+    """Only the one reviewed video/source pair may be sent as a link-only thread."""
+    return isinstance(messages, (list, tuple)) and list(messages) == [VIDEO_TEXT, SOURCE_TEXT]
+
 def verify_link_only_entry(entry: dict) -> bool:
-    """Revalidate a persisted reservation immediately before Buffer delivery."""
+    """Revalidate the exact one-time reservation immediately before delivery."""
     if (not isinstance(entry, dict) or entry.get("media_mode") != "official_video_link"
-            or entry.get("media_url") or entry.get("photo_kind") or entry.get("cover_sha256")):
+            or entry.get("media_url") or entry.get("photo_kind") or entry.get("cover_sha256")
+            or entry.get("url") != VIDEO_URL
+            or entry.get("official_video_url") != VIDEO_URL
+            or entry.get("source") != "Rockstar Games"):
         return False
     thread = entry.get("thread")
     if thread is None:
-        return link_only_message_allowed({"text": entry.get("text"), "assets": []})
-    return (isinstance(thread, list) and len(thread) == 2
-            and all(link_only_message_allowed({"text": text, "assets": []})
-                    for text in thread))
-
+        return entry.get("text") == VIDEO_TEXT
+    return link_only_thread_allowed(thread) and entry.get("text") == VIDEO_TEXT
 
 def launch_video_candidate(state: dict, now: datetime, *, launch: bool = False) -> dict | None:
     """One factual, one-time link post; never attach or scrape an image."""
