@@ -1,3 +1,15 @@
+# Checkpoint operativo — metadati live e regole di riuso — 2026-11-27 14:48:37 CET
+
+- **Produzione live:** verificata la guida [Meditazioni GTA VI](https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/): schema JSON-LD `datePublished=2026-11-18` e `dateModified=2026-11-27T09:45:21Z`. La pagina mostra copertina illustrata etichettata non-gameplay, fonti e player facoltativi.
+- **Prove sui media:** la [policy Rockstar](https://support.rockstargames.com/articles/7bNaeoMFTV0iUDGhStTXvz/policy-on-posting-copyrighted-rockstar-games-material) è limitata a usi fan occasionali e non commerciali; esclude materiale usato per promuovere prodotti/servizi e pubblicazioni digitali. Credito o disclaimer da soli non autorizzano copia, hotlink o allegato. [YouTube documenta l’uso del proprio player incorporabile](https://support.google.com/youtube/answer/171780?hl=en), incluso `youtube-nocookie.com`; questo supporta un player della piattaforma con opt-in, non il download/ri-hosting delle miniature.
+- **Guida #170:** PR ancora in QA dopo il commit `dd5bc50ab1bb7efdf7f4ce90025ff9b3ba780af5`; run [#533](https://github.com/xFederiko11/gta-6/actions/runs/46018496269) in corso. La nuova scheda di cronologia usa data articolo; entry della data storica verrà aggiunta solo con prova di deploy effettivo. Nessun articolo nuovo è live al momento.
+- **Stato immagini:** nessuna foto GTA statica è stata dichiarata libera o aggiunta. Le alternative già realizzate sono mappe esterne e video YouTube caricati su richiesta; la validazione del bot resta per-item e per-canale, con modalità link-only prive di allegato.
+- Buffer rimane da verificare in una sessione autenticata; non è stata cambiata la coda. Search Console non è stata aperta prima del 30/11.
+
+**Priorità:** (1) completare QA/merge/deploy di #170; (2) dopo il deploy registrare evidenza e ricontrollare la nuova pagina; (3) autenticare Buffer in una scheda dedicata, verificare la coda e solo allora valutare la ripresa.
+**Prossimo comando:** Continua Bot X dal checkpoint; termina QA di PR #170 e verifica il deploy; poi effettua un controllo Buffer autenticato in sola lettura prima di ogni variazione, riconcilia gli invii con X e dal 30/11 leggi Search Console senza scrivere.
+---
+
 # Checkpoint operativo — QA guida #170 e riconciliazione Autopilot #844 — 2026-11-27 14:45:23 CET
 
 - **Repository e stato:** bot `main` resta autonomo tramite run schedulati; sito lavora su PR [#170](https://github.com/xFederiko11/gta-6/pull/170). Il checkout locale `gta-6` non contiene il repository bot ed è rimasto intatto.
