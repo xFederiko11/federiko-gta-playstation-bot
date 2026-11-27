@@ -1,10 +1,12 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #162 online (151 date), #163 SEO in QA, #209 Buffer integrata e verificata live; #208 GSC privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #162 e #163 online; #209 attiva; #210 e #164 in QA; #208 GSC privata non attiva.
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint nuovo — 27 novembre 2026
+- #163 deploy 45964458608 SUCCESS, job 140389989147; controlli HTTP esistenti positivi. Accesso diretto da ChatGPT a Pages non disponibile; test mirato di datePublished e titolo canonico aggiunto nella #164, non dichiarare quella verifica specifica già eseguita.
+- [Sito #164](https://github.com/xFederiko11/gta-6/pull/164), head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7: aggiorna guida e trofeo meditazione, mappa originale GTABase https://www.gtabase.com/gta-6/map/?feature=meditation (26/11), alternativa Port Gellhorn dopo Coffee Break e Ascent con entrambi secondo GTABase. PowerPyx indica prima occasione non necessaria per trofeo/100%; scheda trofei GTABase mantiene cautela. Nessuna prova diretta; 18 spunte stabili, 15 per 100%, alternativa non 19a. Ricerca archivio: normalizza GTA VI/GTA 6 e accenti/punteggiatura, reset/stato senza risultati; date e canonical invariati. QA e deploy ancora da verificare. Nessun nuovo screenshot copiato.
 - #210 bot aperta, head 285f3588be8bdada2f5b5fc96359a890ee9ff653: registry photo-rights-review-v1.json ha 0 record. È un blocco reale per nuovi post conformi alla politica foto, NON guasto Buffer. Aggiunta diagnosi aggregata in #50 e skip HTTP di URL senza record; nessuna modifica a diritti, hash, dedup o pubblicazione. QA 45964656892 in_progress, 45964656761 in_progress, 45964656805 in_progress. Non integrare senza QA esatta. Nessun permesso inventato; nessun nuovo post.
 - Deploy #163 run 45964458608 completed/success.
 - #163 QA esatta 45963704287 SUCCESS; merge 983e932128fb45769b92170cd7273a69ad457cc1. Deploy/HTTP ancora da verificare. SEO canonica salvare-auto, link contestuali, snippet meditazione, datePublished da registro. Non ripetere merge.
