@@ -190,7 +190,7 @@ class BufferClient:
                 raise BufferAPIError("Invio bloccato: formato media X non valido",
                                      status=400, outcome_unknown=False)
             from photo_rights_v1 import message_attachments_allowed
-            from per_item_media_policy_v1 import link_only_message_allowed, link_only_thread_allowed
+            from per_item_media_policy_v1 import link_only_message_allowed, link_only_thread_allowed, source_link_message_allowed
             parent_has_photo = bool(thread and has_image(thread[0]))
             if thread is not None and not parent_has_photo:
                 if not link_only_thread_allowed([m.get("text") for m in messages]):
@@ -207,7 +207,8 @@ class BufferClient:
                     if not isinstance(message.get("text"), str) or not message["text"].strip():
                         raise BufferAPIError("Invio bloccato: messaggio del thread vuoto",
                                              status=400, outcome_unknown=False)
-                elif not link_only_message_allowed(message, allow_thread=thread is not None):
+                elif not (link_only_message_allowed(message, allow_thread=thread is not None)
+                          or (thread is None and source_link_message_allowed(message))):
                     raise BufferAPIError("Invio bloccato: link ufficiale non approvato per il percorso senza foto",
                                          status=400, outcome_unknown=False)
         if self.request_guard is not None:
