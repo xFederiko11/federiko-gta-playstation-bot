@@ -64,7 +64,35 @@ class ReceiptTests(unittest.TestCase):
                                 require_image=True)
                 self.assertEqual(value['outcome'], 'sent_without_confirmed_image')
 
-    def test_new_publication_requires_photo_even_if_ledger_media_field_is_absent(self):
+    def test_explicit_link_only_modes_allow_receipt_without_image(self):
+        for mode in ('source_link_only', 'official_video_link'):
+            with self.subTest(mode=mode):
+                client = Mock(channel_id='channel-1')
+                client._graphql.return_value = {
+                    'post': self.post(assets=[], metadata={'thread': []})}
+                state = {'entries': {'one': {
+                    'run_id': '42', 'buffer_id': 'post-1',
+                    'media_mode': mode, 'source': 'Everyeye'}}}
+                result = collect(state, run_id='42', client=client)
+                self.assertEqual(result['receipts'][0]['outcome'], 'sent_receipt')
+                self.assertFalse(result['receipts'][0]['buffer_image_asset_confirmed'])
+                self.assertFalse(result['receipts'][0]['buffer_image_required'])
+                self.assertFalse(result['receipts'][0]['public_x_independently_checked'])
+                client.publish.assert_not_called()
+
+    def test_current_photo_publication_still_requires_confirmed_attachment(self):
+        client = Mock(channel_id='channel-1')
+        client._graphql.return_value = {'post': self.post(assets=[])}
+        state = {'entries': {'one': {
+            'run_id': '42', 'buffer_id': 'post-1',
+            'media_mode': 'approved_photo',
+            'media_url': 'https://example.org/reviewed.jpg'}}}
+        result = collect(state, run_id='42', client=client)
+        self.assertEqual(result['receipts'][0]['outcome'], 'sent_without_confirmed_image')
+        self.assertTrue(result['receipts'][0]['buffer_image_required'])
+        client.publish.assert_not_called()
+
+    def test_unknown_current_mode_still_fails_closed_without_image(self):
         client = Mock(channel_id='channel-1')
         client._graphql.return_value = {'post': self.post(assets=[])}
         state = {'entries': {'one': {'run_id': '42', 'buffer_id': 'post-1'}}}
