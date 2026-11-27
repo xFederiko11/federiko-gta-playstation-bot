@@ -12,5 +12,5 @@ class EditorialCIScheduleTests(unittest.TestCase):
         self.assertNotIn("github.event_name == 'push'",production)
         self.assertIn("gta-v142-publication-global",raw)
         self.assertIn("cancel-in-progress: false",raw)
-        self.assertIn("GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'",production)
+        self.assertNotIn("GTA6_REQUIRE_ALL_POST_PHOTOS: 'true'",production)
 if __name__=="__main__":unittest.main()
