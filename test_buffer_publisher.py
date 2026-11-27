@@ -174,9 +174,9 @@ class BufferPublisherTests(unittest.TestCase):
                               session=self.session)
         client.destination = channel(name="xFederiko11",
                                     externalLink="https://x.com/xFederiko11")
-        text = ("📰 GTA VI | Novità\\n\\nInformazione documentata.\\n\\n"
-                "🔗 Fonte: VGC\\n"
-                "https://www.videogameschronicle.com/news/example-story/\\n\\n#GTAVI #GTA6")
+        text = ("📰 GTA VI | Novità\n\nInformazione documentata.\n\n"
+                "🔗 Fonte: VGC\n"
+                "https://www.videogameschronicle.com/news/example-story/\n\n#GTAVI #GTA6")
         self.session.post.return_value = response(delivered())
         self.assertEqual(client.publish(text), "buffer-post-1")
         assets = self.session.post.call_args.kwargs["json"]["variables"]["input"]["assets"]
