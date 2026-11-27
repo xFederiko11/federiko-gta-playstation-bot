@@ -8,6 +8,8 @@ on:
       - '.github/workflows/gta6-community-research-v1.yml'
       - 'community_research_v1.py'
       - 'google_keyword_watch_v1.py'
+      - 'gsc_keyword_watch_v1.py'
+      - 'test_gsc_keyword_watch_v1.py'
       - 'test_google_keyword_watch_v1.py'
       - 'community-research-sources-v1.json'
       - 'guide_evidence_review_v1.py'
@@ -20,6 +22,8 @@ on:
     paths:
       - 'community_research_v1.py'
       - 'google_keyword_watch_v1.py'
+      - 'gsc_keyword_watch_v1.py'
+      - 'test_gsc_keyword_watch_v1.py'
       - 'test_google_keyword_watch_v1.py'
       - 'community-research-sources-v1.json'
       - 'test_community_research_v1.py'
@@ -58,7 +62,7 @@ jobs:
         run: |
           python -m py_compile community_research_v1.py community_editorial_queue_v1.py guide_evidence_review_v1.py guide_claim_evidence_gate.py
           python community_research_v1.py --mode validate
-          python -m unittest -q test_google_keyword_watch_v1 test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1 test_guide_claim_evidence_gate
+          python -m unittest -q test_gsc_keyword_watch_v1 test_google_keyword_watch_v1 test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1 test_guide_claim_evidence_gate
       - name: Preview public sources (no Buffer, no posts)
         if: github.event_name != 'pull_request'
         run: |
@@ -86,6 +90,27 @@ jobs:
       - name: Check free Google Trends Italy signals (no credentials or paid API)
         if: github.event_name != 'pull_request'
         run: python google_keyword_watch_v1.py --append previews/community-editorial-queue.md
+      - name: Read private Search Console analytics (opt-in, no publication)
+        if: github.event_name != 'pull_request' && github.event.repository.private == true && vars.GSC_READONLY_ENABLED == 'true' && vars.BOTX_PRIVATE_BUDGET_VERIFIED == 'true'
+        env:
+          BOTX_GSC_PRIVATE: 'true'
+          GSC_CLIENT_ID: ${{ secrets.GSC_CLIENT_ID }}
+          GSC_CLIENT_SECRET: ${{ secrets.GSC_CLIENT_SECRET }}
+          GSC_REFRESH_TOKEN: ${{ secrets.GSC_REFRESH_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            python gsc_keyword_watch_v1.py --force --output .runtime/gsc-private/report.json
+          else
+            python gsc_keyword_watch_v1.py --output .runtime/gsc-private/report.json
+          fi
+      - name: Retain private analytics only in private repository
+        if: github.event_name != 'pull_request' && github.event.repository.private == true && vars.GSC_READONLY_ENABLED == 'true' && vars.BOTX_PRIVATE_BUDGET_VERIFIED == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: gsc-private-keyword-review
+          path: .runtime/gsc-private/report.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Save research digest as review artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
