@@ -1,3 +1,16 @@
+# Checkpoint — PR #170 integrata, deploy da verificare — 2026-11-27 14:52:03 CET
+
+- **Sito:** la PR [#170](https://github.com/xFederiko11/gta-6/pull/170) è stata integrata con squash nel commit `6d6a8af48e80174a0416e29efd914ff434fa2e29`. La CI PR [#533](https://github.com/xFederiko11/gta-6/actions/runs/46018496269) è verde. Nessuna pagina nuova è dichiarata live finché il run post-merge e la verifica del percorso non passano.
+- La guida dei tre strip club usa fonti dichiarate, itinerari, mappa esterna GTAMI e video YouTube privacy-enhanced caricato solo su richiesta; la card è una grafica cartografica originale e riporta chiaramente «non screenshot di gameplay». Nessuna foto GTA è stata copiata o ri-ospitata. Dopo il deploy, registrare il run effettivo come prova della data di prima pubblicazione.
+- **Media:** policy Rockstar esclude dall’uso fan non-commerciale materiale usato per promuovere prodotti/servizi o per pubblicazioni digitali. Non è emersa un’autorizzazione generale per foto. L’embed del player YouTube è documentato dal fornitore come funzione abilitata; resta solo una modalità di visualizzazione del video originale, con iframe creato dopo il clic.
+- **Bot:** ultimo run confermato #844 zero riserve e zero invii; Buffer non verificabile in una sessione autenticata. L’accesso non è stato trovato nella finestra browser dedicata e Safari non è stato toccato. Coda non modificata; X non ha nuove consegne da abbinare.
+- Guida meditazioni live controllata: `datePublished=2026-11-18`, `dateModified=2026-11-27T09:45:21Z`.
+- Search Console non consultata prima del 30/11; nessun costo, contatto o interazione social.
+
+**Prossime priorità:** (1) verificare deploy e contenuto live della #170, poi registrare data e run; (2) procedere con Buffer solo dopo accesso e verifica visuale di queue/draft; (3) proseguire guide con video opt-in/mappe esterne e foto soltanto con diritti specifici.
+**Prossimo comando:** Continua Bot X dal checkpoint; verifica il deploy Pages post-merge della guida #170 e la pagina live, quindi registra il run di pubblicazione; per Buffer usa una sessione dedicata autenticata e non cambiare coda finché il contenuto non è verificato; dal 30/11 Search Console in sola lettura.
+---
+
 # Checkpoint operativo — metadati live e regole di riuso — 2026-11-27 14:48:37 CET
 
 - **Produzione live:** verificata la guida [Meditazioni GTA VI](https://xfederiko11.github.io/gta-6/guide-e-tutorial/meditazione-capitolo-1/): schema JSON-LD `datePublished=2026-11-18` e `dateModified=2026-11-27T09:45:21Z`. La pagina mostra copertina illustrata etichettata non-gameplay, fonti e player facoltativi.
