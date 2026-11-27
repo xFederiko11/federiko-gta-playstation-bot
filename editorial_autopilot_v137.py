@@ -107,7 +107,15 @@ def same_story(a: str, b: str) -> bool:
         return True
     x = set(a.split())
     y = set(b.split())
-    return len(x & y) >= 5 and len(x & y) / max(1, min(len(x), len(y))) >= 0.80
+    overlap = len(x & y)
+    shorter = min(len(x), len(y))
+    # Two publishers can paraphrase the same story with a few new words.
+    # Require five shared content words; for longer titles, allow a slightly
+    # lower overlap ratio. Short generic guide titles stay on the strict gate.
+    return (overlap >= 5 and (
+        overlap / max(1, shorter) >= 0.80 or
+        (shorter >= 8 and overlap / shorter >= 0.60)
+    ))
 
 def published(s: str) -> datetime | None:
     if not s:
