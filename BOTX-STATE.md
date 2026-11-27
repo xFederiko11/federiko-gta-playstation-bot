@@ -1,3 +1,7 @@
+# Checkpoint PR #168 — 27 novembre 2026
+
+- QA 45974152406: statici superati, 125 layout articolo e 12 indici tutorial; browser fallito WAiNK 390px perché primo step y=1355, limite 1080. Commit `ccba63ef126982592e8d2b17e9e6c7cf09917410` rende espandibile solo indice rapido, non i passaggi, riduce spazi mobile e aggiorna QA browser. Nuova QA non ancora osservata. Non integrare prima del verde; verificare screenshot full-page artifact e deploy. Copertura foto e classifica reale non risolte: registro autorizzazioni vuoto, nessun export Umami acquisito. Nessun nuovo costo. Prossimo comando obbligatorio.
+
 # Checkpoint QA Magazine #168 — 27 novembre 2026
 
 - QA run `45974152406` concluso **FAILURE**, quindi deploy saltato e nessuna modifica pubblicata. Build, controlli editoriali e statici passano; il browser test a 390 px fallisce su `test_reader_experience.py` per `guide-e-tutorial/scansionare-veicoli/`: il primo passaggio inizia a y=1355 e la sua immagine a y=1473, oltre le soglie 1080/1250. L’indice nuovo espone cinque link in colonna e allunga eccessivamente l’introduzione mobile. Screenshot e report QA sono nell’artefatto `reader-qa-45974152406` (ID 15185993456).
