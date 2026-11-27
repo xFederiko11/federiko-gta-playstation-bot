@@ -1,3 +1,9 @@
+# Checkpoint operativo — 27 novembre 2026, 10:02 CET
+
+- **Deploy sito #165**: merge 92cb562ef3d214f7ee1680a15f3b340e54637ea5; run [45970068481](https://github.com/xFederiko11/gta-6/actions/runs/45970068481) conclusa `failure`. QA build e pagine generate fino al passo 13; `sunset_blog_v1.py build` fallisce alla riga 230 in `verify()` sull’assert degli eventi Umami `category-open` / `x-timeline-open`. Il job deploy è `skipped`: **non dichiarare #165 in produzione**. Correggere con PR e QA prima di un nuovo deploy; il checkout locale `gta-6` resta con modifiche dell’utente, non sovrascriverlo.
+- **Repository**: GitHub espone solo i due repository pubblici `federiko-gta-playstation-bot` e `gta-6`; il repo privato GSC non esiste nell’elenco accessibile. `GSC-READONLY-SETUP.md` conferma che servono migrazione a repo privato, budget senza overage e credenziali OAuth read-only owner-controlled; nessun segreto o costo aggiunto.
+- **Punti invariati**: PR #164 e audit #210 restano completati; non ripeterli. Il metatag HTML `datePublished` non è stato letto direttamente. Registro diritti foto ancora vuoto, quindi gate immagini attivo; nessun contatto o invio.
+
 # 🤖 Bot X — Stato operativo
 
 Aggiornato: 27 novembre 2026 CET — PR #164 completata e online; produzione verificata per guida, canonical, ricerca e reset. Metadato HTML datePublished non ispezionato direttamente. #210 audit completato; registro diritti foto ancora vuoto.
