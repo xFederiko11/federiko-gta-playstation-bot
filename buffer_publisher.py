@@ -98,6 +98,31 @@ class Delivery:
     external_url: str | None = None
 
 
+def rate_limit_windows(headers):
+    """Read Buffer's quota counters from the response ALREADY received.
+
+    No extra API call, tokens, partition keys or raw headers in public logs.
+    Handles repeated RateLimit fields joined with commas by HTTP libraries.
+    Returns {window: {limit, remaining, reset_seconds}} or {}.
+    """
+    raw = headers.get("RateLimit", "") if hasattr(headers, "get") else ""
+    if not isinstance(raw, str):
+        return {}
+    result = {}
+    pattern = (r'"(?P<limit>[0-9]+)-in-(?P<window>15min|1day|30days)"'
+               r'\s*;\s*r\s*=\s*(?P<remaining>[0-9]+)'
+               r'\s*;\s*t\s*=\s*(?P<reset>[0-9]+)')
+    for match in re.finditer(pattern, raw, flags=re.I):
+        window = match.group("window").lower()
+        limit = int(match.group("limit"))
+        remaining = int(match.group("remaining"))
+        reset = int(match.group("reset"))
+        if limit > 0 and remaining <= limit:
+            result[window] = {"limit": limit, "remaining": remaining,
+                              "reset_seconds": reset}
+    return result
+
+
 def _required(name, value):
     value = (value if value is not None else os.getenv(name, "")).strip()
     if not value:
@@ -172,6 +197,7 @@ class BufferClient:
         self.timeout = timeout
         self.destination = None
         self.last_delivery = None
+        self.last_rate_limit = {}
 
     def _graphql(self, query, variables, *, mutation=False):
         # Final barrier for every production createPost, including legacy
@@ -221,6 +247,16 @@ class BufferClient:
         except requests.RequestException:
             # Il server può avere creato il post prima della perdita della risposta.
             raise BufferAPIError("Connessione Buffer non completata", outcome_unknown=mutation) from None
+        # Buffer documents these headers on the response: inspecting them
+        # consumes ZERO additional quota. We never output bucket/partition IDs.
+        self.last_rate_limit = rate_limit_windows(getattr(response, "headers", {}))
+        monthly = self.last_rate_limit.get("30days")
+        if monthly:
+            print("BUFFER_QUOTA_30D remaining=" + str(monthly["remaining"]) +
+                  " limit=" + str(monthly["limit"]) +
+                  " reset_seconds=" + str(monthly["reset_seconds"]))
+            if monthly["remaining"] * 10 <= monthly["limit"]:
+                print("BUFFER_QUOTA_LOW_30D: conserve requests; never automatically upgrade")
         if not 200 <= response.status_code < 300:
             raise BufferAPIError(
                 f"Buffer: HTTP {response.status_code}", status=response.status_code,
