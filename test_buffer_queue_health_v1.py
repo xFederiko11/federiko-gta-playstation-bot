@@ -58,6 +58,31 @@ class BufferQueueAuditTests(unittest.TestCase):
             "https://x.com/xFederiko11/status/1234567890"),
             "https://x.com/xFederiko11/status/1234567890")
 
+    def test_actual_dispatch_and_image_states_are_not_inferred_from_due_time(self):
+        data=payload(sent=3,scheduled=0)
+        sent=[r["node"] for r in data["sent"]["edges"]]
+        sent[0].update(sentAt="2026-11-19T19:00:00Z",assets=[{"mimeType":"image/jpeg","source":"https://example.com/photo.jpg"}],metadata=None)
+        sent[1].update(sentAt="2026-11-18T23:30:00Z",assets=[],metadata={})
+        sent[2].update(sentAt=None)
+        report=h.summarize(data)
+        days,missing=h.sent_sample_by_day(report["sent"],NOW)
+        self.assertEqual(days[NOW.date()],{"sent":2,"image":1,"no_image":1,"unknown_image":0})
+        self.assertEqual(missing,1)
+        body=h.render(report,NOW)
+        self.assertIn("| 2026-11-19 | 2 | 1 | 1 | 0 |",body)
+        self.assertIn("non sulla timeline pubblica X",body)
+        self.assertNotIn("https://example.com/photo.jpg",body)
+        self.assertIn("Record Sent con orario assente",body)
+
+    def test_thread_first_image_and_unknown_metadata(self):
+        asset={"mimeType":"image/png","source":"https://example.com/a.png"}
+        self.assertIs(h.observed_image({"assets":[],"metadata":{"thread":[{"assets":[asset]}]}}),True)
+        self.assertIsNone(h.observed_image({"assets":[]}))
+        self.assertIs(h.observed_image({"assets":[],"metadata":None}),False)
+        self.assertIs(h.observed_image({"assets":[],"metadata":{"thread":[{"assets":[]},{"assets":[asset]}]}}),False)
+        self.assertIn("sentAt",h.POST_QUERY)
+        self.assertIn("mimeType",h.POST_QUERY)
+
     def test_api_diagnostic_has_no_post_mutations(self):
         fake=Mock()
         fake.channel_id="real_channel_id"
