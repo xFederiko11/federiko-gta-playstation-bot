@@ -308,6 +308,36 @@ class EditorialV137Tests(unittest.TestCase):
             bot.reserve()
             self.assertEqual(len(bot.load_state()['entries']),1)
 
+    def test_unreviewed_photo_can_fall_back_to_exact_official_video_item(self):
+        now = datetime(2026, 11, 27, 12, 0, tzinfo=timezone.utc)
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now if tz is None else now.astimezone(tz)
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(bot, 'datetime', Clock), \
+             patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
+             patch.object(bot, 'read_feeds', return_value=([], [])), \
+             patch.object(bot, 'load_sources', return_value=[]), \
+             patch.object(bot, 'launch_active', return_value=True), \
+             patch.object(bot, 'launch_in_hours', return_value=True), \
+             patch.object(bot, 'director_allowed', return_value=(True, 'test')), \
+             patch.object(bot, 'powerpyx_spotlight', return_value=None), \
+             patch('quick_tips_v146.candidate', return_value=None), \
+             patch('growth_conversion_v1.candidate', return_value=None), \
+             patch('site_evergreen_posts_v1.candidate', return_value=None), \
+             patch('trophy_posts_v142.candidate', return_value=None), \
+             patch.dict(os.environ, {'GITHUB_RUN_ID':'official-video-fallback'}):
+            bot.reserve()
+            saved = bot.load_state()['entries']
+            self.assertEqual(list(saved), ['official-video-link:gta-vi-now-available-2026'])
+            entry = next(iter(saved.values()))
+            self.assertEqual(entry['media_mode'], 'official_video_link')
+            self.assertIsNone(entry['media_url'])
+            self.assertEqual(len(entry['thread']), 2)
+            from per_item_media_policy_v1 import verify_link_only_entry
+            self.assertTrue(verify_link_only_entry(entry))
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime(2026, 11, 20, 10, 0, tzinfo=timezone.utc)
         class Clock(datetime):
