@@ -1,3 +1,8 @@
+# Checkpoint operativo — 27 novembre 2026, 10:13 CET
+
+- **PR #166 integrata** dopo QA [45970667901](https://github.com/xFederiko11/gta-6/actions/runs/45970667901) success sul head esatto `dc8270484c5c9d097578f5ee47e7e0ded7e42795`; merge commit `91a05ed86df5a41d952b8690f88e221e3ef7bd3f`. Include fix taxonomy analytics, fixture offline, metadata SEO unici, percorsi prioritari, deduplicazione index e verifica live di `datePublished=2026-11-18`. La PR #167 duplicata è chiusa senza merge.
+- **In attesa**: controllare deploy di `91a05ed...` (quello di #165 `45970068481` era fallito); non dichiarare online né dataPublished verificata finché la nuova run e il gate HTTP effettivo non sono success.
+
 # Checkpoint operativo — 27 novembre 2026, 10:12 CET
 
 - **PR #166 identificata come fix canonico**: è già aperta sulla stessa base #165 e contiene lo stesso fix category-open, più fixture offline attiva/disattiva, metadata/route SEO e verifica di produzione della data `datePublished=2026-11-18` per la guida meditazioni. QA [45970667901](https://github.com/xFederiko11/gta-6/actions/runs/45970667901) success sull’head esatto `dc8270484c5c9d097578f5ee47e7e0ded7e42795`; non integrare prima di verificare status e recensioni. La mia PR #167 era duplicata: chiusa senza merge; nessun codice extra integrato.
