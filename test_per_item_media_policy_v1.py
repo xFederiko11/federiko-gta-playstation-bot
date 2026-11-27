@@ -41,8 +41,8 @@ class PerItemMediaPolicyTests(unittest.TestCase):
 
     def test_verified_feed_article_falls_back_to_source_link_without_media(self):
         url = "https://www.videogameschronicle.com/news/example-story/"
-        text = ("📰 GTA VI | Novità\\n\\nDettaglio confermato dalla fonte.\\n\\n"
-                "🔗 Fonte: VGC\\n" + url + "\\n\\n#GTAVI #GTA6")
+        text = ("📰 GTA VI | Novità\n\nDettaglio confermato dalla fonte.\n\n"
+                "🔗 Fonte: VGC\n" + url + "\n\n#GTAVI #GTA6")
         item = {"key": "vgc-story", "sig": "gta vi story", "title": "GTA VI: dettagli",
                 "source": "VGC", "url": url, "text": text}
         candidate = source_link_candidate(item)
@@ -52,7 +52,7 @@ class PerItemMediaPolicyTests(unittest.TestCase):
         self.assertFalse(source_link_message_allowed(
             {"text": text.replace("videogameschronicle.com", "evil.example"), "assets": []}))
         self.assertFalse(source_link_message_allowed(
-            {"text": text + "\\nhttps://example.org/image.jpg", "assets": []}))
+            {"text": text + "\nhttps://example.org/image.jpg", "assets": []}))
         self.assertFalse(verify_source_link_entry({**candidate, "url": "https://evil.example/"}))
 
     def test_fallback_is_one_time_and_has_no_image_attachment(self):
