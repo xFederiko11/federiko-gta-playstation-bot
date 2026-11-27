@@ -1,3 +1,8 @@
+# Checkpoint operativo — 27 novembre 2026, 10:10 CET
+
+- **Correzione deploy #165**: aperta [PR sito #167](https://github.com/xFederiko11/gta-6/pull/167), head `a212dbcafde6d9671b84c6e993ae9fbe5e093a3b`, base `92cb562ef3d214f7ee1680a15f3b340e54637ea5`. Causa isolata: il nuovo albero categorie mancava gli eventi Umami `category-open` richiesti dalla verifica; PR aggiunge tracking solo opt-in su riepiloghi/link e controlla anche lo stato disattivato. In attesa QA esatta; non integrare né rilanciare deploy prima di esito success.
+- Il deploy #165 `45970068481` resta fallito; il job deploy è stato skipped e la produzione #165 non è confermata. #164 e #210 non vanno ripetute. Il checkout locale modificato dell’utente non è stato toccato.
+
 # Checkpoint operativo — 27 novembre 2026, 10:02 CET
 
 - **Deploy sito #165**: merge 92cb562ef3d214f7ee1680a15f3b340e54637ea5; run [45970068481](https://github.com/xFederiko11/gta-6/actions/runs/45970068481) conclusa `failure`. QA build e pagine generate fino al passo 13; `sunset_blog_v1.py build` fallisce alla riga 230 in `verify()` sull’assert degli eventi Umami `category-open` / `x-timeline-open`. Il job deploy è `skipped`: **non dichiarare #165 in produzione**. Correggere con PR e QA prima di un nuovo deploy; il checkout locale `gta-6` resta con modifiche dell’utente, non sovrascriverlo.
