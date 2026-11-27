@@ -186,13 +186,31 @@ class BufferClient:
                            and isinstance(asset["image"].get("url"), str)
                            and asset["image"]["url"].startswith("https://")
                            for asset in (message.get("assets") or []))
-            if not messages or not all(isinstance(m, dict) and has_image(m) for m in messages):
-                raise BufferAPIError("Invio bloccato: fotografia obbligatoria in ogni messaggio X",
+            if not messages or not all(isinstance(m, dict) for m in messages):
+                raise BufferAPIError("Invio bloccato: formato media X non valido",
                                      status=400, outcome_unknown=False)
             from photo_rights_v1 import message_attachments_allowed
-            if not all(message_attachments_allowed(message) for message in messages):
-                raise BufferAPIError("Invio bloccato: diritti di riutilizzo della fotografia non documentati",
-                                     status=400, outcome_unknown=False)
+            from per_item_media_policy_v1 import link_only_message_allowed, link_only_thread_allowed, source_link_message_allowed
+            parent_has_photo = bool(thread and has_image(thread[0]))
+            if thread is not None and not parent_has_photo:
+                if not link_only_thread_allowed([m.get("text") for m in messages]):
+                    raise BufferAPIError("Invio bloccato: il thread senza foto non corrisponde alla copia ufficiale approvata",
+                                         status=400, outcome_unknown=False)
+            for index, message in enumerate(messages):
+                if has_image(message):
+                    if not message_attachments_allowed(message):
+                        raise BufferAPIError("Invio bloccato: diritti della foto non documentati per questo contenuto",
+                                             status=400, outcome_unknown=False)
+                elif thread is not None and parent_has_photo and index > 0:
+                    # A source/context reply in our own photo-anchored thread
+                    # needs no duplicate attachment. It is not an X reply to a user.
+                    if not isinstance(message.get("text"), str) or not message["text"].strip():
+                        raise BufferAPIError("Invio bloccato: messaggio del thread vuoto",
+                                             status=400, outcome_unknown=False)
+                elif not (link_only_message_allowed(message, allow_thread=thread is not None)
+                          or (thread is None and source_link_message_allowed(message))):
+                    raise BufferAPIError("Invio bloccato: link ufficiale non approvato per il percorso senza foto",
+                                         status=400, outcome_unknown=False)
         if self.request_guard is not None:
             self.request_guard()
         try:
@@ -306,7 +324,11 @@ class BufferClient:
         # Valida i media prima di qualsiasi creazione di post.
         assets = [{"image": {"url": self._media_url(media_url)}}] if media_url is not None else self._assets(media_path)
         if self.require_media and not assets:
-            raise BufferMediaError("Ogni pubblicazione X deve includere un'immagine pubblica verificata")
+            from per_item_media_policy_v1 import link_only_message_allowed, source_link_message_allowed
+            if (self.expected_username != "xfederiko11"
+                    or not (link_only_message_allowed({"text": text, "assets": []}, allow_thread=False)
+                               or source_link_message_allowed({"text": text, "assets": []}))):
+                raise BufferMediaError("Invio senza foto consentito solo per un link ufficiale registrato e validato")
         if self.destination is None:
             self.verify_destination()
         data = self._graphql(CREATE_MUTATION, {"input": {
@@ -370,7 +392,12 @@ class BufferClient:
         automatici se l'esito di createPost non e' noto.
         """
         if self.require_media and not media_url:
-            raise BufferMediaError("Il primo messaggio del thread X deve avere una fotografia")
+            from per_item_media_policy_v1 import link_only_message_allowed
+            link_only = (self.expected_username == "xfederiko11"
+                         and all(link_only_message_allowed({"text": text, "assets": []})
+                                 for text in posts))
+            if not link_only:
+                raise BufferMediaError("Thread senza foto consentito solo per link ufficiali registrati e validati")
         from presentation import _post_weight
         if not isinstance(posts, (list, tuple)) or not 2 <= len(posts) <= 5:
             raise ValueError("Il thread deve contenere da 2 a 5 post")

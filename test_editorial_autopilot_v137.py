@@ -308,6 +308,73 @@ class EditorialV137Tests(unittest.TestCase):
             bot.reserve()
             self.assertEqual(len(bot.load_state()['entries']),1)
 
+    def test_item_without_cleared_photo_uses_verified_original_source_link(self):
+        now = datetime(2026, 11, 27, 12, 0, tzinfo=timezone.utc)
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now if tz is None else now.astimezone(tz)
+        url = "https://www.videogameschronicle.com/news/example-story/"
+        item = {
+            "key": "vgc-story", "sig": "gta vi story",
+            "source": "VGC", "title": "GTA VI: dettagli documentati",
+            "url": url, "published": now.isoformat(), "language": "it",
+            "text": ("📰 GTA VI | Novità\n\nDettaglio confermato dalla fonte.\n\n"
+                     "🔗 Fonte: VGC\n" + url + "\n\n#GTAVI #GTA6"),
+        }
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(bot, 'datetime', Clock), \
+             patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
+             patch.object(bot, 'read_feeds', return_value=([], [])), \
+             patch.object(bot, 'load_sources', return_value=[]), \
+             patch.object(bot, 'launch_active', return_value=False), \
+             patch.object(bot, 'director_allowed', return_value=(True, 'test')), \
+             patch.object(bot, 'powerpyx_spotlight', return_value=None), \
+             patch.object(bot, 'select', return_value=[item]), \
+             patch('quick_tips_v146.candidate', return_value=None), \
+             patch('site_evergreen_posts_v1.candidate', return_value=None), \
+             patch('trophy_posts_v142.candidate', return_value=None), \
+             patch('site_article_rotation_v1.candidate', return_value=None), \
+             patch('game_photo_policy_v1.active', return_value=True), \
+             patch('game_photo_policy_v1.scan_kind', return_value=False), \
+             patch.dict(os.environ, {'GITHUB_RUN_ID':'source-link-fallback'}):
+            bot.reserve()
+            entry = next(iter(bot.load_state()['entries'].values()))
+            self.assertEqual(entry['media_mode'], 'source_link_only')
+            self.assertIsNone(entry['media_url'])
+            from per_item_media_policy_v1 import verify_source_link_entry
+            self.assertTrue(verify_source_link_entry(entry))
+
+    def test_unreviewed_photo_can_fall_back_to_exact_official_video_item(self):
+        now = datetime(2026, 11, 27, 12, 0, tzinfo=timezone.utc)
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now if tz is None else now.astimezone(tz)
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(bot, 'datetime', Clock), \
+             patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
+             patch.object(bot, 'read_feeds', return_value=([], [])), \
+             patch.object(bot, 'load_sources', return_value=[]), \
+             patch.object(bot, 'launch_active', return_value=True), \
+             patch.object(bot, 'launch_in_hours', return_value=True), \
+             patch.object(bot, 'director_allowed', return_value=(True, 'test')), \
+             patch.object(bot, 'powerpyx_spotlight', return_value=None), \
+             patch('quick_tips_v146.candidate', return_value=None), \
+             patch('growth_conversion_v1.candidate', return_value=None), \
+             patch('site_evergreen_posts_v1.candidate', return_value=None), \
+             patch('trophy_posts_v142.candidate', return_value=None), \
+             patch.dict(os.environ, {'GITHUB_RUN_ID':'official-video-fallback'}):
+            bot.reserve()
+            saved = bot.load_state()['entries']
+            self.assertEqual(list(saved), ['official-video-link:gta-vi-now-available-2026'])
+            entry = next(iter(saved.values()))
+            self.assertEqual(entry['media_mode'], 'official_video_link')
+            self.assertIsNone(entry['media_url'])
+            self.assertEqual(len(entry['thread']), 2)
+            from per_item_media_policy_v1 import verify_link_only_entry
+            self.assertTrue(verify_link_only_entry(entry))
+
     def test_reservation_and_repeated_delivery_never_double_posts(self):
         now = datetime(2026, 11, 20, 10, 0, tzinfo=timezone.utc)
         class Clock(datetime):

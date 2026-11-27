@@ -1,3 +1,28 @@
+# Checkpoint — fallback link per notizia senza immagine — 27 novembre 2026, 14:35 CET
+
+- Ho esteso il ramo `feat/per-item-media-fallback-20261127` (head prima di questo checkpoint `991c30148b62f94e9092c24c74f6a59b90361521`): se un item RSS supera i gate editoriali ma nessuna immagine singola ha diritti/contenuto compatibili, il flusso può usare il solo URL originale, senza allegati. Sono allowlistati gli host dei feed VGC, Push Square, IGN, GameSpot, Everyeye, Multiplayer.it e PowerPyx; copia, attribuzione, URL e asset vengono ricontrollati in riserva e prima di Buffer. L’eccezione non apre un canale a testi liberi né concede diritti sulle preview.
+- Il fallback Rockstar rimane separato: un link video ufficiale, una sola volta, con copy esatta; non concede riuso di immagini o thumbnail. Le foto mantengono approvazione per singolo contenuto e canale.
+- Documentazione editoriale aggiornata su ramo: 6 post/giorno, distanziamento minimo 45 minuti e finestra 07:00–23:00; priorità alla qualità. I test di per-item link e publisher sono stati aggiunti; PR/CI ancora da avviare, perciò niente merge, deploy o pubblicazione dichiarati.
+- Buffer resta ultimo letto a coda 0/bozze 0/Sent 102 (13:49 CET) e nessuna prova di nuovo post dal run #832. Riattivazione autorizzata dall’istruzione del 27/11, da fare solo dopo QA; verificare ogni nuovo invio con receipt e X.
+- Search Console dal 30/11 solo lettura; motore privato dormiente. Nessun costo/contatto/interazione con terzi.
+
+**Passo successivo:** aprire PR per il ramo aggiornato, eseguire e correggere la QA, poi verificare produzione e riavvio Buffer. Nessun deploy o post è ancora stato effettuato da queste modifiche.
+
+---
+
+# Checkpoint operativo — produzione e ripartenza per-media — 27 novembre 2026, 14:30 CET
+
+- **Direttiva vigente:** la richiesta operativa del 27/11 riattiva produzione editoriale e Buffer dopo QA; supera le precedenti pause globali. Nessuna interazione automatica con altri utenti, nessun costo, nessuna immagine non documentata. Ogni foto resta autorizzata solo per il singolo file, contenuto, canale e tipo di riuso approvati.
+- **Repository:** bot main resta `27645eb24f605f2c0dde82c844dcf3c112b0bb9d`; sito main resta `34247beea60ed3a2b2aaf55923474b220938fad8`. PR sito #169 e guida Southside sono già integrate/deployate e non vengono ripetute. Il checkout locale gta-6 ha modifiche preesistenti: preservarle.
+- **Ultimo run:** Editorial Autopilot #832 ([run 46005809130](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46005809130)) completato success alle 14:17 CET. Ha letto 82 feed item, 22 freschi e 20 idonei qualità; 9 sono trattenuti da `MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO`, `RESERVE count=0`, nessuna consegna. La ricevuta è ancora quella del 26/11 13:44 CET: nessun nuovo post da riconciliare. Ultimo permalink verificato [X 2125933757257449699](https://x.com/xFederiko11/status/2125933757257449699), con immagine visibile. Buffer era stato letto alle 13:49 CET: coda 0, bozze 0, Sent 102 e impostazione in pausa; run #832 non ha aggiunto invii.
+- **Lavoro in corso:** ramo `feat/per-item-media-fallback-20261127` (`a015146991955f7eb4292dc239f8906c74bddf6a`) introduce un fallback singolo verso il video ufficiale Rockstar su YouTube come link X, senza allegato né download di thumbnail. La copia è allowlist esatta, con fonte, deduplicazione e controlli pre-invio; foto e link sono convalidati separatamente. QA via PR deve ancora essere eseguita; nessuna modifica è ancora in produzione e nessun post nuovo è stato inviato.
+- **Media del sito:** proseguire con player YouTube opt-in e mappe esterne già implementati nella guida Southside. Screenshot Rockstar/creator non vengono scaricati, hotlinkati o ri-ospitati senza documentazione specifica di riuso digitale. Il video embed non è prova di licenza per le sue miniature.
+- **SEO e vincoli:** Search Console non consultata; dal 30/11 accesso solo read-only. Motore privato dormiente fino a budget e credenziali read-only verificati. PR #164, audit #210, PR sito #168 non ripetute.
+
+**Prossimi passaggi:** completare review e CI della PR per-media; se verdi, integrare e verificare main; controllare di nuovo coda/impostazioni Buffer, riattivare la coda solo dopo QA del contenuto e verificare ogni invio con receipt, permalink e media realmente visibile su X. Poi implementare una nuova guida documentata con player opt-in e mappa esterna. Massimo 3 priorità: (1) QA/merge; (2) ripresa Buffer con verifica X; (3) articolo guida con video/mappe. Nessuna nuova foto finché manca la prova dei diritti.
+
+---
+
 # Aggiornamento operativo — monitor, coda Buffer e opportunità X — 27 novembre 2026, 13:49 CET
 
 - **Run successivi:** dopo il checkpoint precedente è apparso il monitor [#371](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46000007134), completato success alle 13:36 CET. Ha registrato 30 candidati di ricerca, 18 elementi da revisionare/trattenere e **zero post Buffer/X**; il controllo editoriale ufficiale non ha trovato nuovi elementi idonei. Nessun nuovo Editorial Autopilot oltre al #831 al momento del controllo. Nessuna nuova ricevuta Buffer da associare.

@@ -1,7 +1,8 @@
-"""Require a genuinely photographic, topic-reviewed published article cover.
+"""Validate only the exact photo attached to one published item.
 
 The public article is the source of truth; internal build audits stay private.
-No generic logos, unrelated official images, or text-only reply fallbacks.
+No generic logos or unrelated official images. Link-only fallbacks are validated
+separately by per_item_media_policy_v1.py and never receive an image attachment.
 """
 from datetime import date
 from functools import lru_cache

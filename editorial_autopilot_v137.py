@@ -686,28 +686,40 @@ def reserve():
                         if item['key'] not in {x['key'] for x in selected})
         from social_media_gate_v2 import prepare as prepare_media
         converted=[]
+        source_link_fallback=None
         for item in selected:
+            if source_link_fallback is None:
+                from per_item_media_policy_v1 import source_link_candidate
+                source_link_fallback=source_link_candidate(item)
             try:
                 ready=launch_double(item) if launch_active(now) and not photo_required else item
                 if photo_required:
                     if not scan_kind(ready.get('url')):
-                        print('MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO')
+                        print('MEDIA_HOLD_NO_REVIEWED_GAME_PHOTO',str(item.get('source','unknown')))
                         continue
                     ready = prepare_photo(ready)
                     if ready is None:
                         print('MEDIA_HOLD_PHOTO_COPY_OVER_BUDGET')
                         continue
-                image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
-                              else prepare_media(ready,state))
-                if image_backed is None:
-                    print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
-                          str(item.get('url',''))[:100])
-                    continue
-                if photo_required:
+                    image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
+                                  else prepare_media(ready,state))
+                    if image_backed is None:
+                        print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
+                              str(item.get('url',''))[:100])
+                        continue
                     from game_photo_policy_v1 import probe_cover_digest
                     if not probe_cover_digest(image_backed['media_url'], image_backed.get('cover_sha256')):
                         print('MEDIA_HOLD_GAME_PHOTO_DIGEST_MISMATCH_OR_UNAVAILABLE')
                         continue
+                    image_backed['media_mode']='approved_photo'
+                else:
+                    image_backed=(prepare_media(ready,state,now=now) if "rotation_variant" in ready
+                                  else prepare_media(ready,state))
+                    if image_backed is None:
+                        print('MEDIA_HOLD_MISSING_OR_REUSED',str(item.get('source','unknown')),
+                              str(item.get('url',''))[:100])
+                        continue
+                    image_backed['media_mode']='verified_image'
                 if not media_thread_preflight(image_backed):
                     print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown')),
                           str(item.get('url',''))[:100])
@@ -716,7 +728,19 @@ def reserve():
                 break  # one editorial reservation, never a batch
             except (KeyError,ValueError,TypeError) as exc:
                 print('THREAD_HOLD_UNVERIFIED',item.get('source','unknown'),type(exc).__name__)
-        # No retry to a text-only post; explicit media is mandatory.
+        # Photos are reviewed per exact article and destination. If this
+        # candidate pool has none, use one pre-registered official video link;
+        # it stays on its publisher platform and is never attached as an image.
+        if not converted and source_link_fallback and media_thread_preflight(source_link_fallback):
+            converted.append(source_link_fallback)
+            print('MEDIA_FALLBACK_SOURCE_LINK_ONLY: verified article link, no image attachment')
+        if not converted:
+            from per_item_media_policy_v1 import launch_video_candidate
+            fallback=launch_video_candidate(state,now,launch=launch_active(now))
+            if fallback and media_thread_preflight(fallback):
+                converted.append(fallback)
+                print('MEDIA_FALLBACK_OFFICIAL_VIDEO_LINK: exact source, no image attachment')
+        # The item must carry an individually approved photo or exact official video link.
         selected=converted[:1] if launch_active(now) else converted[:RUN_LIMIT]
         if selected and publishing_local(now).date()>=QUALITY_START:
             # The director counts a parent post and separately checks X message units.
@@ -730,7 +754,9 @@ def reserve():
         state['entries'][item['key']] = {
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
             'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text'],
-            'media_url': item.get('media_url'), 'trophy_number': item.get('trophy_number'),
+            'media_url': item.get('media_url'), 'media_mode': item.get('media_mode'),
+            'official_video_url': item.get('official_video_url'),
+            'trophy_number': item.get('trophy_number'),
             'thread': item.get('thread'), 'tip_id': item.get('tip_id')
         }
         if item.get('photo_kind'):
@@ -789,15 +815,31 @@ def deliver():
             save_state(state)
             print("BUFFER_ROTATION_HOLD",str(entry.get("url",""))[:100])
             continue
-        # Fail closed BEFORE marking as attempted or invoking Buffer.
-        # Unknown/missing media does not create a text-only post.
+        # Revalidate the item-specific media mode before any Buffer mutation.
         from game_photo_policy_v1 import active as photo_policy_active, verify_delivery
-        if photo_policy_active(clock) and not verify_delivery(entry):
-            entry['status']='held_missing_reviewed_game_photo'
-            save_state(state)
-            print('BUFFER_GAME_PHOTO_HOLD: no matching live photographic cover or standalone copy')
-            continue
-        if not photo_policy_active(clock) and (not entry.get('media_url') or not probe_image(entry['media_url'])):
+        media_mode=entry.get('media_mode')
+        if media_mode == 'official_video_link':
+            from per_item_media_policy_v1 import verify_link_only_entry
+            if not verify_link_only_entry(entry):
+                entry['status']='held_invalid_official_link'
+                save_state(state)
+                print('BUFFER_OFFICIAL_LINK_HOLD: source or link changed')
+                continue
+        elif media_mode == 'source_link_only':
+            from per_item_media_policy_v1 import verify_source_link_entry
+            if not verify_source_link_entry(entry):
+                entry['status']='held_invalid_source_link'
+                save_state(state)
+                print('BUFFER_SOURCE_LINK_HOLD: source, URL or copy changed')
+                continue
+        elif photo_policy_active(clock):
+            if media_mode != 'approved_photo' or not verify_delivery(entry):
+                entry['status']='held_missing_reviewed_game_photo'
+                save_state(state)
+                print('BUFFER_GAME_PHOTO_HOLD: no matching reviewed photo for this item')
+                continue
+        elif (media_mode != 'verified_image' or not entry.get('media_url')
+              or not probe_image(entry['media_url'])):
             entry['status']='held_missing_verified_image'
             save_state(state)
             print('BUFFER_IMAGE_HOLD',str(entry.get('url',''))[:100])

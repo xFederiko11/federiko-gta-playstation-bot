@@ -124,7 +124,7 @@ class QuickTipsV146Tests(unittest.TestCase):
             fake.publish.assert_not_called()
             self.assertEqual(next(iter(bot.load_state()["entries"].values()))["status"],"sent")
 
-    def test_missing_official_image_fails_closed_without_reservation(self):
+    def test_missing_photo_tip_uses_one_time_official_link_fallback(self):
         import os
         import tempfile
         from pathlib import Path
@@ -143,7 +143,11 @@ class QuickTipsV146Tests(unittest.TestCase):
              patch("trophy_posts_v142.candidate",return_value=None), \
              patch.dict(os.environ,{"GITHUB_RUN_ID":"test-run-126"}):
             bot.reserve()
-            self.assertFalse(bot.STATE.exists())
+            entries = bot.load_state()["entries"]
+            self.assertEqual(list(entries), ["official-video-link:gta-vi-now-available-2026"])
+            entry = next(iter(entries.values()))
+            self.assertEqual(entry["media_mode"], "official_video_link")
+            self.assertIsNone(entry["media_url"])
 
     def test_production_safety_gate_still_holds_after_2100_rome(self):
         import os

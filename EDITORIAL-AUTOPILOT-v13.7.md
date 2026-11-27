@@ -7,13 +7,21 @@
 Il workflow segue gli avvii pianificati e riusciti di `GTA Monitor gratuito` e dispone anche di un calendario diretto di backup; un push del workflow su main esegue il controllo iniziale.
 I candidati provengono dai feed RSS di VGC, Push Square, IGN, GameSpot,
 Everyeye e Multiplayer.it (vedi `editorial-autopilot-v137-sources.json`).
-Pubblica fino a **1 post per run, 16 al giorno**, con **12 minuti minimi** fra
+Pubblica fino a **1 post per run, 6 al giorno**, con **45 minuti minimi** fra
 prenotazioni, e solo articoli con data non precedente a 12 ore. I limiti
 possono ridurre il numero di post per evitare spam; l'avvio dipende dai ritardi GitHub.
 
 I testi riportano la testata e il titolo attribuito, URL originale e hashtag.
 Le notizie non sono trattate come conferme Rockstar.
 Il sistema non copia immagini e non riporta rumor o leak.
+
+## Media per singolo contenuto
+
+- La verifica dei diritti riguarda la singola immagine, pagina e destinazione. Una foto senza prova applicabile viene esclusa; non ferma gli altri contenuti.
+- Se un articolo RSS supera i controlli editoriali ma non ha una foto autorizzata, il bot può condividere soltanto il suo URL originale, senza allegati, con attribuzione e host verificato. La preview eventuale è generata da X dal link esterno; il bot non scarica né carica miniature.
+- Come fallback iniziale è consentito un solo post con il link al video ufficiale Rockstar già verificato. La copia e l'eventuale thread sono allowlist esatte e deduplicate; la condivisione non autorizza il download, l'allegato o l'embed della thumbnail.
+- Per gli articoli del sito usare il player YouTube su richiesta del lettore e mappe esterne. Una foto si allega solo quando `photo_rights_v1` documenta i diritti per quella immagine, contenuto e canale.
+- Il tetto editoriale è **6 post originali al giorno**, con almeno 45 minuti tra prenotazioni; le ore operative sono 07:00–23:00 locali. Non ridurre qualità per riempire gli slot.
 
 ## Stile editoriale obbligatorio (v13.8)
 
