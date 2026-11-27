@@ -717,8 +717,8 @@ def reserve():
                         continue
                     image_backed['media_mode']='verified_image'
                 if not media_thread_preflight(image_backed):
-                    print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown'),
-                          ),str(item.get('url',''))[:100])
+                    print('MEDIA_HOLD_COPY_OVER_BUDGET',str(item.get('source','unknown')),
+                          str(item.get('url',''))[:100])
                     continue
                 converted.append(image_backed)
                 break  # one editorial reservation, never a batch
@@ -733,7 +733,7 @@ def reserve():
             if fallback and media_thread_preflight(fallback):
                 converted.append(fallback)
                 print('MEDIA_FALLBACK_OFFICIAL_VIDEO_LINK: exact source, no image attachment')
-        # No retry to a text-only post; explicit media is mandatory.
+        # The item must carry an individually approved photo or exact official video link.
         selected=converted[:1] if launch_active(now) else converted[:RUN_LIMIT]
         if selected and publishing_local(now).date()>=QUALITY_START:
             # The director counts a parent post and separately checks X message units.
