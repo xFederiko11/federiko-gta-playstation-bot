@@ -7,6 +7,8 @@ on:
     paths:
       - '.github/workflows/gta6-community-research-v1.yml'
       - 'community_research_v1.py'
+      - 'google_keyword_watch_v1.py'
+      - 'test_google_keyword_watch_v1.py'
       - 'community-research-sources-v1.json'
       - 'guide_evidence_review_v1.py'
       - 'guide_claim_evidence_gate.py'
@@ -17,6 +19,8 @@ on:
     branches: [main]
     paths:
       - 'community_research_v1.py'
+      - 'google_keyword_watch_v1.py'
+      - 'test_google_keyword_watch_v1.py'
       - 'community-research-sources-v1.json'
       - 'test_community_research_v1.py'
       - 'community_editorial_queue_v1.py'
@@ -54,7 +58,7 @@ jobs:
         run: |
           python -m py_compile community_research_v1.py community_editorial_queue_v1.py guide_evidence_review_v1.py guide_claim_evidence_gate.py
           python community_research_v1.py --mode validate
-          python -m unittest -q test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1 test_guide_claim_evidence_gate
+          python -m unittest -q test_google_keyword_watch_v1 test_community_research_v1 test_community_editorial_queue_v1 test_guide_evidence_review_v1 test_guide_claim_evidence_gate
       - name: Preview public sources (no Buffer, no posts)
         if: github.event_name != 'pull_request'
         run: |
@@ -79,6 +83,9 @@ jobs:
           print("CLAIM_GATE",len(report["decisions"]),"REVIEWABLE",ready,"AUTO_PUBLISH",False)
           PY
           echo 'Lista di revisione delle guide generata senza nuove affermazioni verificate.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Check free Google Trends Italy signals (no credentials or paid API)
+        if: github.event_name != 'pull_request'
+        run: python google_keyword_watch_v1.py --append previews/community-editorial-queue.md
       - name: Save research digest as review artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
