@@ -173,13 +173,16 @@
       "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
     },
     "2b09fa3e6cc4c8f3164c9cea": {
+      "attempted_utc": "2026-11-27T15:50:29.415337+00:00",
+      "buffer_id": "6b09a6c518c8c6749bf93892",
+      "completed_utc": "2026-11-27T15:50:30.645209+00:00",
       "media_mode": "source_link_only",
       "media_url": null,
       "official_video_url": null,
       "reserved_utc": "2026-11-27T15:50:25.362960+00:00",
       "run_id": "46028383188",
       "source": "Everyeye",
-      "status": "reserved",
+      "status": "sent",
       "text": "🧭 GTA VI | Guida\n\nCom'è stato curato il modello di guida di GTA 6? Con piloti e pro di Gran Turismo\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-modello-guida-curato-piloti-esperti-pro-gran-turismo-913986.html\n\n#GTAVI #GTA6",
       "thread": null,
       "tip_id": null,
