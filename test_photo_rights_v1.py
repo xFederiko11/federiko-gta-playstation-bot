@@ -37,6 +37,20 @@ class RightsTests(unittest.TestCase):
         with patch("game_photo_policy_v1.scan_details",return_value=(KIND,DIGEST)),patch("photo_rights_v1.reuse_documented",return_value=True):
             self.assertEqual(scan_kind(URL),KIND)
             self.assertEqual(prepare_photo(item)["cover_sha256"],DIGEST)
+    def test_scan_skips_unreviewed_pages_without_network(self):
+        from game_photo_policy_v1 import scan_details
+        scan_details.cache_clear()
+        try:
+            with patch("photo_rights_v1.load",return_value={}),patch("game_photo_policy_v1.owned_photo_details") as fetch:
+                self.assertIsNone(scan_details(URL))
+                fetch.assert_not_called()
+            scan_details.cache_clear()
+            with patch("photo_rights_v1.load",return_value={(URL,KIND,DIGEST):{}}),patch("game_photo_policy_v1.owned_photo_details",return_value=(KIND,DIGEST)) as fetch:
+                self.assertEqual(scan_details(URL),(KIND,DIGEST))
+                fetch.assert_called_once_with(URL)
+        finally:
+            scan_details.cache_clear()
+
     def test_attachment_and_copy_contract(self):
         from photo_rights_v1 import attachment_allowed,message_attachments_allowed
         cover=cover_for(URL)

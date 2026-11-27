@@ -83,6 +83,16 @@ class BufferQueueAuditTests(unittest.TestCase):
         self.assertIn("sentAt",h.POST_QUERY)
         self.assertIn("mimeType",h.POST_QUERY)
 
+    def test_photo_readiness_is_independent_of_buffer_sent(self):
+        from unittest.mock import patch
+        with patch("photo_rights_v1.load",return_value={}):
+            self.assertEqual(h.photo_readiness(),(0,0))
+            self.assertIn("Blocco editoriale",h.render_photo_readiness())
+        with patch("photo_rights_v1.load",return_value={("https://example.org/a/","official_game_photo","a"*64):{}}):
+            self.assertEqual(h.photo_readiness(),(1,1))
+            self.assertIn("non sono post pronti",h.render_photo_readiness())
+            self.assertNotIn("example.org",h.render_photo_readiness())
+
     def test_api_diagnostic_has_no_post_mutations(self):
         fake=Mock()
         fake.channel_id="real_channel_id"

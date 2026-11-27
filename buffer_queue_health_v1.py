@@ -135,6 +135,27 @@ def sent_sample_by_day(posts,now):
         item["image" if asset is True else "no_image" if asset is False else "unknown_image"]+=1
     return days,missing
 
+def photo_readiness():
+    """Count exact reviewed records; never infer permission from an image or source."""
+    from photo_rights_v1 import load
+    records=load()
+    pages={url for url,_,_ in records}
+    return len(records),len(pages)
+
+def render_photo_readiness():
+    records,pages=photo_readiness()
+    lines=["## Disponibilità foto per nuovi post","",
+           "Record di riutilizzo specifico validi nel registro: "+str(records)+".",
+           "Articoli distinti con almeno un record: "+str(pages)+"."]
+    if not pages:
+        lines += ["**Blocco editoriale: nessuna copertina con riutilizzo documentato nel registro.**",
+                  "La politica fotografica sospende gli invii, anche se la coda Buffer è vuota. Non inviare testo senza foto o indebolire la verifica.",
+                  "Usare il percorso di acquisizione screenshot e revisione dei diritti già previsto."]
+    else:
+        lines += ["I record non sono post pronti: restano obbligatori verifica live di copertina/hash, pertinenza, deduplica e limiti editoriali."]
+    lines += ["Registro vuoto, mancante o non valido = nessuna autorizzazione operativa. Nessun URL degli asset o prova privata esposta.",""]
+    return "\n".join(lines)
+
 def render(snapshot_data,now):
     if now.tzinfo is None:
         raise ValueError("Aware date required")
@@ -192,7 +213,7 @@ def main():
     result=snapshot()
     now=datetime.now(timezone.utc)
     report=render(result,now)
-    report+='\n'+from_ledger(result,now)
+    report+='\n'+render_photo_readiness()+'\n'+from_ledger(result,now)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(report,encoding="utf-8")
     print("BUFFER_QUEUE_HEALTH",result["status"],"sent",len(result["sent"]),

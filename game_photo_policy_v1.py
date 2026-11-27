@@ -124,7 +124,10 @@ def probe_cover_digest(url, digest, session=None):
 
 @lru_cache(maxsize=64)
 def scan_details(url):
-    """One bounded page read per candidate in this scan; delivery checks again."""
+    """Skip unreviewed URLs before network I/O; live hash checks remain mandatory."""
+    from photo_rights_v1 import load
+    if not canonical_page_path(url) or not any(page==url for page,_,_ in load()):
+        return None
     return owned_photo_details(url)
 
 
