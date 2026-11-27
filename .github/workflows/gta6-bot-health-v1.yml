@@ -6,7 +6,9 @@ on:
     branches: [main]
     paths: ['.github/workflows/gta6-bot-health-v1.yml', 'bot_health_v1.py', 'test_bot_health_v1.py', 'actions_runtime_sample_v1.py', 'test_actions_runtime_sample_v1.py']
   schedule:
-    - cron: '43 8,20 * * *'
+    # One daily Buffer preflight, not two: preserve API quota for delivery.
+    - cron: '43 8 * * *'
+      timezone: Europe/Rome
   pull_request:
     branches: [main]
     paths:
