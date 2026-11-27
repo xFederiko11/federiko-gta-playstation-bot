@@ -1,3 +1,15 @@
+# Checkpoint — fallback link per notizia senza immagine — 27 novembre 2026, 14:35 CET
+
+- Ho esteso il ramo `feat/per-item-media-fallback-20261127` (head prima di questo checkpoint `991c30148b62f94e9092c24c74f6a59b90361521`): se un item RSS supera i gate editoriali ma nessuna immagine singola ha diritti/contenuto compatibili, il flusso può usare il solo URL originale, senza allegati. Sono allowlistati gli host dei feed VGC, Push Square, IGN, GameSpot, Everyeye, Multiplayer.it e PowerPyx; copia, attribuzione, URL e asset vengono ricontrollati in riserva e prima di Buffer. L’eccezione non apre un canale a testi liberi né concede diritti sulle preview.
+- Il fallback Rockstar rimane separato: un link video ufficiale, una sola volta, con copy esatta; non concede riuso di immagini o thumbnail. Le foto mantengono approvazione per singolo contenuto e canale.
+- Documentazione editoriale aggiornata su ramo: 6 post/giorno, distanziamento minimo 45 minuti e finestra 07:00–23:00; priorità alla qualità. I test di per-item link e publisher sono stati aggiunti; PR/CI ancora da avviare, perciò niente merge, deploy o pubblicazione dichiarati.
+- Buffer resta ultimo letto a coda 0/bozze 0/Sent 102 (13:49 CET) e nessuna prova di nuovo post dal run #832. Riattivazione autorizzata dall’istruzione del 27/11, da fare solo dopo QA; verificare ogni nuovo invio con receipt e X.
+- Search Console dal 30/11 solo lettura; motore privato dormiente. Nessun costo/contatto/interazione con terzi.
+
+**Passo successivo:** aprire PR per il ramo aggiornato, eseguire e correggere la QA, poi verificare produzione e riavvio Buffer. Nessun deploy o post è ancora stato effettuato da queste modifiche.
+
+---
+
 # Checkpoint operativo — produzione e ripartenza per-media — 27 novembre 2026, 14:30 CET
 
 - **Direttiva vigente:** la richiesta operativa del 27/11 riattiva produzione editoriale e Buffer dopo QA; supera le precedenti pause globali. Nessuna interazione automatica con altri utenti, nessun costo, nessuna immagine non documentata. Ogni foto resta autorizzata solo per il singolo file, contenuto, canale e tipo di riuso approvati.
