@@ -168,6 +168,25 @@ class EditorialV137Tests(unittest.TestCase):
         self.state['entries'][bot.identity(candidate['url'])] = {'status': 'sent'}
         self.assertEqual(bot.select([candidate], self.state, NOW), [])
 
+    def test_cross_publisher_same_story_and_chapter_safety(self):
+        # Actual 27 Nov 2026 case: two newsrooms paraphrased one automotive
+        # driving-model story; different source URLs must not bypass dedupe.
+        first = ("Com'è stato curato il modello di guida di GTA 6? "
+                 "Con piloti e pro di Gran Turismo")
+        second = ("Il modello di guida in GTA 6 è stato elaborato da esperti, "
+                  "provenienti anche da Gran Turismo")
+        signature = bot.similarity_key(first)
+        self.assertTrue(bot.same_story(signature, bot.similarity_key(second)))
+        self.state['signatures'][signature] = 'already-sent'
+        candidate = article(title=second)
+        self.assertEqual(bot.select([candidate], self.state, NOW), [])
+        self.assertFalse(bot.same_story(
+            bot.similarity_key("GTA VI: guida ai garage di Vice City nel Capitolo 1"),
+            bot.similarity_key("GTA VI: guida ai garage di Vice City nel Capitolo 5")))
+        self.assertFalse(bot.same_story(
+            bot.similarity_key("GTA VI: come salvare un veicolo nel garage"),
+            bot.similarity_key("GTA VI: come trovare un trofeo in spiaggia")))
+
     def test_bridge_article_suppression(self):
         old = article(url='https://www.videogameschronicle.com/review/grand-theft-auto-6/')
         self.assertEqual(bot.select([old], self.state, NOW), [])
