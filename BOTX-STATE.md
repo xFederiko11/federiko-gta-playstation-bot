@@ -1,6 +1,13 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #164 integrata; deploy main e verifica pubblica in corso. #162/#163 online; #210 audit live verificato; #208 Search Console privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #164 integrata e deployata; verifica HTTP mirata di meta-tag ancora in corso. #162/#163 online; #210 audit live verificato; #208 Search Console privata non attiva.
+
+## Checkpoint corrente — 27 novembre 2026
+- Sito PR #164 integrata: merge commit 7b3d80cd237f13f14c5daaafa035ae69d9bddc50. QA esatta sul head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7, run 45964800694 success. Deploy main #45966865883 completato success il 27/11 alle 08:37 UTC. Tutti i job principali success; verifiche Pages su guide, archivio/cronologia, canonical continuity, tutorial e articoli passate. URL meditazione: /guide-e-tutorial/meditazione-capitolo-1/. Resta controllo diretto title/canonical/datePublished e comportamento ricerca/reset in produzione.
+- Bot #210 già integrata (81164efa48156162a8160515a76eeab4775eddfb); audit live 45964882110 e issue #50 aggiornati alle 08:20:37 UTC. Buffer: 15 Sent nel campione, 0 Scheduled, 0 Error, coda non sospesa; 26/11 due invii con allegato Buffer e 27/11 nessun invio osservato alle 09:20 CET. Non equivale a totale giornaliero o a immagine visibile su X.
+- Registro diritti foto vuoto: 0 prove valide / 0 articoli con riutilizzo autorizzato. Coda editoriale bloccata per nuove copertine, senza disattivare controlli. Nessuna foto PS5 autentica acquisita/documentata in questa sessione. X in sola lettura: candidato manuale @BeardedVillain5 status 2125786663964074265 (26/11, 0 risposte) per chiarire la lezione alternativa Port Gellhorn; nessuna risposta inviata.
+- GSC resta in assetto read-only preparato: repository privato autorizzato, budget senza overage e credenziali owner-controlled mancanti. Non abilitare credenziali nel repository pubblico né attivare costi.
+
 
 ## Checkpoint corrente — 27 novembre 2026
 - Sito PR #164 integrata: merge commit 7b3d80cd237f13f14c5daaafa035ae69d9bddc50. Head QA da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7 verificato, run 45964800694 success. Deploy main da verificare; non dichiarare online prima del run di produzione e controllo HTTP di guida meditazioni, mappa, archivio/ricerca e title/canonical/datePublished.
