@@ -1,3 +1,11 @@
+# Correzione checkpoint — run #829, 27 novembre 2026, 12:28 CET
+
+- L’ultimo autopilot è il run [#829, ID 45989334121](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/45989334121), success alle 12:18 CET, successivo al #828. La verifica finale del flusso editoriale ha trattenuto nove elementi senza foto approvata, `RESERVE count=0` su 71 feed item e `DELIVERY_NOT_ATTEMPTED: no unique reservation`.
+- Buffer ha confermato l’account @xFederiko11 in sola lettura ma la coda resta `BUFFER_QUEUE_PAUSED`; nessun post creato dal run. Ricevuta: `current_run_attempted=false`; l’unico elemento “sent” resta Buffer ID `6b0829b7ca1d194c918023ee`, inviato 26/11 13:44 CET, permalink [2125933757257449699](https://x.com/xFederiko11/status/2125933757257449699), già visto con immagine visibile nel precedente controllo del profilo. Nessun nuovo invio da verificare; nessun retry o interazione.
+- La guida Southside e il deploy #169 sono invece verificati nel checkpoint immediatamente sotto; PR #164, audit #210 e PR sito #168 non sono state ripetute.
+
+---
+
 # Aggiornamento operativo finale — 27 novembre 2026, 12:25 CET
 
 - **Southside Storage online:** PR [#169](https://github.com/xFederiko11/gta-6/pull/169) integrata nel commit `34247beea60ed3a2b2aaf55923474b220938fad8`; deploy produzione [run 45989828926](https://github.com/xFederiko11/gta-6/actions/runs/45989828926) success. Main corrente: `34247beea60ed3a2b2aaf55923474b220938fad8`. Verificata nel browser la pagina [Southside Storage](https://xfederiko11.github.io/gta-6/garage-gratuiti/southside-storage/): card GTABase esterna visibile, cinque riferimenti PowerPyx collassati con minuti/fonti WarpPipes. Su richiesta del lettore, il primo apre il player YouTube; al controllo iniziale era in preroll pubblicitario, quindi il contenuto gameplay non è stato visto/verificato. Nessuna immagine statica copiata o hotlinkata e nessuna nuova autorizzazione. Gate screenshot resta chiuso.
