@@ -1,3 +1,16 @@
+# Checkpoint operativo — deploy guida e Autopilot #845 — 2026-11-27 14:57:53 CET
+
+- **Guida #170:** integrata in `6d6a8af48e80174a0416e29efd914ff434fa2e29`; Pages run [#534](https://github.com/xFederiko11/gta-6/actions/runs/46019709741) completato con successo. Live verificati: canonical, `datePublished=2026-11-27`, illustrazione originale marcata non-gameplay, tre pin mappa, controllo opt-in, zero iframe prima del clic. La prima prova di rilascio è in [PR #171](https://github.com/xFederiko11/gta-6/pull/171), run CI [#535](https://github.com/xFederiko11/gta-6/actions/runs/46020417801) in corso.
+- **Bot run successivi:** [#844](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46017220250) e [#845](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46018545582) non hanno pubblicato. #845 ha letto 85 elementi, nessuna riserva unica; il preflight registra `BUFFER_QUEUE_PAUSED` e il receipt dice `current_run_attempted=false`. Nessun nuovo invio/post X da riconciliare; l’unico receipt rimane il link Everyeye [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710), senza immagine, già verificato.
+- **Buffer:** un controllo visuale autenticato non è stato possibile dalla scheda dedicata non autenticata. Nessuna coda è stata modificata o riattivata. L’ultimo dato UI certo è precedente ai run #844/#845 (Queue 0, Drafts 0, Sent 103, pausa off); il preflight successivo segnala pausa, quindi stato contenuti e switch correnti restano da verificare prima di qualsiasi variazione.
+- **Media:** la policy Rockstar non concede riuso promozionale o per editoria digitale con il solo credito/disclaimer; le foto statiche restano bloccate singolarmente finché la prova non copre contenuto e canale. La guida live usa mappe linkate e player YouTube opt-in, senza thumbnail copiata.
+- **SEO/X:** guida meditazioni live con `datePublished=2026-11-18`, `dateModified=2026-11-27T09:45:21Z`. Candidato per risposta manuale: thread [@yabhishekhd](https://x.com/yabhishekhd/status/2126241619410362806); nessuna risposta, like o repost.
+- Search Console non consultata prima del 30/11; dal 30/11 sola lettura. Nessun costo o contatto.
+
+**Prossime priorità:** (1) QA/merge/deploy di #171 per provare la data; (2) accesso Buffer autenticato, verifica coda/contenuti e stato pausa prima di valutare riattivazione; (3) dopo il controllo, ricostruire post di qualità link-only/video dove appropriato senza allegare foto non autorizzate.
+**Prossimo comando:** Continua Bot X dal checkpoint; termina PR #171 a CI verde e verifica il deploy; controlla Buffer in una sessione autenticata senza modificare la coda finché i contenuti non sono verificati, poi riprendi solo invii che passano qualità e riconcilia permalink/media su X; dal 30/11 Search Console solo in lettura.
+---
+
 # Checkpoint — PR #170 integrata, deploy da verificare — 2026-11-27 14:52:03 CET
 
 - **Sito:** la PR [#170](https://github.com/xFederiko11/gta-6/pull/170) è stata integrata con squash nel commit `6d6a8af48e80174a0416e29efd914ff434fa2e29`. La CI PR [#533](https://github.com/xFederiko11/gta-6/actions/runs/46018496269) è verde. Nessuna pagina nuova è dichiarata live finché il run post-merge e la verifica del percorso non passano.
