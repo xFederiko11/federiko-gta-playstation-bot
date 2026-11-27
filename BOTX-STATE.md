@@ -1,4 +1,4 @@
-# Checkpoint — Autopilot #846 riconciliato, Southside da migliorare — 2026-11-27 16:34 CET
+# Checkpoint — Autopilot #846 riconciliato, Southside da migliorare — 2026-11-27 16:47 CET
 
 - **Bot/X:** Autopilot [#846](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46026039751) completato con successo. Il log del ciclo reale mostra zero riserve uniche (74 feed, 32 freschi, 31 idonei), quindi DELIVERY_NOT_ATTEMPTED; il preflight registra BUFFER_QUEUE_PAUSED. La receipt conferma current_run_attempted=false e mostra soltanto il vecchio Buffer ID 6b098aa532c212878fd445fb, già riconciliato con [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710). Nessun nuovo post da riconciliare; nessun retry.
 - **Buffer:** scheda dedicata ancora in attesa di accesso manuale. La coda non è stata modificata o riattivata; leggere queue/draft/scheduled/sent e pausa prima di ogni azione.
