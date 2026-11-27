@@ -319,24 +319,24 @@ class EditorialV137Tests(unittest.TestCase):
             "key": "vgc-story", "sig": "gta vi story",
             "source": "VGC", "title": "GTA VI: dettagli documentati",
             "url": url, "published": now.isoformat(), "language": "it",
-            "text": ("📰 GTA VI | Novità\\n\\nDettaglio confermato dalla fonte.\\n\\n"
-                     "🔗 Fonte: VGC\\n" + url + "\\n\\n#GTAVI #GTA6"),
+            "text": ("📰 GTA VI | Novità\n\nDettaglio confermato dalla fonte.\n\n"
+                     "🔗 Fonte: VGC\n" + url + "\n\n#GTAVI #GTA6"),
         }
-        with tempfile.TemporaryDirectory() as temp, \\
-             patch.object(bot, 'datetime', Clock), \\
-             patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \\
-             patch.object(bot, 'read_feeds', return_value=([], [])), \\
-             patch.object(bot, 'load_sources', return_value=[]), \\
-             patch.object(bot, 'launch_active', return_value=False), \\
-             patch.object(bot, 'director_allowed', return_value=(True, 'test')), \\
-             patch.object(bot, 'powerpyx_spotlight', return_value=None), \\
-             patch.object(bot, 'select', return_value=[item]), \\
-             patch('quick_tips_v146.candidate', return_value=None), \\
-             patch('site_evergreen_posts_v1.candidate', return_value=None), \\
-             patch('trophy_posts_v142.candidate', return_value=None), \\
-             patch('site_article_rotation_v1.candidate', return_value=None), \\
-             patch('game_photo_policy_v1.active', return_value=True), \\
-             patch('game_photo_policy_v1.scan_kind', return_value=False), \\
+        with tempfile.TemporaryDirectory() as temp, \
+             patch.object(bot, 'datetime', Clock), \
+             patch.object(bot, 'STATE', Path(temp)/'ledger.json'), \
+             patch.object(bot, 'read_feeds', return_value=([], [])), \
+             patch.object(bot, 'load_sources', return_value=[]), \
+             patch.object(bot, 'launch_active', return_value=False), \
+             patch.object(bot, 'director_allowed', return_value=(True, 'test')), \
+             patch.object(bot, 'powerpyx_spotlight', return_value=None), \
+             patch.object(bot, 'select', return_value=[item]), \
+             patch('quick_tips_v146.candidate', return_value=None), \
+             patch('site_evergreen_posts_v1.candidate', return_value=None), \
+             patch('trophy_posts_v142.candidate', return_value=None), \
+             patch('site_article_rotation_v1.candidate', return_value=None), \
+             patch('game_photo_policy_v1.active', return_value=True), \
+             patch('game_photo_policy_v1.scan_kind', return_value=False), \
              patch.dict(os.environ, {'GITHUB_RUN_ID':'source-link-fallback'}):
             bot.reserve()
             entry = next(iter(bot.load_state()['entries'].values()))
