@@ -177,20 +177,26 @@ class BufferPublisherTests(unittest.TestCase):
         self.session.post.assert_not_called()
 
     def test_project_account_allows_two_source_link_thread_without_image(self):
+        from per_item_media_policy_v1 import VIDEO_TEXT, SOURCE_TEXT
         client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
                               session=self.session)
         client.destination = channel(name="xFederiko11",
                                     externalLink="https://x.com/xFederiko11")
-        posts = [
-            ("GTA VI è disponibile.\nVideo ufficiale Rockstar Games:\n"
-             "https://www.youtube.com/watch?v=T95WGWkx7P0"),
-            ("La mappa ufficiale è disponibile.\nFonte: Rockstar Games\n"
-             "https://www.rockstargames.com/newswire/article/39akk424a9oo53/grand-theft-auto-vi-now-available"),
-        ]
+        posts = [VIDEO_TEXT, SOURCE_TEXT]
         self.session.post.return_value = response(delivered())
         self.assertEqual(client.publish_thread(posts), "buffer-post-1")
         thread = self.session.post.call_args.kwargs["json"]["variables"]["input"]["metadata"]["twitter"]["thread"]
         self.assertTrue(all(item["assets"] == [] for item in thread))
+
+    def test_project_account_rejects_extra_claims_on_approved_link_before_network(self):
+        client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
+                              session=self.session)
+        text = ("🎮 GTA VI è disponibile e include una missione segreta.\\n\\n"
+                "Video ufficiale Rockstar Games:\\n"
+                "https://www.youtube.com/watch?v=T95WGWkx7P0")
+        with self.assertRaises(BufferMediaError):
+            client.publish(text)
+        self.session.post.assert_not_called()
 
     def test_public_image_url_is_passed_as_asset(self):
         self.session.post.side_effect = [response({"channel": channel()}), response(delivered())]
