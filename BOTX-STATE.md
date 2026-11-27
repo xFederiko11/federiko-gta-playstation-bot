@@ -1,3 +1,14 @@
+# Checkpoint operativo — QA card social della nuova guida — 2026-11-27 14:35:19 UTC
+
+- **PR sito #170:** run #528 [46015540146](https://github.com/xFederiko11/gta-6/actions/runs/46015540146) ha completato build visuale, unit test e controllo JavaScript con successo; ha poi fallito nel passaggio card social perché la pagina non esponeva i meta OG richiesti. Nessun deploy. Correzione in corso: mantenere la card unica generata dal sito, con pittogramma cartografico e indicazione esplicita «non screenshot di gameplay», senza usare media Rockstar/community e senza mostrare la card come prova di posizione. Il player YouTube rimane caricamento su richiesta.
+- **Bot:** monitor #232 [46014285636](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46014285636) si è chiuso con `candidates=0` e `DELIVERY_NOT_ATTEMPTED`. Nessun nuovo Buffer/X da riconciliare. Ultimo post resta [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710), link Everyeye, senza foto.
+- **Possibile risposta manuale:** thread pubblico [@yabhishekhd, 27 novembre](https://x.com/yabhishekhd/status/2126241619410362806) sulle radio WAiNK e sul poster nel Jack of Hearts. Solo candidato da valutare manualmente; nessuna risposta, like o repost è stato eseguito.
+- Search Console dal 30/11 soltanto read-only; nessun costo o contatto a creator/azienda, nessuna riattivazione o modifica di Buffer.
+
+**Prossime priorità:** (1) completare la card editoriale senza farla passare per gameplay; (2) attendere CI verde, integrare e verificare online; (3) riconciliare i run successivi e leggere Search Console solo dal 30/11.
+**Prossimo comando:** Continua Bot X dal checkpoint; correggi QA delle card della PR #170 con una grafica originale dichiarata non gameplay, poi integra solo a CI verde e verifica il deploy; riconcilia ogni nuovo invio Buffer/X; dal 30/11 Search Console solo in lettura.
+---
+
 # Checkpoint operativo — PR guida in QA e monitor senza consegne — 2026-11-27 14:23:08 UTC
 
 - **Sito, PR #170:** [guida GTA 6 sui tre strip club](https://github.com/xFederiko11/gta-6/pull/170) aperta dal main `34247beea60ed3a2b2aaf55923474b220938fad8`. Include i tre pin esterni GTAMI, un video YouTube in spagnolo caricato solo dopo il clic, fonti e date strutturate. Nessuna immagine statica o miniatura viene copiata; la cover generica è rimossa dalla pagina e dai metadati social.
