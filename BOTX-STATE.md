@@ -1,10 +1,12 @@
 # 🤖 Bot X — Stato operativo
 
-Aggiornato: 27 novembre 2026 CET — #162 e #163 online; #209 attiva; #210 e #164 in QA; #208 GSC privata non attiva.
+Aggiornato: 27 novembre 2026 CET — #162/#163 online, #209 attiva, #210 integrata (audit live da verificare), #164 in QA; #208 GSC privata non attiva.
 
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint nuovo — 27 novembre 2026
+- Chiusura sessione: #163 online via deploy 45964458608 success e 13 URL HTTP; #164 QA [45964800694](https://github.com/xFederiko11/gta-6/actions/runs/45964800694) in_progress/pending (head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7); #210 merge 81164efa48156162a8160515a76eeab4775eddfb, audit live 45964882110 in_progress/pending, issue #50 non ancora aggiornata con i nuovi conteggi.
+- Nessun post X esterno verificabile trovato tramite ricerca web; non inventare link. Rockstar policy (10 gennaio 2025) descrive tolleranza non-commerciale condizionata, non prova specifica per ogni foto o uso promozionale; registro 0, non allentare. Percorso pratico: acquisire screenshot propri o documentazione specifica per sito e social, verificarne pertinenza e hash, senza contattare Rockstar/creator. Proseguire con garage e missioni dopo #164. GSC privata resta bloccata; nessun costo, risposta a terzi o nuovo invio effettuato.
 - #210 QA 45964656892, 45964656761, 45964656805 tutte success, integrata 81164efa48156162a8160515a76eeab4775eddfb. Attendere audit live #50; nessuna nuova autorizzazione o pubblicazione.
 - #163 deploy 45964458608 SUCCESS, job 140389989147; controlli HTTP esistenti positivi. Accesso diretto da ChatGPT a Pages non disponibile; test mirato di datePublished e titolo canonico aggiunto nella #164, non dichiarare quella verifica specifica già eseguita.
 - [Sito #164](https://github.com/xFederiko11/gta-6/pull/164), head da5bfa22d0dfe2be5bd7dc303ba85ef87bc9acc7: aggiorna guida e trofeo meditazione, mappa originale GTABase https://www.gtabase.com/gta-6/map/?feature=meditation (26/11), alternativa Port Gellhorn dopo Coffee Break e Ascent con entrambi secondo GTABase. PowerPyx indica prima occasione non necessaria per trofeo/100%; scheda trofei GTABase mantiene cautela. Nessuna prova diretta; 18 spunte stabili, 15 per 100%, alternativa non 19a. Ricerca archivio: normalizza GTA VI/GTA 6 e accenti/punteggiatura, reset/stato senza risultati; date e canonical invariati. QA e deploy ancora da verificare. Nessun nuovo screenshot copiato.
