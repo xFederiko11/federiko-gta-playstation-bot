@@ -1,3 +1,10 @@
+## Session follow-up — identità X visibile nel feed — 2026-11-27
+- Revisione PR #175: il feed nascondeva l’intestazione X. Ho mantenuto visibili avatar/nome profilo rimuovendo noheader e impostato lingua italiana, lasciando il limite di cinque post, il caricamento lazy e il link al profilo. Il feed continua a incorporare media ospitati da X, senza scraping o rehosting.
+- Head PR c366a9b37fd708aa249ce2f1b0e9253ad6a9ad15, mergeable. CI #547 (head precedente) è ancora in corso; #548 è in coda sul commit intermedio 111fb3db. Nessun merge/deploy fino al controllo del run che copre l’head corrente.
+- Nessun nuovo invio Buffer da #849; #375 completato con zero post. Niente accesso autenticato a Buffer, interazioni X, contatti o costi.
+
+---
+
 ## Session follow-up — Monitor #375 completato — 2026-11-27
 - Monitor [#375](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/46040320135) riuscito. Il report mostra 30 candidati di ricerca, 18 lead review/hold e zero post Buffer/X; nessuna novità inventata. Un risultato Everyeye su GTA VI Cloud/Xbox è da verificare editorialmente e non è un’opportunità di risposta X (nessun post X diretto verificato).
 - Il log ribadisce il controllo di sicurezza manual-only e l’assenza di X API. Non prova che la coda Buffer sia ripresa né che una foto sia presente.
