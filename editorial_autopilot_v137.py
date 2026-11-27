@@ -755,6 +755,7 @@ def reserve():
             'status': 'reserved', 'run_id': run, 'reserved_utc': now.isoformat(),
             'url': item['url'], 'source': item['source'], 'title': item['title'], 'text': item['text'],
             'media_url': item.get('media_url'), 'media_mode': item.get('media_mode'),
+            'official_video_url': item.get('official_video_url'),
             'trophy_number': item.get('trophy_number'),
             'thread': item.get('thread'), 'tip_id': item.get('tip_id')
         }
