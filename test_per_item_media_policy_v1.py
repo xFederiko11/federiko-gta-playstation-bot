@@ -10,7 +10,7 @@ from per_item_media_policy_v1 import (
 class PerItemMediaPolicyTests(unittest.TestCase):
     def test_exact_official_video_link_is_not_an_image_license(self):
         message = {
-            "text": "GTA VI su PS5 e Xbox Series X|S.\nVideo ufficiale Rockstar Games:\n" + VIDEO_URL,
+            "text": VIDEO_TEXT,
             "assets": [],
         }
         self.assertTrue(link_only_message_allowed(message))
@@ -28,7 +28,7 @@ class PerItemMediaPolicyTests(unittest.TestCase):
 
     def test_exact_official_source_url_is_reviewed_for_link_sharing_only(self):
         message = {
-            "text": "La mappa di Leonida è scaricabile.\nFonte: Rockstar Games\n" + SOURCE_URL,
+            "text": SOURCE_TEXT,
             "assets": [],
         }
         self.assertTrue(link_only_message_allowed(message))
