@@ -161,8 +161,8 @@ class BufferPublisherTests(unittest.TestCase):
                               session=self.session)
         client.destination = channel(name="xFederiko11",
                                     externalLink="https://x.com/xFederiko11")
-        text = ("🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\\n"
-                "Video ufficiale Rockstar Games:\\n"
+        text = ("🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n"
+                "Video ufficiale Rockstar Games:\n"
                 "https://www.youtube.com/watch?v=T95WGWkx7P0")
         self.session.post.return_value = response(delivered())
         self.assertEqual(client.publish(text), "buffer-post-1")
@@ -182,9 +182,9 @@ class BufferPublisherTests(unittest.TestCase):
         client.destination = channel(name="xFederiko11",
                                     externalLink="https://x.com/xFederiko11")
         posts = [
-            ("GTA VI è disponibile.\\nVideo ufficiale Rockstar Games:\\n"
+            ("GTA VI è disponibile.\nVideo ufficiale Rockstar Games:\n"
              "https://www.youtube.com/watch?v=T95WGWkx7P0"),
-            ("La mappa ufficiale è disponibile.\\nFonte: Rockstar Games\\n"
+            ("La mappa ufficiale è disponibile.\nFonte: Rockstar Games\n"
              "https://www.rockstargames.com/newswire/article/39akk424a9oo53/grand-theft-auto-vi-now-available"),
         ]
         self.session.post.return_value = response(delivered())
