@@ -1,3 +1,9 @@
+## Session follow-up — Southside in produzione — 2026-11-27 17:34 CET
+- Site PR #173 is merged at `80ef131fbd8db3bd7434142f04b39ec6c3dddb5a`; Pages deploy [#46034218975](https://github.com/xFederiko11/gta-6/actions/runs/46034218975) completed successfully. The post-deploy job fetched the live garage routes and emitted `PUBLIC_FREE_GARAGES_OK`; its production assertion checked that Southside has all eight steps. Build/PR QA also verified six per-step video controls, six external map references, privacy/opt-in behavior, and responsive mobile/desktop layout.
+- The browser QA artifact is attached to [PR workflow #46033112924](https://github.com/xFederiko11/gta-6/actions/runs/46033112924), artifact `reader-qa-46033112924`. No static screenshots were added or rehosted; map pins remain source links and YouTube loads only on user click.
+- Public page was not independently rendered in this chat because the web reader cannot access GitHub Pages and outbound fetch is blocked. Meditation `datePublished` remains unchecked; do not infer it from source files. Search Console has not been opened before 2026-11-30.
+- No new Buffer queue changes or social posts; X media rendering and global Buffer pause state remain unverified pending authenticated visual access.
+
 ## Session follow-up — build Pages completato, deploy in corso — 2026-11-27 17:34 CET
 - Main build for commit `80ef131fbd8db3bd7434142f04b39ec6c3dddb5a` completed successfully in deployment run [#46034218975](https://github.com/xFederiko11/gta-6/actions/runs/46034218975); the Pages deployment job is currently in_progress.
 - Production HTML was not independently fetched yet. Continue after deployment: check the live Southside route and attempt the meditation JSON-LD datePublished read; the public site URL is inaccessible through the web reader and general network egress was blocked in this environment.
