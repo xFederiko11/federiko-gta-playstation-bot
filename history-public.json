@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T08:21:34Z",
+  "generated_at": "2026-11-27T09:38:44Z",
   "records": [
     {
       "date_precision": "local_time",
@@ -64,7 +64,7 @@
       "game": "PlayStation",
       "metric_kind": "availability",
       "notes": "Versione corrente dichiarata da Sony; data di rilascio non specificata.",
-      "observed_at": "2026-11-27T08:21:13Z",
+      "observed_at": "2026-11-27T09:38:24Z",
       "occurred_at": null,
       "package_id": null,
       "platform": "PS5",
@@ -80,7 +80,7 @@
       "verification": "verified",
       "version": "26.07-14.23.00",
       "first_observed_at": "2026-11-17T20:51:44Z",
-      "last_observed_at": "2026-11-27T08:21:13Z"
+      "last_observed_at": "2026-11-27T09:38:24Z"
     },
     {
       "date_precision": "unknown",
@@ -121,7 +121,7 @@
       },
       "metric_kind": "availability",
       "notes": "Data delle note Rockstar osservata dal monitor. Non prova numero di build, dimensione o test nel gioco.",
-      "observed_at": "2026-11-27T08:20:20Z",
+      "observed_at": "2026-11-27T09:37:30Z",
       "occurred_at": "2026-11-23",
       "package_id": null,
       "platform": "common",
@@ -137,7 +137,7 @@
       "verification": "verified",
       "version": null,
       "first_observed_at": "2026-11-26T22:30:33Z",
-      "last_observed_at": "2026-11-27T08:20:20Z"
+      "last_observed_at": "2026-11-27T09:37:30Z"
     }
   ],
   "gaps": [
