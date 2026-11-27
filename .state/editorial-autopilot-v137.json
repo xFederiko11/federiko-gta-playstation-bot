@@ -172,6 +172,21 @@
       "trophy_number": null,
       "url": "https://pushsquare.com/features/gta-6-launch-hub-share-your-first-impressions-of-rockstars-ps5-masterpiece"
     },
+    "2b09fa3e6cc4c8f3164c9cea": {
+      "media_mode": "source_link_only",
+      "media_url": null,
+      "official_video_url": null,
+      "reserved_utc": "2026-11-27T15:50:25.362960+00:00",
+      "run_id": "46028383188",
+      "source": "Everyeye",
+      "status": "reserved",
+      "text": "🧭 GTA VI | Guida\n\nCom'è stato curato il modello di guida di GTA 6? Con piloti e pro di Gran Turismo\n\n🔗 Fonte: Everyeye\nhttps://everyeye.it/notizie/gta-6-modello-guida-curato-piloti-esperti-pro-gran-turismo-913986.html\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "Com'è stato curato il modello di guida di GTA 6? Con piloti e pro di Gran Turismo",
+      "trophy_number": null,
+      "url": "https://everyeye.it/notizie/gta-6-modello-guida-curato-piloti-esperti-pro-gran-turismo-913986.html"
+    },
     "2f22857e6952b337a5653fbe": {
       "attempted_utc": "2026-11-23T12:26:45.973032+00:00",
       "buffer_id": "6b0431067e433fe9cac94b40",
@@ -1484,6 +1499,15 @@
       "feeds_relevant": 72,
       "reserved": 1,
       "run": "46010463282"
+    },
+    {
+      "at": "2026-11-27T15:50:25.362960+00:00",
+      "errors": [
+        "PowerPyx: SSLError"
+      ],
+      "feeds_relevant": 71,
+      "reserved": 1,
+      "run": "46028383188"
     }
   ],
   "schema": "v13.7",
@@ -1493,6 +1517,7 @@
     "base performance suffers minor and sustained frame rate drops but unwavering": "41b163b5da10f556bcd230fd",
     "cecchino": "2058044becfae40b204de3e9",
     "collectible guide progress database": "ae90c3bee7a9f29461bf68cc",
+    "com stato curato modello guida con piloti gran turismo": "2b09fa3e6cc4c8f3164c9cea",
     "come evitare sfide difficili per 100": "d3f0f33b6b7ac7530a0de8dc",
     "come potenziare concentrazione nei poligoni": "d7d51112489fc2b2db8efacb",
     "discharge time mission walkthrough": "761d516f9962451f807f2271",
