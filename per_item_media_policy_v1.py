@@ -74,7 +74,7 @@ def link_only_message_allowed(message: dict, *, allow_thread: bool = True) -> bo
         allowed.add(SOURCE_TEXT)
     if text not in allowed:
         return False
-    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\\s<>]+", text)]
+    links = [u.rstrip(".,);]") for u in re.findall(r"https://[^\s<>]+", text)]
     return len(links) == 1 and approved_link_url(links[0])
 
 
