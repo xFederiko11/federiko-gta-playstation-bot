@@ -324,9 +324,10 @@ class BufferClient:
         # Valida i media prima di qualsiasi creazione di post.
         assets = [{"image": {"url": self._media_url(media_url)}}] if media_url is not None else self._assets(media_path)
         if self.require_media and not assets:
-            from per_item_media_policy_v1 import link_only_message_allowed
+            from per_item_media_policy_v1 import link_only_message_allowed, source_link_message_allowed
             if (self.expected_username != "xfederiko11"
-                    or not link_only_message_allowed({"text": text, "assets": []}, allow_thread=False)):
+                    or not (link_only_message_allowed({"text": text, "assets": []}, allow_thread=False)
+                               or source_link_message_allowed({"text": text, "assets": []}))):
                 raise BufferMediaError("Invio senza foto consentito solo per un link ufficiale registrato e validato")
         if self.destination is None:
             self.verify_destination()
