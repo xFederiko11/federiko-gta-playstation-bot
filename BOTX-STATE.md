@@ -1,3 +1,9 @@
+# Verifica finale X — 27 novembre 2026, 11:50 CET
+
+- Profilo X letto in sola osservazione: il post più recente è [2125933757257449699](https://x.com/xFederiko11/status/2125933757257449699), mostrato “22 hours ago” con allegato `Image` e URL foto/1. Il precedente [2125838860567351489](https://x.com/xFederiko11/status/2125838860567351489) mostra anch’esso `Image` e URL foto/1. Nessun post successivo appare nel profilo.
+- Nessuna nuova ricevuta Buffer nei run #827/#369/#229; l’ultimo invio verificato resta il primo permalink sopra. Nessuna azione social eseguita.
+- Il checkpoint dettagliato run/guide/media è nel commit [ab1b316](https://github.com/xFederiko11/federiko-gta-playstation-bot/commit/ab1b31681eaa502a28a4f44d83995d562fd74594).
+
 # Checkpoint operativo — 27 novembre 2026, run, lead X e via media senza copie
 
 - **Run publisher verificati alle 11:50 CET**: ultimo Editorial Autopilot visibile [45979723076, run 827](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/45979723076), completato alle 10:09 UTC; non compare ancora un run successivo nello slot atteso delle 10:40 UTC. Il workflow su main mantiene gli slot schedulati 10 e 40 UTC. Non ho lanciato retry/dispatch: l’ultimo autopilot aveva riserva 0 per il gate foto. Il monitor [45983436458, run 369](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/45983436458) è success: 30 candidati di intelligence ma zero post Buffer/X, e l’editoriale ufficiale ha verificato una fonte, zero nuove e zero idonee. Il Breaking News Watch [45985151196, run 229](https://github.com/xFederiko11/federiko-gta-playstation-bot/actions/runs/45985151196) è success ma ha trovato 0 candidati e riporta `DELIVERY_NOT_ATTEMPTED: no unique reservation`. Questi run non hanno creato post.
