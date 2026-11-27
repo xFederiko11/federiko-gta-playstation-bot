@@ -686,7 +686,11 @@ def reserve():
                         if item['key'] not in {x['key'] for x in selected})
         from social_media_gate_v2 import prepare as prepare_media
         converted=[]
+        source_link_fallback=None
         for item in selected:
+            if source_link_fallback is None:
+                from per_item_media_policy_v1 import source_link_candidate
+                source_link_fallback=source_link_candidate(item)
             try:
                 ready=launch_double(item) if launch_active(now) and not photo_required else item
                 if photo_required:
@@ -727,6 +731,9 @@ def reserve():
         # Photos are reviewed per exact article and destination. If this
         # candidate pool has none, use one pre-registered official video link;
         # it stays on its publisher platform and is never attached as an image.
+        if not converted and source_link_fallback and media_thread_preflight(source_link_fallback):
+            converted.append(source_link_fallback)
+            print('MEDIA_FALLBACK_SOURCE_LINK_ONLY: verified article link, no image attachment')
         if not converted:
             from per_item_media_policy_v1 import launch_video_candidate
             fallback=launch_video_candidate(state,now,launch=launch_active(now))
