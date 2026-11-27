@@ -5,6 +5,8 @@ Aggiornato: 27 novembre 2026 CET — #162 online (151 date), #163 SEO in QA, #20
 ## Ripartenza — stato corrente (prioritario rispetto allo storico)
 
 ### Checkpoint nuovo — 27 novembre 2026
+- #210 bot aperta, head 285f3588be8bdada2f5b5fc96359a890ee9ff653: registry photo-rights-review-v1.json ha 0 record. È un blocco reale per nuovi post conformi alla politica foto, NON guasto Buffer. Aggiunta diagnosi aggregata in #50 e skip HTTP di URL senza record; nessuna modifica a diritti, hash, dedup o pubblicazione. QA 45964656892 in_progress, 45964656761 in_progress, 45964656805 in_progress. Non integrare senza QA esatta. Nessun permesso inventato; nessun nuovo post.
+- Deploy #163 run 45964458608 completed/success.
 - #163 QA esatta 45963704287 SUCCESS; merge 983e932128fb45769b92170cd7273a69ad457cc1. Deploy/HTTP ancora da verificare. SEO canonica salvare-auto, link contestuali, snippet meditazione, datePublished da registro. Non ripetere merge.
 
 ### Checkpoint della sessione successiva — 27 novembre 2026
