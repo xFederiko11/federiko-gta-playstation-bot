@@ -157,15 +157,13 @@ class BufferPublisherTests(unittest.TestCase):
             {"image": {"url": "https://cdn.example.org/gta-vi-photo.jpg"}}])
 
     def test_project_account_allows_exact_reviewed_official_video_link_without_image(self):
+        from per_item_media_policy_v1 import VIDEO_TEXT
         client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
                               session=self.session)
         client.destination = channel(name="xFederiko11",
                                     externalLink="https://x.com/xFederiko11")
-        text = ("🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n"
-                "Video ufficiale Rockstar Games:\n"
-                "https://www.youtube.com/watch?v=T95WGWkx7P0")
         self.session.post.return_value = response(delivered())
-        self.assertEqual(client.publish(text), "buffer-post-1")
+        self.assertEqual(client.publish(VIDEO_TEXT), "buffer-post-1")
         assets = self.session.post.call_args.kwargs["json"]["variables"]["input"]["assets"]
         self.assertEqual(assets, [])
 
