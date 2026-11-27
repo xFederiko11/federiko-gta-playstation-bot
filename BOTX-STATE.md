@@ -1,3 +1,15 @@
+# Checkpoint — registro data #171 integrato, Pages #536 in corso — 2026-11-27 15:05:43 CET
+
+- La PR [#171](https://github.com/xFederiko11/gta-6/pull/171) è stata integrata nel commit 1b849376ae68b85f43d2a32abe8c93bdafe0a900 dopo CI verde [#535](https://github.com/xFederiko11/gta-6/actions/runs/46020417801). La data prima pubblicazione della guida strip club è ora registrata al 27/11 con evidenza reale del run Pages [#534](https://github.com/xFederiko11/gta-6/actions/runs/46019709741). Il secondo rilascio [#536](https://github.com/xFederiko11/gta-6/actions/runs/46021691856) è in corso; #170 già verificata live.
+- **Bot/X:** run #845 resta l’ultimo verificato: zero riserve, BUFFER_QUEUE_PAUSED, current_run_attempted=false; nessun nuovo post Buffer/X. L’ultimo receipt è ancora il post Everyeye [X 2126312709872406710](https://x.com/xFederiko11/status/2126312709872406710), senza foto. La coda non è stata modificata.
+- **Buffer:** serve accesso visuale autenticato per verificare la coda ora, perché il preflight API registra pausa mentre l’ultimo dato UI disponibile è precedente. Nessuna riattivazione senza quella verifica.
+- **Media:** niente foto Rockstar o creator copiate/ri-ospitate; policy ufficiale non fornisce una licenza per promozione/editoria digitale. La guida usa player YouTube opt-in e pin esterni; il player non era caricato in live.
+- **SEO:** meditazioni live confermata con datePublished=2026-11-18, dateModified=2026-11-27T09:45:21Z. Search Console non consultata prima del 30/11.
+
+**Prossime priorità:** (1) verificare l’ultimo Pages #536 e la data storica della guida; (2) accedere a Buffer tramite scheda dedicata, leggere coda/bozze/switch e valutare l’attivazione solo dopo verifica; (3) preparare post di qualità sulle guide pubblicate, solo dopo controllo del canale e senza immagini non autorizzate.
+**Prossimo comando:** Continua Bot X dal checkpoint; verifica il deploy #536 e il registro pubblicazione; poi, in Buffer autenticato, controlla coda e pausa prima di ogni modifica e riconcilia qualsiasi nuovo invio con permalink/media visibili su X; dal 30/11 Search Console solo read-only.
+---
+
 # Checkpoint operativo — deploy guida e Autopilot #845 — 2026-11-27 14:57:53 CET
 
 - **Guida #170:** integrata in `6d6a8af48e80174a0416e29efd914ff434fa2e29`; Pages run [#534](https://github.com/xFederiko11/gta-6/actions/runs/46019709741) completato con successo. Live verificati: canonical, `datePublished=2026-11-27`, illustrazione originale marcata non-gameplay, tre pin mappa, controllo opt-in, zero iframe prima del clic. La prima prova di rilascio è in [PR #171](https://github.com/xFederiko11/gta-6/pull/171), run CI [#535](https://github.com/xFederiko11/gta-6/actions/runs/46020417801) in corso.
