@@ -87,7 +87,9 @@ class BufferQueueAuditTests(unittest.TestCase):
         from unittest.mock import patch
         with patch("photo_rights_v1.load",return_value={}):
             self.assertEqual(h.photo_readiness(),(0,0))
-            self.assertIn("Blocco editoriale",h.render_photo_readiness())
+            self.assertIn("Allegati fotografici bloccati",h.render_photo_readiness())
+            self.assertIn("source_link_only / official_video_link",h.render_photo_readiness())
+            self.assertNotIn("Non inviare testo senza foto",h.render_photo_readiness())
         with patch("photo_rights_v1.load",return_value={("https://example.org/a/","official_game_photo","a"*64):{}}):
             self.assertEqual(h.photo_readiness(),(1,1))
             self.assertIn("non sono post pronti",h.render_photo_readiness())
