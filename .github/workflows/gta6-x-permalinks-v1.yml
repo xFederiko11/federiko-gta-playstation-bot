@@ -2,12 +2,11 @@ name: GTA VI - Buffer X permalink bridge (read only)
 on:
   workflow_dispatch:
   schedule:
-    # Still four scans/day: maintain Buffer API budget while moving the
-    # last check AFTER the 20:35 possible launch slot (Rome CET).
-    # 08:20, 12:20, 16:20 and 20:50 Europe/Rome in winter.
-    # GitHub Actions cron is best-effort, NOT guaranteed exact wall clock.
-    - cron: '20 7,11,15 * * *'
-    - cron: '50 19 * * *'
+    # One nightly link reconciliation after the final editorial attempt.
+    # Reduces Buffer read requests: one daily scan instead of four.
+    # Existing verified X URL associations remain persisted between scans.
+    - cron: '50 21 * * *'
+      timezone: Europe/Rome
   pull_request:
     branches: [main]
     paths:

@@ -105,6 +105,24 @@ class BufferPublisherTests(unittest.TestCase):
         self.assertTrue(result.exception.outcome_unknown)
         self.assertEqual(self.session.post.call_count, 2)
 
+    def test_monthly_rate_limit_from_existing_headers_only(self):
+        from buffer_publisher import rate_limit_windows
+        raw = {
+            "RateLimit": '"150-in-15min";r=117;t=800, "600-in-1day"; r=225; t=85000, '
+                         '"1000-in-30days"; r=91; t=2530000',
+            "RateLimit-Policy": '"1000-in-30days";q=1000;w=2592000;pk=:private:'
+        }
+        windows = rate_limit_windows(raw)
+        self.assertEqual(windows["30days"],
+                         {"limit": 1000, "remaining": 91, "reset_seconds": 2530000})
+        self.assertEqual(windows["15min"]["remaining"], 117)
+        self.assertNotIn("pk", repr(windows))
+        self.assertEqual(rate_limit_windows({"RateLimit": "not a usable header"}), {})
+        self.session.post.return_value = response({"channel": channel()}, headers=raw)
+        self.client.verify_destination()
+        self.assertEqual(self.client.last_rate_limit["30days"]["remaining"], 91)
+        self.session.post.assert_called_once()  # no secondary quota query
+
     def test_http_429_respects_exhausted_policy(self):
         self.client.destination = channel()
         self.session.post.return_value = response(status=429, headers={

@@ -32,13 +32,10 @@ on:
       - 'launch_delivery_audit_v1.py'
       - 'test_launch_delivery_audit_v1.py'
   schedule:
-    - cron: '17 6 * * *'
-    - cron: '17 12 * * *'
-    - cron: '17 18 * * *'
-    # Campaign-day close (20:42 Rome) to reconcile the final 19:35 slot.
-    # GitHub cron is best effort; the report records actual execution time.
-    - cron: '42 19 19-30 11 *'
-    - cron: '42 19 1-2 12 *'
+    # One nightly read-only audit; frequent checks consumed paid API quota
+    # without affecting publication. The runner reports its real check time.
+    - cron: '27 22 * * *'
+      timezone: Europe/Rome
   workflow_dispatch:
 
 permissions:
@@ -84,7 +81,7 @@ jobs:
           python launch_delivery_audit_v1.py --append-to previews/buffer-x-health-v1.md
           tail -n 20 previews/buffer-x-health-v1.md >> "$GITHUB_STEP_SUMMARY"
       - name: Probe Buffer's experimental X insights only once daily (read-only)
-        if: github.event_name != 'pull_request' && (github.event_name != 'schedule' || github.event.schedule == '17 12 * * *')
+        if: github.event_name != 'pull_request' && (github.event_name != 'schedule' || github.event.schedule == '27 22 * * *')
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
@@ -94,7 +91,7 @@ jobs:
           test -s previews/buffer-x-insights-v1.md
           cat previews/buffer-x-insights-v1.md >> "$GITHUB_STEP_SUMMARY"
       - name: Update dedicated experimental metrics Issue #72
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'schedule' || github.event.schedule == '17 12 * * *')
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'schedule' || github.event.schedule == '27 22 * * *')
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
