@@ -26,10 +26,21 @@ QUERY = """query Receipt($id: PostId!) {
   }
 }"""
 LEDGER = Path('.state/editorial-autopilot-v137.json')
+EXPECTED_X_HANDLE = 'xFederiko11'
 
 
-def safe_x_url(value):
+def safe_x_url(value, expected_handle=EXPECTED_X_HANDLE):
+    """Return a canonical link only for this verified Buffer channel.
+
+    Buffer may return a numeric account ID as the owner segment of
+    externalLink. The tweet ID remains the public permalink key; after
+    verify_destination and channelId checks, bind that link to the expected
+    handle rather than emitting an unusable numeric-owner URL.
+    """
     if not isinstance(value, str) or any(ord(c) < 33 for c in value):
+        return None
+    handle = str(expected_handle or '').strip().lstrip('@')
+    if not re.fullmatch(r'[A-Za-z0-9_]{1,15}', handle):
         return None
     try:
         u = urlsplit(value)
@@ -38,9 +49,17 @@ def safe_x_url(value):
                 or u.username or u.password or u.port not in (None, 443)
                 or u.query or u.fragment):
             return None
-        if not re.fullmatch(r'/(?:xFederiko11|[0-9]{8,25}|i/web)/status/[0-9]{8,25}/?', u.path, re.I):
+        web_status = re.fullmatch(r'/i/web/status/([0-9]{8,25})/?', u.path, re.I)
+        if web_status:
+            return 'https://x.com/i/web/status/' + web_status.group(1)
+        match = re.fullmatch(r'/([^/]+)/status/([0-9]{8,25})/?', u.path, re.I)
+        if not match:
             return None
-        return value
+        owner, post_id = match.groups()
+        if (owner.casefold() != handle.casefold()
+                and not re.fullmatch(r'[0-9]{8,25}', owner)):
+            return None
+        return f'https://x.com/{handle}/status/{post_id}'
     except ValueError:
         return None
 
@@ -95,7 +114,7 @@ def receipt(post, *, channel_id, post_id, require_image=False):
     status = post.get('status')
     if status not in {'sent', 'error', 'sending', 'scheduled', 'draft', 'needs_approval'}:
         raise ValueError('Unknown Buffer status')
-    link = safe_x_url(post.get('externalLink'))
+    link = safe_x_url(post.get('externalLink'), expected_handle=EXPECTED_X_HANDLE)
     stamp = post.get('sentAt')
     try:
         dt = datetime.fromisoformat(str(stamp).replace('Z', '+00:00'))

@@ -114,9 +114,19 @@ class ReceiptTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 receipt(self.post(**changes), channel_id='channel-1', post_id='post-1')
 
-    def test_links_accept_numeric_service_ids_but_not_other_handles(self):
-        self.assertIsNotNone(safe_x_url('https://twitter.com/1234567890/status/1234567890123456789'))
-        self.assertIsNotNone(safe_x_url('https://x.com/i/web/status/1234567890123456789'))
+    def test_links_accept_numeric_service_ids_but_canonicalize_to_verified_handle(self):
+        self.assertEqual(
+            safe_x_url('https://twitter.com/1234567890/status/1234567890123456789'),
+            'https://x.com/xFederiko11/status/1234567890123456789')
+        self.assertEqual(
+            safe_x_url('https://x.com/2122776704191995904/status/2126607222981460449'),
+            'https://x.com/xFederiko11/status/2126607222981460449')
+        self.assertEqual(
+            safe_x_url('https://x.com/i/web/status/1234567890123456789'),
+            'https://x.com/i/web/status/1234567890123456789')
+        self.assertEqual(
+            safe_x_url('https://twitter.com/XFEDERIKO11/status/1234567890123456789'),
+            'https://x.com/xFederiko11/status/1234567890123456789')
         for url in ('http://x.com/xFederiko11/status/12345678',
                     'https://x.com.evil.test/xFederiko11/status/12345678',
                     'https://user@x.com/xFederiko11/status/12345678',
