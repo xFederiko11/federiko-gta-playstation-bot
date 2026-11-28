@@ -185,7 +185,7 @@ class BufferPublisherTests(unittest.TestCase):
         assets = self.session.post.call_args.kwargs["json"]["variables"]["input"]["assets"]
         self.assertEqual(assets, [])
 
-    def test_project_account_allows_verified_source_link_without_image(self):
+    def test_project_account_holds_verified_source_link_without_image(self):
         client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
                               session=self.session)
         client.destination = channel(name="xFederiko11",
@@ -194,9 +194,9 @@ class BufferPublisherTests(unittest.TestCase):
                 "🔗 Fonte: VGC\n"
                 "https://www.videogameschronicle.com/news/example-story/\n\n#GTAVI #GTA6")
         self.session.post.return_value = response(delivered())
-        self.assertEqual(client.publish(text), "buffer-post-1")
-        assets = self.session.post.call_args.kwargs["json"]["variables"]["input"]["assets"]
-        self.assertEqual(assets, [])
+        with self.assertRaises(BufferMediaError):
+            client.publish(text)
+        self.session.post.assert_not_called()
 
     def test_project_account_rejects_unregistered_text_only_link_before_network(self):
         client = BufferClient("test-key-not-real", "channel-1", "xFederiko11",
