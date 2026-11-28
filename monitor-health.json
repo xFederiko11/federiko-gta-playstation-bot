@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T19:28:36+00:00",
+  "generated_at": "2026-11-28T20:28:06+00:00",
   "history_observed": [
     {
       "last_observed_at": "2026-11-28T19:28:12Z",
@@ -18,7 +18,7 @@
       "record_id": "92eb6ac03c7a2107ad6eafd5f787a1ec79c12eccaa29c883bf440a4f78960b85"
     },
     {
-      "last_observed_at": "2026-11-28T19:26:51Z",
+      "last_observed_at": "2026-11-28T20:26:39Z",
       "record_id": "b8cd257a031f26ac06a0923212ddadfbdd08d3034190b7b998196b09016d69aa"
     }
   ],
@@ -27,20 +27,20 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1795893953.3387702,
-      "next_due": 1795894853.3387702
+      "last_success": 1795897541.57453,
+      "next_due": 1795898441.57453
     },
     {
       "id": "support-gta",
       "last_error": null,
-      "last_success": 1795894038.1290774,
-      "next_due": 1795895838.1290774
+      "last_success": 1795897599.302436,
+      "next_due": 1795899399.302436
     },
     {
       "id": "support-gta6",
       "last_error": null,
-      "last_success": 1795893957.6428018,
-      "next_due": 1795895757.6428018
+      "last_success": 1795897545.3500533,
+      "next_due": 1795899345.3500533
     },
     {
       "id": "system:PS4",
@@ -78,32 +78,32 @@
     {
       "has_error": false,
       "id": "rsg-gta-online",
-      "last_success": 1795894095.229636,
-      "next_due": 1795894695.229636
+      "last_success": 1795897655.0671341,
+      "next_due": 1795898255.0671341
     },
     {
       "has_error": true,
       "id": "rsg-gtav-patch",
       "last_success": null,
-      "next_due": 1795894995.229636
+      "next_due": 1795898555.0671341
     },
     {
       "has_error": false,
       "id": "rsg-online-us",
-      "last_success": 1795894095.229636,
-      "next_due": 1795894395.229636
+      "last_success": 1795897655.0671341,
+      "next_due": 1795897955.0671341
     },
     {
-      "has_error": false,
+      "has_error": true,
       "id": "rsg-vi-media",
       "last_success": 1795894095.229636,
-      "next_due": 1795894995.229636
+      "next_due": 1795898555.0671341
     },
     {
-      "has_error": false,
+      "has_error": true,
       "id": "rsg-vi-video",
       "last_success": 1795894095.229636,
-      "next_due": 1795894995.229636
+      "next_due": 1795898555.0671341
     }
   ]
 }
