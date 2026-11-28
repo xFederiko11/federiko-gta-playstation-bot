@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-28T09:30:20+00:00",
+  "generated_at": "2026-11-28T10:32:00+00:00",
   "history_observed": [
     {
-      "last_observed_at": "2026-11-28T09:29:58Z",
+      "last_observed_at": "2026-11-28T10:31:38Z",
       "record_id": "1b90d8ac7cb67f5e4847ab1d9626c7eac7498c81555b28a33d313dd5a35f26f0"
     },
     {
@@ -18,7 +18,7 @@
       "record_id": "92eb6ac03c7a2107ad6eafd5f787a1ec79c12eccaa29c883bf440a4f78960b85"
     },
     {
-      "last_observed_at": "2026-11-28T09:28:37Z",
+      "last_observed_at": "2026-11-28T10:30:18Z",
       "record_id": "b8cd257a031f26ac06a0923212ddadfbdd08d3034190b7b998196b09016d69aa"
     }
   ],
@@ -27,20 +27,20 @@
     {
       "id": "newswire",
       "last_error": null,
-      "last_success": 1795858060.5428014,
-      "next_due": 1795858960.5428014
+      "last_success": 1795861746.5461287,
+      "next_due": 1795862646.5461287
     },
     {
       "id": "support-gta",
       "last_error": null,
-      "last_success": 1795858144.5561712,
-      "next_due": 1795859944.5561712
+      "last_success": 1795861844.7274075,
+      "next_due": 1795863644.7274075
     },
     {
       "id": "support-gta6",
       "last_error": null,
-      "last_success": 1795858063.9560049,
-      "next_due": 1795859863.9560049
+      "last_success": 1795861764.4180923,
+      "next_due": 1795863564.4180923
     },
     {
       "id": "system:PS4",
@@ -51,14 +51,14 @@
     {
       "id": "system:PS5",
       "last_error": null,
-      "last_success": 1795858198.381018,
-      "next_due": 1795861798.381018
+      "last_success": 1795861898.2114236,
+      "next_due": 1795865498.2114236
     },
     {
       "id": "youtube",
       "last_error": null,
-      "last_success": 1795858198.3427866,
-      "next_due": 1795861798.3427866
+      "last_success": 1795861898.1668248,
+      "next_due": 1795865498.1668248
     }
   ],
   "schema_version": 1,
@@ -66,44 +66,44 @@
     {
       "has_error": false,
       "id": "gtabase-weekly",
-      "last_success": 1795858200.192227,
-      "next_due": 1795858800.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862500.5931633
     },
     {
       "has_error": false,
       "id": "rockstarintel",
-      "last_success": 1795858200.192227,
-      "next_due": 1795858800.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862500.5931633
     },
     {
       "has_error": false,
       "id": "rsg-gta-online",
-      "last_success": 1795858200.192227,
-      "next_due": 1795858800.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862500.5931633
     },
     {
       "has_error": true,
       "id": "rsg-gtav-patch",
       "last_success": null,
-      "next_due": 1795859100.192227
+      "next_due": 1795862800.5931633
     },
     {
       "has_error": false,
       "id": "rsg-online-us",
-      "last_success": 1795858200.192227,
-      "next_due": 1795858500.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862200.5931633
     },
     {
       "has_error": false,
       "id": "rsg-vi-media",
-      "last_success": 1795858200.192227,
-      "next_due": 1795859100.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862800.5931633
     },
     {
       "has_error": false,
       "id": "rsg-vi-video",
-      "last_success": 1795858200.192227,
-      "next_due": 1795859100.192227
+      "last_success": 1795861900.5931633,
+      "next_due": 1795862800.5931633
     }
   ]
 }
