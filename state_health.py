@@ -139,6 +139,65 @@ def _atomic_json(path, value):
             os.unlink(temporary)
 
 
+# Radar V12.1 has its own durable cursors and errors. The quiet polling
+# clocks were excluded from encrypted-state fingerprints but not restored
+# from the heartbeat. Persist those clocks separately, without ever creating
+# rows, replacing private source content, clearing errors or promoting a
+# never-successful source into a successful one.
+def _weekly_radar_clocks(db, tables):
+    if "weekly_radar_v12_sources" not in tables:
+        return []
+    return [{"id": row[0], "last_success": _timestamp(row[1]),
+             "has_error": bool(row[2]), "next_due": _timestamp(row[3])}
+            for row in db.execute(
+                "SELECT id,last_success,last_error,next_due FROM weekly_radar_v12_sources ORDER BY id")]
+
+
+def _restore_weekly_radar_clocks(db, tables, payload):
+    if "weekly_radar_v12_sources" not in tables:
+        return
+    records = payload.get("weekly_radar_clocks", [])
+    stamp = _history_time(payload.get("generated_at"))
+    if not isinstance(records, list) or not stamp:
+        return
+    try:
+        generated = datetime.fromisoformat(stamp.replace("Z", "+00:00")).timestamp()
+    except (ValueError, OverflowError, OSError):
+        return
+    if generated > datetime.now(timezone.utc).timestamp() + 60:
+        return
+    # Current V12.1 intervals/backoff are <= 900 seconds. A one-hour
+    # ceiling allows reasonable future tuning without indefinite suppression.
+    for record in records:
+        if not isinstance(record, dict) or not isinstance(record.get("id"), str):
+            continue
+        if type(record.get("has_error")) is not bool:
+            continue
+        known = db.execute(
+            "SELECT last_success,last_error,next_due FROM weekly_radar_v12_sources WHERE id=?",
+            (record["id"],)).fetchone()
+        if known is None or bool(known[1]) != record["has_error"]:
+            continue
+        due = _timestamp(record.get("next_due"))
+        old_due = _timestamp(known[2])
+        observed = _timestamp(record.get("last_success"))
+        old_success = _timestamp(known[0])
+        if due is None or old_due is None or due < old_due or due > generated + 3600:
+            continue
+        # The heartbeat can refresh an existing success clock but cannot
+        # turn a failed/uninitialized source into a successful observation.
+        success = old_success
+        if old_success is None:
+            if observed is not None:
+                continue
+        elif observed is None or observed < old_success or observed > generated + 1 or observed > due:
+            continue
+        elif not known[1]:
+            success = observed
+        db.execute("UPDATE weekly_radar_v12_sources SET last_success=?,next_due=? WHERE id=?",
+                   (success, due, record["id"]))
+
+
 def save_health(db, path):
     """Publish IDs and clocks, never source snapshots or private queue data."""
     tables = set(_tables(db))
@@ -159,7 +218,8 @@ def save_health(db, path):
             if stamp:
                 history_observed.append({"record_id": row[0], "last_observed_at": stamp})
     payload = {"schema_version": 1, "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-               "monitors": monitors, "meta": meta, "history_observed": history_observed}
+               "monitors": monitors, "meta": meta, "history_observed": history_observed,
+               "weekly_radar_clocks": _weekly_radar_clocks(db, tables)}
     destination = Path(path)
     _atomic_json(destination, payload)
     return destination
@@ -202,6 +262,7 @@ def load_health(db, path):
                     values.append(_timestamp(row["next_due"]))
                 if updates:
                     db.execute("UPDATE monitors SET " + ",".join(updates) + " WHERE id=?", values + [row["id"]])
+        _restore_weekly_radar_clocks(db, tables, payload)
         xbox_checked = _timestamp(payload.get("meta", {}).get("xbox_checked"))
         if "meta" in tables and xbox_checked is not None:
             db.execute("UPDATE meta SET value=? WHERE key='xbox_checked'", (str(xbox_checked),))
