@@ -1,3 +1,13 @@
+## Sessione 28 novembre 2026, 16:37 CET — #219 integrata e controlli successivi
+
+- PR [#219](https://github.com/xFederiko11/federiko-gta-playstation-bot/pull/219) integrata via squash nel commit `d492ee7821703d6f1f8da67d0c01ecd7069b27a9`; il genitore diretto è `133fd4bdc1832af5359718071ee304de51358b97`, quindi la raccolta di stato del Monitor #397 è conservata. Il nuovo `safe_x_url` lega gli owner numerici solo all’handle Buffer verificato; 15 test mirati e `py_compile` OK. La CI #877 sul ramo checkpoint ha superato `italian_qa`, publisher skipped. Post-merge #878 (`46160645903`) ha superato `italian_qa`, job editoriale skipped: nessuna chiamata Buffer/X causata dal push.
+- Run #397 Monitor (`46159694390`): 30 piste di ricerca, titoli non verificati, zero post Buffer/X. Run #258 Breaking News (`46158843495`): `candidates=0`, `DELIVERY_NOT_ATTEMPTED`. Nessun invio o interazione social da questa sessione.
+- Il permalink-feed pubblico è ancora al 26/11 12:44:40 UTC; feed e widget del sito non mostrano ancora il Buffer Sent del 28/11. La pagina X del receipt non è stata verificata visivamente. La coda resta segnalata in pausa dai run recenti; non toccata.
+- Blocco immagini invariato, nessuna nuova autorizzazione o cattura PS5. Southside conserva link alle mappe e player PowerPyx opt-in; nessuna nuova fotografia utilizzata. Search Console sempre rinviata al 30/11. Nessun costo aggiuntivo, nessun contatto o interazione automatica.
+- **Azione successiva:** correggere sul sito il feed degli ultimi post per usare l’incorporamento ufficiale del profilo X o una sincronizzazione gratuita verificabile, distinguendo invio Buffer da post effettivamente visibile e segnalando ora di aggiornamento; QA a 390/1440, deploy e verifica pubblica. Poi leggere Search Console dal 30/11.
+
+---
+
 ## Sessione 28 novembre 2026, 16:32 CET — ricevute Buffer, feed X e PR #219
 
 - **Repository controllati:** bot main `d005da984e912efadd0ac5514cf201fcc2f2f771`; sito main `2be896dd0fd9feded1a51177e096421b99e878f3`. I checkout locali restano sporchi e non aggiornati; nessuna modifica o pulizia locale eseguita.
