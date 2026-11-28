@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-28T10:32:00Z",
+  "generated_at": "2026-11-28T11:28:42Z",
   "records": [
     {
       "date_precision": "local_time",
@@ -121,7 +121,7 @@
       },
       "metric_kind": "availability",
       "notes": "Data delle note Rockstar osservata dal monitor. Non prova numero di build, dimensione o test nel gioco.",
-      "observed_at": "2026-11-28T10:30:18Z",
+      "observed_at": "2026-11-28T11:26:57Z",
       "occurred_at": "2026-11-23",
       "package_id": null,
       "platform": "common",
@@ -137,7 +137,7 @@
       "verification": "verified",
       "version": null,
       "first_observed_at": "2026-11-26T22:30:33Z",
-      "last_observed_at": "2026-11-28T10:30:18Z"
+      "last_observed_at": "2026-11-28T11:26:57Z"
     }
   ],
   "gaps": [
