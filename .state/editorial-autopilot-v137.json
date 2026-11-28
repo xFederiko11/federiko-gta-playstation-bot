@@ -1161,6 +1161,21 @@
       "title": "GTA VI: Leonida in sei immagini Rockstar",
       "trophy_number": null,
       "url": "https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/"
+    },
+    "official-video-link:gta-vi-now-available-2026": {
+      "media_mode": "official_video_link",
+      "media_url": null,
+      "official_video_url": "https://www.youtube.com/watch?v=T95WGWkx7P0",
+      "reserved_utc": "2026-11-28T09:20:44.292305+00:00",
+      "run_id": "46130000024",
+      "source": "Rockstar Games",
+      "status": "reserved",
+      "text": "🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n\nVideo ufficiale Rockstar Games:\nhttps://www.youtube.com/watch?v=T95WGWkx7P0",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA VI è disponibile su PS5 e Xbox Series X|S",
+      "trophy_number": null,
+      "url": "https://www.youtube.com/watch?v=T95WGWkx7P0"
     }
   },
   "run_history": [
@@ -1588,6 +1603,13 @@
       "feeds_relevant": 64,
       "reserved": 1,
       "run": "46120389661"
+    },
+    {
+      "at": "2026-11-28T09:20:44.292305+00:00",
+      "errors": [],
+      "feeds_relevant": 78,
+      "reserved": 1,
+      "run": "46130000024"
     }
   ],
   "schema": "v13.7",
@@ -1611,6 +1633,7 @@
     "glitch prima persona comandi rischi trofei": "7afb3b091f55832733581d44",
     "growth-limited-magazines-1-3": "94286b19fe0b03125bd1036d",
     "growth-mappe-interattive-ps5": "66c2c402ff28e6aa906cfd5d",
+    "gta vi disponibilita video ufficiale rockstar 2026": "official-video-link:gta-vi-now-available-2026",
     "guida agli strip club visitare trucchi per sbloccare balli privati": "ae0c64ab45304b8352a8634b",
     "guide who the real actress lucia based": "c12aa6dbf53c6d412916b87e",
     "home sweet home mission walkthrough": "6647ce251bd1ba3f46879c6b",
