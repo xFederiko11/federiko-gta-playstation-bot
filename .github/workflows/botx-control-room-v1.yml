@@ -1,0 +1,53 @@
+name: BOT X - Control Room (safe dispatch)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/control-room/dispatch.py'
+      - '.github/control-room/test_dispatch.py'
+      - '.github/workflows/botx-control-room-v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/control-room/request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: botx-control-room-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s .github/control-room -p 'test_*.py' -v
+  dispatch:
+    if: >-
+      github.event_name == 'push' &&
+      github.repository == 'xFederiko11/federiko-gta-playstation-bot' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.repository.private == false &&
+      github.event.deleted == false &&
+      github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - run: python3 -m unittest discover -s .github/control-room -p 'test_*.py' -v
+      - name: Dispatch one allowlisted workflow; never publish or retry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/control-room/dispatch.py
