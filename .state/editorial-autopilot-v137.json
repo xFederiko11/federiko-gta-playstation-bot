@@ -1163,13 +1163,16 @@
       "url": "https://xfederiko11.github.io/gta-6/articoli/gta-vi-leonida-sei-luoghi/"
     },
     "official-video-link:gta-vi-now-available-2026": {
+      "attempted_utc": "2026-11-28T09:20:46.803507+00:00",
+      "buffer_id": "6b0a9ceece824d71b0aa132a",
+      "completed_utc": "2026-11-28T09:20:48.041724+00:00",
       "media_mode": "official_video_link",
       "media_url": null,
       "official_video_url": "https://www.youtube.com/watch?v=T95WGWkx7P0",
       "reserved_utc": "2026-11-28T09:20:44.292305+00:00",
       "run_id": "46130000024",
       "source": "Rockstar Games",
-      "status": "reserved",
+      "status": "sent",
       "text": "🎮 GTA VI è disponibile su PS5 e Xbox Series X|S.\n\nVideo ufficiale Rockstar Games:\nhttps://www.youtube.com/watch?v=T95WGWkx7P0",
       "thread": null,
       "tip_id": null,
