@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T07:14:46+00:00",
+  "generated_at": "2026-11-28T07:16:24+00:00",
   "history_observed": [
     {
       "last_observed_at": "2026-11-28T07:14:46Z",
@@ -66,44 +66,44 @@
     {
       "has_error": false,
       "id": "gtabase-weekly",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846464.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795850761.4985914
     },
     {
       "has_error": false,
       "id": "rockstarintel",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846464.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795850761.4985914
     },
     {
       "has_error": false,
       "id": "rsg-gta-online",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846464.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795850761.4985914
     },
     {
       "has_error": true,
       "id": "rsg-gtav-patch",
       "last_success": null,
-      "next_due": 1795846764.030092
+      "next_due": 1795851061.4985914
     },
     {
       "has_error": false,
       "id": "rsg-online-us",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846164.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795850461.4985914
     },
     {
       "has_error": false,
       "id": "rsg-vi-media",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846764.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795851061.4985914
     },
     {
       "has_error": false,
       "id": "rsg-vi-video",
-      "last_success": 1795845864.030092,
-      "next_due": 1795846764.030092
+      "last_success": 1795850161.4985914,
+      "next_due": 1795851061.4985914
     }
   ]
 }
