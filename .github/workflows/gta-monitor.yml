@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'online.py'
+      - 'state_health.py'
       - 'sources.py'
       - 'sources.free.json'
       - 'playstation_system.py'

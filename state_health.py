@@ -8,11 +8,14 @@ never exported to the public health file.
 import base64
 import hashlib
 import json
+import logging
 import math
 import os
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+
+LOG = logging.getLogger(__name__)
 
 
 def _canonical(value):
@@ -154,18 +157,20 @@ def _weekly_radar_clocks(db, tables):
 
 
 def _restore_weekly_radar_clocks(db, tables, payload):
+    counts = {"accepted": 0, "advanced": 0, "future": 0}
     if "weekly_radar_v12_sources" not in tables:
-        return
+        return counts
     records = payload.get("weekly_radar_clocks", [])
     stamp = _history_time(payload.get("generated_at"))
     if not isinstance(records, list) or not stamp:
-        return
+        return counts
     try:
         generated = datetime.fromisoformat(stamp.replace("Z", "+00:00")).timestamp()
     except (ValueError, OverflowError, OSError):
-        return
-    if generated > datetime.now(timezone.utc).timestamp() + 60:
-        return
+        return counts
+    now = datetime.now(timezone.utc).timestamp()
+    if generated > now + 60:
+        return counts
     # Current V12.1 intervals/backoff are <= 900 seconds. A one-hour
     # ceiling allows reasonable future tuning without indefinite suppression.
     for record in records:
@@ -196,6 +201,10 @@ def _restore_weekly_radar_clocks(db, tables, payload):
             success = observed
         db.execute("UPDATE weekly_radar_v12_sources SET last_success=?,next_due=? WHERE id=?",
                    (success, due, record["id"]))
+        counts["accepted"] += 1
+        counts["advanced"] += int(due > old_due or success != old_success)
+        counts["future"] += int(due > now)
+    return counts
 
 
 def save_health(db, path):
@@ -262,7 +271,7 @@ def load_health(db, path):
                     values.append(_timestamp(row["next_due"]))
                 if updates:
                     db.execute("UPDATE monitors SET " + ",".join(updates) + " WHERE id=?", values + [row["id"]])
-        _restore_weekly_radar_clocks(db, tables, payload)
+        radar_restore = _restore_weekly_radar_clocks(db, tables, payload)
         xbox_checked = _timestamp(payload.get("meta", {}).get("xbox_checked"))
         if "meta" in tables and xbox_checked is not None:
             db.execute("UPDATE meta SET value=? WHERE key='xbox_checked'", (str(xbox_checked),))
@@ -291,4 +300,11 @@ def load_health(db, path):
                 record["observed_at"] = incoming
                 db.execute("UPDATE download_history SET last_observed_at=?,record_json=? WHERE record_id=?",
                            (incoming, _canonical(record), row["record_id"]))
+    # Log only after the transaction commits. Accepted means an existing row
+    # passed all guards and received its clocks; advanced distinguishes a
+    # genuine refresh from an already matching encrypted-state clock. Future
+    # says whether any restored deadline can still defer polling at startup.
+    # No source IDs, private content, fingerprints or remote values are logged.
+    LOG.info("MONITOR_HEALTH_RADAR_RESTORE accepted=%d advanced=%d future=%d",
+             radar_restore["accepted"], radar_restore["advanced"], radar_restore["future"])
     return True
