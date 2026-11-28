@@ -327,7 +327,7 @@ class EditorialV137Tests(unittest.TestCase):
             bot.reserve()
             self.assertEqual(len(bot.load_state()['entries']),1)
 
-    def test_item_without_cleared_photo_uses_verified_original_source_link(self):
+    def test_item_without_cleared_photo_is_not_reserved_as_source_link(self):
         now = datetime(2026, 11, 27, 12, 0, tzinfo=timezone.utc)
         class Clock(datetime):
             @classmethod
@@ -356,13 +356,10 @@ class EditorialV137Tests(unittest.TestCase):
              patch('site_article_rotation_v1.candidate', return_value=None), \
              patch('game_photo_policy_v1.active', return_value=True), \
              patch('game_photo_policy_v1.scan_kind', return_value=False), \
+             patch('per_item_media_policy_v1.launch_video_candidate', return_value=None), \
              patch.dict(os.environ, {'GITHUB_RUN_ID':'source-link-fallback'}):
             bot.reserve()
-            entry = next(iter(bot.load_state()['entries'].values()))
-            self.assertEqual(entry['media_mode'], 'source_link_only')
-            self.assertIsNone(entry['media_url'])
-            from per_item_media_policy_v1 import verify_source_link_entry
-            self.assertTrue(verify_source_link_entry(entry))
+            self.assertEqual(bot.load_state()['entries'], {})
 
     def test_unreviewed_photo_can_fall_back_to_exact_official_video_item(self):
         now = datetime(2026, 11, 27, 12, 0, tzinfo=timezone.utc)

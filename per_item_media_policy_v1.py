@@ -70,9 +70,9 @@ SOURCE_LINK_DOMAINS = {
 }
 
 
-def source_link_message_allowed(message: dict, *, source: str | None = None,
-                                expected_url: str | None = None) -> bool:
-    """Allow an eligible post to share its own RSS article without copying media."""
+def source_link_message_valid(message: dict, *, source: str | None = None,
+                              expected_url: str | None = None) -> bool:
+    """Validate a source link for review; this is not permission to publish it."""
     if not isinstance(message, dict) or message.get("assets") not in (None, []):
         return False
     text = message.get("text")
@@ -96,8 +96,19 @@ def source_link_message_allowed(message: dict, *, source: str | None = None,
     return False
 
 
+def source_link_message_allowed(message: dict, *, source: str | None = None,
+                                expected_url: str | None = None) -> bool:
+    """Ordinary RSS links without a reviewed image must stay in editorial review.
+
+    Enforce the photo requirement at both reservation and Buffer mutation. A
+    valid publisher link is not a substitute for a relevant approved image.
+    The separate exact, one-time official video policy is unchanged.
+    """
+    return False
+
+
 def source_link_candidate(item: dict) -> dict | None:
-    """Preserve a verified editorial item as a source link when no photo is cleared."""
+    """Do not reserve a source-only RSS item under the current photo policy."""
     if not isinstance(item, dict) or not source_link_message_allowed(
             {"text": item.get("text"), "assets": []},
             source=item.get("source"), expected_url=item.get("url")):
@@ -110,7 +121,7 @@ def source_link_candidate(item: dict) -> dict | None:
 
 
 def verify_source_link_entry(entry: dict) -> bool:
-    """Recheck source, URL, and attachment absence immediately before Buffer."""
+    """Reject legacy source-only reservations under the current photo policy."""
     return (isinstance(entry, dict) and entry.get("media_mode") == "source_link_only"
             and not entry.get("media_url") and not entry.get("photo_kind")
             and not entry.get("cover_sha256")
