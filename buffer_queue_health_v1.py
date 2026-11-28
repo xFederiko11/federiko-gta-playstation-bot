@@ -150,11 +150,12 @@ def render_photo_readiness():
     if not pages:
         lines += ["**Allegati fotografici bloccati: nessuna copertina con riutilizzo documentato nel registro.**",
                   "Non allegare immagini senza prova di riutilizzo per lo specifico asset e canale.",
-                  "La policy corrente ammette separatamente solo post con link fonte/video originali, verificati per singolo elemento e privi di foto caricate (source_link_only / official_video_link): non sono autorizzazioni per miniature o screenshot.",
                   "Acquisire e verificare screenshot originali PS5 prima di abilitare post fotografici."]
     else:
         lines += ["I record non sono post pronti: restano obbligatori verifica live di copertina/hash, pertinenza, deduplica e limiti editoriali."]
-    lines += ["Registro vuoto, mancante o non valido = nessuna autorizzazione operativa. Nessun URL degli asset o prova privata esposta.",""]
+    lines += ["I post ordinari senza foto pertinente approvata restano in revisione: source_link_only non autorizza la pubblicazione, anche per prenotazioni precedenti.",
+              "Rimane soltanto la specifica eccezione official_video_link del video ufficiale già revisionato, una tantum e soggetta ai controlli del motore; non autorizza miniature o screenshot.",
+              "Registro vuoto, mancante o non valido = nessuna autorizzazione operativa. Nessun URL degli asset o prova privata esposta.",""]
     return "\n".join(lines)
 
 def render(snapshot_data,now):

@@ -88,12 +88,24 @@ class BufferQueueAuditTests(unittest.TestCase):
         with patch("photo_rights_v1.load",return_value={}):
             self.assertEqual(h.photo_readiness(),(0,0))
             self.assertIn("Allegati fotografici bloccati",h.render_photo_readiness())
-            self.assertIn("source_link_only / official_video_link",h.render_photo_readiness())
-            self.assertNotIn("Non inviare testo senza foto",h.render_photo_readiness())
+            report=h.render_photo_readiness()
+            self.assertIn("source_link_only non autorizza la pubblicazione",report)
+            self.assertIn("official_video_link",report)
+            self.assertIn("una tantum",report)
+            self.assertNotIn("source_link_only / official_video_link",report)
         with patch("photo_rights_v1.load",return_value={("https://example.org/a/","official_game_photo","a"*64):{}}):
             self.assertEqual(h.photo_readiness(),(1,1))
             self.assertIn("non sono post pronti",h.render_photo_readiness())
             self.assertNotIn("example.org",h.render_photo_readiness())
+            self.assertIn("source_link_only non autorizza la pubblicazione",h.render_photo_readiness())
+
+    def test_queue_audit_does_not_consume_buffer_quota_on_push(self):
+        from pathlib import Path
+        workflow=(Path(__file__).parent/".github/workflows/gta6-buffer-queue-health-v1.yml").read_text(encoding="utf-8")
+        self.assertIn("27 22 * * *",workflow)
+        self.assertIn("timezone: Europe/Rome",workflow)
+        self.assertEqual(workflow.count("if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')"),5)
+        self.assertNotIn("if: github.event_name != 'pull_request'",workflow)
 
     def test_api_diagnostic_has_no_post_mutations(self):
         fake=Mock()
