@@ -1111,6 +1111,21 @@
       "trophy_number": 55,
       "url": "https://xfederiko11.github.io/gta-6/trofei/trofeo-55-ci-metto-un-secondo/"
     },
+    "efc9e6abaa17f6cfacae97ac": {
+      "media_mode": "source_link_only",
+      "media_url": null,
+      "official_video_url": null,
+      "reserved_utc": "2026-11-28T07:16:50.957369+00:00",
+      "run_id": "46120389661",
+      "source": "PowerPyx",
+      "status": "reserved",
+      "text": "🏆 GTA VI | Guida PowerPyx\n\nGTA 6 Posizioni dei set di carte collezionabili delle ballerine Jack of Hearts\n\n🔗 Fonte: PowerPyx\nhttps://powerpyx.com/gta-6-jack-of-hearts-dancers-collectible-card-set-locations\n\n#GTAVI #GTA6",
+      "thread": null,
+      "tip_id": null,
+      "title": "GTA 6 Jack of Hearts Dancers Collectible Card Set Locations",
+      "trophy_number": null,
+      "url": "https://powerpyx.com/gta-6-jack-of-hearts-dancers-collectible-card-set-locations"
+    },
     "f1d01c920af8776baed7b2d7": {
       "attempted_utc": "2026-11-19T11:35:47.555149+00:00",
       "buffer_id": "6afedf1356a8bceaa9081474",
@@ -1561,6 +1576,15 @@
       "feeds_relevant": 82,
       "reserved": 1,
       "run": "46060543961"
+    },
+    {
+      "at": "2026-11-28T07:16:50.957369+00:00",
+      "errors": [
+        "GTA Series Videos: HTTPError"
+      ],
+      "feeds_relevant": 64,
+      "reserved": 1,
+      "run": "46120389661"
     }
   ],
   "schema": "v13.7",
@@ -1589,6 +1613,7 @@
     "home sweet home mission walkthrough": "6647ce251bd1ba3f46879c6b",
     "how change the time day": "7b7859d3035b39a1ec3a70c7",
     "island dreams walkthrough": "ac7a72218ee0c5874a13c45d",
+    "jack hearts dancers collectible card set locations": "efc9e6abaa17f6cfacae97ac",
     "launch causes massive spike traffic for internet provider xfinity": "30fde1d513737ed1a71e03e6",
     "leonida sei immagini rockstar": "f5eec3d9e5be69ccc89edf10",
     "making gainz walkthrough": "528b4fcb1f54e6b5b4c77d2c",
