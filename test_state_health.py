@@ -157,7 +157,10 @@ class StateHealthTests(unittest.TestCase):
         self.assertEqual(set(payload["weekly_radar_clocks"][0]),
                          {"id","last_success","next_due","has_error"})
         self.db.execute("UPDATE weekly_radar_v12_sources SET next_due=?", (old,))
-        self.assertTrue(load_health(self.db,self.path))
+        with self.assertLogs("state_health", level="INFO") as captured:
+            self.assertTrue(load_health(self.db,self.path))
+        self.assertEqual(captured.output, [
+            "INFO:state_health:MONITOR_HEALTH_RADAR_RESTORE accepted=1 advanced=1 future=1"])
         restored = self.db.execute("SELECT * FROM weekly_radar_v12_sources").fetchone()
         self.assertEqual(restored["next_due"],due)
         self.assertEqual(restored["last_error"],"render_content_missing")
@@ -191,7 +194,10 @@ class StateHealthTests(unittest.TestCase):
         ]
         self.path.write_text(json.dumps(payload))
         before=meaningful_fingerprint(self.db)
-        load_health(self.db,self.path)
+        with self.assertLogs("state_health", level="INFO") as captured:
+            load_health(self.db,self.path)
+        self.assertEqual(captured.output, [
+            "INFO:state_health:MONITOR_HEALTH_RADAR_RESTORE accepted=0 advanced=0 future=0"])
         self.assertEqual(self.db.execute("SELECT last_success,next_due,last_error FROM weekly_radar_v12_sources WHERE id='rsg-online-us'").fetchone(),
                          (None,old,"render_content_missing"))
         self.assertEqual(self.db.execute("SELECT last_success,next_due FROM weekly_radar_v12_sources WHERE id='rsg-gta-online'").fetchone(),(old,old))
@@ -207,6 +213,43 @@ class StateHealthTests(unittest.TestCase):
         self.path.write_text(json.dumps(payload))
         load_health(self.db,self.path)
         self.assertEqual(self.db.execute("SELECT next_due FROM weekly_radar_v12_sources WHERE id='rsg-gta-online'").fetchone()[0],now+600)
+
+    def test_radar_restore_telemetry_distinguishes_unchanged_overdue_clocks(self):
+        from datetime import datetime, timezone
+        from weekly_radar_v12 import init
+        init(self.db)
+        old = datetime.now(timezone.utc).timestamp() - 900
+        self.db.execute("INSERT INTO weekly_radar_v12_sources VALUES (?,?,?,?,?,?)",
+                        ("PRIVATE_SOURCE_ID", "PRIVATE_SIGNATURE", '["PRIVATE_LINK"]',
+                         old, old, None))
+        self.db.commit()
+        before = meaningful_fingerprint(self.db)
+        save_health(self.db, self.path)
+        with self.assertLogs("state_health", level="INFO") as captured:
+            self.assertTrue(load_health(self.db, self.path))
+        self.assertEqual(captured.output, [
+            "INFO:state_health:MONITOR_HEALTH_RADAR_RESTORE accepted=1 advanced=0 future=0"])
+        self.assertEqual(meaningful_fingerprint(self.db), before)
+
+    def test_radar_restore_does_not_report_success_when_transaction_rolls_back(self):
+        from datetime import datetime, timezone
+        from weekly_radar_v12 import init
+        init(self.db)
+        old = datetime.now(timezone.utc).timestamp() - 900
+        self.db.execute("INSERT INTO weekly_radar_v12_sources VALUES (?,?,?,?,?,?)",
+                        ("source", "PRIVATE_SIGNATURE", '[]', old, old, None))
+        self.db.executescript("""
+          CREATE TRIGGER reject_clock_update BEFORE UPDATE ON weekly_radar_v12_sources
+          BEGIN SELECT RAISE(ABORT, 'test rollback'); END;
+        """)
+        self.db.commit()
+        save_health(self.db, self.path)
+        before = meaningful_fingerprint(self.db)
+        with self.assertNoLogs("state_health", level="INFO"):
+            with self.assertRaises(sqlite3.IntegrityError):
+                load_health(self.db, self.path)
+        self.assertEqual(meaningful_fingerprint(self.db), before)
+        self.assertEqual(self.db.execute("SELECT next_due FROM weekly_radar_v12_sources").fetchone()[0], old)
 
     def test_missing_or_corrupt_health_is_ignored(self):
         self.assertFalse(load_health(self.db, self.path))

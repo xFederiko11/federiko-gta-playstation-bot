@@ -14,6 +14,7 @@ class ReleaseMonitorTests(unittest.TestCase):
         trigger = raw.split("on:\n", 1)[1].split("  schedule:", 1)[0]
         self.assertIn("branches: [main]", trigger)
         self.assertIn("'sources.py'", trigger)
+        self.assertIn("'state_health.py'", trigger)
         self.assertNotIn("monitor-health.json", trigger)
         self.assertNotIn(".state/", trigger)
         self.assertIn("github.event_name == 'push' && 'collect'", raw)
